@@ -9,10 +9,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use OwenIt\Auditing\Auditable;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements \OwenIt\Auditing\Contracts\Auditable
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes,Auditable;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes,Auditable, HasRoles;
 
     protected $guarded = ['id'];
 
