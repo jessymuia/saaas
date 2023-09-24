@@ -2,10 +2,12 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\PropertyResource\Pages;
-use App\Filament\Resources\PropertyResource\RelationManagers;
-use App\Models\Property;
-use App\Models\TenancyAgreement;
+use App\Filament\Resources\PropertyResource\RelationManagers\UtilitiesRelationManager;
+use App\Filament\Resources\UtilityResource\Pages;
+use App\Filament\Resources\UtilityResource\RelationManagers;
+use App\Models\RefUtility;
+use App\Models\Utility;
+use Faker\Provider\Text;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -14,31 +16,28 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class PropertyResource extends Resource
+class UtilityResource extends Resource
 {
-    protected static ?string $model = Property::class;
+    protected static ?string $model = RefUtility::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    protected static ?string $modelLabel = 'Utility';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
+                //
                 Forms\Components\TextInput::make('name')
                     ->required()
+                    ->unique(ignoreRecord: true)
                     ->maxLength(255),
-                Forms\Components\TextInput::make('address')
+                Forms\Components\TextInput::make('unit_of_measurement')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('number_of_units')
-                    ->integer()
-                    ->minValue(1)
-                    ->required(),
-                Forms\Components\Select::make('property_type_id')
-                    ->label('Property Type')
-                    ->required()
-                    ->relationship('propertyType', 'type'),
                 Forms\Components\Textarea::make('description')
+                    ->label('Additional Information')
                     ->maxLength(65535)
                     ->columnSpanFull(),
             ]);
@@ -48,26 +47,23 @@ class PropertyResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('propertyType.type')
-                    ->numeric()
-                    ->sortable()
-                    ->searchable(),
+                //
                 Tables\Columns\TextColumn::make('name')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('address')
+                Tables\Columns\TextColumn::make('unit_of_measurement')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('number_of_units')
-                    ->numeric()
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('description')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\IconColumn::make('status')
                     ->boolean(),
-                Tables\Columns\TextColumn::make('created_by')
+                Tables\Columns\TextColumn::make('createdBy.name')
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_by')
+                Tables\Columns\TextColumn::make('updatedBy.name')
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -98,21 +94,16 @@ class PropertyResource extends Resource
     {
         return [
             //
-            RelationManagers\UnitsRelationManager::class,
-            RelationManagers\TenancyAgreementsRelationManager::class,
-            RelationManagers\UtilitiesRelationManager::class,
-            RelationManagers\PropertyServicesRelationManager::class,
-            RelationManagers\MeterReadingsRelationManager::class,
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListProperties::route('/'),
-            'create' => Pages\CreateProperty::route('/create'),
-            'view' => Pages\ViewProperty::route('/{record}'),
-            'edit' => Pages\EditProperty::route('/{record}/edit'),
+            'index' => Pages\ListUtilities::route('/'),
+            'create' => Pages\CreateUtility::route('/create'),
+            'view' => Pages\ViewUtility::route('/{record}'),
+            'edit' => Pages\EditUtility::route('/{record}/edit'),
         ];
     }
 }

@@ -2,10 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\PropertyResource\Pages;
-use App\Filament\Resources\PropertyResource\RelationManagers;
-use App\Models\Property;
-use App\Models\TenancyAgreement;
+use App\Filament\Resources\ServicesOfferedResource\Pages;
+use App\Filament\Resources\ServicesOfferedResource\RelationManagers;
+use App\Models\Services;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -14,9 +13,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class PropertyResource extends Resource
+class ServicesOfferedResource extends Resource
 {
-    protected static ?string $model = Property::class;
+    protected static ?string $model = Services::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -24,23 +23,14 @@ class PropertyResource extends Resource
     {
         return $form
             ->schema([
+                //
                 Forms\Components\TextInput::make('name')
                     ->required()
+                    ->unique()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('address')
+                Forms\Components\TextInput::make('description')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('number_of_units')
-                    ->integer()
-                    ->minValue(1)
-                    ->required(),
-                Forms\Components\Select::make('property_type_id')
-                    ->label('Property Type')
-                    ->required()
-                    ->relationship('propertyType', 'type'),
-                Forms\Components\Textarea::make('description')
-                    ->maxLength(65535)
-                    ->columnSpanFull(),
             ]);
     }
 
@@ -48,26 +38,20 @@ class PropertyResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('propertyType.type')
-                    ->numeric()
-                    ->sortable()
-                    ->searchable(),
+                //
                 Tables\Columns\TextColumn::make('name')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('address')
+                Tables\Columns\TextColumn::make('description')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('number_of_units')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\IconColumn::make('status')
                     ->boolean(),
-                Tables\Columns\TextColumn::make('created_by')
+                Tables\Columns\TextColumn::make('createdBy.name')
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_by')
+                Tables\Columns\TextColumn::make('updatedBy.name')
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -89,7 +73,8 @@ class PropertyResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->requiresConfirmation('Are you sure you want to delete the selected services offered?'),
                 ]),
             ]);
     }
@@ -98,21 +83,16 @@ class PropertyResource extends Resource
     {
         return [
             //
-            RelationManagers\UnitsRelationManager::class,
-            RelationManagers\TenancyAgreementsRelationManager::class,
-            RelationManagers\UtilitiesRelationManager::class,
-            RelationManagers\PropertyServicesRelationManager::class,
-            RelationManagers\MeterReadingsRelationManager::class,
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListProperties::route('/'),
-            'create' => Pages\CreateProperty::route('/create'),
-            'view' => Pages\ViewProperty::route('/{record}'),
-            'edit' => Pages\EditProperty::route('/{record}/edit'),
+            'index' => Pages\ListServicesOffereds::route('/'),
+            'create' => Pages\CreateServicesOffered::route('/create'),
+            'view' => Pages\ViewServicesOffered::route('/{record}'),
+            'edit' => Pages\EditServicesOffered::route('/{record}/edit'),
         ];
     }
 }

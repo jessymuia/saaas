@@ -40,4 +40,25 @@ class Property extends DefaultAppModel
             'id',
             'id');
     }
+
+    public function utilities()
+    {
+        return $this->hasMany(PropertyUtility::class, 'property_id');
+    }
+
+    public function propertyServices()
+    {
+        return $this->hasMany(PropertyServices::class, 'property_id');
+    }
+
+    public function meterReadings()
+    {
+        return $this->hasManyThrough(
+            MeterReading::class,
+            Unit::class,
+            'property_id',
+            'unit_id',
+            'id',
+            'id');
+    }
 }

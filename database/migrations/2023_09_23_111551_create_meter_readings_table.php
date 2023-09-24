@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('meter_readings', function (Blueprint $table) {
             $table = \App\Utils\AppUtils::defaultTableColumns($table);
 
-            $table->unsignedBigInteger('tenancy_agreement_id');
+            $table->unsignedBigInteger('unit_id'); // added
             $table->unsignedBigInteger('utility_id');
             $table->dateTime('reading_date');
             $table->decimal('current_reading', 16, 5);
@@ -22,7 +22,7 @@ return new class extends Migration
             $table->decimal('consumption', 16, 5);
 
             // foreign keys
-            $table->foreign('tenancy_agreement_id')->references('id')->on('tenancy_agreements');
+            $table->foreign('unit_id')->references('id')->on('units');
             $table->foreign('utility_id')->references('id')->on('ref_utilities');
         });
     }

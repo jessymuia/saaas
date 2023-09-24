@@ -17,6 +17,9 @@ return new class extends Migration
             $table->string('name');
             $table->string('description')->nullable();
             $table->string('unit_of_measurement');
+
+            // add unique constraints
+            $table->unique(['name']);
         });
     }
 

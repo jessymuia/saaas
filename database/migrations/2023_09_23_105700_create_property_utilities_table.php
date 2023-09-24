@@ -23,6 +23,9 @@ return new class extends Migration
             $table->foreign('property_id')->references('id')->on('properties');
             $table->foreign('utility_id')->references('id')->on('ref_utilities');
             $table->foreign('billing_type_id')->references('id')->on('ref_billing_types');
+
+            // unique keys
+            $table->unique(['property_id', 'utility_id', 'deleted_at'], 'property_utility_unique');
         });
     }
 

@@ -17,4 +17,9 @@ class RefUtility extends DefaultAppModel
         'status',
         'archive'
     ];
+
+    public function propertyUtilities()
+    {
+        return $this->hasMany(PropertyUtility::class, 'utility_id');
+    }
 }

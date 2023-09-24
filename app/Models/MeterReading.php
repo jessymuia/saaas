@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class MeterReading extends DefaultAppModel
 {
     protected $fillable = [
-        'tenancy_agreement_id',
+        'unit_id',
         'utility_id',
         'reading_date',
         'current_reading',
@@ -29,5 +29,10 @@ class MeterReading extends DefaultAppModel
     public function utility()
     {
         return $this->belongsTo(RefUtility::class);
+    }
+
+    public function unit()
+    {
+        return $this->belongsTo(Unit::class);
     }
 }

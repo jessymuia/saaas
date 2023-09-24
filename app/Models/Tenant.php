@@ -22,4 +22,15 @@ class Tenant extends DefaultAppModel
     {
         return $this->hasMany(TenancyAgreement::class);
     }
+
+    public function tenancyBills()
+    {
+        return $this->hasManyThrough(
+            TenancyBill::class,
+            TenancyAgreement::class,
+            'tenant_id',
+            'tenancy_agreement_id',
+            'id',
+            'id');
+    }
 }
