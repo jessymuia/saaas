@@ -17,4 +17,11 @@ class EditRentPayment extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        $data['updated_by'] = auth()->user()->id;
+
+        return $data;
+    }
 }

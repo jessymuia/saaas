@@ -23,25 +23,12 @@ class RentPaymentResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('created_by')
-                    ->numeric(),
-                Forms\Components\TextInput::make('updated_by')
-                    ->numeric(),
-                Forms\Components\TextInput::make('deleted_by')
-                    ->numeric(),
-                Forms\Components\TextInput::make('tenancy_agreement_id')
+                Forms\Components\Select::make('tenancy_agreement_id')
                     ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('payment_type_id')
+                    ->relationship('tenancyAgreement', 'id'),
+                Forms\Components\Select::make('payment_type_id')
                     ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('received_by')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\Toggle::make('status')
-                    ->required(),
-                Forms\Components\Toggle::make('archive')
-                    ->required(),
+                    ->relationship('paymentType', 'type'),
                 Forms\Components\DateTimePicker::make('payment_date')
                     ->required(),
                 Forms\Components\TextInput::make('amount')
@@ -53,6 +40,7 @@ class RentPaymentResource extends Resource
                 Forms\Components\TextInput::make('payment_reference')
                     ->maxLength(255),
                 Forms\Components\Textarea::make('description')
+                    ->label('Additional Information')
                     ->maxLength(65535)
                     ->columnSpanFull(),
             ]);
@@ -62,39 +50,15 @@ class RentPaymentResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('created_by')
+                Tables\Columns\TextColumn::make('tenancyAgreement.unit.name')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('updated_by')
+                Tables\Columns\TextColumn::make('tenancyAgreement.tenant.name')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('deleted_by')
+                Tables\Columns\TextColumn::make('paymentType.type')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('tenancy_agreement_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('payment_type_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('received_by')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('deleted_at')
-                    ->dateTime()
-                    ->sortable(),
-                Tables\Columns\IconColumn::make('status')
-                    ->boolean(),
-                Tables\Columns\IconColumn::make('archive')
-                    ->boolean(),
                 Tables\Columns\TextColumn::make('payment_date')
                     ->dateTime()
                     ->sortable(),
@@ -103,8 +67,28 @@ class RentPaymentResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('paid_by')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('payment_reference')
+                Tables\Columns\TextColumn::make('receivedBy.name')
+                    ->sortable()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('payment_reference')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\IconColumn::make('status')
+                    ->boolean(),
+                Tables\Columns\TextColumn::make('createdBy.name')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updatedBy.name')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
@@ -115,18 +99,19 @@ class RentPaymentResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->requiresConfirmation('Are you sure you want to delete the selected records?'),
                 ]),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -135,5 +120,5 @@ class RentPaymentResource extends Resource
             'view' => Pages\ViewRentPayment::route('/{record}'),
             'edit' => Pages\EditRentPayment::route('/{record}/edit'),
         ];
-    }    
+    }
 }
