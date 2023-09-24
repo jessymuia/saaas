@@ -43,4 +43,15 @@ class TenancyAgreement extends DefaultAppModel
     {
         return $this->belongsTo(RefBillingType::class);
     }
+
+    public function property()
+    {
+        return $this->hasOneThrough(
+            Property::class,
+            Unit::class,
+            'id',
+            'id',
+            'unit_id',
+            'property_id');
+    }
 }

@@ -10,8 +10,8 @@ class RefBillingType extends DefaultAppModel
     protected $fillable = [
         'type',
         'description',
-        'frequency',
-        'due_date',
+        'frequency_months',
+        'due_day',
         'created_by',
         'updated_by',
         'deleted_by',

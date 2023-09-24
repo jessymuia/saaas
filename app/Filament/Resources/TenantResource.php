@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers;
-use App\Models\User;
+use App\Filament\Resources\TenantResource\Pages;
+use App\Filament\Resources\TenantResource\RelationManagers;
+use App\Models\Tenant;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -12,11 +12,10 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Facades\Hash;
 
-class UserResource extends Resource
+class TenantResource extends Resource
 {
-    protected static ?string $model = User::class;
+    protected static ?string $model = Tenant::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -35,24 +34,6 @@ class UserResource extends Resource
                     ->tel()
                     ->required()
                     ->maxLength(20),
-                Forms\Components\TextInput::make('password')
-                    ->password()
-                    ->maxLength(255)
-                    ->minLength(8)
-                    ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
-                    ->dehydrated(fn (?string $state): bool => filled($state))
-                    ->required(fn (string $operation): bool => $operation === 'create'),
-                Forms\Components\TextInput::make('password_confirmation')
-                    ->password()
-                    ->maxLength(255)
-                    ->minLength(8)
-                    ->required(fn (string $operation): bool => $operation === 'create'),
-                Forms\Components\TextInput::make('created_by')
-                    ->hiddenOn(['edit','create'])
-                    ->numeric(),
-                Forms\Components\TextInput::make('updated_by')
-                    ->hiddenOn(['create', 'edit'])
-                    ->numeric(),
             ]);
     }
 
@@ -61,8 +42,8 @@ class UserResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->sortable()
                     ->searchable(),
@@ -70,21 +51,28 @@ class UserResource extends Resource
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\IconColumn::make('status')
-                    ->sortable()
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_by')
-                    ->sortable()
                     ->numeric()
+                    ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_by')
                     ->numeric()
-                    ->toggleable(isToggledHiddenByDefault: true)
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('deleted_by')
+                    ->numeric()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -98,7 +86,8 @@ class UserResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->requiresConfirmation(fn () => 'Are you sure you want to delete the selected tenants?'),
                 ]),
             ]);
     }
@@ -107,16 +96,17 @@ class UserResource extends Resource
     {
         return [
             //
+            RelationManagers\TenancyAgreementsRelationManager::class,
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListUsers::route('/'),
-            'create' => Pages\CreateUser::route('/create'),
-            'view' => Pages\ViewUser::route('/{record}'),
-            'edit' => Pages\EditUser::route('/{record}/edit'),
+            'index' => Pages\ListTenants::route('/'),
+            'create' => Pages\CreateTenant::route('/create'),
+            'view' => Pages\ViewTenant::route('/{record}'),
+            'edit' => Pages\EditTenant::route('/{record}/edit'),
         ];
     }
 }

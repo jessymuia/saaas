@@ -2,10 +2,15 @@
 
 namespace App\Utils;
 
+use Filament\Tables\Columns\Column;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Schema\Blueprint;
 
 class AppUtils
 {
+    const REFERENCES_NAVIGATION_GROUP = 'References';
+
     public static function defaultTableColumns(Blueprint $table)
     {
         $table->id();

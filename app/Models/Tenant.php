@@ -17,4 +17,9 @@ class Tenant extends DefaultAppModel
         'status',
         'archive'
     ];
+
+    public function tenancyAgreements()
+    {
+        return $this->hasMany(TenancyAgreement::class);
+    }
 }

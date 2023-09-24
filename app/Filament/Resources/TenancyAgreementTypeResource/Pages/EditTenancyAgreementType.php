@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\UserResource\Pages;
+namespace App\Filament\Resources\TenancyAgreementTypeResource\Pages;
 
-use App\Filament\Resources\UserResource;
+use App\Filament\Resources\TenancyAgreementTypeResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
-class EditUser extends EditRecord
+class EditTenancyAgreementType extends EditRecord
 {
-    protected static string $resource = UserResource::class;
+    protected static string $resource = TenancyAgreementTypeResource::class;
 
     protected function getHeaderActions(): array
     {
