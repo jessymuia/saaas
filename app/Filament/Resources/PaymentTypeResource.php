@@ -21,7 +21,7 @@ class PaymentTypeResource extends Resource
 
     protected static ?string $modelLabel = 'Payment Type';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-credit-card';
 
     protected static ?string $navigationGroup = AppUtils::REFERENCES_NAVIGATION_GROUP;
 

@@ -33,5 +33,6 @@ class SetupApplication extends Command
         $this->call('config:cache');
         $this->call('route:cache');
         $this->call('view:cache');
+        $this->call('app:init-demo');
     }
 }

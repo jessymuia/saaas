@@ -21,7 +21,7 @@ class UnitTypeResource extends Resource
 
     protected static ?string $modelLabel = 'Unit Type';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
 
     protected static ?string $navigationGroup = AppUtils::REFERENCES_NAVIGATION_GROUP;
 

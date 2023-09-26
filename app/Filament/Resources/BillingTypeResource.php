@@ -21,7 +21,7 @@ class BillingTypeResource extends Resource
 
     protected static ?string $modelLabel = 'Billing Type';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-banknotes';
 
     protected static ?string $navigationGroup = AppUtils::REFERENCES_NAVIGATION_GROUP;
 

@@ -21,7 +21,7 @@ class PropertyTypeResource extends Resource
 
     protected static ?string $modelLabel = 'Property Type';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-home-modern';
 
     protected static ?string $navigationGroup = AppUtils::REFERENCES_NAVIGATION_GROUP;
 

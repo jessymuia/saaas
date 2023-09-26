@@ -21,7 +21,7 @@ class TenancyAgreementTypeResource extends Resource
 
     protected static ?string $modelLabel = 'Tenancy Agreement Type';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
 
     protected static ?string $navigationGroup = AppUtils::REFERENCES_NAVIGATION_GROUP;
 
