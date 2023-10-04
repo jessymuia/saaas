@@ -38,7 +38,7 @@ class TenancyAgreementsRelationManager extends RelationManager
                 Forms\Components\DatePicker::make('start_date')
                     ->required(),
                 Forms\Components\DatePicker::make('end_date')
-                    ->required()
+                    ->nullable()
                     ->after('start_date'),
                 Forms\Components\TextInput::make('amount')
                     ->required()
