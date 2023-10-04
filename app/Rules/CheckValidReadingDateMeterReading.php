@@ -35,7 +35,7 @@ class CheckValidReadingDateMeterReading implements ValidationRule
             ->orderBy('reading_date', 'desc')
             ->first();
 
-        if ($meterReading->reading_date >= $value) {
+        if ($meterReading != null && $meterReading->reading_date >= $value) {
             $fail('The reading date must be greater than the previous reading date.');
         }
     }
