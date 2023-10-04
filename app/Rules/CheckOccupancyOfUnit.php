@@ -36,7 +36,10 @@ class CheckOccupancyOfUnit implements ValidationRule
             ->where('unit_id', '=', $value)
             ->where('status', '=', 1)
             ->where('archive', '=', 0)
-            ->where('end_date', '>=', $this->startDate)
+            ->where(function ($query){
+                $query->where('end_date','>=',$this->startDate)
+                    ->orWhere('end_date',null);
+            })
             ->count() > 0
             ? $fail(__('The unit is occupied.')) : null;
 
