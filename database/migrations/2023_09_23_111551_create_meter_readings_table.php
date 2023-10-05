@@ -20,6 +20,7 @@ return new class extends Migration
             $table->decimal('current_reading', 16, 5);
             $table->decimal('previous_reading', 16, 5);
             $table->decimal('consumption', 16, 5);
+            $table->tinyInteger('has_bill')->default(0);
 
             // foreign keys
             $table->foreign('unit_id')->references('id')->on('units');

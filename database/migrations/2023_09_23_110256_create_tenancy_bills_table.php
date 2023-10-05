@@ -22,12 +22,14 @@ return new class extends Migration
             $table->unsignedBigInteger('billing_type_id');
             $table->unsignedBigInteger('service_id')->nullable();
             $table->unsignedBigInteger('utility_id')->nullable();
+            $table->unsignedBigInteger('invoice_id')->nullable();
 
             // foreign keys
             $table->foreign('tenancy_agreement_id')->references('id')->on('tenancy_agreements');
             $table->foreign('billing_type_id')->references('id')->on('ref_billing_types');
             $table->foreign('service_id')->references('id')->on('services');
             $table->foreign('utility_id')->references('id')->on('ref_utilities');
+            $table->foreign('invoice_id')->references('id')->on('invoices');
         });
     }
 

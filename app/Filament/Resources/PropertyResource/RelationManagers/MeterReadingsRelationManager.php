@@ -93,6 +93,9 @@ class MeterReadingsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('unit.name')
                     ->sortable()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('utility.name')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('reading_date')
                     ->sortable()
                     ->searchable(),
@@ -105,7 +108,7 @@ class MeterReadingsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('consumption')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\IconColumn::make('status')
+                Tables\Columns\IconColumn::make('has_bill')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('createdBy.name')
                     ->numeric()
