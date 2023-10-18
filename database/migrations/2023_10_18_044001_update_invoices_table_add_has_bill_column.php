@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         //
-        Schema::table('invoices',function (Blueprint $table){
+        Schema::table('meter_readings',function (Blueprint $table){
             $table->tinyInteger('has_bill')->default(0)->after('consumption');
         });
     }
@@ -23,7 +23,7 @@ return new class extends Migration
     public function down(): void
     {
         //
-        Schema::table('invoices',function (Blueprint $table){
+        Schema::table('meter_readings',function (Blueprint $table){
             $table->dropColumn('has_bill');
         });
     }
