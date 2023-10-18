@@ -17,7 +17,10 @@ return new class extends Migration
             $table->unsignedBigInteger('tenancy_agreement_id');
             $table->string('comments',1000)->nullable();
             $table->string('invoice_status',20)->nullable();
-            $table->date('issue_date');
+            $table->date('issue_date')->nullable();
+            $table->tinyInteger('is_confirmed')->default(0);
+            $table->tinyInteger('is_generated')->default(0);
+            $table->string('document_url')->nullable();
 
             // foreign keys
             $table->foreign('tenancy_agreement_id')->references('id')->on('tenancy_agreements');

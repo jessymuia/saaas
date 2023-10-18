@@ -16,6 +16,7 @@ class TenancyBill extends DefaultAppModel
         'billing_type_id',
         'service_id',
         'utility_id',
+        'invoice_id',
         'created_by',
         'updated_by',
         'deleted_by',

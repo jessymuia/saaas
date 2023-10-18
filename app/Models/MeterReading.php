@@ -97,21 +97,25 @@ class MeterReading extends DefaultAppModel
                 // create invoice if not exists
                 $invoice = Invoice::query()
                     ->where('tenancy_agreement_id', $tenancyAgreement)
-                    ->whereMonth('issue_date', date_format($this->reading_date,'m'))
+                    ->whereMonth('created_at', date_format($this->reading_date,'m'))
+                    ->get()
                     ->first();
 
                 if (!$invoice) {
-                    $invoice = Invoice::create([
-                        'tenancy_agreement_id' => $tenancyAgreement,
-                        'issue_date' => $this->reading_date,
-                        'created_by' => $this->created_by,
-                    ]);
+                    $invoice = new Invoice();
+                    $invoice->tenancy_agreement_id = $tenancyAgreement;
+//                    $invoice->issue_date = $this->reading_date;
+                    $invoice->created_by = auth()->user()->id;
+
+                    $invoice->save();
                 }
+
+                Log::info('Invoice created: ' . $invoice->id);
 
                 // create tenancy Bill
                 $tenancyBill = TenancyBill::create([
                     'tenancy_agreement_id' => $tenancyAgreement,
-                    'name' => date_format($this->reading_date,'F'). ' '. $this->utility->name. ' Bill',
+                    'name' => TenancyAgreement::find($tenancyAgreement)->tenant->name.' '. date_format($this->reading_date,'F'). ' '. $this->utility->name. ' Bill',
                     'bill_date' => $this->reading_date,
                     'due_date' => // next month 15th
                         date_format(
@@ -125,7 +129,7 @@ class MeterReading extends DefaultAppModel
                     'billing_type_id' => $propertyUtility->billing_type_id,
                     'invoice_id' => $invoice->id,
                     'utility_id' => $this->utility_id,
-                    'created_by' => $this->created_by,
+                    'created_by' => auth()->user()->id,
                 ]);
 
                 // update the value of has_bill in the meter reading

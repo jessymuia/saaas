@@ -2,8 +2,10 @@
 
 namespace App\Rules;
 
+use Carbon\Carbon;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Translation\PotentiallyTranslatedString;
 
 class CheckValidReadingDateMeterReading implements ValidationRule
@@ -29,14 +31,16 @@ class CheckValidReadingDateMeterReading implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         //
-        $meterReading = \App\Models\MeterReading::query()
+        Log::info("Value: " . $value);
+
+        $meterReadingExists = \App\Models\MeterReading::query()
             ->where('unit_id', $this->unitId)
             ->where('utility_id', $this->utilityId)
-            ->orderBy('reading_date', 'desc')
-            ->first();
+            ->whereMonth('reading_date', Carbon::createFromFormat('Y-m-d', $value)->format('m'))
+            ->exists();
 
-        if ($meterReading != null && $meterReading->reading_date >= $value) {
-            $fail('The reading date must be greater than the previous reading date.');
+        if ($meterReadingExists) {
+            $fail('The reading date must be greater than the previous reading month.');
         }
     }
 }

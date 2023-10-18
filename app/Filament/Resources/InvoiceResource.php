@@ -1,0 +1,115 @@
+<?php
+
+namespace App\Filament\Resources;
+
+use App\Filament\Resources\InvoiceResource\Pages;
+use App\Filament\Resources\InvoiceResource\RelationManagers;
+use App\Models\Invoice;
+use Barryvdh\Snappy\Facades\SnappyPdf;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+
+class InvoiceResource extends Resource
+{
+    protected static ?string $model = Invoice::class;
+
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    protected static ?string $recordTitleAttribute = "Invoice";
+
+    public static function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Forms\Components\TextInput::make('comments')
+                    ->maxLength(1000),
+                Forms\Components\DatePicker::make('issue_date')
+                    ->disabled()
+                    ->required(),
+                Forms\Components\DatePicker::make('created_at')
+                    ->disabled()
+                    ->required(),
+                Forms\Components\Toggle::make('is_confirmed')
+                    ->label('Confirmed')
+                    ->required(),
+                Forms\Components\Toggle::make('is_generated')
+                    ->label('Doc Generated')
+                    ->disabled()
+                    ->required(),
+            ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('tenancyAgreement.tenant.name')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('tenancyAgreement.unit.property.name')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('tenancyAgreement.unit.name')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\IconColumn::make('is_confirmed')
+                    ->boolean()
+                    ->label('Confirmed'),
+                Tables\Columns\IconColumn::make('is_generated')
+                    ->boolean()
+                    ->label('Doc Generated'),
+                Tables\Columns\TextColumn::make('comments')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('issue_date')
+                    ->date()
+                    ->sortable(),
+            ])
+            ->filters([
+                //
+            ])
+            ->actions([
+                Tables\Actions\ViewAction::make(),
+//                Tables\Actions\EditAction::make(),
+            Tables\Actions\Action::make('View Invoice')
+                ->icon('heroicon-o-document-text')
+                ->url(function (Invoice $invoice) {
+                    // preview the invoice in a new window
+                    // download the invoice
+                    return "../".$invoice->document_url;
+//                    route('invoices.show', $invoice->id);
+                }),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+//                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            //
+            RelationManagers\TenancyBillsRelationManager::class,
+        ];
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListInvoices::route('/'),
+            'create' => Pages\CreateInvoice::route('/create'),
+            'view' => Pages\ViewInvoice::route('/{record}'),
+            'edit' => Pages\EditInvoice::route('/{record}/edit'),
+        ];
+    }
+}
