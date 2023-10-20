@@ -13,6 +13,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
+        $schedule->command('app:generate-monthly-rent-bills-command')->monthlyOn(27, '00:00')->withoutOverlapping();
     }
 
     /**
