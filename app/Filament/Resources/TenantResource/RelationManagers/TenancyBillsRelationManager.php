@@ -13,6 +13,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Log;
 
 class TenancyBillsRelationManager extends RelationManager
 {
@@ -81,25 +82,29 @@ class TenancyBillsRelationManager extends RelationManager
                                     $meterReading->createBill();
                                 }
                             });
+
                         // get all tenancy agreements that started lasted last month and create bills
-//                        TenancyAgreement::query()
-//                            ->where('has_bill', false)
-//                            ->where('start_date', '<=', now()->subMonth()->endOfMonth())
-//                            ->where('end_date', '>=', now()->subMonth()->endOfMonth())
-//                            ->select('id', 'unit_id', 'utility_id', 'amount', 'start_date', 'end_date')
-//                            ->orderBy('start_date', 'asc')
-//                            ->chunk(100, function ($tenancyAgreements) {
-//                                foreach ($tenancyAgreements as $tenancyAgreement) {
-//                                    $tenancyAgreement->createBill();
-//                                }
-//                            });
+                        TenancyAgreement::query()
+                            ->where(function($query){
+                                $query->where('end_date', '>=', now()->subMonth()->endOfMonth())
+                                    ->orWhereDate('end_date', '>=',now()->subMonth()->endOfMonth()->subDays(5))// from 25th to 31st
+                                    ->orWhereDate('end_date', null);
+                            })
+                            ->select('id', 'unit_id', 'tenant_id', 'agreement_type_id','billing_type_id','start_date', 'end_date','amount','created_at')
+                            ->orderBy('start_date', 'asc')
+                            ->chunk(100, function ($tenancyAgreements) {
+                                Log::info('Generating bills for tenancy agreements'. $tenancyAgreements->count());
+                                foreach ($tenancyAgreements as $tenancyAgreement) {
+                                    $tenancyAgreement->createRentBill();
+                                    $tenancyAgreement->createServiceBill();
+                                }
+                            });
                         Notification::make('generate-bills-notification')
                             ->title('Success')
                             ->send();
                     }),
             ])
             ->actions([
-
 //                Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make()
                     ->requiresConfirmation(fn () => 'Are you sure you want to delete this tenancy bill?')

@@ -83,7 +83,7 @@ class Invoice extends DefaultAppModel
 
             $content = file_get_contents(public_path('documents/templates/invoice-output-document.html'));
 
-            Log::error("File content: ".$content);
+//            Log::error("File content: ".$content);
 
             foreach ($detailsArray as $key => $value) {
                 $content = str_replace("@#$key", $value, $content);
