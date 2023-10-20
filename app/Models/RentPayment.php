@@ -16,6 +16,10 @@ class RentPayment extends DefaultAppModel
         'paid_by',
         'payment_reference',
         'description',
+        'document_generated_at',
+        'document_sent_at',
+        'document_generated_by',
+        'is_confirmed',
         'created_by',
         'updated_by',
         'deleted_by',
@@ -37,5 +41,10 @@ class RentPayment extends DefaultAppModel
     public function receivedBy()
     {
         return $this->belongsTo(User::class, 'received_by');
+    }
+
+    public function documentGeneratedBy()
+    {
+        return $this->belongsTo(User::class, 'document_generated_by');
     }
 }

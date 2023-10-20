@@ -22,11 +22,17 @@ return new class extends Migration
             $table->string('paid_by');
             $table->string('payment_reference')->nullable();
             $table->text('description')->nullable();
+            $table->string('document_path')->nullable();
+            $table->dateTime('document_generated_at')->nullable();
+            $table->unsignedBigInteger('document_generated_by')->nullable();
+            $table->boolean('is_confirmed')->default(false);
+            $table->dateTime('document_sent_at')->nullable();
 
             // foreign keys
             $table->foreign('tenancy_agreement_id')->references('id')->on('tenancy_agreements');
             $table->foreign('payment_type_id')->references('id')->on('ref_payment_types');
             $table->foreign('received_by')->references('id')->on('users');
+            $table->foreign('document_generated_by')->references('id')->on('users');
         });
     }
 
