@@ -14,7 +14,7 @@ class ViewInvoice extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-//            Actions\EditAction::make(),
+            Actions\EditAction::make(),
             // custom action
             Actions\Action::make('Confirm Invoice')
                 ->action(function ($record) {

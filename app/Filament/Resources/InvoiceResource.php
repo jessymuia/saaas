@@ -18,7 +18,7 @@ class InvoiceResource extends Resource
 {
     protected static ?string $model = Invoice::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-document-check';
 
     protected static ?string $recordTitleAttribute = "Invoice";
 
@@ -81,6 +81,7 @@ class InvoiceResource extends Resource
 //                Tables\Actions\EditAction::make(),
             Tables\Actions\Action::make('View Invoice')
                 ->icon('heroicon-o-document-text')
+                ->disabled(fn (Invoice $invoice) => !$invoice->is_generated)
                 ->url(function (Invoice $invoice) {
                     // preview the invoice in a new window
                     // download the invoice
@@ -100,6 +101,7 @@ class InvoiceResource extends Resource
         return [
             //
             RelationManagers\TenancyBillsRelationManager::class,
+            RelationManagers\CreditNoteRelationManager::class,
         ];
     }
 

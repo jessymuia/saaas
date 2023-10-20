@@ -36,6 +36,10 @@ class Invoice extends DefaultAppModel
         return $this->hasMany(TenancyBill::class,'invoice_id','id');
     }
 
+    public function creditNote(){
+        return $this->hasOne(CreditNote::class,'invoice_id','id');
+    }
+
     public function generateDocument(Invoice $sI){
         // get all tenancy bills
         $tenancyBills = $this->tenancyBills()->get(['name','amount']);
@@ -46,6 +50,23 @@ class Invoice extends DefaultAppModel
             $invoiceItems = '';
             $billsSum = 0;
             $vatTotal = 0;
+
+            // invoice current
+            $invoice = Invoice::find($this->id);
+
+            // check if any of below variables are empty
+                TenancyAgreement::find($invoice->tenancy_agreement_id)->tenant->first()->name ??  throw new \Exception('Tenancy Agreement is missing');
+                TenancyAgreement::find($invoice->tenancy_agreement_id)->property->first()->name ??  throw new \Exception('Property is missing');
+                TenancyAgreement::find($invoice->tenancy_agreement_id)->unit->first()->name ??  throw new \Exception('Property Unit is missing');
+
+            $tenantName = $invoice->tenancyAgreement
+                ->join('tenants','tenancy_agreements.tenant_id','=','tenants.id')
+                ->where('tenancy_agreements.id','=',$invoice->tenancy_agreement_id)
+                ->first()->name;
+
+            $propertyName = $sI->tenancyAgreement->property->name;
+
+            $unitName = $sI->tenancyAgreement->unit->name;
 
             foreach ($tenancyBills as $tenancyBill) {
                 $billsSum += $tenancyBill->amount;
@@ -60,22 +81,13 @@ class Invoice extends DefaultAppModel
             }
 
             $detailsArray = [
+                'customerName' => $unitName.' '.$tenantName,
                 'invoiceDate'=> Carbon::createFromFormat('Y-m-d H:i:s', $this->created_at)
                     ->format('M j, Y'),
                 'logoUrl'=>'file://'.getcwd().'/images/hamud_top_doc_logo.png',
                 'invoiceItemsHTML' => $invoiceItems,
                 'invoiceNumber' => $this->id,
-                'billsTotal'=> number_format($billsSum,2),
-                'vatTotal' => number_format($vatTotal,2),
-                'invoiceTotal' => number_format($billsSum + $vatTotal,2),
-            ];
-
-            $detailsArrayForView = [
-                'invoiceDate'=> Carbon::createFromFormat('Y-m-d H:i:s', $this->created_at)
-                    ->format('M j, Y'),
-                'logoUrl'=>'file://'.getcwd().'/images/hamud_top_doc_logo.png',
-                'invoiceItemsHTML' => $invoiceItems,
-                'invoiceNumber' => $this->id,
+                'payBillAccountNumber'=> $tenantName.'/'.$unitName,
                 'billsTotal'=> number_format($billsSum,2),
                 'vatTotal' => number_format($vatTotal,2),
                 'invoiceTotal' => number_format($billsSum + $vatTotal,2),
@@ -89,22 +101,7 @@ class Invoice extends DefaultAppModel
                 $content = str_replace("@#$key", $value, $content);
             }
 
-            // invoice current
-            $invoice = Invoice::find($this->id);
 
-            // check if any of below variables are empty
-            TenancyAgreement::find($invoice->tenancy_agreement_id)->tenant->first()->name ??  throw new \Exception('Tenancy Agreement is missing');
-            TenancyAgreement::find($invoice->tenancy_agreement_id)->property->first()->name ??  throw new \Exception('Property is missing');
-            TenancyAgreement::find($invoice->tenancy_agreement_id)->unit->first()->name ??  throw new \Exception('Property Unit is missing');
-
-            $tenantName = $invoice->tenancyAgreement
-                ->join('tenants','tenancy_agreements.tenant_id','=','tenants.id')
-                ->where('tenancy_agreements.id','=',$invoice->tenancy_agreement_id)
-                ->first()->name;
-
-            $propertyName = $sI->tenancyAgreement->property->name;
-
-            $unitName = $sI->tenancyAgreement->unit->name;
 
 
             Log::info('Tenant name: '. $tenantName);
