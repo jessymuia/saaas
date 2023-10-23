@@ -28,12 +28,26 @@ class Invoice extends DefaultAppModel
         'deleted_by',
     ];
 
+    protected $appends = ['invoice_total'];
+
     public function tenancyAgreement(){
         return $this->belongsTo(TenancyAgreement::class);
     }
 
     public function tenancyBills(){
         return $this->hasMany(TenancyBill::class,'invoice_id','id');
+    }
+
+    public function getInvoiceTotalAttribute(){
+        // sum amount of tenancy bills
+        // sum amount of tenancy agreement
+        $invoiceSum = 0;
+        $invoiceSum += $this->tenancyBills()->sum('amount');
+        $this->tenancyAgreement()->each(function($item) use (&$invoiceSum){
+            $invoiceSum += $item->amount;
+        });
+
+        return $invoiceSum;
     }
 
     public function creditNote(){

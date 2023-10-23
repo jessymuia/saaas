@@ -16,4 +16,12 @@ class ViewTenant extends ViewRecord
             Actions\EditAction::make(),
         ];
     }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            //
+            TenantResource\Widgets\TenantPaymentsDueWidget::class,
+        ];
+    }
 }

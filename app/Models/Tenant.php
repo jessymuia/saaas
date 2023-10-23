@@ -33,4 +33,16 @@ class Tenant extends DefaultAppModel
             'id',
             'id');
     }
+
+    // get invoices belonging to given tenant
+    public function invoices()
+    {
+        return $this->hasManyThrough(
+            Invoice::class,
+            TenancyAgreement::class,
+            'tenant_id',
+            'tenancy_agreement_id',
+            'id',
+            'id');
+    }
 }

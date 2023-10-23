@@ -57,6 +57,11 @@ class TenancyAgreement extends DefaultAppModel
             'property_id');
     }
 
+    public function rentPayments()
+    {
+        return $this->hasMany(RentPayment::class);
+    }
+
     /*
      * Create the rental bill for the tenancy agreement
      */
