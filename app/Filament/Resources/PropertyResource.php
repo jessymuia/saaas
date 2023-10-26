@@ -103,6 +103,7 @@ class PropertyResource extends Resource
             RelationManagers\UtilitiesRelationManager::class,
             RelationManagers\PropertyServicesRelationManager::class,
             RelationManagers\MeterReadingsRelationManager::class,
+            RelationManagers\VacationNoticesRelationManager::class,
         ];
     }
 

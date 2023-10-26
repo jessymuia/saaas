@@ -61,4 +61,8 @@ class Property extends DefaultAppModel
             'id',
             'id');
     }
+
+    public function vacationNotices(){
+        return $this->hasMany(VacationNotices::class, 'property_id');
+    }
 }
