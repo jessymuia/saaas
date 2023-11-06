@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CreditNoteResource\Pages;
-use App\Filament\Resources\CreditNoteResource\RelationManagers;
 use App\Models\CreditNote;
 use App\Models\Invoice;
 use Filament\Forms;
