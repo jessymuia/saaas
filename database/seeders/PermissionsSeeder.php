@@ -145,5 +145,26 @@ class PermissionsSeeder extends Seeder
         Permission::findOrCreate(AppPermissions::UPDATE_TENANCY_BILLS_PERMISSION);
         Permission::findOrCreate(AppPermissions::DELETE_TENANCY_BILLS_PERMISSION);
         Permission::findOrCreate(AppPermissions::RESTORE_TENANCY_BILLS_PERMISSION);
+
+        // meter readings
+        Permission::findOrCreate(AppPermissions::CREATE_METER_READINGS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::READ_METER_READINGS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::UPDATE_METER_READINGS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::DELETE_METER_READINGS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::RESTORE_METER_READINGS_PERMISSION);
+
+        // property services
+        Permission::findOrCreate(AppPermissions::CREATE_PROPERTY_SERVICES_PERMISSION);
+        Permission::findOrCreate(AppPermissions::READ_PROPERTY_SERVICES_PERMISSION);
+        Permission::findOrCreate(AppPermissions::UPDATE_PROPERTY_SERVICES_PERMISSION);
+        Permission::findOrCreate(AppPermissions::DELETE_PROPERTY_SERVICES_PERMISSION);
+        Permission::findOrCreate(AppPermissions::RESTORE_PROPERTY_SERVICES_PERMISSION);
+
+        // property utilities
+        Permission::findOrCreate(AppPermissions::CREATE_PROPERTY_UTILITIES_PERMISSION);
+        Permission::findOrCreate(AppPermissions::READ_PROPERTY_UTILITIES_PERMISSION);
+        Permission::findOrCreate(AppPermissions::UPDATE_PROPERTY_UTILITIES_PERMISSION);
+        Permission::findOrCreate(AppPermissions::DELETE_PROPERTY_UTILITIES_PERMISSION);
+        Permission::findOrCreate(AppPermissions::RESTORE_PROPERTY_UTILITIES_PERMISSION);
     }
 }

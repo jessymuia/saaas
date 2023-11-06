@@ -123,4 +123,31 @@ class AppPermissions
     const DELETE_TENANCY_BILLS_PERMISSION = 'delete-tenancy-bills';
     const RESTORE_TENANCY_BILLS_PERMISSION = 'restore-tenancy-bills';
 
+    // meter readings
+    const CREATE_METER_READINGS_PERMISSION = 'create-meter-readings';
+    const READ_METER_READINGS_PERMISSION = 'read-meter-readings';
+    const UPDATE_METER_READINGS_PERMISSION = 'update-meter-readings';
+    const DELETE_METER_READINGS_PERMISSION = 'delete-meter-readings';
+    const RESTORE_METER_READINGS_PERMISSION = 'restore-meter-readings';
+
+    // property services permissions
+    const CREATE_PROPERTY_SERVICES_PERMISSION = 'create-property-services';
+    const READ_PROPERTY_SERVICES_PERMISSION = 'read-property-services';
+    const UPDATE_PROPERTY_SERVICES_PERMISSION = 'update-property-services';
+    const DELETE_PROPERTY_SERVICES_PERMISSION = 'delete-property-services';
+    const RESTORE_PROPERTY_SERVICES_PERMISSION = 'restore-property-services';
+
+    // property utilities permissions
+    const CREATE_PROPERTY_UTILITIES_PERMISSION = 'create-property-utilities';
+    const READ_PROPERTY_UTILITIES_PERMISSION = 'read-property-utilities';
+    const UPDATE_PROPERTY_UTILITIES_PERMISSION = 'update-property-utilities';
+    const DELETE_PROPERTY_UTILITIES_PERMISSION = 'delete-property-utilities';
+    const RESTORE_PROPERTY_UTILITIES_PERMISSION = 'restore-property-utilities';
+
+    // tenancy agreements
+    const CREATE_TENANCY_AGREEMENTS_PERMISSION = 'create-tenancy-agreements';
+    const READ_TENANCY_AGREEMENTS_PERMISSION = 'read-tenancy-agreements';
+    const UPDATE_TENANCY_AGREEMENTS_PERMISSION = 'update-tenancy-agreements';
+    const DELETE_TENANCY_AGREEMENTS_PERMISSION = 'delete-tenancy-agreements';
+    const RESTORE_TENANCY_AGREEMENTS_PERMISSION = 'restore-tenancy-agreements';
 }
