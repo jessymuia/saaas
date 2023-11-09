@@ -34,5 +34,6 @@ class SetupApplication extends Command
         $this->call('route:cache');
         $this->call('view:cache');
         $this->call('app:init-demo');
+        $this->call('app:setup-admin-user');
     }
 }

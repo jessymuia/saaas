@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\AppRole;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Permission;
 
 class RolesSeeder extends Seeder
 {
@@ -22,5 +24,11 @@ class RolesSeeder extends Seeder
         foreach ($roles as $role) {
             \App\Models\AppRole::findOrCreate($role);
         }
+
+        // define permissions for admin to be all
+        $adminRole = AppRole::findOrCreate('admin');
+
+        $allPermissions = Permission::all();
+        $adminRole->syncPermissions($allPermissions);
     }
 }
