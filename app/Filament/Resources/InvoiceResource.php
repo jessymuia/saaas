@@ -83,10 +83,11 @@ class InvoiceResource extends Resource
                 ->icon('heroicon-o-document-text')
                 ->disabled(fn (Invoice $invoice) => !$invoice->is_generated)
                 ->url(function (Invoice $invoice) {
-                    // preview the invoice in a new window
-                    // download the invoice
-                    return "../".$invoice->document_url;
-//                    route('invoices.show', $invoice->id);
+                    if (!$invoice->is_generated) {
+                        return route('preview.invoice',['invoice'=>null]);
+                    }
+                    $fileName = str_replace('invoices/','',$invoice->document_url);
+                    return route('preview.invoice',['invoice'=>$fileName]);
                 }),
             ])
             ->bulkActions([

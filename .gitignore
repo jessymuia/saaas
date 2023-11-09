@@ -5,6 +5,8 @@
 /public/css
 /public/js
 /public/storage
+/public/credit_notes
+/public/invoices
 /storage/*.key
 /vendor
 .env

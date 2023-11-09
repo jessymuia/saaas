@@ -8,6 +8,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class CreditNote extends DefaultAppModel
 {
@@ -66,11 +67,7 @@ class CreditNote extends DefaultAppModel
                 'creditNoteTotal' => number_format($this->amount_credited + $vatTotal,2),
             ];
 
-//            $content = file_get_contents(public_path('documents/templates/credit-note-output-document.html'));
             $content = File::get(resource_path('documents/templates/credit-note-output-document.html'));
-
-
-//            Log::error("File content: ".$content);
 
             foreach ($detailsArray as $key => $value) {
                 $content = str_replace("@#$key", $value, $content);
@@ -85,7 +82,7 @@ class CreditNote extends DefaultAppModel
                 '_invoice'.
                 '_'.$this->id;
 
-            $pdfPath = 'credit_notes/' . $pdfName . '.pdf';
+            $pdfPath = Storage::path('credit-notes') . '/' . $pdfName . '.pdf';
 
             $snappy = App::make('snappy.pdf');
             $snappy->setOption('enable-local-file-access', true);
@@ -104,8 +101,17 @@ class CreditNote extends DefaultAppModel
 
             // check if file exists
             if (file_exists($pdfPath)) {
+                $savedPath = explode('/', $pdfPath);
+                // retrieve the string after the string 'app'
+                foreach ($savedPath as $key => $value) {
+                    if ($value == 'app') {
+                        $savedPath = implode("/", array_slice($savedPath, $key + 1));
+                        break;
+                    }
+                }
+
                 $this->is_document_generated = 1;
-                $this->document_url = $pdfPath;
+                $this->document_url = $savedPath;
                 $this->updated_by = auth()->user()->id;
 
                 $this->save();

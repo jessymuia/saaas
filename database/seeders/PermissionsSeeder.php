@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Utils\AppPermissions;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\App;
 use Spatie\Permission\Models\Permission;
 
 class PermissionsSeeder extends Seeder
@@ -166,5 +167,12 @@ class PermissionsSeeder extends Seeder
         Permission::findOrCreate(AppPermissions::UPDATE_PROPERTY_UTILITIES_PERMISSION);
         Permission::findOrCreate(AppPermissions::DELETE_PROPERTY_UTILITIES_PERMISSION);
         Permission::findOrCreate(AppPermissions::RESTORE_PROPERTY_UTILITIES_PERMISSION);
+
+        // tenancy agreements permissions
+        Permission::findOrCreate(AppPermissions::CREATE_TENANCY_AGREEMENTS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::READ_TENANCY_AGREEMENTS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::UPDATE_TENANCY_AGREEMENTS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::DELETE_TENANCY_AGREEMENTS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::RESTORE_TENANCY_AGREEMENTS_PERMISSION);
     }
 }

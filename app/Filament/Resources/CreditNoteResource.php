@@ -109,9 +109,12 @@ class CreditNoteResource extends Resource
                     ->icon('heroicon-o-document-text')
                     ->disabled(fn($record) => !$record->is_document_generated)
                     ->url(function (CreditNote $creditNote) {
-                        // preview the credit note
-                        // TODO: Update the storage location of the credit notes for improved safety
-                        return getenv('APP_URL').'/'.$creditNote->document_url;
+                        if (!$creditNote->is_document_generated) {
+                            return route('preview.credit-note', ['creditNote' => null]);
+                        }
+
+                        $fileName = str_replace('credit-notes/', '', $creditNote->document_url);
+                        return route('preview.credit-note', ['creditNote' => $fileName]);
                     }),
             ])
             ->bulkActions([

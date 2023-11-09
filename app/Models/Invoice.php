@@ -8,6 +8,7 @@ use Dompdf\Dompdf;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Knp\Snappy\Pdf;
@@ -107,9 +108,7 @@ class Invoice extends DefaultAppModel
                 'invoiceTotal' => number_format($billsSum + $vatTotal,2),
             ];
 
-            $content = file_get_contents(public_path('documents/templates/invoice-output-document.html'));
-
-//            Log::error("File content: ".$content);
+            $content = File::get(resource_path('documents/templates/invoice-output-document.html'));
 
             foreach ($detailsArray as $key => $value) {
                 $content = str_replace("@#$key", $value, $content);
@@ -131,7 +130,9 @@ class Invoice extends DefaultAppModel
                 '_invoice'.
                 '_'.$this->id;
 
-            $pdfPath = 'invoices/' . $pdfName . '.pdf';
+            // get the path but without the clatter file system
+            $pdfPath = Storage::path('invoices') . '/' . $pdfName . '.pdf';
+
 //            Storage::url($pdfPath);
 
 //            Storage::put($pdfPath, $content);
@@ -162,8 +163,16 @@ class Invoice extends DefaultAppModel
 
             // check if file exists
             if (file_exists($pdfPath)) {
+                $savedPath = explode('/', $pdfPath);
+                // retrieve the string after the string 'app'
+                foreach ($savedPath as $key => $value) {
+                    if ($value == 'app') {
+                        $savedPath = implode("/", array_slice($savedPath, $key + 1));
+                        break;
+                    }
+                }
                 $this->is_generated = 1;
-                $this->document_url = $pdfPath;
+                $this->document_url = $savedPath;
                 $this->updated_by = auth()->user()->id;
 
                 $this->save();

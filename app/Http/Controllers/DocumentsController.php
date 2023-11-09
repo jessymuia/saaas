@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+
+class DocumentsController extends Controller
+{
+    //
+    public function previewInvoice($invoice = null)
+    {
+        if (!$invoice) {
+            abort(404,'Invoice not found');
+        }
+        $path = storage_path('app/invoices/'.$invoice);
+        return response()->file($path);
+    }
+
+    public function previewCreditNote($creditNote = null)
+    {
+        if (!$creditNote) {
+            abort(404,'Credit Note not found');
+        }
+        $path = storage_path('app/credit-notes/'.$creditNote);
+        return response()->file($path);
+    }
+}
