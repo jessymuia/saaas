@@ -13,7 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         // execute this statement SET GLOBAL sql_require_primary_key = OFF;
-        DB::statement('SET GLOBAL sql_require_primary_key = OFF;');
+        DB::statement('SET SESSION sql_require_primary_key = OFF;');
         Schema::create('users', function (Blueprint $table) {
             $table = \App\Utils\AppUtils::defaultTableColumns($table);
 
