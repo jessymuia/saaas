@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -11,6 +12,8 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // execute this statement SET GLOBAL sql_require_primary_key = OFF;
+        DB::statement('SET GLOBAL sql_require_primary_key = OFF;');
         Schema::create('users', function (Blueprint $table) {
             $table = \App\Utils\AppUtils::defaultTableColumns($table);
 
