@@ -28,6 +28,7 @@ class TenancyAgreementsRelationManager extends RelationManager
                 Forms\Components\Select::make('unit_id')
                     ->label('Unit')
                     ->required()
+                    ->disabledOn('edit')
                     ->relationship('unit', 'name', function (Builder $query) {
                         $query->where('property_id', $this->ownerRecord->id);
                     })
