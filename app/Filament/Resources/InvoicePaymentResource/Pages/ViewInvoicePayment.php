@@ -18,44 +18,45 @@ class ViewInvoicePayment extends ViewRecord
     {
         $headerActions = [];
 
-        $headerActions[] = Actions\EditAction::make();
+        $headerActions[] = Actions\EditAction::make()
+            ->visible(fn (InvoicePayment $record) => $record->is_confirmed == 0);
 
         if ($this->getRecord()->is_confirmed == 0){
             $headerActions[] = Actions\Action::make('confirm-rent-payment')
-                ->label("Confirm Rent Payment")
+                ->label("Confirm Invoice Payment")
                 ->action(function(){
-                    // update the is_confirmed label of this rent payment
+                    // update the is_confirmed label of this Invoice Payment
                     $isUpdated = $this->getRecord()->update(['is_confirmed' => true]);
 
                     if ($isUpdated){
                         Notification::make()
-                            ->title('Rent Payment Confirmed')
+                            ->title('Invoice Payment Confirmed')
                             ->success()
                             ->send();
                     }else{
                         Notification::make()
                             ->danger()
-                            ->title('Rent Payment Confirmation Failed')
+                            ->title('Invoice Payment Confirmation Failed')
                             ->send();
                     }
                 });
         }else if ($this->getRecord()->is_confirmed == 1  && strtotime($this->getRecord()->document_generated_at) === false){
             $headerActions[] = Actions\Action::make('reject-rent-payment')
-                ->label("Deny Rent Payment")
+                ->label("Deny Invoice Payment")
                 ->color('danger')
                 ->action(function(){
-                    // update the is_confirmed label of this rent payment
+                    // update the is_confirmed label of this Invoice Payment
                     $isUpdated = $this->getRecord()->update(['is_confirmed' => false]);
 
                     if ($isUpdated){
                         Notification::make()
-                            ->title('Rent Payment rejected successfully')
+                            ->title('Invoice Payment rejected successfully')
                             ->success()
                             ->send();
                     }else{
                         Notification::make()
                             ->danger()
-                            ->title('Rent Payment rejection Failed')
+                            ->title('Invoice Payment rejection Failed')
                             ->send();
                     }
                 });

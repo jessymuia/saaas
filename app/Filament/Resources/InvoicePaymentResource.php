@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\InvoicePaymentResource\Pages;
 use App\Filament\Resources\InvoicePaymentResource\RelationManagers;
+use App\Models\Invoice;
 use App\Models\Property;
 use App\Models\InvoicePayment;
 use App\Models\TenancyAgreement;
@@ -11,6 +12,7 @@ use App\Models\Unit;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -25,52 +27,34 @@ class InvoicePaymentResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('property_id')
-                    ->label('Property')
-                    ->required()
+                Forms\Components\TextInput::make('invoice_id')
+                    ->label('Invoice ID')
                     ->reactive()
-                    ->afterStateHydrated(function (Forms\Set $set){
-                        // if its view page, then we need to get the property id from the model
-                        if (request()->route()->getName() === 'filament.admin.resources.rent-payments.view') {
-                            // get current record
-                            $invoicePayment = InvoicePayment::find(request()->route()->parameter('record'));
-                            $set('property_id', $invoicePayment->tenancyAgreement->property->id);
-                        }
+                    ->afterStateUpdated(function (Get $get,Set $set) {
+                        $invoice = Invoice::find($get('invoice_id'));
+
+                        $set('property_name',($invoice->tenancyAgreement->unit->property->name) ?? '');
+                        $set('tenant_name',($invoice->tenancyAgreement->tenant->name) ?? '');
                     })
-                    ->options(
-                        fn () => Property::query()
-                            ->orderBy('name')
-                            ->get()
-                            ->mapWithKeys(
-                                fn ($property) => [$property->id => $property->name]
-                            )
-                    ),
-                Forms\Components\Select::make('unit_id')
-                    ->label('Unit')
-                    ->required()
-                    ->reactive()
-                    ->afterStateHydrated(function (Forms\Set $set){
-                        // if its view page, then we need to get the property id from the model
-                        if (request()->route()->getName() === 'filament.admin.resources.rent-payments.view') {
-                            // get current record
-                            $invoicePayment = InvoicePayment::find(request()->route()->parameter('record'));
-                            $set('unit_id', $invoicePayment->tenancyAgreement->unit->id);
-                        }
+                    ->required(),
+                Forms\Components\TextInput::make('property_name')
+                    ->label('Property Name')
+                    ->afterStateHydrated(function (Get $get,Set $set) {
+                        $invoice = Invoice::find($get('invoice_id'));
+
+                        $set('property_name',($invoice->tenancyAgreement->unit->property->name) ?? '');
                     })
-                    ->options(function (Get $get){
-                        return Unit::query()
-                            ->where('property_id', $get('property_id'))
-                            ->pluck('name', 'id');
-                    }),
-                Forms\Components\Select::make('tenancy_agreement_id')
-                    ->required()
                     ->reactive()
-                    ->options(function (Get $get){
-                        return TenancyAgreement::query()
-                            ->where('unit_id', $get('unit_id'))
-                            ->get()
-                            ->mapWithKeys(fn ($tenancyAgreement) => [$tenancyAgreement->id => $tenancyAgreement->tenant->name]);
-                    }),
+                    ->disabled(),
+                Forms\Components\TextInput::make('tenant_name')
+                    ->label('Tenant Name')
+                    ->afterStateHydrated(function (Get $get,Set $set) {
+                        $invoice = Invoice::find($get('invoice_id'));
+
+                        $set('tenant_name',($invoice->tenancyAgreement->tenant->name) ?? '');
+                    })
+                    ->reactive()
+                    ->disabled(),
                 Forms\Components\Select::make('payment_type_id')
                     ->required()
                     ->relationship('paymentType', 'type'),
@@ -152,7 +136,10 @@ class InvoicePaymentResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->visible(function (InvoicePayment $record) { // only visible if receipt has been confirmed
+                        return !$record->is_confirmed;
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
