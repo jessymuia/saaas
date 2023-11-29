@@ -139,10 +139,10 @@ class Invoice extends DefaultAppModel
             $snappy = App::make('snappy.pdf');
             $snappy->setOption('enable-local-file-access', true);
             $snappy->setOption('disable-smart-shrinking', false);
-            $snappy->setOption('margin-bottom', '0in');
-            $snappy->setOption('margin-left', '0in');
-            $snappy->setOption('margin-right', '0in');
-            $snappy->setOption('margin-top', '0in');
+            $snappy->setOption('margin-bottom', '1in');
+            $snappy->setOption('margin-left', '1in');
+            $snappy->setOption('margin-right', '1in');
+            $snappy->setOption('margin-top', '1in');
 //            $snappy->generateFromHtml($content, Storage::url($pdfPath));
 //            Pdf::generateFromHtml($content, Storage::url($pdfPath));
             $snappy->generateFromHtml($content, $pdfPath);
