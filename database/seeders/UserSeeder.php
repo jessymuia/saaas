@@ -12,6 +12,10 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        // check if the user exists or not
+        if (\App\Models\User::query()->count() > 0) {
+            return;
+        }
         // initial user
         \App\Models\User::factory()->create([
             'name' => 'Test User',

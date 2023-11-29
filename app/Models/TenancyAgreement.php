@@ -57,9 +57,9 @@ class TenancyAgreement extends DefaultAppModel
             'property_id');
     }
 
-    public function rentPayments()
+    public function invoicePayments()
     {
-        return $this->hasMany(RentPayment::class);
+        return $this->hasMany(InvoicePayment::class);
     }
 
     /*

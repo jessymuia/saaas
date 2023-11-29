@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Filament\Resources\RentPaymentResource\Pages;
+namespace App\Filament\Resources\InvoicePaymentResource\Pages;
 
-use App\Filament\Resources\RentPaymentResource;
-use App\Models\RentPayment;
+use App\Filament\Resources\InvoicePaymentResource;
+use App\Models\InvoicePayment;
 use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Support\Facades\DB;
 use Mockery\Matcher\Not;
 
-class ViewRentPayment extends ViewRecord
+class ViewInvoicePayment extends ViewRecord
 {
-    protected static string $resource = RentPaymentResource::class;
+    protected static string $resource = InvoicePaymentResource::class;
 
     protected function getHeaderActions(): array
     {

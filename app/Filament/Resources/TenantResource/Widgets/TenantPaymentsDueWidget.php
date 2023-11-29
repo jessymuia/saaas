@@ -51,14 +51,14 @@ class TenantPaymentsDueWidget extends BaseWidget
         // get all payments belonging to this given tenant tenancy agreements
         $tenancyAgreements = TenancyAgreement::query()
             ->where('tenant_id','=',$this->tenantID)
-            ->with('rentPayments')
+            ->with('invoicePayments')
             ->get();
 
-        $rentPayments = array_merge(...$tenancyAgreements->pluck('rentPayments')->toArray());
+        $invoicePayments = array_merge(...$tenancyAgreements->pluck('invoicePayments')->toArray());
 
         $totalPayments = 0;
 
-        foreach($rentPayments as $payment){
+        foreach($invoicePayments as $payment){
             $totalPayments += $payment['amount'];
         }
 

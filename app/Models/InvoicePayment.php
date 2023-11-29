@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class RentPayment extends DefaultAppModel
+class InvoicePayment extends DefaultAppModel
 {
     protected $fillable = [
-        'tenancy_agreement_id',
+        'invoice_id',
         'payment_type_id',
         'received_by',
         'payment_date',
@@ -28,9 +28,9 @@ class RentPayment extends DefaultAppModel
     ];
 
     // foreign keys
-    public function tenancyAgreement()
+    public function invoice()
     {
-        return $this->belongsTo(TenancyAgreement::class);
+        return $this->belongsTo(Invoice::class);
     }
 
     public function paymentType()

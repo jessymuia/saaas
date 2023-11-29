@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\RentPaymentResource\Pages;
+namespace App\Filament\Resources\InvoicePaymentResource\Pages;
 
-use App\Filament\Resources\RentPaymentResource;
+use App\Filament\Resources\InvoicePaymentResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
-class EditRentPayment extends EditRecord
+class EditInvoicePayment extends EditRecord
 {
-    protected static string $resource = RentPaymentResource::class;
+    protected static string $resource = InvoicePaymentResource::class;
 
     protected function getHeaderActions(): array
     {

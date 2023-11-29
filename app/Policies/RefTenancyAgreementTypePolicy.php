@@ -2,12 +2,11 @@
 
 namespace App\Policies;
 
-use App\Filament\Resources\RentPaymentResource\Pages\EditRentPayment;
 use App\Models\RefTenancyAgreementType;
 use App\Models\User;
 use App\Utils\AppPermissions;
 use Illuminate\Auth\Access\Response;
-use Illuminate\Support\Facades\App;
+
 
 class RefTenancyAgreementTypePolicy
 {

@@ -2,10 +2,10 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\RentPaymentResource\Pages;
-use App\Filament\Resources\RentPaymentResource\RelationManagers;
+use App\Filament\Resources\InvoicePaymentResource\Pages;
+use App\Filament\Resources\InvoicePaymentResource\RelationManagers;
 use App\Models\Property;
-use App\Models\RentPayment;
+use App\Models\InvoicePayment;
 use App\Models\TenancyAgreement;
 use App\Models\Unit;
 use Filament\Forms;
@@ -14,13 +14,10 @@ use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Facades\Log;
 
-class RentPaymentResource extends Resource
+class InvoicePaymentResource extends Resource
 {
-    protected static ?string $model = RentPayment::class;
+    protected static ?string $model = InvoicePayment::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
 
@@ -36,8 +33,8 @@ class RentPaymentResource extends Resource
                         // if its view page, then we need to get the property id from the model
                         if (request()->route()->getName() === 'filament.admin.resources.rent-payments.view') {
                             // get current record
-                            $rentPayment = RentPayment::find(request()->route()->parameter('record'));
-                            $set('property_id', $rentPayment->tenancyAgreement->property->id);
+                            $invoicePayment = InvoicePayment::find(request()->route()->parameter('record'));
+                            $set('property_id', $invoicePayment->tenancyAgreement->property->id);
                         }
                     })
                     ->options(
@@ -56,8 +53,8 @@ class RentPaymentResource extends Resource
                         // if its view page, then we need to get the property id from the model
                         if (request()->route()->getName() === 'filament.admin.resources.rent-payments.view') {
                             // get current record
-                            $rentPayment = RentPayment::find(request()->route()->parameter('record'));
-                            $set('unit_id', $rentPayment->tenancyAgreement->unit->id);
+                            $invoicePayment = InvoicePayment::find(request()->route()->parameter('record'));
+                            $set('unit_id', $invoicePayment->tenancyAgreement->unit->id);
                         }
                     })
                     ->options(function (Get $get){
@@ -175,10 +172,10 @@ class RentPaymentResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListRentPayments::route('/'),
-            'create' => Pages\CreateRentPayment::route('/create'),
-            'view' => Pages\ViewRentPayment::route('/{record}'),
-            'edit' => Pages\EditRentPayment::route('/{record}/edit'),
+            'index' => Pages\ListInvoicePayments::route('/'),
+            'create' => Pages\CreateInvoicePayment::route('/create'),
+            'view' => Pages\ViewInvoicePayment::route('/{record}'),
+            'edit' => Pages\EditInvoicePayment::route('/{record}/edit'),
         ];
     }
 }
