@@ -3,11 +3,13 @@
 namespace App\Filament\Resources\InvoicePaymentResource\Pages;
 
 use App\Filament\Resources\InvoicePaymentResource;
+use App\Models\Invoice;
 use App\Models\InvoicePayment;
 use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Mockery\Matcher\Not;
 
 class ViewInvoicePayment extends ViewRecord
@@ -69,6 +71,9 @@ class ViewInvoicePayment extends ViewRecord
                 ->icon('heroicon-o-document-text')
                 ->action(function(){
                     // TODO: Logic to generate the receipt
+                    // get the invoice payment
+                    $invoicePayment = InvoicePayment::find($this->getRecord()->id);
+                    $invoicePayment->generateInvoicePaymentReceipt();
                 }
             );
         }
