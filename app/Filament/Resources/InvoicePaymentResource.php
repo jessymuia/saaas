@@ -79,10 +79,13 @@ class InvoicePaymentResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('tenancyAgreement.unit.name')
+                Tables\Columns\TextColumn::make('invoice.tenancyAgreement.property.name')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('tenancyAgreement.tenant.name')
+                Tables\Columns\TextColumn::make('invoice.tenancyAgreement.unit.name')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('invoice.tenancyAgreement.tenant.name')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('paymentType.type')

@@ -70,12 +70,11 @@ class ViewInvoicePayment extends ViewRecord
                 ->label("Generate Receipt")
                 ->icon('heroicon-o-document-text')
                 ->action(function(){
-                    // TODO: Logic to generate the receipt
                     // get the invoice payment
                     $invoicePayment = InvoicePayment::find($this->getRecord()->id);
                     $invoicePayment->generateInvoicePaymentReceipt();
-                }
-            );
+                })
+                ->visible(fn (InvoicePayment $record) => strtotime($record->document_generated_at) === false);
         }
 
         return $headerActions;
