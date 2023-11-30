@@ -45,4 +45,10 @@ class Tenant extends DefaultAppModel
             'id',
             'id');
     }
+
+    // get payments belonging to given tenant
+    public function invoicePayments()
+    {
+        return $this->hasMany(InvoicePayment::class, 'tenant_id', 'id');
+    }
 }

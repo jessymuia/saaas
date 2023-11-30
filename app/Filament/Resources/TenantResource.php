@@ -98,6 +98,7 @@ class TenantResource extends Resource
             //
             RelationManagers\TenancyAgreementsRelationManager::class,
             RelationManagers\TenancyBillsRelationManager::class,
+            RelationManagers\InvoicePaymentsRelationManager::class,
         ];
     }
 
