@@ -3,9 +3,11 @@
 namespace App\Filament\Resources\TenantResource\RelationManagers;
 
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -86,6 +88,22 @@ class InvoicePaymentsRelationManager extends RelationManager
             ])
             ->filters([
                 //
+                Filter::make('payment_date')
+                    ->form([
+                        DatePicker::make('payment_date_from'),
+                        DatePicker::make('payment_date_until'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['payment_date_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('invoice_payments.payment_date', '>=', $date),
+                            )
+                            ->when(
+                                $data['payment_date_until'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('invoice_payments.payment_date', '<=', $date),
+                            );
+                    }),
             ])
             ->headerActions([
 //                Tables\Actions\CreateAction::make(),
