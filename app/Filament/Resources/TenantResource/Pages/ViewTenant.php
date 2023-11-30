@@ -22,6 +22,14 @@ class ViewTenant extends ViewRecord
         return [
             //
             TenantResource\Widgets\TenantPaymentsDueWidget::class,
+//            TenantResource\Widgets\TenantLedger::class,
+        ];
+    }
+
+    protected function getFooterWidgets(): array
+    {
+        return [
+            //
         ];
     }
 }

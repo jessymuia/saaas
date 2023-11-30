@@ -55,6 +55,18 @@ class Invoice extends DefaultAppModel
         return $this->hasOne(CreditNote::class,'invoice_id','id');
     }
 
+    public function invoicePayments(){
+        return $this->hasMany(InvoicePayment::class,'invoice_id','id');
+    }
+
+    public function totalDue()
+    {
+        // get the sum of all credit notes
+        $creditNoteSum = $this->creditNote()->sum('amount_credited');
+        // get the total due
+        return $this->invoice_total - $creditNoteSum - $this->invoicePayments()->sum('amount');
+    }
+
     public function generateDocument(Invoice $sI){
         // get all tenancy bills
         $tenancyBills = $this->tenancyBills()->get(['name','amount']);

@@ -106,7 +106,10 @@ class CreditNoteRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                    ->visible(function(){
+                        return $this->getOwnerRecord()->totalDue() > 0;
+                    }),
                 // custom action to generate credit note documents
                 Tables\Actions\Action::make('generate-credit-note-documents')
                     ->label('Generate Credit Note Documents')
