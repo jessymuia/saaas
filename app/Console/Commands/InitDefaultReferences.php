@@ -11,14 +11,14 @@ use App\Models\RefUtility;
 use App\Models\Services;
 use Illuminate\Console\Command;
 
-class InitDemo extends Command
+class InitDefaultReferences extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:init-demo';
+    protected $signature = 'app:init-default-references';
 
     /**
      * The console command description.
