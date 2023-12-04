@@ -29,7 +29,7 @@ class Invoice extends DefaultAppModel
         'deleted_by',
     ];
 
-    protected $appends = ['invoice_total'];
+    protected $appends = ['amount'];
 
     public function tenancyAgreement(){
         return $this->belongsTo(TenancyAgreement::class);
@@ -39,7 +39,7 @@ class Invoice extends DefaultAppModel
         return $this->hasMany(TenancyBill::class,'invoice_id','id');
     }
 
-    public function getInvoiceTotalAttribute(){
+    public function getAmountAttribute(){
         // sum amount of tenancy bills
         // sum amount of tenancy agreement
         $invoiceSum = 0;
@@ -52,7 +52,7 @@ class Invoice extends DefaultAppModel
     }
 
     public function creditNote(){
-        return $this->hasOne(CreditNote::class,'invoice_id','id');
+        return $this->hasMany(CreditNote::class,'invoice_id','id');
     }
 
     public function invoicePayments(){
@@ -64,7 +64,7 @@ class Invoice extends DefaultAppModel
         // get the sum of all credit notes
         $creditNoteSum = $this->creditNote()->sum('amount_credited');
         // get the total due
-        return $this->invoice_total - $creditNoteSum - $this->invoicePayments()->sum('amount');
+        return $this->amount - $creditNoteSum - $this->invoicePayments()->sum('amount');
     }
 
     public function generateDocument(Invoice $sI){

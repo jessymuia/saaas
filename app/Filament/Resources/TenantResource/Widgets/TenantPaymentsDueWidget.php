@@ -79,7 +79,7 @@ class TenantPaymentsDueWidget extends BaseWidget
 
         foreach($tenantInvoices as $invoice)
         {
-            $totalTenantInvoicesSum += $invoice['invoice_total'];
+            $totalTenantInvoicesSum += $invoice['amount'];
         }
 
         return $totalTenantInvoicesSum;
