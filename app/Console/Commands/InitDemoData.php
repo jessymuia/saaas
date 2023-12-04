@@ -3,9 +3,13 @@
 namespace App\Console\Commands;
 
 use App\Models\Property;
+use App\Models\PropertyServices;
+use App\Models\PropertyUtility;
 use App\Models\Tenant;
 use App\Models\Unit;
 use Database\Seeders\PropertySeeder;
+use Database\Seeders\PropertyServicesSeeder;
+use Database\Seeders\PropertyUtilitySeeder;
 use Database\Seeders\TenantSeeder;
 use Database\Seeders\UnitSeeder;
 use Illuminate\Console\Command;
@@ -32,6 +36,8 @@ class InitDemoData extends Command
     public function handle()
     {
         // delete all previous data for below tables
+        PropertyServices::query()->delete();
+        PropertyUtility::query()->delete();
         Tenant::query()->delete();
         Unit::query()->delete();
         Property::query()->delete();
@@ -40,5 +46,7 @@ class InitDemoData extends Command
         $this->call(PropertySeeder::class);
         $this->call(UnitSeeder::class);
         $this->call(TenantSeeder::class);
+        $this->call(PropertyServicesSeeder::class);
+        $this->call(PropertyUtilitySeeder::class);
     }
 }

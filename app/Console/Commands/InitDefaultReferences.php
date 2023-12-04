@@ -49,13 +49,13 @@ class InitDefaultReferences extends Command
 
         $billingType->save();
 
-        $billingType = new RefBillingType();
-        $billingType->type = 'Semi-Annually';
-        $billingType->description = 'Semi-Annually';
-        $billingType->frequency_months = 6;
-        $billingType->due_day = 25;
-
-        $billingType->save();
+//        $billingType = new RefBillingType();
+//        $billingType->type = 'Semi-Annually';
+//        $billingType->description = 'Semi-Annually';
+//        $billingType->frequency_months = 6;
+//        $billingType->due_day = 25;
+//
+//        $billingType->save();
 
         // confirm that the number of billing types is 3
         RefBillingType::all()->count() != 3
