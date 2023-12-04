@@ -26,6 +26,8 @@ class SetupApplication extends Command
     public function handle()
     {
         $this->call('migrate:fresh');
+        $this->call('app:setup-admin-user');
+        $this->call('app:init-default-references');
         $this->call('db:seed');
 //        $this->call('passport:install');
         $this->call('storage:link');
@@ -33,7 +35,5 @@ class SetupApplication extends Command
         $this->call('config:cache');
         $this->call('route:cache');
         $this->call('view:cache');
-        $this->call('app:init-default-references');
-        $this->call('app:setup-admin-user');
     }
 }

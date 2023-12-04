@@ -159,6 +159,10 @@ class InitDefaultReferences extends Command
 
         $unitType->save();
 
+        $unitType = new RefUnitType();
+        $unitType->type = "Office Space";
+        $unitType->description = "Office Space";
+
         // confirm that the number of unit types is 4
         RefUnitType::all()->count() != 4
             ? $this->error('Error creating unit types')

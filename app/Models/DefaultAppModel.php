@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DefaultAppModel extends Model implements \OwenIt\Auditing\Contracts\Auditable
 {
-    use \OwenIt\Auditing\Auditable, SoftDeletes;
+    use \OwenIt\Auditing\Auditable, SoftDeletes, HasFactory;
 
     protected $guarded = ['id'];
 //    protected $hidden = ['created_by', 'updated_by', 'deleted_by'];
