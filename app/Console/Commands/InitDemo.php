@@ -93,11 +93,11 @@ class InitDemo extends Command
             : $this->info('Payment types created successfully');
 
         // property type
-        $propertyType = new RefPropertyType();
-        $propertyType->type = "Industrial";
-        $propertyType->description = "Industrial";
-
-        $propertyType->save();
+//        $propertyType = new RefPropertyType();
+//        $propertyType->type = "Industrial";
+//        $propertyType->description = "Industrial";
+//
+//        $propertyType->save();
 
         $propertyType = new RefPropertyType();
         $propertyType->type = "Commercial";

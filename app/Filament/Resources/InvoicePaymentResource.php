@@ -9,6 +9,7 @@ use App\Models\Property;
 use App\Models\InvoicePayment;
 use App\Models\TenancyAgreement;
 use App\Models\Unit;
+use App\Rules\CheckPaidAmountDoesNotExceedAmountDue;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
@@ -16,6 +17,7 @@ use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Log;
 
 class InvoicePaymentResource extends Resource
 {
@@ -35,8 +37,14 @@ class InvoicePaymentResource extends Resource
 
                         $set('property_name',($invoice->tenancyAgreement->unit->property->name) ?? '');
                         $set('tenant_name',($invoice->tenancyAgreement->tenant->name) ?? '');
+                        $set('total_due',number_format($invoice->totalDue(),2));
                     })
                     ->required(),
+                Forms\Components\TextInput::make('total_due')
+                    ->label('Total Due')
+                    ->reactive()
+                    ->hiddenOn(['edit','view'])
+                    ->disabled(),
                 Forms\Components\TextInput::make('property_name')
                     ->label('Property Name')
                     ->afterStateHydrated(function (Get $get,Set $set) {
@@ -62,7 +70,8 @@ class InvoicePaymentResource extends Resource
                     ->required(),
                 Forms\Components\TextInput::make('amount')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->rule(fn (Get $get) => new CheckPaidAmountDoesNotExceedAmountDue($get('invoice_id'))),
                 Forms\Components\TextInput::make('paid_by')
                     ->required()
                     ->maxLength(255),
@@ -79,6 +88,10 @@ class InvoicePaymentResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('invoice_id')
+                    ->label('Invoice ID')
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('invoice.tenancyAgreement.property.name')
                     ->numeric()
                     ->sortable(),

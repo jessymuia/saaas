@@ -14,6 +14,7 @@ class InvoicePayment extends DefaultAppModel
 {
     protected $fillable = [
         'invoice_id',
+        'tenant_id',
         'payment_type_id',
         'received_by',
         'payment_date',
@@ -51,6 +52,11 @@ class InvoicePayment extends DefaultAppModel
     public function documentGeneratedBy()
     {
         return $this->belongsTo(User::class, 'document_generated_by');
+    }
+
+    public function tenant()
+    {
+        return $this->belongsTo(Tenant::class);
     }
 
     public function generateInvoicePaymentReceipt()

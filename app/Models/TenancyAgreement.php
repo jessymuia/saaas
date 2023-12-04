@@ -59,7 +59,15 @@ class TenancyAgreement extends DefaultAppModel
 
     public function invoicePayments()
     {
-        return $this->hasMany(InvoicePayment::class);
+//        return $this->hasMany(InvoicePayment::class);
+        return $this->hasManyThrough(
+            InvoicePayment::class,
+            Invoice::class,
+            'tenancy_agreement_id',
+            'invoice_id',
+            'id',
+            'id'
+        );
     }
 
     /*

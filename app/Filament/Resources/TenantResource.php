@@ -86,8 +86,8 @@ class TenantResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()
-                        ->requiresConfirmation(fn () => 'Are you sure you want to delete the selected tenants?'),
+//                    Tables\Actions\DeleteBulkAction::make()
+//                        ->requiresConfirmation(fn () => 'Are you sure you want to delete the selected tenants?'),
                 ]),
             ]);
     }
@@ -98,6 +98,8 @@ class TenantResource extends Resource
             //
             RelationManagers\TenancyAgreementsRelationManager::class,
             RelationManagers\TenancyBillsRelationManager::class,
+            RelationManagers\InvoicesRelationManager::class,
+            RelationManagers\InvoicePaymentsRelationManager::class,
         ];
     }
 
