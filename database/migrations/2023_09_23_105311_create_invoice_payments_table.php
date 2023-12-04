@@ -15,6 +15,7 @@ return new class extends Migration
             $table = \App\Utils\AppUtils::defaultTableColumns($table);
 
             $table->unsignedBigInteger('invoice_id');
+            $table->unsignedBigInteger('tenant_id');
             $table->unsignedBigInteger('payment_type_id');
             $table->unsignedBigInteger('received_by');
             $table->dateTime('payment_date');
@@ -29,10 +30,11 @@ return new class extends Migration
             $table->dateTime('document_sent_at')->nullable();
 
             // foreign keys
-            $table->foreign('invoice_id')->references('id')->on('tenancy_agreements');
+            $table->foreign('invoice_id')->references('id')->on('invoices');
             $table->foreign('payment_type_id')->references('id')->on('ref_payment_types');
             $table->foreign('received_by')->references('id')->on('users');
             $table->foreign('document_generated_by')->references('id')->on('users');
+            $table->foreign('tenant_id')->references('id')->on('tenants');
         });
     }
 

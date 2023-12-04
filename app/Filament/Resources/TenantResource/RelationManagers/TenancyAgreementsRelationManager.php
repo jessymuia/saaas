@@ -2,7 +2,12 @@
 
 namespace App\Filament\Resources\TenantResource\RelationManagers;
 
+use App\Models\CreditNote;
+use App\Models\Invoice;
+use App\Models\InvoicePayment;
+use App\Models\TenancyAgreement;
 use App\Rules\CheckOccupancyOfUnit;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
@@ -11,6 +16,10 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class TenancyAgreementsRelationManager extends RelationManager
 {
@@ -105,22 +114,193 @@ class TenancyAgreementsRelationManager extends RelationManager
                         $data['updated_by'] = auth()->user()->id;
                         return $data;
                     }),
-                Tables\Actions\DeleteAction::make()
-                    ->mutateFormDataUsing(function ($data) {
-                        $data['deleted_by'] = auth()->user()->id;
-                        return $data;
-                    })
-                    ->requiresConfirmation(fn ($record) => 'Are you sure you want to delete this tenancy agreement?'),
+                Tables\Actions\Action::make('generate-statement-of-account')
+                    ->label('Generate Statement of Account')
+                    ->action(fn(TenancyAgreement $record)=>$this->generateStatementOfAccount($record)),
+//                    ->action(fn()=>$this->generateStatementOfAccount($this->ownerRecord)),
+//                Tables\Actions\DeleteAction::make()
+//                    ->mutateFormDataUsing(function ($data) {
+//                        $data['deleted_by'] = auth()->user()->id;
+//                        return $data;
+//                    })
+//                    ->requiresConfirmation(fn ($record) => 'Are you sure you want to delete this tenancy agreement?'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()
-                        ->mutateFormDataUsing(function ($data) {
-                            $data['deleted_by'] = auth()->user()->id;
-                            return $data;
-                        })
-                        ->requiresConfirmation(fn ($records) => 'Are you sure you want to delete the selected tenancy agreements?'),
+//                    Tables\Actions\DeleteBulkAction::make()
+//                        ->mutateFormDataUsing(function ($data) {
+//                            $data['deleted_by'] = auth()->user()->id;
+//                            return $data;
+//                        })
+//                        ->requiresConfirmation(fn ($records) => 'Are you sure you want to delete the selected tenancy agreements?'),
                 ]),
             ]);
+    }
+
+    private function generateStatementOfAccount($tenancyAgreement)
+    {
+        // get all invoices and convert to array
+        $invoices = Invoice::query()
+            ->where('tenancy_agreement_id', '=', $tenancyAgreement->id)
+            ->orderBy('created_at', 'desc')
+            ->select(['id', 'created_at as transaction_date'])
+            ->selectRaw('concat("INV #", id,". Due on ") as transaction, concat("invoice") as transaction_type')
+//            ->with('creditNote', function ($query){
+//                $query->select('id');
+//            })
+            ->get(['amount'])
+            ->toArray();
+//        dd($invoices);
+        // get all credit notes and convert to array
+        $creditNotes = CreditNote::query()
+            ->orderBy('created_at', 'desc')
+            ->whereHas('invoice', function ($query) use ($tenancyAgreement) {
+                $query->where('tenancy_agreement_id', '=', $tenancyAgreement->id);
+            })
+            ->select(['id', 'created_at as transaction_date','amount_credited as amount'])
+            ->selectRaw('concat("CRN #", id,". ", name,". Issued on ") as transaction, concat("credit_note") as transaction_type')
+            ->get()
+            ->toArray();
+//        dd($creditNotes);
+        // get all invoice payments
+        $invoicePayments = InvoicePayment::query()
+            ->orderBy('payment_date', 'desc')
+            ->whereHas('invoice', function ($query) use ($tenancyAgreement) {
+                $query->where('tenancy_agreement_id', '=', $tenancyAgreement->id);
+            })
+            ->select(['id', 'payment_date as transaction_date','amount'])
+            ->selectRaw('concat("PMT #", id,". Paid on ") as transaction, concat("payment") as transaction_type')
+            ->get()
+            ->toArray();
+//        dd($invoicePayments);
+
+        // merge the three arrays
+        $transactions = array_merge($invoices, $creditNotes, $invoicePayments);
+        // sort the array by transaction date
+        usort($transactions, function ($a, $b) {
+            return $a['transaction_date'] <=> $b['transaction_date'];
+        });
+
+        // obtain the total due
+        $amountDue = 0;
+        foreach ($transactions as $transaction) {
+            if ($transaction['transaction_type'] == 'invoice') {
+                $amountDue += $transaction['amount'];
+            } elseif ($transaction['transaction_type'] == 'credit_note') {
+                $amountDue -= $transaction['amount'];
+            } elseif ($transaction['transaction_type'] == 'payment') {
+                $amountDue -= $transaction['amount'];
+            }
+        }
+
+        $tenant = $tenancyAgreement->tenant()->first();
+
+//        dd($totalDue);
+        try {
+            $statementOfAccountItems = '';
+
+            $propertyName = $tenancyAgreement->property->name;
+
+            $unitName = $tenancyAgreement->unit->name;
+            $balanceCarriedForward = 0;
+            $runningBalance = $balanceCarriedForward;
+
+            foreach ($transactions as $transaction) {
+                $signOfTransaction = $transaction['transaction_type'] == 'invoice' ? '+' : '-';
+                $runningBalance += $transaction['transaction_type'] == 'invoice' ? $amountDue - $transaction['amount'] : $amountDue + $transaction['amount'];
+                $statementOfAccountItems .= '
+                    <tr style="height: 30px;">
+                        <td class="s8b" dir="ltr" colspan="1" style="font-size: 8pt;border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; border-left-width: 1px; border-left-color: #000; text-align: center; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">'.Carbon::createFromFormat('Y-m-d H:i:s',$transaction['transaction_date'])->format('F j, Y').'</td>
+                        <td class="s8" dir="ltr" colspan="4" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; color: #000; font-family: serif; font-size: 9pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">'.$transaction['transaction'].'</td>
+                        <td class="s8" dir="ltr" colspan="1" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: right; color: #000; font-family: serif; font-size: 9pt; vertical-align: middle; word-wrap: break-word; white-space: nowrap; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">'.$signOfTransaction.number_format($transaction['amount'],2).'</td>
+                        <td class="s8" dir="ltr" colspan="1" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: right; color: #000; font-family: serif; font-size: 9pt; vertical-align: middle; word-wrap: break-word; white-space: nowrap; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 0px; padding-left: 3px;">'.number_format($runningBalance,2).'</td>
+                    </tr>';
+            }
+
+            $detailsArray = [
+                'customerName' => $unitName.' '.$tenancyAgreement->tenant->name,
+                'propertyName' => $propertyName,
+                'dateGenerated'=> Carbon::now()->format('M j, Y'),
+                'logoUrl'=>'file://'.getcwd().'/images/hamud_top_doc_logo.png',
+                'amountDue' => number_format($amountDue,2),
+                'amountEnc' => number_format(0,2),
+                'statementOfAccountItemsHTML' => $statementOfAccountItems,
+                'current'=> number_format(0,2),
+                'oneToThirtyPastDue'=> number_format(0,2),
+                'thirtyOneToSixtyPastDue'=> number_format(0,2),
+                'sixtyOneToNinetyPastDue'=> number_format(0,2),
+                'overNinetyPastDue'=> number_format(0,2),
+            ];
+
+            $content = File::get(resource_path('documents/templates/statement-of-account-output-document.html'));
+
+            foreach ($detailsArray as $key => $value) {
+                $content = str_replace("@#$key", $value, $content);
+            }
+
+            $pdfName = "Statement of Account".
+                '_for_' .
+                $tenancyAgreement->tenant->name . '_' .
+                $propertyName .
+                '_for_unit_' .
+                $unitName .
+                '_'.$tenancyAgreement->id;
+
+            // get the path but without the clatter file system
+            $pdfPath = Storage::path('statements_of_account') . '/' . $pdfName . '.pdf';
+
+//            Storage::url($pdfPath);
+
+//            Storage::put($pdfPath, $content);
+            $snappy = App::make('snappy.pdf');
+            $snappy->setOption('enable-local-file-access', true);
+            $snappy->setOption('disable-smart-shrinking', false);
+            $snappy->setOption('margin-bottom', '1in');
+            $snappy->setOption('margin-left', '1in');
+            $snappy->setOption('margin-right', '1in');
+            $snappy->setOption('margin-top', '1in');
+//            $snappy->generateFromHtml($content, Storage::url($pdfPath));
+//            Pdf::generateFromHtml($content, Storage::url($pdfPath));
+            $snappy->generateFromHtml($content, $pdfPath);
+
+//            \Barryvdh\DomPDF\PDF::loadView('documents.templates.invoice-output-document', $detailsArray)->save($pdfPath);
+//            \Barryvdh\DomPDF\Facade\Pdf::loadView('documents.templates.invoice-output-document', $detailsArray)->save($pdfPath);
+//            $pdf = SnappyPdf::loadView('documents.templates.invoice-output-document', $detailsArray)->output();
+//            Log::error("Ndio hii: " . $pdf);
+//            $pdf = SnappyPdf::loadView('documents.templates.invoice-output-document', $detailsArray);
+//            $pdf = SnappyPdf::loadView('documents.templates.invoice-output-document', $detailsArray)->save($pdfPath);
+//            $pdf = SnappyPdf::loadHTML($content)->output();
+            Log::error("Ndio hii: " . $pdfPath);
+//            Storage::put($pdfPath, $pdf->output());
+
+//            Log::info(Storage::url($pdfPath));
+
+            Log::info('--------------------------------------------------------------------------');
+
+            // check if file exists
+            if (file_exists($pdfPath)) {
+                $savedPath = explode('/', $pdfPath);
+                // retrieve the string after the string 'app'
+                foreach ($savedPath as $key => $value) {
+                    if ($value == 'app') {
+                        $savedPath = implode("/", array_slice($savedPath, $key + 1));
+                        break;
+                    }
+                }
+//                $this->is_generated = 1;
+//                $this->document_url = $savedPath;
+//                $this->updated_by = auth()->user()->id;
+//
+//                $this->save();
+
+                return true;
+            } else {
+                return false;
+            }
+        }catch (\Exception $exception){
+            Log::error($exception->getTraceAsString());
+            Log::error($exception->getMessage());
+            return false;
+        }
     }
 }
