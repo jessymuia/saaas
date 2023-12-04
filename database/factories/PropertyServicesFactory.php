@@ -37,7 +37,7 @@ class PropertyServicesFactory extends Factory
         }while(PropertyServices::query()
             ->where('property_id', '=', $propertyId)
             ->where('service_id', '=', $serviceId)
-            ->count() > 0);
+            ->exists());
 
         // billing type id
         $billingTypeIdArray = RefBillingType::query()

@@ -14,7 +14,7 @@ class PropertyServicesSeeder extends Seeder
     public function run(): void
     {
         PropertyServices::factory()
-            ->count(100)
+            ->count(20)
             ->create();
     }
 }
