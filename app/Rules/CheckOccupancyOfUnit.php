@@ -5,21 +5,24 @@ namespace App\Rules;
 use App\Models\TenancyAgreement;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Translation\PotentiallyTranslatedString;
 
 class CheckOccupancyOfUnit implements ValidationRule
 {
     public $startDate;
+    public $formOperation;
 
     /**
      * Create a new rule instance.
      *
      * @return void
      */
-    public function __construct($startDate)
+    public function __construct($startDate, $formOperation)
     {
         //
         $this->startDate = $startDate;
+        $this->formOperation = $formOperation;
     }
 
     /**
@@ -40,7 +43,7 @@ class CheckOccupancyOfUnit implements ValidationRule
                 $query->where('end_date','>=',$this->startDate)
                     ->orWhere('end_date',null);
             })
-            ->count() > 0
+            ->count() > 0 && $this->formOperation !== 'edit'
             ? $fail(__('The unit is occupied.')) : null;
 
     }

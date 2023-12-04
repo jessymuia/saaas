@@ -33,7 +33,7 @@ class TenancyAgreementsRelationManager extends RelationManager
                         $query->where('property_id', $this->ownerRecord->id);
                     })
                     ->rules([
-                        fn (Get $get) : CheckOccupancyOfUnit => new CheckOccupancyOfUnit($get('start_date')),
+                        fn (Get $get) : CheckOccupancyOfUnit => new CheckOccupancyOfUnit($get('start_date'), $form->getOperation()),
                     ]),
                 Forms\Components\Select::make('billing_type_id')
                     ->label('Billing Type')
@@ -42,11 +42,14 @@ class TenancyAgreementsRelationManager extends RelationManager
                 Forms\Components\Select::make('agreement_type_id')
                     ->label('Agreement Type')
                     ->required()
+                    ->reactive()
                     ->relationship('agreementType', 'type'),
                 Forms\Components\DatePicker::make('start_date')
                     ->required(),
                 Forms\Components\DatePicker::make('end_date')
-                    ->required()
+                    ->nullable(fn(Get $get) => $get('agreement_type_id') == 2)
+                    ->visible(fn (Get $get) => $get('agreement_type_id') == 1)
+                    ->reactive()
                     ->after('start_date'),
                 Forms\Components\TextInput::make('amount')
                     ->required()
