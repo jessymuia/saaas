@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('utility_id');
             $table->decimal('rate_per_unit', 14, 2);
             $table->unsignedBigInteger('billing_type_id');
+            $table->boolean('is_deleted')->virtualAs('IF(deleted_at IS NULL, 0, 1)');
 
             // foreign keys
             $table->foreign('property_id')->references('id')->on('properties');
@@ -25,7 +26,7 @@ return new class extends Migration
             $table->foreign('billing_type_id')->references('id')->on('ref_billing_types');
 
             // unique keys
-            $table->unique(['property_id', 'utility_id', 'deleted_at'], 'property_utility_unique');
+            $table->unique(['property_id', 'utility_id', 'is_deleted'], 'property_utilities_unique_index');
         });
     }
 

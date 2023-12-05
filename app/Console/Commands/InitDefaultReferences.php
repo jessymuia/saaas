@@ -58,7 +58,7 @@ class InitDefaultReferences extends Command
 //        $billingType->save();
 
         // confirm that the number of billing types is 3
-        RefBillingType::all()->count() != 3
+        RefBillingType::all()->count() != 2
             ? $this->error('Error creating billing types')
             : $this->info('Billing types created successfully');
 
@@ -111,8 +111,8 @@ class InitDefaultReferences extends Command
 
         $propertyType->save();
 
-        // confirm that the number of property types is 3
-        RefPropertyType::all()->count() != 3
+        // confirm that the number of property types is 2
+        RefPropertyType::all()->count() != 2
             ? $this->error('Error creating property types')
             : $this->info('Property types created successfully');
 

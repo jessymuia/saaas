@@ -26,9 +26,9 @@ class SetupApplication extends Command
     public function handle()
     {
         $this->call('migrate:fresh');
+        $this->call('db:seed');
         $this->call('app:setup-admin-user');
         $this->call('app:init-default-references');
-        $this->call('db:seed');
 //        $this->call('passport:install');
         $this->call('storage:link');
         $this->call('optimize');

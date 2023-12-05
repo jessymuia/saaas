@@ -13,8 +13,15 @@ class PropertyServicesSeeder extends Seeder
      */
     public function run(): void
     {
-        PropertyServices::factory()
-            ->count(20)
-            ->create();
+        $expectedCount = 20;
+        do{
+            try{
+                PropertyServices::factory()
+                    ->count($expectedCount)
+                    ->create();
+            }catch (\Exception $e){
+                // continue
+            }
+        }while (PropertyServices::query()->count() < $expectedCount);
     }
 }

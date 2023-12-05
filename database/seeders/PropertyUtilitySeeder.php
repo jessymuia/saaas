@@ -13,9 +13,14 @@ class PropertyUtilitySeeder extends Seeder
      */
     public function run(): void
     {
-        //
-        PropertyUtility::factory()
-            ->count(100)
-            ->create();
+        $expectedCount = 20;
+        // factory method with exception handling
+        do{
+            try {
+                PropertyUtility::factory()->count($expectedCount)->create();
+            } catch (\Exception $e) {
+                // continue
+            }
+        } while (PropertyUtility::query()->count() < $expectedCount);
     }
 }
