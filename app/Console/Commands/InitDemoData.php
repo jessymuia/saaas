@@ -11,6 +11,7 @@ use App\Models\Unit;
 use Database\Seeders\PropertySeeder;
 use Database\Seeders\PropertyServicesSeeder;
 use Database\Seeders\PropertyUtilitySeeder;
+use Database\Seeders\TenancyAgreementSeeder;
 use Database\Seeders\TenantSeeder;
 use Database\Seeders\UnitSeeder;
 use Illuminate\Console\Command;
@@ -50,5 +51,6 @@ class InitDemoData extends Command
         $this->call(TenantSeeder::class);
         $this->call(PropertyServicesSeeder::class);
         $this->call(PropertyUtilitySeeder::class);
+        $this->call(TenancyAgreementSeeder::class);
     }
 }
