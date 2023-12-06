@@ -83,7 +83,11 @@ class MeterReading extends DefaultAppModel
                     })->value('id');
 
                 if (!$tenancyAgreement) {
-                    throw new \Exception('No tenancy agreement found for this meter reading');
+                    throw new \Exception('No tenancy agreement found for this meter reading for unit: '
+                        . $this->unit_id . ' on '
+                        . $this->reading_date
+                        . ' full record: '. $this->toJson()
+                    );
                 }
 
                 // get the property utility for this meter reading
@@ -95,16 +99,21 @@ class MeterReading extends DefaultAppModel
                     ->first();
 
                 // create invoice if not exists
+                // check if the invoice is confirmed
+                // a new invoice is only created if the previous one is confirmed
+                // ensure each invoice has its own separate month bills using the due_date from the tenancy bills
                 $invoice = Invoice::query()
                     ->where('tenancy_agreement_id', $tenancyAgreement)
-                    ->whereMonth('created_at', date_format($this->reading_date,'m'))
+                    ->whereMonth('issue_date', date_format($this->reading_date,'m'))
+                    ->where('is_confirmed', '=', 0)
+                    ->where('is_generated', '=', 0)
                     ->get()
                     ->first();
 
                 if (!$invoice) {
                     $invoice = new Invoice();
                     $invoice->tenancy_agreement_id = $tenancyAgreement;
-//                    $invoice->issue_date = $this->reading_date;
+                    $invoice->issue_date = $this->reading_date; // used to ensure that the invoice is created once per month
                     $invoice->created_by = auth()->user()->id;
 
                     $invoice->save();
@@ -123,7 +132,7 @@ class MeterReading extends DefaultAppModel
                                 date_create($this->reading_date),
                                 date_interval_create_from_date_string('1 month')
                             ),
-                            'Y-m-15'
+                            'Y-m-05'
                         ),
                     'amount' => $this->consumption * $propertyUtility->rate_per_unit,
                     'billing_type_id' => $propertyUtility->billing_type_id,
@@ -141,6 +150,8 @@ class MeterReading extends DefaultAppModel
         } catch (\Exception $e) {
             // Log error
             Log::error($e->getMessage());
+            Log::error($e->getTraceAsString());
+            Log::error($e->getLine());
         }
     }
 }
