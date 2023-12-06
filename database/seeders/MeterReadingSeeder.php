@@ -8,6 +8,7 @@ use App\Models\TenancyAgreement;
 use App\Models\Unit;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Log;
 
 class MeterReadingSeeder extends Seeder
 {
@@ -17,24 +18,13 @@ class MeterReadingSeeder extends Seeder
     public function run(): void
     {
         //
+        $this->generateReadingsForExistingTenancyAgreements();
     }
 
-    public function generateUnitID()
+    public function generateReadingsForExistingTenancyAgreements(): void
     {
-        $unitIdArray = Unit::query()
-            ->select('id')
-            ->orderBy('id','asc')
-            ->get()->toArray();
-        return $this->faker->numberBetween($unitIdArray[0]['id'], $unitIdArray[count($unitIdArray) - 1]['id']);
-    }
-
-    public function generateReadingDate($unitID)
-    {
-        // get the 27 date of each month between the start date and end date of the tenancy agreement
-        // get the tenancy agreements for this unit
         $tenancyAgreements = TenancyAgreement::query()
-            ->select('id','start_date','end_date')
-            ->where('unit_id', '=', $unitID)
+            ->select('id','start_date','end_date','unit_id')
             ->where('status', '=', 1)
             ->where('archive', '=', 0)
             ->get();
@@ -43,31 +33,69 @@ class MeterReadingSeeder extends Seeder
             $startDate = $tenancyAgreement->start_date;
             $endDate = $tenancyAgreement->end_date;
             $start = strtotime($startDate);
-            $end = strtotime($endDate);
-            $dates = [];
+            $end = $endDate > date('Y-m-d')
+                ? strtotime(date('Y-m-d'))
+                : strtotime($endDate); // this check ensures the end date is not a future date
+            $readingDatesAndConsumptionArray = [];
             for ($i = $start; $i <= $end; $i = strtotime('+1 day', $i)) {
                 if(date('d', $i) == 27){
-                    $dates[] = date('Y-m-d', $i);
-
-                    $currentReading = $this->faker->randomFloat(2, 100, 1000);
+                    $readingDatesAndConsumptionArray[] = [
+                        'date' => date('Y-m-d', $i),
+                        'consumption' => rand(3, 15)
+                    ];
                 }
             }
-            if (empty($dates)){
-                $dates[] = $end;
+            if (empty($readingDatesAndConsumptionArray)){
+                $readingDatesAndConsumptionArray[] = [
+                    'date' => $end,
+                    'consumption' => rand(3, 15)
+                ];
+            }
+
+            // compare the end date and reading date and see whether the reading date is in the same month as the end date
+            $endMonth = date('m', $end);
+            $readingDateMonth = date('m', strtotime($readingDatesAndConsumptionArray[count($readingDatesAndConsumptionArray) - 1]['date']));
+            // check if the end date and reading date are in the same month and if the reading is in a future date for a continuing engagement
+            if ($endMonth >= $readingDateMonth && strtotime($endDate) == $end){
+                // if not, then add the end date to the reading dates and consumption array
+                $readingDatesAndConsumptionArray[] = [
+                    'date' => $endDate,
+                    'consumption' => rand(3, 15)
+                ];
+            }
+
+            foreach ($readingDatesAndConsumptionArray as $key => $dateAndConsumption){
+                $unitId = $tenancyAgreement->unit_id;
+                // get the readable utilities for this unit
+                $readableUtilities = $this->getReadableUtilities($unitId);
+                // get the previous readings for this unit
+                $previousReadings = $this->getPreviousReadings($readableUtilities,$unitId);
+                // loop through the readable utilities
+                foreach ($readableUtilities as $readableUtility){
+                    // get the current reading
+                    $currentReading = $previousReadings[$readableUtility] + $dateAndConsumption['consumption'];
+
+                    // create the meter reading
+                    $meterReading = MeterReading::query()->create([
+                        'unit_id' => $unitId,
+                        'utility_id' => $readableUtility,
+                        'reading_date' => $dateAndConsumption['date'],
+                        'current_reading' => $currentReading,
+                        'previous_reading' => $previousReadings[$readableUtility],
+                        'consumption' => $dateAndConsumption['consumption'],
+                        'has_bill' => 0,
+                        'created_by' => 1,
+                        'status' => 1,
+                        'archive' => 0
+                    ]);
+                    // update the previous reading for this utility
+                    $previousReadings[$readableUtility] = $currentReading;
+                }
             }
         }
-
-
-        // return the reading dates
-        return $dates ?? [];
     }
 
-    public function getCurrentReading()
-    {
-
-    }
-
-    public function getPreviousReadings($readableUtilities,$unitId)
+    public function getPreviousReadings($readableUtilities,$unitId): array
     {
         $utilityPreviousReadings = [];
         // loop through the various readable utilities getting the previous reading
@@ -79,13 +107,14 @@ class MeterReadingSeeder extends Seeder
                 ->where('unit_id', '=', $unitId)
                 ->orderBy('reading_date','desc')
                 ->limit(1)
-                ->get()->first()->current_reading;
+                ->get()->first()->current_reading ?? 0;
+            Log::info('Previous reading for utility '.$readableUtility.' is '.$previousReading);
             $utilityPreviousReadings[$readableUtility] = $previousReading ?? 0;
         }
         return $utilityPreviousReadings;
     }
 
-    public function getReadableUtilities($unitId)
+    public function getReadableUtilities($unitId): array
     {
         // get the utilities that are readable
         $propertyId = Unit::query()
@@ -97,7 +126,7 @@ class MeterReadingSeeder extends Seeder
             ->select('utility_id')
             ->where('property_id', '=', $propertyId)
             ->where('status', '=', 1)
-            ->get()->toArray();
+            ->pluck('utility_id')->toArray();
 
         return $utilities;
     }
