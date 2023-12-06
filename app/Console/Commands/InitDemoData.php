@@ -2,12 +2,14 @@
 
 namespace App\Console\Commands;
 
+use App\Models\MeterReading;
 use App\Models\Property;
 use App\Models\PropertyServices;
 use App\Models\PropertyUtility;
 use App\Models\TenancyAgreement;
 use App\Models\Tenant;
 use App\Models\Unit;
+use Database\Seeders\MeterReadingSeeder;
 use Database\Seeders\PropertySeeder;
 use Database\Seeders\PropertyServicesSeeder;
 use Database\Seeders\PropertyUtilitySeeder;
@@ -38,6 +40,7 @@ class InitDemoData extends Command
     public function handle()
     {
         // delete all previous data for below tables
+        MeterReading::query()->forceDelete();
         TenancyAgreement::query()->forceDelete();
         PropertyServices::query()->forceDelete();
         PropertyUtility::query()->forceDelete();
@@ -52,5 +55,6 @@ class InitDemoData extends Command
         $this->call(PropertyServicesSeeder::class);
         $this->call(PropertyUtilitySeeder::class);
         $this->call(TenancyAgreementSeeder::class);
+        $this->call(MeterReadingSeeder::class);
     }
 }
