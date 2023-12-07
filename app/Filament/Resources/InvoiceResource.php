@@ -72,6 +72,9 @@ class InvoiceResource extends Resource
                 Tables\Columns\TextColumn::make('issue_date')
                     ->date()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('invoice_for_month')
+                    ->date('F, Y')
+                    ->sortable(),
             ])
             ->filters([
                 //

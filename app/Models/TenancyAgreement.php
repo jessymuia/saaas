@@ -70,163 +70,117 @@ class TenancyAgreement extends DefaultAppModel
         );
     }
 
+    public function monthlyOccupationRecords()
+    {
+        return $this->hasMany(UnitOccupationMonthlyRecords::class);
+    }
+
     /*
      * Create the rental bill for the tenancy agreement
      */
-    public function createRentBill(){
-        try {
-            DB::transaction(function (){
-                // get date of last invoice linked to this tenancy agreement
-                $lastInvoiceDate = Invoice::query()
-                    ->select('created_at')
-                    ->where('tenancy_agreement_id', $this->id)
-                    // where there is no tenancy bill linked to rent payment
-                    ->whereNotExists(function ($query){
-                        $query->select(DB::raw(1))
-                            ->from('tenancy_bills')
-                            ->whereRaw('tenancy_bills.invoice_id = invoices.id')
-                            ->where('tenancy_bills.service_id',null)
-                            ->where('tenancy_bills.utility_id',null);
-                    })
-                    ->orderBy('created_at','desc')
-                    ->value('created_at');
+    /**
+     * @throws \Exception
+     */
+    public function createRentBill($billDate, $invoice){
+        $billDate = new \DateTime($billDate);
+        // ensure there is no bill for this month
+        $tenancyBillExists = TenancyBill::query()
+            ->where('tenancy_agreement_id', $this->id)
+            ->whereMonth('bill_date', date_format($billDate,'m'))
+            ->where('service_id',null)
+            ->where('utility_id',null)
+            ->first();
 
-                if (!$lastInvoiceDate){ // the invoice already exists
-                    return;
-                }
+        if ($tenancyBillExists){ // exit if the rent bill exists
+            return $tenancyBillExists->id;
+        }
 
-                // create invoice if not exists
-                $invoice = Invoice::query()
-                    ->where('tenancy_agreement_id', $this->id)
-                    ->whereMonth('created_at', date_format($lastInvoiceDate,'m'))
-                    ->get()
-                    ->first();
+        // create tenancy Bill
+        $tenancyBill = TenancyBill::create([
+            'tenancy_agreement_id' => $this->id,
+            'name' => $this->tenant->name.' '. date_format($billDate,'F'). ' Rent Bill',
+            'bill_date' => now(),
+            'due_date' => // next month 5th
+                date_format(
+                    date_add(
+                        date_create(date_format($billDate,'Y-m-d')),
+                        date_interval_create_from_date_string(
+                            date_format($billDate,'d') < 5 ? '0 month' : '1 month'
+                        )
+                    ),
+                    'Y-m-5'
+                ),
+            'amount' => $this->amount,
+            'billing_type_id' => $this->billing_type_id,
+            'invoice_id' => $invoice->id,
+            'created_by' => auth()->user()->id,
+        ]);
 
-                if (!$invoice) {
-                    $invoice = new Invoice();
-                    $invoice->tenancy_agreement_id = $this->id;
-//                    $invoice->issue_date = $this->reading_date;
-                    $invoice->created_by = auth()->user()->id;
+        return $tenancyBill->id;
+    }
 
-                    $invoice->save();
-                }
+    public function createServiceBill($billDate,$invoice)
+    {
+        $billDate = new \DateTime($billDate);
+        // get the various services within this property
+        // generate a bill for each for this month, for this tenancy agreement
+        $this->property->propertyServices()->get()->each(/**
+         * @throws \Exception
+         */ function ($service) use ($invoice,$billDate){
+            // ensure service bill does not exist for the given month
+            $serviceBillExists = TenancyBill::query()
+                ->where('tenancy_agreement_id', $this->id)
+                ->whereMonth('bill_date', date_format($billDate,'m'))
+                ->where('service_id','==',$service->service_id)
+                ->exists();
 
-                // ensure there is no bill for this month
-                $tenancyBillExists = TenancyBill::query()
-                    ->where('tenancy_agreement_id', $this->id)
-                    ->whereMonth('bill_date', date_format($lastInvoiceDate,'m'))
-                    ->where('service_id',null)
-                    ->where('utility_id',null)
-                    ->exists();
+            if (!$serviceBillExists) {// exit if the service bill exists
 
-                if ($tenancyBillExists){ // exit if the rent bill exists
-                    return;
-                }
-
-                // create tenancy Bill
+                // create service bill
                 TenancyBill::create([
                     'tenancy_agreement_id' => $this->id,
-                    'name' => $this->tenant->name.' '. date_format($lastInvoiceDate,'F'). ' Rent Bill',
+                    'name' => $this->tenant->name.' '.
+                        date_format($billDate,'F'). ' '.
+                        Services::query()->where('id','=',$service->service_id)->value('name').
+                        ' Service Bill',
                     'bill_date' => now(),
-                    'due_date' => // next month 5th
+                    'due_date' => // if bill date is before 5th, then 5th of the month, else 5th of the next month
                         date_format(
                             date_add(
-                                date_create($lastInvoiceDate),
-                                date_interval_create_from_date_string('1 month')
+                                date_create(date_format($billDate,'Y-m-d')),
+                                date_interval_create_from_date_string(
+                                    date_format($billDate,'d') < 5 ? '0 month' : '1 month'
+                                )
                             ),
                             'Y-m-5'
                         ),
-                    'amount' => $this->amount,
-                    'billing_type_id' => $this->billing_type_id,
+                    'amount' => $service->rate,
+                    'billing_type_id' => $service->billing_type_id,
+                    'service_id' => $service->service_id,
                     'invoice_id' => $invoice->id,
-                    'created_by' => auth()->user()->id,
+                    'created_by' => auth()->user()->id
                 ]);
-            });
-        }catch (\Exception $exception){
-            Log::error($exception->getMessage());
-            Log::error($exception->getTraceAsString());
-            Log::error("------------------------------------------------------------------------------");
-        }
+            }
+        });
     }
 
-    public function createServiceBill(){
-        try {
-            DB::transaction(function (){
-                // get date of last invoice linked to this tenancy agreement
-                $lastInvoiceDate = Invoice::query()
-                    ->select('created_at')
-                    ->where('tenancy_agreement_id', $this->id)
-                    ->orderBy('created_at','desc')
-                    ->value('created_at');
+    public function createUnitOccupationMonthlyRecord($billDate,$tenancyBillId)
+    {
+        $billDate = new \DateTime($billDate);
+        $unitOccupationMonthlyRecord = new UnitOccupationMonthlyRecords();
 
-                // get date of last meter reading linked to this tenancy agreement
-                $lastMeterReadingDate = MeterReading::query()
-                    ->select('reading_date')
-                    ->where('unit_id', $this->unit_id)
-                    ->orderBy('reading_date','desc')
-                    ->value('reading_date');
+        $unitOccupationMonthlyRecord->unit_id = $this->unit_id;
+        $unitOccupationMonthlyRecord->tenancy_agreement_id = $this->id;
+        $unitOccupationMonthlyRecord->from_date = // check if the start date is after first day of the month
+            $this->start_date > date_format($billDate,'Y-m-01')
+                ? $this->start_date
+                : date_format($billDate,'Y-m-01');
+        $unitOccupationMonthlyRecord->end_date = $this->end_date < date_format($billDate,'Y-m-t')
+            ? $this->end_date
+            : date_format($billDate,'Y-m-t');
+        $unitOccupationMonthlyRecord->tenancy_bill_id = $tenancyBillId;
+        $unitOccupationMonthlyRecord->created_by = auth()->user()->id;
 
-                // get the latest date
-                $latestProcessingDate = max($lastInvoiceDate, $lastMeterReadingDate);
-
-                // create invoice if not exists
-                $invoice = Invoice::query()
-                    ->where('tenancy_agreement_id', $this->id)
-                    ->whereMonth('created_at', date_format($latestProcessingDate,'m'))
-                    ->get()
-                    ->first();
-
-                if (!$invoice) {
-                    $invoice = new Invoice();
-                    $invoice->tenancy_agreement_id = $this->id;
-//                    $invoice->issue_date = $this->reading_date;
-                    $invoice->created_by = auth()->user()->id;
-
-                    $invoice->save();
-                }
-
-                // check if the service bill exists
-                $serviceBillExists = TenancyBill::query()
-                    ->where('tenancy_agreement_id', $this->id)
-                    ->whereMonth('bill_date', date_format($lastMeterReadingDate,'m'))
-                    ->where('service_id','!=',null)
-                    ->exists();
-
-                if ($serviceBillExists){ // exit if the service bill exists
-                    return;
-                }
-
-                // get the various services within this property
-                // generate a bill for each for this month, for this tenancy agreement
-                $this->property->propertyServices()->get()->each(function ($service) use ($invoice,$lastInvoiceDate){
-                    // create service bill
-                    TenancyBill::create([
-                        'tenancy_agreement_id' => $this->id,
-                        'name' => $this->tenant->name.' '.
-                            date_format($lastInvoiceDate,'F').
-                            Services::where('id',$service->id)->value('name').
-                            ' Service Bill',
-                        'bill_date' => now(),
-                        'due_date' => // next month 5th
-                            date_format(
-                                date_add(
-                                    date_create($lastInvoiceDate),
-                                    date_interval_create_from_date_string('1 month')
-                                ),
-                                'Y-m-5'
-                            ),
-                        'amount' => $service->rate,
-                        'billing_type_id' => $service->billing_type_id,
-                        'service_id' => $service->service_id,
-                        'invoice_id' => $invoice->id,
-                        'created_by' => auth()->user()->id
-                    ]);
-                });
-            });
-        }catch (\Exception $exception){
-            Log::error($exception->getMessage());
-            Log::error($exception->getTraceAsString());
-            Log::error("------------------------------------------------------------------------------");
-        }
+        $unitOccupationMonthlyRecord->save();
     }
 }

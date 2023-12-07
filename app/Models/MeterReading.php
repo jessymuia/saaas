@@ -71,87 +71,78 @@ class MeterReading extends DefaultAppModel
      */
     public function createBill()
     {
-        try {
-            DB::transaction(function () {
-                // get the tenancy agreement for this meter reading
-                $tenancyAgreement = TenancyAgreement::query()
-                    ->where('unit_id', $this->unit_id)
-                    ->whereDate('start_date', '<=', $this->reading_date)
-                    ->where(function ($query) {
-                        $query->whereDate('end_date', '>=', $this->reading_date)
-                            ->orWhereNull('end_date');
-                    })->value('id');
+        // get the tenancy agreement for this meter reading
+        $tenancyAgreement = TenancyAgreement::query()
+            ->where('unit_id', $this->unit_id)
+            ->whereDate('start_date', '<=', $this->reading_date)
+            ->where(function ($query) {
+                $query->whereDate('end_date', '>=', $this->reading_date)
+                    ->orWhereNull('end_date');
+            })->value('id');
 
-                if (!$tenancyAgreement) {
-                    throw new \Exception('No tenancy agreement found for this meter reading for unit: '
-                        . $this->unit_id . ' on '
-                        . $this->reading_date
-                        . ' full record: '. $this->toJson()
-                    );
-                }
-
-                // get the property utility for this meter reading
-                $propertyUtility = PropertyUtility::query()
-                    ->where('property_id', $this->unit->property_id)
-                    ->where('utility_id', $this->utility_id)
-                    ->where('status', '=',1)
-                    ->select(['rate_per_unit','billing_type_id'])
-                    ->first();
-
-                // create invoice if not exists
-                // check if the invoice is confirmed
-                // a new invoice is only created if the previous one is confirmed
-                // ensure each invoice has its own separate month bills using the due_date from the tenancy bills
-                $invoice = Invoice::query()
-                    ->where('tenancy_agreement_id', $tenancyAgreement)
-                    ->whereMonth('issue_date', date_format($this->reading_date,'m'))
-                    ->where('is_confirmed', '=', 0)
-                    ->where('is_generated', '=', 0)
-                    ->get()
-                    ->first();
-
-                if (!$invoice) {
-                    $invoice = new Invoice();
-                    $invoice->tenancy_agreement_id = $tenancyAgreement;
-                    $invoice->issue_date = $this->reading_date; // used to ensure that the invoice is created once per month
-                    $invoice->created_by = auth()->user()->id;
-
-                    $invoice->save();
-                }
-
-                Log::info('Invoice created: ' . $invoice->id);
-
-                // create tenancy Bill
-                $tenancyBill = TenancyBill::create([
-                    'tenancy_agreement_id' => $tenancyAgreement,
-                    'name' => TenancyAgreement::find($tenancyAgreement)->tenant->name.' '. date_format($this->reading_date,'F'). ' '. $this->utility->name. ' Bill',
-                    'bill_date' => $this->reading_date,
-                    'due_date' => // next month 15th
-                        date_format(
-                            date_add(
-                                date_create($this->reading_date),
-                                date_interval_create_from_date_string('1 month')
-                            ),
-                            'Y-m-05'
-                        ),
-                    'amount' => $this->consumption * $propertyUtility->rate_per_unit,
-                    'billing_type_id' => $propertyUtility->billing_type_id,
-                    'invoice_id' => $invoice->id,
-                    'utility_id' => $this->utility_id,
-                    'created_by' => auth()->user()->id,
-                ]);
-
-                // update the value of has_bill in the meter reading
-                $this->update([
-                    'has_bill' => 1,
-                    'updated_by' => auth()->user()->id,
-                ]);
-            });
-        } catch (\Exception $e) {
-            // Log error
-            Log::error($e->getMessage());
-            Log::error($e->getTraceAsString());
-            Log::error($e->getLine());
+        if (!$tenancyAgreement) {
+            throw new \Exception('No tenancy agreement found for this meter reading for unit: '
+                . $this->unit_id . ' on '
+                . $this->reading_date
+                . ' full record: '. $this->toJson()
+            );
         }
+
+        // get the property utility for this meter reading
+        $propertyUtility = PropertyUtility::query()
+            ->where('property_id', $this->unit->property_id)
+            ->where('utility_id', $this->utility_id)
+            ->where('status', '=',1)
+            ->select(['rate_per_unit','billing_type_id'])
+            ->first();
+
+        // create invoice if not exists
+        // check if the invoice is confirmed
+        // a new invoice is only created if the previous one is confirmed
+        // ensure each invoice has its own separate month bills using the due_date from the tenancy bills
+        $invoice = Invoice::query()
+            ->where('tenancy_agreement_id', $tenancyAgreement)
+            ->whereMonth('invoice_for_month', date_format($this->reading_date,'m'))
+            ->where('is_confirmed', '=', 0)
+            ->where('is_generated', '=', 0)
+            ->get()
+            ->first();
+
+        if (!$invoice) {
+            $invoice = new Invoice();
+            $invoice->tenancy_agreement_id = $tenancyAgreement;
+            $invoice->invoice_for_month = $this->reading_date; // used to ensure that the invoice is created once per month
+            $invoice->created_by = auth()->user()->id;
+
+            $invoice->save();
+        }
+
+//        Log::info('Invoice created: ' . $invoice->id);
+
+        // create tenancy Bill
+        $tenancyBill = TenancyBill::create([
+            'tenancy_agreement_id' => $tenancyAgreement,
+            'name' => TenancyAgreement::find($tenancyAgreement)->tenant->name.' '. date_format($this->reading_date,'F'). ' '. $this->utility->name. ' Bill',
+            'bill_date' => $this->reading_date,
+            'due_date' => // next month 15th
+                date_format(
+                    date_add(
+                        date_create($this->reading_date),
+                        date_interval_create_from_date_string('1 month')
+                    ),
+                    'Y-m-05'
+                ),
+            'amount' => $this->consumption * $propertyUtility->rate_per_unit,
+            'billing_type_id' => $propertyUtility->billing_type_id,
+            'invoice_id' => $invoice->id,
+            'utility_id' => $this->utility_id,
+            'created_by' => auth()->user()->id,
+        ]);
+
+        // update the value of has_bill in the meter reading
+        $this->update([
+            'has_bill' => 1,
+            'updated_by' => auth()->user()->id,
+        ]);
     }
 }

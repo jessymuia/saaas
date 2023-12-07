@@ -108,7 +108,7 @@ class MeterReadingSeeder extends Seeder
                 ->orderBy('reading_date','desc')
                 ->limit(1)
                 ->get()->first()->current_reading ?? 0;
-            Log::info('Previous reading for utility '.$readableUtility.' is '.$previousReading);
+//            Log::info('Previous reading for utility '.$readableUtility.' is '.$previousReading);
             $utilityPreviousReadings[$readableUtility] = $previousReading ?? 0;
         }
         return $utilityPreviousReadings;

@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('comments',1000)->nullable();
             $table->string('invoice_status',20)->nullable();
             $table->date('issue_date')->nullable();
+            $table->date('invoice_for_month');
+            $table->date('invoice_due_date')->nullable();
             $table->tinyInteger('is_confirmed')->default(0);
             $table->tinyInteger('is_generated')->default(0);
             $table->string('document_url')->nullable();

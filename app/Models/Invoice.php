@@ -20,6 +20,8 @@ class Invoice extends DefaultAppModel
         'comments',
         'invoice_status',
         'issue_date',
+        'invoice_for_month',
+        'invoice_due_date',
         'is_generated',
         'document_url',
         'status',
