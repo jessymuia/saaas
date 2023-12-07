@@ -21,26 +21,34 @@ class TenantPaymentsDueWidget extends BaseWidget
 
     protected function getStats(): array
     {
-
-
         return [
             //
             Stat::make(
-                'Tenancy Agreements',
-                TenancyAgreement::query()->where('id','=',1)->count())
+                    'Tenancy Agreements',
+                    TenancyAgreement::query()
+                        ->where('tenant_id','=',$this->tenantID)
+                        ->where('status','=',1)
+                        ->where(function ($query) {
+                            $query->where('end_date', '>=', date('Y-m-d'))
+                                ->orWhereNull('end_date');
+                        })
+                        ->count() // get all the active tenancy agreements tied to this tenant
+                )
                 ->color('primary')
                 ->icon('heroicon-m-clipboard-document-check')
                 ->description('Total number of tenancy agreements')
                 ->descriptionIcon('heroicon-m-clipboard-document-list'),
             Stat::make(
-                'Payments Due',
-                $this->tenantBillsBilled() - $this->tenantPaymentsProcessed())
+                    'Payments Due',
+                    'KES '. number_format($this->tenantBillsBilled() - $this->tenantPaymentsProcessed(),2)
+                )
                 ->color('primary')
                 ->description('Total amount of payments due')
                 ->descriptionIcon('heroicon-m-banknotes'),
             Stat::make(
-                'Payments Processed',
-                $this->tenantPaymentsProcessed())
+                    'Payments Processed',
+                    'KES '. number_format($this->tenantPaymentsProcessed(),2)
+                )
                 ->color('primary')
                 ->description('Total amount of payments processed')
                 ->descriptionIcon('heroicon-m-currency-dollar'),
