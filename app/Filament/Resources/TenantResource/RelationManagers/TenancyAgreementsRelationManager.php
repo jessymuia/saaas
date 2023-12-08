@@ -143,8 +143,8 @@ class TenancyAgreementsRelationManager extends RelationManager
         $invoices = Invoice::query()
             ->where('tenancy_agreement_id', '=', $tenancyAgreement->id)
             ->orderBy('created_at', 'desc')
-            ->select(['id', 'created_at as transaction_date'])
-            ->selectRaw('concat("INV #", id,". Due on ") as transaction, concat("invoice") as transaction_type')
+            ->select(['id', 'invoice_for_month as transaction_date','invoice_due_date'])
+            ->selectRaw('concat("INV #", id,". Due on ", TO_CHAR(invoice_for_month,"Mon DD, YYYY")) as transaction, concat("invoice") as transaction_type')
 //            ->with('creditNote', function ($query){
 //                $query->select('id');
 //            })
@@ -197,24 +197,80 @@ class TenancyAgreementsRelationManager extends RelationManager
 
 //        dd($totalDue);
         try {
-            $statementOfAccountItems = '';
+            $statementOfAccountItems = '
+                <tr style="height: 30px;">
+                    <td class="s_cell_with_right_left_border" dir="ltr" colspan="2" style="font-size: 8pt;border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; border-left-width: 1px; border-left-color: #000; text-align: center; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">'.Carbon::createFromFormat('Y-m-d',$tenancyAgreement->start_date)->format('M j, Y').'</td>
+                    <td class="s_cell_with_right_left_border" dir="ltr" colspan="3" style="text-align: left; border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000;  color: #000; font-family: serif; font-size: 9pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">Balance Forward</td>
+                    <td class="s_cell_with_right_left_border" dir="ltr" colspan="1" style="text-align:right; border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; color: #000; font-family: serif; font-size: 9pt; vertical-align: middle; word-wrap: break-word; white-space: nowrap; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;"></td>
+                    <td class="s_cell_with_right_left_border" dir="ltr" colspan="1" style="text-align:right; border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; color: #000; font-family: serif; font-size: 9pt; vertical-align: middle; word-wrap: break-word; white-space: nowrap; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 0px; padding-left: 3px;">'.number_format(0,2).'</td>
+                </tr>';
 
             $propertyName = $tenancyAgreement->property->name;
 
             $unitName = $tenancyAgreement->unit->name;
             $balanceCarriedForward = 0;
             $runningBalance = $balanceCarriedForward;
+            $runningAmountDue = 0;
 
+//            foreach ($transactions as $transaction) {
+//                $signOfTransaction = $transaction['transaction_type'] == 'invoice' ? '+' : '-';
+//                $runningBalance += $transaction['transaction_type'] == 'invoice' ? $amountDue - $transaction['amount'] : $amountDue + $transaction['amount'];
+//                $statementOfAccountItems .= '
+//                    <tr style="height: 30px;">
+//                        <td class="s8b" dir="ltr" colspan="1" style="font-size: 8pt;border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; border-left-width: 1px; border-left-color: #000; text-align: center; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">'.Carbon::createFromFormat('Y-m-d H:i:s',$transaction['transaction_date'])->format('F j, Y').'</td>
+//                        <td class="s8" dir="ltr" colspan="4" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; color: #000; font-family: serif; font-size: 9pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">'.$transaction['transaction'].'</td>
+//                        <td class="s8" dir="ltr" colspan="1" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: right; color: #000; font-family: serif; font-size: 9pt; vertical-align: middle; word-wrap: break-word; white-space: nowrap; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">'.$signOfTransaction.number_format($transaction['amount'],2).'</td>
+//                        <td class="s8" dir="ltr" colspan="1" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: right; color: #000; font-family: serif; font-size: 9pt; vertical-align: middle; word-wrap: break-word; white-space: nowrap; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 0px; padding-left: 3px;">'.number_format($runningBalance,2).'</td>
+//                    </tr>';
+//            }
             foreach ($transactions as $transaction) {
                 $signOfTransaction = $transaction['transaction_type'] == 'invoice' ? '+' : '-';
-                $runningBalance += $transaction['transaction_type'] == 'invoice' ? $amountDue - $transaction['amount'] : $amountDue + $transaction['amount'];
+                $runningBalance += $transaction['transaction_type'] == 'invoice' ? $runningAmountDue + $transaction['amount'] : $runningAmountDue - $transaction['amount'];
                 $statementOfAccountItems .= '
                     <tr style="height: 30px;">
-                        <td class="s8b" dir="ltr" colspan="1" style="font-size: 8pt;border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; border-left-width: 1px; border-left-color: #000; text-align: center; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">'.Carbon::createFromFormat('Y-m-d H:i:s',$transaction['transaction_date'])->format('F j, Y').'</td>
-                        <td class="s8" dir="ltr" colspan="4" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; color: #000; font-family: serif; font-size: 9pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">'.$transaction['transaction'].'</td>
-                        <td class="s8" dir="ltr" colspan="1" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: right; color: #000; font-family: serif; font-size: 9pt; vertical-align: middle; word-wrap: break-word; white-space: nowrap; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">'.$signOfTransaction.number_format($transaction['amount'],2).'</td>
-                        <td class="s8" dir="ltr" colspan="1" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: right; color: #000; font-family: serif; font-size: 9pt; vertical-align: middle; word-wrap: break-word; white-space: nowrap; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 0px; padding-left: 3px;">'.number_format($runningBalance,2).'</td>
+                        <td class="s_cell_with_right_left_border" dir="ltr" colspan="2" style="font-size: 8pt;border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; border-left-width: 1px; border-left-color: #000; text-align: center; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">'.Carbon::parse($transaction['transaction_date'])->format('M j, Y').'</td>
+                        <td class="s_cell_with_right_left_border" dir="ltr" colspan="3" style="text-align: left; border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000;  color: #000; font-family: serif; font-size: 9pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">'.$transaction['transaction'].'</td>
+                        <td class="s_cell_with_right_left_border" dir="ltr" colspan="1" style="text-align:right; border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; color: #000; font-family: serif; font-size: 9pt; vertical-align: middle; word-wrap: break-word; white-space: nowrap; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">'.$signOfTransaction.number_format($transaction['amount'],2).'</td>
+                        <td class="s_cell_with_right_left_border" dir="ltr" colspan="1" style="text-align:right; border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; color: #000; font-family: serif; font-size: 9pt; vertical-align: middle; word-wrap: break-word; white-space: nowrap; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 0px; padding-left: 3px;">'.number_format($runningBalance,2).'</td>
                     </tr>';
+            }
+
+            // check if the statement of account items can fit in one page,
+            // if they are more than one page, then add a page break
+            // if less than one page, padd the table with empty rows
+            if (count($transactions) < 19){
+                $statementOfAccountItems .= str_repeat(
+                    '
+                            <tr style="height: 30px;">
+                                <td class="s_cell_with_right_left_border" colspan="2"></td>
+                                <td class="s_cell_with_right_left_border" colspan="3"></td>
+                                <td class="s_cell_with_right_left_border" colspan="1"></td>
+                                <td class="s_cell_with_right_left_border" colspan="1"></td>
+                            </tr>',
+                    19 - count($transactions)
+                );
+            }
+
+            $current = 0;
+            $oneToThirtyPastDue = 0;
+            $thirtyOneToSixtyPastDue = 0;
+            $sixtyOneToNinetyPastDue = 0;
+            $overNinetyPastDue = 0;
+            // iterate over the invoices obtaining the current, 1-30, 31-60, 61-90, over 90
+            foreach ($invoices as $invoice) {
+                $invoiceDueDate = Carbon::createFromFormat('Y-m-d',$invoice['invoice_due_date']);
+                $daysDifference = $invoiceDueDate->diffInDays(Carbon::now());
+                if ($daysDifference > 90){
+                    $overNinetyPastDue += $invoice['amount'];
+                } elseif ($daysDifference > 60){
+                    $sixtyOneToNinetyPastDue += $invoice['amount'];
+                } elseif ($daysDifference > 30){
+                    $thirtyOneToSixtyPastDue += $invoice['amount'];
+                } elseif ($daysDifference > 0 ){
+                    $oneToThirtyPastDue += $invoice['amount'];
+                } elseif ($daysDifference == 0){
+                    $current += $invoice['amount'];
+                }
             }
 
             $detailsArray = [
@@ -225,11 +281,11 @@ class TenancyAgreementsRelationManager extends RelationManager
                 'amountDue' => number_format($amountDue,2),
                 'amountEnc' => number_format(0,2),
                 'statementOfAccountItemsHTML' => $statementOfAccountItems,
-                'current'=> number_format(0,2),
-                'oneToThirtyPastDue'=> number_format(0,2),
-                'thirtyOneToSixtyPastDue'=> number_format(0,2),
-                'sixtyOneToNinetyPastDue'=> number_format(0,2),
-                'overNinetyPastDue'=> number_format(0,2),
+                'current'=> number_format($current,2),
+                'oneToThirtyPastDue'=> number_format($oneToThirtyPastDue,2),
+                'thirtyOneToSixtyPastDue'=> number_format($thirtyOneToSixtyPastDue,2),
+                'sixtyOneToNinetyPastDue'=> number_format($sixtyOneToNinetyPastDue,2),
+                'overNinetyPastDue'=> number_format($overNinetyPastDue,2),
             ];
 
             $content = File::get(resource_path('documents/templates/statement-of-account-output-document.html'));
@@ -277,26 +333,29 @@ class TenancyAgreementsRelationManager extends RelationManager
 
             Log::info('--------------------------------------------------------------------------');
 
-            // check if file exists
-            if (file_exists($pdfPath)) {
-                $savedPath = explode('/', $pdfPath);
-                // retrieve the string after the string 'app'
-                foreach ($savedPath as $key => $value) {
-                    if ($value == 'app') {
-                        $savedPath = implode("/", array_slice($savedPath, $key + 1));
-                        break;
-                    }
-                }
-//                $this->is_generated = 1;
-//                $this->document_url = $savedPath;
-//                $this->updated_by = auth()->user()->id;
-//
-//                $this->save();
+            // trigger download of the file then delete it
+            return response()->download($pdfPath)->deleteFileAfterSend(true);
 
-                return true;
-            } else {
-                return false;
-            }
+            // check if file exists
+//            if (file_exists($pdfPath)) {
+//                $savedPath = explode('/', $pdfPath);
+//                // retrieve the string after the string 'app'
+//                foreach ($savedPath as $key => $value) {
+//                    if ($value == 'app') {
+//                        $savedPath = implode("/", array_slice($savedPath, $key + 1));
+//                        break;
+//                    }
+//                }
+////                $this->is_generated = 1;
+////                $this->document_url = $savedPath;
+////                $this->updated_by = auth()->user()->id;
+////
+////                $this->save();
+//
+//                return true;
+//            } else {
+//                return false;
+//            }
         }catch (\Exception $exception){
             Log::error($exception->getTraceAsString());
             Log::error($exception->getMessage());

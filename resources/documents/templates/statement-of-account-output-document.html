@@ -271,6 +271,55 @@
             padding: 2px 3px 2px 3px;
         }
 
+        .bold_cell_with_left_top_border {
+            border-top: 1px SOLID #000;
+            border-left: 1px SOLID #000;
+
+            text-align: center;
+            font-weight: bold;
+            color: #000;
+            font-family: serif;
+            font-size: 10pt;
+            vertical-align: middle;
+            word-wrap: break-word;
+            white-space: normal;
+            direction: ltr;
+            padding: 2px 3px 2px 3px;
+        }
+
+        .normal_cell_with_left_top_bottom_border {
+            border-top: 1px SOLID #000;
+            border-left: 1px SOLID #000;
+            border-bottom: 1px SOLID #000;
+
+            text-align: center;
+            font-weight: normal;
+            color: #000;
+            font-family: serif;
+            font-size: 10pt;
+            vertical-align: middle;
+            word-wrap: break-word;
+            white-space: normal;
+            direction: ltr;
+            padding: 2px 3px 2px 3px;
+        }
+
+        .s_cell_with_right_left_border {
+            border-left: 1px SOLID #000;
+            border-right: 1px SOLID #000;
+
+            text-align: left;
+            font-weight: normal;
+            color: #000;
+            font-family: serif;
+            font-size: 8pt;
+            vertical-align: middle;
+            word-wrap: normal;
+            white-space: normal;
+            direction: ltr;
+            padding: 2px 3px 2px 3px;
+        }
+
         .ritz .waffle .s0 {
             text-align: left;
             color: #000;
@@ -417,8 +466,8 @@
         </tr>
         <!-- invoice items header -->
         <tr style="height: 30px; border-top-width: 1px; border-top-color: #000" >
-            <td class="s12b" dir="ltr" colspan="1" style="border-top-width: 1px; border-top-color: #000; border-bottom-width: 1px; border-bottom-color: #000; border-left-width: 1px; border-left-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: bold; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; white-space: normal; direction: ltr;">Date</td>
-            <td class="s12" dir="ltr" colspan="4" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: bold; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">Transaction</td>
+            <td class="s12b" dir="ltr" colspan="2" style="border-top-width: 1px; border-top-color: #000; border-bottom-width: 1px; border-bottom-color: #000; border-left-width: 1px; border-left-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: bold; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; white-space: normal; direction: ltr;">Date</td>
+            <td class="s12" dir="ltr" colspan="3" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: bold; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">Transaction</td>
             <td class="s12" dir="ltr" colspan="1" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: bold; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">Amount</td>
             <td class="s12" dir="ltr" colspan="1" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: bold; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">Balance</td>
         </tr>
@@ -437,21 +486,21 @@
 
         <!-- start statement summary -->
         <tr style="height: 30px;">
-            <td class="s12" dir="ltr" colspan="2" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: normal; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;"></td>
-            <td class="s12" dir="ltr" colspan="1" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: normal; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">1-30 days past due</td>
-            <td class="s12" dir="ltr" colspan="1" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: normal; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">31-60 days past due</td>
-            <td class="s12" dir="ltr" colspan="1" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: normal; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">61-90 days past due</td>
-            <td class="s12" dir="ltr" colspan="1" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: normal; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">Over 90 days past due</td>
-            <td class="s12" dir="ltr" colspan="2" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: normal; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">Amount Due</td>
+            <td class="bold_cell_with_left_top_border" dir="ltr" colspan="2" >Current</td>
+            <td class="bold_cell_with_left_top_border" dir="ltr" colspan="1">1-30 days past due</td>
+            <td class="bold_cell_with_left_top_border" dir="ltr" colspan="1">31-60 days past due</td>
+            <td class="bold_cell_with_left_top_border" dir="ltr" colspan="1">61-90 days past due</td>
+            <td class="bold_cell_with_left_top_border" dir="ltr" colspan="1">Over 90 days past due</td>
+            <td class="bold_cell_with_left_top_border" dir="ltr" colspan="2">Amount Due</td>
         </tr>
 
         <tr style="height: 30px;">
-            <td class="s12" dir="ltr" colspan="2" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: normal; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">KES @#current</td>
-            <td class="s12" dir="ltr" colspan="1" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: normal; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">KES @#oneToThirtyPastDue</td>
-            <td class="s12" dir="ltr" colspan="1" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: normal; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">KES @#thirtyOneToSixtyPastDue</td>
-            <td class="s12" dir="ltr" colspan="1" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: normal; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">KES @#sixtyOneToNinetyPastDue</td>
-            <td class="s12" dir="ltr" colspan="1" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: normal; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">KES @#overNinetyPastDue</td>
-            <td class="s12" dir="ltr" colspan="2" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: normal; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">KES @#amountDue</td>
+            <td class="normal_cell_with_left_top_bottom_border" dir="ltr" colspan="2" >KES @#current</td>
+            <td class="normal_cell_with_left_top_bottom_border" dir="ltr" colspan="1" >KES @#oneToThirtyPastDue</td>
+            <td class="normal_cell_with_left_top_bottom_border" dir="ltr" colspan="1" >KES @#thirtyOneToSixtyPastDue</td>
+            <td class="normal_cell_with_left_top_bottom_border" dir="ltr" colspan="1" >KES @#sixtyOneToNinetyPastDue</td>
+            <td class="normal_cell_with_left_top_bottom_border" dir="ltr" colspan="1" >KES @#overNinetyPastDue</td>
+            <td class="normal_cell_with_left_top_bottom_border" dir="ltr" colspan="2" >KES @#amountDue</td>
         </tr>
         <!-- end statement summary -->
 

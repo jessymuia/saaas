@@ -112,6 +112,16 @@ class MeterReading extends DefaultAppModel
             $invoice = new Invoice();
             $invoice->tenancy_agreement_id = $tenancyAgreement;
             $invoice->invoice_for_month = $this->reading_date; // used to ensure that the invoice is created once per month
+            $invoice->invoice_due_date = // next month 5th or this month 5th if reading date is before 5th
+                date_format(
+                    date_add(
+                        date_create($this->reading_date),
+                        date_interval_create_from_date_string(
+                            date_format($this->reading_date,'d') < 5 ? '0 month' : '1 month'
+                        )
+                    ),
+                    'Y-m-05'
+                );
             $invoice->created_by = auth()->user()->id;
 
             $invoice->save();
