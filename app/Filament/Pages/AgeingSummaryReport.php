@@ -36,6 +36,8 @@ class AgeingSummaryReport extends Page implements HasForms
     public $sixty_one_to_ninety_days = false;
     public $over_ninety_days = false;
 
+    public $statementPath;
+
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     protected static string $view = 'filament.pages.ageing-summary-report';
@@ -94,6 +96,8 @@ class AgeingSummaryReport extends Page implements HasForms
         $submittedFormData = $this->form->getState();
 
         $this->customValidate($submittedFormData);
+
+        return response()->download($this->statementPath);
     }
 
     public function customValidate($submittedFormData)
@@ -263,22 +267,10 @@ class AgeingSummaryReport extends Page implements HasForms
 //            Pdf::generateFromHtml($content, Storage::url($pdfPath));
         $snappy->generateFromHtml($content, $pdfPath);
 
-//            \Barryvdh\DomPDF\PDF::loadView('documents.templates.invoice-output-document', $detailsArray)->save($pdfPath);
-//            \Barryvdh\DomPDF\Facade\Pdf::loadView('documents.templates.invoice-output-document', $detailsArray)->save($pdfPath);
-//            $pdf = SnappyPdf::loadView('documents.templates.invoice-output-document', $detailsArray)->output();
-//            Log::error("Ndio hii: " . $pdf);
-//            $pdf = SnappyPdf::loadView('documents.templates.invoice-output-document', $detailsArray);
-//            $pdf = SnappyPdf::loadView('documents.templates.invoice-output-document', $detailsArray)->save($pdfPath);
-//            $pdf = SnappyPdf::loadHTML($content)->output();
-        Log::error("Ndio hii: " . $pdfPath);
-//            Storage::put($pdfPath, $pdf->output());
-
-//            Log::info(Storage::url($pdfPath));
-
-        Log::info('--------------------------------------------------------------------------');
-
         // trigger download of the file then delete it
-        return response()->download($pdfPath)->deleteFileAfterSend(true);
+        // this one below is not downloading
+        $this->statementPath = $pdfPath;
+//        return response()->download($pdfPath,"Ageing summary report as at ".now()->format('F j, Y h:1'),$headers);
     }
 
     public function displayErrorNotification($message = "Report generation failed"): void
