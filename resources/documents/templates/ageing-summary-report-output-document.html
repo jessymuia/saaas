@@ -1,0 +1,536 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en">
+<head>
+    <style type="text/css">
+        body {
+            padding-top: 0 !important;
+            margin-top: 0 !important;
+        }
+
+        .ritz .waffle a {
+            color: inherit;
+        }
+
+        .ritz .waffle .s7 {
+            text-align: left;
+            font-weight: bold;
+            color: #000;
+            font-family: serif;
+            font-size: 10pt;
+            vertical-align: top;
+            word-wrap: break-word;
+            white-space: normal;
+            direction: ltr;
+            padding: 2px 3px 2px 3px;
+        }
+
+        .ritz .waffle .s6 {
+            background-color: #f3f3f3;
+            text-align: center;
+            font-weight: bold;
+            color: #000;
+            font-family: serif;
+            font-size: 14pt;
+            vertical-align: middle;
+            white-space: nowrap;
+            direction: ltr;
+            padding: 2px 3px 2px 3px;
+        }
+
+        .ritz .waffle .s9 {
+            text-align: left;
+            font-weight: bold;
+            color: #000;
+            font-family: serif;
+            font-size: 10pt;
+            vertical-align: middle;
+            word-wrap: break-word;
+            white-space: normal;
+            direction: ltr;
+            padding: 2px 3px 2px 3px;
+        }
+
+        .ritz .waffle .s8 {
+            border-bottom: 1px SOLID #000;
+            border-right: 1px SOLID #000;
+
+            text-align: center;
+            color: #000;
+            font-family: serif;
+            font-size: 10pt;
+            vertical-align: middle;
+            word-wrap: break-word;
+            white-space: normal;
+            direction: ltr;
+            padding: 2px 3px 2px 3px;
+        }
+
+        .ritz .waffle .s8b {
+            border-bottom: 1px SOLID #000;
+            border-right: 1px SOLID #000;
+            border-left: 1px SOLID #000;
+
+            text-align: center;
+            color: #000;
+            font-family: serif;
+            font-size: 8pt;
+            vertical-align: middle;
+            word-wrap: break-word;
+            white-space: normal;
+            direction: ltr;
+            padding: 2px 3px 2px 3px;
+        }
+
+        .ritz .waffle .s8c {
+            border-bottom: 1px SOLID #000;
+            border-right: 1px SOLID #000;
+            border-left: 1px SOLID #000;
+            border-top: 1px SOLID #000;
+
+            text-align: center;
+            color: #000;
+            font-family: serif;
+            font-size: 10pt;
+            vertical-align: middle;
+            word-wrap: break-word;
+            white-space: normal;
+            direction: ltr;
+            padding: 2px 3px 2px 3px;
+
+            background-size: contain;
+        }
+
+        .ritz .waffle .s11 {
+            border-bottom: 1px SOLID #000;
+            background-color: #f3f3f3;
+            text-align: center;
+            font-weight: bold;
+            color: #000;
+            font-family: serif;
+            font-size: 12pt;
+            vertical-align: middle;
+            word-wrap: break-word;
+            white-space: normal;
+            direction: ltr;
+            padding: 2px 3px 2px 3px;
+        }
+
+        .ritz .waffle .s3 {
+            text-align: right;
+            color: #000;
+            font-family: serif;
+            font-size: 10pt;
+            vertical-align: middle;
+            white-space: nowrap;
+            direction: ltr;
+            padding: 2px 3px 2px 3px;
+        }
+
+        .ritz .waffle .s14 {
+            background-color: #f3f3f3;
+            text-align: center;
+            font-weight: bold;
+            color: #000;
+            font-family: serif;
+            font-size: 12pt;
+            vertical-align: middle;
+            word-wrap: break-word;
+            white-space: normal;
+            direction: ltr;
+            padding: 2px 3px 2px 3px;
+        }
+
+        .ritz .waffle .s5 {
+            text-align: center;
+            font-weight: bold;
+            color: #000;
+            font-family: serif;
+            font-size: 10pt;
+            vertical-align: middle;
+            white-space: nowrap;
+            direction: ltr;
+            padding: 2px 3px 2px 3px;
+        }
+
+        .ritz .waffle .s15 {
+            text-align: left;
+            color: #000;
+            font-family: 'Arial';
+            font-size: 10pt;
+            vertical-align: middle;
+            word-wrap: break-word;
+            white-space: normal;
+            direction: ltr;
+            padding: 2px 3px 2px 3px;
+        }
+
+        .ritz .waffle .s13 {
+            border-left: none;
+
+            text-align: center;
+            font-weight: bold;
+            color: #000;
+            font-family: serif;
+            font-size: 10pt;
+            vertical-align: middle;
+            word-wrap: break-word;
+            white-space: normal;
+            direction: ltr;
+            padding: 2px 3px 2px 3px;
+        }
+
+        .ritz .waffle .s2 {
+            text-align: center;
+            font-weight: bold;
+            color: #000;
+            font-family: serif;
+            font-size: 12pt;
+            vertical-align: middle;
+            white-space: nowrap;
+            direction: ltr;
+            padding: 2px 3px 2px 3px;
+        }
+
+        .ritz .waffle .s10 {
+            text-align: left;
+            font-weight: bold;
+            color: #000;
+            font-family: serif;
+            font-size: 10pt;
+            vertical-align: middle;
+            word-wrap: break-word;
+            white-space: normal;
+            direction: ltr;
+            padding: 2px 3px 2px 3px;
+        }
+
+        .ritz .waffle .s4 {
+            text-align: center;
+            font-weight: bold;
+            color: #000;
+            font-family: serif;
+            font-size: 12pt;
+            vertical-align: middle;
+            white-space: nowrap;
+            direction: ltr;
+            padding: 2px 3px 2px 3px;
+        }
+
+        .ritz .waffle .s1 {
+            text-align: left;
+            color: #000;
+            font-family: serif;
+            font-size: 10pt;
+            vertical-align: middle;
+            white-space: nowrap;
+            direction: ltr;
+            padding: 2px 3px 2px 3px;
+        }
+
+        .ritz .waffle .s1b {
+            text-align: right;
+            color: #000;
+            font-family: serif;
+            font-size: 10pt;
+            vertical-align: top;
+            white-space: nowrap;
+            direction: ltr;
+            padding: 2px 3px 2px 3px;
+        }
+
+        .ritz .waffle .s12 {
+            border-bottom: 1px SOLID #000;
+            border-right: 1px SOLID #000;
+
+            text-align: center;
+            font-weight: bold;
+            color: #000;
+            font-family: serif;
+            font-size: 10pt;
+            vertical-align: middle;
+            word-wrap: break-word;
+            white-space: normal;
+            direction: ltr;
+            padding: 2px 3px 2px 3px;
+        }
+
+        .ritz .waffle .s12b {
+            border-bottom: 1px SOLID #000;
+            border-left: 1px SOLID #000;
+            border-right: 1px SOLID #000;
+
+            text-align: center;
+            font-weight: bold;
+            color: #000;
+            font-family: serif;
+            font-size: 10pt;
+            vertical-align: middle;
+            word-wrap: break-word;
+            white-space: normal;
+            direction: ltr;
+            padding: 2px 3px 2px 3px;
+        }
+
+        .cell_row_header {
+            border-bottom: 1px SOLID #000;
+
+            text-align: center;
+            font-weight: bold;
+            color: #000;
+            font-family: serif;
+            font-size: 8pt;
+            vertical-align: middle;
+            word-wrap: break-word;
+            white-space: normal;
+            direction: ltr;
+            padding: 2px 3px 2px 3px;
+        }
+
+        .cell_property_header {
+            text-align: left;
+            font-weight: bold;
+            color: #000;
+            font-family: serif;
+            font-size: 10pt;
+            vertical-align: middle;
+            word-wrap: break-word;
+            white-space: normal;
+            direction: ltr;
+            padding: 2px 3px 2px 0;
+        }
+
+        .bold_cell_with_left_top_border {
+            border-top: 1px SOLID #000;
+            border-left: 1px SOLID #000;
+
+            text-align: center;
+            font-weight: bold;
+            color: #000;
+            font-family: serif;
+            font-size: 10pt;
+            vertical-align: middle;
+            word-wrap: break-word;
+            white-space: normal;
+            direction: ltr;
+            padding: 2px 3px 2px 3px;
+        }
+
+        .normal_cell_with_left_top_bottom_border {
+            border-top: 1px SOLID #000;
+            border-left: 1px SOLID #000;
+            border-bottom: 1px SOLID #000;
+
+            text-align: center;
+            font-weight: normal;
+            color: #000;
+            font-family: serif;
+            font-size: 10pt;
+            vertical-align: middle;
+            word-wrap: break-word;
+            white-space: normal;
+            direction: ltr;
+            padding: 2px 3px 2px 3px;
+        }
+
+        .cell_property_footer {
+            border-top: 1px SOLID #000;
+            border-bottom: 1px SOLID #000;
+
+            text-align: right;
+            font-weight: normal;
+            color: #000;
+            font-family: serif;
+            font-size: 8pt;
+            vertical-align: middle;
+            word-wrap: break-word;
+            white-space: normal;
+            direction: ltr;
+            padding: 0 3px 0 3px;
+        }
+
+        .table_cell_for_statement_summary {
+            border-right: 1px SOLID #000;
+            border-left: 1px SOLID #000;
+
+            text-align: right;
+            font-weight: normal;
+            color: #000;
+            font-family: serif;
+            font-size: 8pt;
+            vertical-align: middle;
+            word-wrap: normal;
+            white-space: normal;
+            direction: ltr;
+            padding: 2px 6px 2px 3px;
+        }
+
+        .details_header_cell_for_statement_summary {
+            text-align: left;
+            font-weight: bold;
+            color: #000;
+            font-family: serif;
+            font-size: 8pt;
+            vertical-align: middle;
+            word-wrap: normal;
+            white-space: normal;
+            direction: ltr;
+            padding: 2px 3px 2px 3px;
+        }
+
+        .element_with_bottom_border {
+            border-bottom: 1px SOLID #000;
+            vertical-align: middle;
+            white-space: normal;
+            padding: 2px 3px 2px 3px;
+        }
+
+        .ritz .waffle .s0 {
+            text-align: left;
+            color: #000;
+            font-family: serif;
+            font-size: 10pt;
+            vertical-align: top;
+            word-wrap: break-word;
+            white-space: normal;
+            direction: ltr;
+            padding: 2px 3px 2px 3px;
+        }
+
+        .grid-container table {
+            overflow: hidden;
+        }
+
+        .watermarked {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .watermarked img {
+            max-width: 100%;
+        }
+
+        /*.watermarked::after {*/
+        /*    position: absolute;*/
+        /*    top: -75%;*/
+        /*    left: -75%;*/
+        /*    display: block;*/
+        /*    width: 150%;*/
+        /*    height: 150%;*/
+        /*    transform: rotate(-45deg);*/
+        /*    content: attr(data-watermark);*/
+        /*    opacity: 0.2;*/
+        /*    line-height: 3em;*/
+        /*    letter-spacing: 2px;*/
+        /*    color: grey;*/
+        /*}*/
+
+        span {
+            font-family: serif, 'serif' !important;
+            font-size: 10pt;
+        }
+
+        td {
+            line-height: 160%;
+        }
+
+        @media print {
+            td {
+                padding-bottom: 10px;
+            }
+
+            span,
+            td {
+                font-family: serif, 'serif' !important;
+                font-size: 10pt;
+            }
+
+        }
+    </style>
+</head>
+
+<body class="nimbus-is-editor" cz-shortcut-listen="true">
+<div class="ritz grid-container watermarked" dir="ltr" data-watermark="Hamud Realtor" style="position: relative; overflow: hidden;">
+    <table class="waffle" style="overflow: hidden; table-layout: fixed;" cellspacing="0" cellpadding="0">
+        <thead style="visibility: collapse; height: 0;">
+        <tr><th class="row-header freezebar-origin-ltr"></th><th id="0C0" class="column-headers-background" style="width: 86px;"></th><th id="0C1" class="column-headers-background" style="width: 161px;"></th><th id="0C2" class="column-headers-background" style="width: 100px;"></th><th id="0C3" class="column-headers-background" style="width: 100px;"></th><th id="0C4" class="column-headers-background" style="width: 161px;"></th><th id="0C5" class="column-headers-background" style="width: 86px;"></th></tr>
+        </thead>
+        <tbody>
+
+        <!-- TITLE -->
+        <tr style="height: 20px;">
+            <td class="s1" dir="ltr" colspan="5" style="text-align: left; color: #000; font-family: serif; font-size: 10pt; vertical-align: middle; white-space: nowrap; direction: ltr; padding-top: 2px; padding-bottom: 10px; padding-right: 3px; padding-left: 3px;"></td>
+            <td class="s2" dir="ltr" colspan="5" style="text-align: center; font-weight: bold; color: #000; font-family: serif; font-size: 11pt; vertical-align: middle; white-space: nowrap; direction: ltr; padding-top: 2px; padding-bottom: 10px; padding-right: 3px; padding-left: 3px; letter-spacing: 0.5px;">
+                <p>Ageing Summary Report</p>
+            </td>
+            <td class="s1" dir="ltr" colspan="5" style="text-align: right; color: #000; font-family: serif; font-size: 10pt; vertical-align: middle; white-space: nowrap; direction: ltr; padding-top: 2px; padding-bottom: 10px; padding-right: 3px; padding-left: 3px;"></td>
+        </tr>
+
+        <!-- LOGO & ADDRESS -->
+        <tr>
+            <td class="s1" dir="ltr" colspan="5" style="text-align: center; color: #000; font-family: serif; font-size: 10pt; vertical-align: middle; white-space: nowrap; direction: ltr; padding-top: 2px; padding-bottom: 10px; padding-right: 3px; padding-left: 3px; line-height: 160%;">
+                <div id="embed_980721977" class="waffle-embedded-object-overlay" style=" height: 73px; display: block; margin-left: auto; margin-right: auto;">
+                    <img src="@#logoUrl" style="display: block; max-width: 100%;"  height="73"  alt="Hamud Realtor Logo"/>
+                </div>
+            </td>
+            <td colspan="5"></td>
+            <td class="s3" dir="ltr" colspan="5" style="text-align: right; color: #000; font-family: serif; font-size: 9pt; vertical-align: middle; white-space: nowrap; direction: ltr; padding-top: 2px; padding-bottom: 3px; padding-right: 3px; padding-left: 3px;">
+                <div>
+                    <p style="margin-bottom: 0; margin-top: 0"><span style="font-weight: bold">Location:</span> HFC Rehani House, 9th Floor</p>
+                    <p style="margin-bottom: 0; margin-top: 0"><span style="font-weight: bold">Address:</span> P.O Box 37297 G.P.O Nairobi</p>
+                    <p style="margin-bottom: 0; margin-top: 0"><span style="font-weight: bold">Phone:</span> +254 756 29 29 29 <span style="font-weight: bold">/</span> +254 722 83 43 53</p>
+                    <p style="margin-bottom: 0; margin-top: 0"><span style="font-weight: bold">Email:</span> hamudrealtorsltd@gmail.com</p>
+
+                </div>
+            </td>
+        </tr>
+
+        <!--   Top Space with bottom border    -->
+        <tr style="height: 30px; margin-bottom: 10px">
+            <td dir="ltr" colspan="15" class="element_with_bottom_border" style="background-color: #f3f3f3; line-height: 180%;"></td>
+        </tr>
+        <!--   End of top Space with bottom border    -->
+
+        <!-- report header -->
+        @#tableHeaderHTML
+        <!-- report header -->
+
+        <!-- start report items list -->
+        @#reportContentItemsHTML
+        <!-- end of report items list -->
+
+        <!-- start of space -->
+        <tr style="height: 30px">
+            <td dir="ltr" colspan="4"></td>
+            <td class="s11" dir="ltr" colspan="4" style="background-color: #ffffff"></td>
+        </tr>
+        <!-- end of space -->
+
+<!--        &lt;!&ndash; start statement summary &ndash;&gt;-->
+<!--        <tr style="height: 30px;">-->
+<!--            <td class="bold_cell_with_left_top_border" dir="ltr" colspan="2" >Current</td>-->
+<!--            <td class="bold_cell_with_left_top_border" dir="ltr" colspan="1">1-30 days past due</td>-->
+<!--            <td class="bold_cell_with_left_top_border" dir="ltr" colspan="1">31-60 days past due</td>-->
+<!--            <td class="bold_cell_with_left_top_border" dir="ltr" colspan="1">61-90 days past due</td>-->
+<!--            <td class="bold_cell_with_left_top_border" dir="ltr" colspan="1">Over 90 days past due</td>-->
+<!--            <td class="bold_cell_with_left_top_border" dir="ltr" colspan="2">Amount Due</td>-->
+<!--        </tr>-->
+
+<!--        <tr style="height: 30px;">-->
+<!--            <td class="normal_cell_with_left_top_bottom_border" dir="ltr" colspan="2" >KES @#current</td>-->
+<!--            <td class="normal_cell_with_left_top_bottom_border" dir="ltr" colspan="1" >KES @#oneToThirtyPastDue</td>-->
+<!--            <td class="normal_cell_with_left_top_bottom_border" dir="ltr" colspan="1" >KES @#thirtyOneToSixtyPastDue</td>-->
+<!--            <td class="normal_cell_with_left_top_bottom_border" dir="ltr" colspan="1" >KES @#sixtyOneToNinetyPastDue</td>-->
+<!--            <td class="normal_cell_with_left_top_bottom_border" dir="ltr" colspan="1" >KES @#overNinetyPastDue</td>-->
+<!--            <td class="normal_cell_with_left_top_bottom_border" dir="ltr" colspan="2" >KES @#amountDue</td>-->
+<!--        </tr>-->
+        <!-- end statement summary -->
+
+        <tr style="height: 30px;">
+            <td class="s14" dir="ltr" colspan="15" style="background-color: #f3f3f3; text-align: center; font-weight: bold; color: #000; font-family: serif; font-size: 12pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 10px; padding-right: 3px; padding-left: 3px;"></td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>
+<!--<div class="s14" dir="ltr" colspan="7" style="background-color: #f3f3f3; text-align: center; font-weight: bold; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 10px; padding-right: 3px; padding-left: 3px;"><b>Disclaimer: This is an electronically generated document. It does not require a signature.</b></div>-->
+</body></html>

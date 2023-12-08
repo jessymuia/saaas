@@ -148,7 +148,7 @@ class TenancyAgreementsRelationManager extends RelationManager
 //            ->with('creditNote', function ($query){
 //                $query->select('id');
 //            })
-            ->get(['amount'])
+            ->get(['amount','unpaid_amount'])
             ->toArray();
 //        dd($invoices);
         // get all credit notes and convert to array

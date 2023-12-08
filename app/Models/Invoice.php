@@ -31,7 +31,7 @@ class Invoice extends DefaultAppModel
         'deleted_by',
     ];
 
-    protected $appends = ['amount'];
+    protected $appends = ['amount','unpaid_amount'];
 
     public function tenancyAgreement(){
         return $this->belongsTo(TenancyAgreement::class);
@@ -51,6 +51,18 @@ class Invoice extends DefaultAppModel
         });
 
         return $invoiceSum;
+    }
+
+    public function getUnpaidAmountAttribute(){
+        // sum amount of tenancy bills
+        // sum amount of tenancy agreement
+        $invoiceSum = 0;
+        $invoiceSum += $this->tenancyBills()->sum('amount');
+        $this->tenancyAgreement()->each(function($item) use (&$invoiceSum){
+            $invoiceSum += $item->amount;
+        });
+
+        return $invoiceSum - $this->invoicePayments()->sum('amount') - $this->creditNote()->sum('amount_credited');
     }
 
     public function creditNote(){
