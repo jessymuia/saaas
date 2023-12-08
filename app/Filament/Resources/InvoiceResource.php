@@ -62,6 +62,7 @@ class InvoiceResource extends Resource
                     ->sortable(),
                 Tables\Columns\IconColumn::make('is_confirmed')
                     ->boolean()
+                    ->sortable()
                     ->label('Confirmed'),
                 Tables\Columns\IconColumn::make('is_generated')
                     ->boolean()

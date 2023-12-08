@@ -11,45 +11,6 @@
             color: inherit;
         }
 
-        .ritz .waffle .s7 {
-            text-align: left;
-            font-weight: bold;
-            color: #000;
-            font-family: serif;
-            font-size: 10pt;
-            vertical-align: top;
-            word-wrap: break-word;
-            white-space: normal;
-            direction: ltr;
-            padding: 2px 3px 2px 3px;
-        }
-
-        .ritz .waffle .s6 {
-            background-color: #f3f3f3;
-            text-align: center;
-            font-weight: bold;
-            color: #000;
-            font-family: serif;
-            font-size: 14pt;
-            vertical-align: middle;
-            white-space: nowrap;
-            direction: ltr;
-            padding: 2px 3px 2px 3px;
-        }
-
-        .ritz .waffle .s9 {
-            text-align: left;
-            font-weight: bold;
-            color: #000;
-            font-family: serif;
-            font-size: 10pt;
-            vertical-align: middle;
-            word-wrap: break-word;
-            white-space: normal;
-            direction: ltr;
-            padding: 2px 3px 2px 3px;
-        }
-
         .ritz .waffle .s8 {
             border-bottom: 1px SOLID #000;
             border-right: 1px SOLID #000;
@@ -254,6 +215,57 @@
             padding: 2px 3px 2px 3px;
         }
 
+        .ritz .waffle .s_cell_with_right_left_border {
+            border-left: 1px SOLID #000;
+            border-right: 1px SOLID #000;
+
+            text-align: left;
+            font-weight: normal;
+            color: #000;
+            font-family: serif;
+            font-size: 8pt;
+            vertical-align: middle;
+            word-wrap: normal;
+            white-space: normal;
+            direction: ltr;
+            padding: 2px 3px 2px 3px;
+        }
+
+        .ritz .waffle .title_cell_with_all_borders {
+            border-left: 1px SOLID #000;
+            border-right: 1px SOLID #000;
+            border-top: 1px SOLID #000;
+            border-bottom: 1px SOLID #000;
+
+            text-align: left;
+            font-weight: normal;
+            color: #000;
+            font-family: serif;
+            font-size: 8pt;
+            vertical-align: middle;
+            word-wrap: normal;
+            white-space: normal;
+            direction: ltr;
+            padding: 2px 3px 2px 3px;
+        }
+
+        .ritz .waffle .title_cell_with_top_right_bottom_borders {
+            border-right: 1px SOLID #000;
+            border-top: 1px SOLID #000;
+            border-bottom: 1px SOLID #000;
+
+            text-align: left;
+            font-weight: normal;
+            color: #000;
+            font-family: serif;
+            font-size: 8pt;
+            vertical-align: middle;
+            word-wrap: normal;
+            white-space: normal;
+            direction: ltr;
+            /*padding: 2px 3px 2px 3px;*/
+        }
+
         .ritz .waffle .s12b {
             border-bottom: 1px SOLID #000;
             border-left: 1px SOLID #000;
@@ -265,18 +277,6 @@
             font-family: serif;
             font-size: 10pt;
             vertical-align: middle;
-            word-wrap: break-word;
-            white-space: normal;
-            direction: ltr;
-            padding: 2px 3px 2px 3px;
-        }
-
-        .ritz .waffle .s0 {
-            text-align: left;
-            color: #000;
-            font-family: serif;
-            font-size: 10pt;
-            vertical-align: top;
             word-wrap: break-word;
             white-space: normal;
             direction: ltr;
@@ -345,22 +345,22 @@
 
         <!-- TITLE -->
         <tr style="height: 20px;">
-            <td class="s1" dir="ltr" colspan="2" style="text-align: left; color: #000; font-family: serif; font-size: 10pt; vertical-align: middle; white-space: nowrap; direction: ltr; padding-top: 2px; padding-bottom: 10px; padding-right: 3px; padding-left: 3px;"></td>
-            <td class="s2" dir="ltr" colspan="4" style="text-align: center; font-weight: bold; color: #000; font-family: serif; font-size: 11pt; vertical-align: middle; white-space: nowrap; direction: ltr; padding-top: 2px; padding-bottom: 10px; padding-right: 3px; padding-left: 3px; letter-spacing: 0.5px;">
-                <p>INVOICE</p>
+            <td class="s1" dir="ltr" colspan="3" style="text-align: left; color: #000; font-family: serif; font-size: 10pt; vertical-align: middle; white-space: nowrap; direction: ltr; padding-top: 2px; padding-bottom: 10px; padding-right: 3px; padding-left: 3px;"></td>
+            <td class="s2" dir="ltr" colspan="1" style="text-align: center; font-weight: bold; color: #000; font-family: serif; font-size: 11pt; vertical-align: middle; white-space: nowrap; direction: ltr; padding-top: 2px; padding-bottom: 10px; padding-right: 3px; padding-left: 3px; letter-spacing: 0.5px;">
+                <div style="text-align: center;"><p>INVOICE</p></div>
             </td>
-            <td class="s1" dir="ltr" colspan="2" style="text-align: right; color: #000; font-family: serif; font-size: 10pt; vertical-align: middle; white-space: nowrap; direction: ltr; padding-top: 2px; padding-bottom: 10px; padding-right: 3px; padding-left: 3px;"></td>
+            <td class="s1" dir="ltr" colspan="3" style="text-align: right; color: #000; font-family: serif; font-size: 10pt; vertical-align: middle; white-space: nowrap; direction: ltr; padding-top: 2px; padding-bottom: 10px; padding-right: 3px; padding-left: 3px;"></td>
         </tr>
 
         <!-- LOGO & ADDRESS -->
         <tr>
-            <td class="s1" dir="ltr" colspan="4" style="text-align: center; color: #000; font-family: serif; font-size: 10pt; vertical-align: middle; white-space: nowrap; direction: ltr; padding-top: 2px; padding-bottom: 10px; padding-right: 3px; padding-left: 3px; line-height: 160%;">
+            <td class="s1" dir="ltr" colspan="3" style="text-align: center; color: #000; font-family: serif; font-size: 10pt; vertical-align: middle; white-space: nowrap; direction: ltr; padding-top: 2px; padding-bottom: 10px; padding-right: 3px; padding-left: 3px; line-height: 160%;">
                 <div id="embed_980721977" class="waffle-embedded-object-overlay" style=" height: 73px; display: block; margin-left: auto; margin-right: auto;">
                     <img src="@#logoUrl" style="display: block; max-width: 100%;"  height="73"  alt="Hamud Realtor Logo"/>
                 </div>
             </td>
             <td class="s1" dir="ltr" style="text-align: left; color: #000; font-family: serif; font-size: 10pt; vertical-align: middle; white-space: nowrap; direction: ltr; padding-top: 2px; padding-bottom: 10px; padding-right: 3px; padding-left: 3px; line-height: 160%;"></td>
-            <td class="s3" dir="ltr" colspan="2" style="text-align: right; color: #000; font-family: serif; font-size: 9pt; vertical-align: middle; white-space: nowrap; direction: ltr; padding-top: 2px; padding-bottom: 3px; padding-right: 3px; padding-left: 3px;">
+            <td class="s3" dir="ltr" colspan="3" style="text-align: right; color: #000; font-family: serif; font-size: 9pt; vertical-align: middle; white-space: nowrap; direction: ltr; padding-top: 2px; padding-bottom: 3px; padding-right: 3px; padding-left: 3px;">
                 <div>
                     <p style="margin-bottom: 0; margin-top: 0"><span style="font-weight: bold">Location:</span> HFC Rehani House, 9th Floor</p>
                     <p style="margin-bottom: 0; margin-top: 0"><span style="font-weight: bold">Address:</span> P.O Box 37297 G.P.O Nairobi</p>
@@ -371,47 +371,63 @@
             </td>
         </tr>
 
-        <tr style="height: 30px; margin-bottom: 10px">
-            <td dir="ltr" colspan="7" style="background-color: #f3f3f3; text-align: center; font-weight: bold; font-family: serif; font-size: 11pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px; line-height: 180%;"></td>
-        </tr>
+<!--        <tr style="height: 30px; margin-bottom: 10px">-->
+<!--            <td dir="ltr" colspan="7" style="background-color: #f3f3f3; text-align: center; font-weight: bold; font-family: serif; font-size: 11pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px; line-height: 180%;"></td>-->
+<!--        </tr>-->
 
         <tr style="height: 30px; margin-bottom: 10px">
-            <td class="s11" dir="ltr" colspan="4" style="border-bottom-width: 1px; border-bottom-color: #000; text-align: center; font-weight: bold; color: #000; background-color: #ffffff; font-family: serif; font-size: 11pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px; line-height: 180%;"></td>
-            <td colspan="1"></td>
+            <td class="s11" dir="ltr" colspan="3" style="border-bottom-width: 1px; border-bottom-color: #000; text-align: center; font-weight: bold; color: #000; background-color: #ffffff; font-family: serif; font-size: 11pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px; line-height: 180%;"></td>
+            <td colspan="2"></td>
             <td class="s11" dir="ltr" colspan="1" style="border-bottom-width: 1px; border-bottom-color: #000; text-align: left; font-weight: bold; color: #000; background-color: #ffffff; font-family: serif; font-size: 11pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px; line-height: 180%;"></td>
             <td class="s11" dir="ltr" colspan="1" style="border-bottom-width: 1px; border-bottom-color: #000; text-align: left; font-weight: bold; color: #000; background-color: #ffffff; font-family: serif; font-size: 11pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px; line-height: 180%;"></td>
         </tr>
 
         <!-- Start of Invoice to section -->
         <tr style="height: 30px;" >
-            <td class="s12b" dir="ltr" colspan="4" style="border-top-width: 1px; border-top-color: #000; border-bottom-width: 1px; border-bottom-color: #000; border-left-width: 1px; border-left-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: bold; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">INVOICE</td>
-            <td colspan="1"></td>
+            <td class="s12b" dir="ltr" colspan="3" style="border-top-width: 1px; border-top-color: #000; border-bottom-width: 1px; border-bottom-color: #000; border-left-width: 1px; border-left-color: #000; border-right-width: 1px; border-right-color: #000; text-align: left; font-weight: bold; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">Invoice To:</td>
+            <td colspan="2"></td>
             <td class="s12b" dir="ltr" colspan="1" style="border-top-width: 1px; border-top-color: #000; border-bottom-width: 1px; border-bottom-color: #000; border-left-width: 1px; border-left-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: bold; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">INVOICE DATE</td>
             <td class="s12b" dir="ltr" colspan="1" style="border-top-width: 1px; border-top-color: #000; border-bottom-width: 1px; border-bottom-color: #000; border-left-width: 1px; border-left-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: normal; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">@#invoiceDate</td>
 <!--            <td class="s12b" dir="ltr" colspan="1" style="border-top-width: 1px; border-top-color: #000; border-bottom-width: 1px; border-bottom-color: #000; border-left-width: 1px; border-left-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: normal; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">30 Sept, 2023</td>-->
         </tr>
         <tr style="height: 30px; border-top-width: 1px; border-top-color: #000" >
-            <td class="s12b" dir="ltr" colspan="4" style="border-top-width: 1px; border-top-color: #000; border-bottom-width: 1px; border-bottom-color: #000; border-left-width: 1px; border-left-color: #000; border-right-width: 1px; border-right-color: #000; text-align: left; font-weight: normal; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">@#customerName</td>
-            <td colspan="1"></td>
+            <td class="s12b" dir="ltr" colspan="3" style="border-top-width: 1px; border-top-color: #000; border-bottom-width: 1px; border-bottom-color: #000; border-left-width: 1px; border-left-color: #000; border-right-width: 1px; border-right-color: #000; text-align: left; font-weight: normal; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">@#customerName</td>
+            <td colspan="2"></td>
             <td class="s12b" dir="ltr" colspan="1" style="border-top-width: 1px; border-top-color: #000; border-bottom-width: 1px; border-bottom-color: #000; border-left-width: 1px; border-left-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: bold; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">INVOICE NO</td>
             <td class="s12b" dir="ltr" colspan="1" style="border-top-width: 1px; border-top-color: #000; border-bottom-width: 1px; border-bottom-color: #000; border-left-width: 1px; border-left-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: normal; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">@#invoiceNumber</td>
+        </tr>
+
+        <tr style="height: 30px; border-top-width: 1px; border-top-color: #000" >
+            <td class="s12b" dir="ltr" colspan="3" style="border-top-width: 1px; border-top-color: #000; border-bottom-width: 1px; border-bottom-color: #000; border-left-width: 1px; border-left-color: #000; border-right-width: 1px; border-right-color: #000; text-align: left; font-weight: normal; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">@#propertyName</td>
+            <td colspan="2"></td>
+<!--            <td class="s12b" dir="ltr" colspan="1" style="border-top-width: 1px; border-top-color: #000; border-bottom-width: 1px; border-bottom-color: #000; border-left-width: 1px; border-left-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: bold; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">INVOICE NO</td>-->
+<!--            <td class="s12b" dir="ltr" colspan="1" style="border-top-width: 1px; border-top-color: #000; border-bottom-width: 1px; border-bottom-color: #000; border-left-width: 1px; border-left-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: normal; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">@#invoiceNumber</td>-->
         </tr>
         <!-- End of Invoice to section -->
 
         <!-- Start of space section -->
         <tr style="height: 30px">
-            <td class="s12b" colspan="7" style="border-right:none; border-left: none"></td>
+<!--            <td class="s12b" colspan="1" style="border-right:none; border-left: none"></td>-->
+<!--            <td class="s12b" colspan="6" style="border-right:none; border-left: none"></td>-->
         </tr>
         <!-- End of space section -->
 
         <!-- invoice items header -->
         <tr style="height: 30px; border-top-width: 1px; border-top-color: #000" >
-            <td class="s12b" dir="ltr" colspan="1" style="border-top-width: 1px; border-top-color: #000; border-bottom-width: 1px; border-bottom-color: #000; border-left-width: 1px; border-left-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: bold; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr;">QTY</td>
-            <td class="s12" dir="ltr" colspan="3" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: bold; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">DESCRIPTION</td>
-            <td class="s12" dir="ltr" colspan="1" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: bold; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">RATE</td>
-            <td class="s12" dir="ltr" colspan="1" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: bold; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">AMOUNT</td>
+            <td class="s12b" dir="ltr" colspan="3" style="border-top-width: 1px; border-top-color: #000; border-bottom-width: 1px; border-bottom-color: #000; border-left-width: 1px; border-left-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: bold; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr;">Description</td>
+            <td class="s12" dir="ltr" colspan="1" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: left; font-weight: bold; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">Qty</td>
+            <td class="s12" dir="ltr" colspan="1" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: bold; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">Rate</td>
+            <td class="s12" dir="ltr" colspan="1" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: bold; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">Amount</td>
             <td class="s12" dir="ltr" colspan="1" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: bold; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">VAT</td>
         </tr>
+
+<!--        <tr style="height: 30px;">-->
+<!--            <td class="normal_cell_with_all_borders">Description</td>-->
+<!--            <td class="normal_cell_with_top_right_bottom_borders">Qty</td>-->
+<!--            <td class="normal_cell_with_top_right_bottom_borders">Rate</td>-->
+<!--            <td class="normal_cell_with_top_right_bottom_borders">Amount</td>-->
+<!--            <td class="normal_cell_with_top_right_bottom_borders">VAT</td>-->
+<!--        </tr>-->
         <!-- end of invoice items header -->
 
         <!-- start invoice items list -->
@@ -423,10 +439,6 @@
             <td colspan="7"></td>
         </tr>
         <!-- end of space -->
-
-        <tr style="height: 30px;">
-            <td class="s11" dir="ltr" colspan="7" style="border-bottom:none; border-bottom-color: #000; background-color: #f3f3f3; text-align: center; font-weight: bold; color: #000; font-family: serif; font-size: 11pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px; line-height: 180%;">Rent is payable on or before 5th of every month</td>
-        </tr>
 
         <!-- start of space -->
         <tr style="height: 30px">
@@ -453,8 +465,14 @@
         </tr>
         <!-- end total summary -->
 
+        <tr>
+            <td colspan="7"></td>
+        </tr>
+<!--        <tr style="height: 30px;">-->
+<!--            <td class="s14" dir="ltr" colspan="7" style="background-color: #f3f3f3; text-align: center; font-weight: bold; color: #000; font-family: serif; font-size: 12pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 10px; padding-right: 3px; padding-left: 3px;"></td>-->
+<!--        </tr>-->
         <tr style="height: 30px;">
-            <td class="s14" dir="ltr" colspan="7" style="background-color: #f3f3f3; text-align: center; font-weight: bold; color: #000; font-family: serif; font-size: 12pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 10px; padding-right: 3px; padding-left: 3px;"></td>
+            <td class="s11" dir="ltr" colspan="7" style="border-bottom:none; border-bottom-color: #000; background-color: #f3f3f3; text-align: center; font-weight: bold; color: #000; font-family: serif; font-size: 11pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px; line-height: 180%;">Rent is payable on or before 5th of every month</td>
         </tr>
 
         <!-- start of payable to -->

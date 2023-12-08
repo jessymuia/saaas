@@ -101,16 +101,17 @@ class Invoice extends DefaultAppModel
                 $billsSum += $tenancyBill->amount;
                 $invoiceItems .= '
                     <tr style="height: 30px;">
-                        <td class="s8b" dir="ltr" colspan="1" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; border-left-width: 1px; border-left-color: #000; text-align: center; color: #000; font-family: serif; font-size: 9pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">1</td>
-                        <td class="s8" dir="ltr" colspan="3" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; color: #000; font-family: serif; font-size: 9pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">'.$tenancyBill->name.'</td>
-                        <td class="s8" dir="ltr" colspan="1" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; color: #000; font-family: serif; font-size: 9pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">'.$tenancyBill->amount.'</td>
-                        <td class="s8" dir="ltr" colspan="1" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; color: #000; font-family: serif; font-size: 9pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">'.$tenancyBill->amount.'</td>
-                        <td class="s8" dir="ltr" colspan="1" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; color: #000; font-family: serif; font-size: 9pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">None</td>
+                        <td class="s_cell_with_right_left_border" colspan="3">'.$tenancyBill->name.'</td>
+                        <td class="s_cell_with_right_left_border" colspan="1">1</td>
+                        <td class="s_cell_with_right_left_border" colspan="1">'.$tenancyBill->amount.'</td>
+                        <td class="s_cell_with_right_left_border" colspan="1">'.$tenancyBill->amount.'</td>
+                        <td class="s_cell_with_right_left_border" colspan="1">None</td>
                     </tr>';
             }
 
             $detailsArray = [
-                'customerName' => $unitName.' '.$tenantName,
+                'customerName' => 'HSE#'.$unitName.' '.$tenantName,
+                'propertyName' => $propertyName,
                 'invoiceDate'=> Carbon::createFromFormat('Y-m-d H:i:s', $this->created_at)
                     ->format('M j, Y'),
                 'logoUrl'=>'file://'.getcwd().'/images/hamud_top_doc_logo.png',
