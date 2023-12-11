@@ -131,7 +131,7 @@ class TenancyAgreement extends DefaultAppModel
             $serviceBillExists = TenancyBill::query()
                 ->where('tenancy_agreement_id', $this->id)
                 ->whereMonth('bill_date', date_format($billDate,'m'))
-                ->where('service_id','==',$service->service_id)
+                ->where('service_id','=',$service->service_id)
                 ->exists();
 
             if (!$serviceBillExists) {// exit if the service bill exists
