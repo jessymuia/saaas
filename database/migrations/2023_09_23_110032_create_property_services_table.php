@@ -19,16 +19,28 @@ return new class extends Migration
             $table->unsignedBigInteger('service_id');
             $table->decimal('rate', 14, 2);
             $table->unsignedBigInteger('billing_type_id');
-            $table->boolean('is_deleted')->virtualAs('IF(deleted_at IS NULL, 0, 1)');
+            if (getenv('DB_CONNECTION') === 'mysql'){
+                $table->boolean('is_deleted')
+                    ->virtualAs('IF(deleted_at IS NULL, 0, 1)');
+            }
 
             // foreign keys
             $table->foreign('property_id')->references('id')->on('properties');
             $table->foreign('service_id')->references('id')->on('services');
             $table->foreign('billing_type_id')->references('id')->on('ref_billing_types');
 
-            // create unique index using property_id, service_id and deleted_at columns using constraint
-            $table->unique(['property_id', 'service_id', 'is_deleted'], 'property_services_unique_index');
+            if (getenv('DB_CONNECTION') === 'mysql'){
+                // create unique index using property_id, service_id and deleted_at columns using constraint
+                // constraint to ensure uniqueness of property_id and service_id
+                // unique keys
+                $table->unique(['property_id', 'service_id', 'is_deleted'], 'property_services_unique_index');
+            }
         });
+
+        if (getenv('DB_CONNECTION') === 'pgsql'){
+            DB::statement('ALTER TABLE property_services ADD is_deleted BOOLEAN GENERATED ALWAYS AS (CASE WHEN deleted_at IS NULL THEN FALSE ELSE TRUE END) STORED');
+            DB::statement('ALTER TABLE property_services ADD CONSTRAINT property_services_unique_index UNIQUE (property_id, service_id, is_deleted)');
+        }
     }
 
     /**

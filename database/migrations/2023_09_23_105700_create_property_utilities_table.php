@@ -18,16 +18,27 @@ return new class extends Migration
             $table->unsignedBigInteger('utility_id');
             $table->decimal('rate_per_unit', 14, 2);
             $table->unsignedBigInteger('billing_type_id');
-            $table->boolean('is_deleted')->virtualAs('IF(deleted_at IS NULL, 0, 1)');
+            if (getenv('DB_CONNECTION') === 'mysql'){
+                $table->boolean('is_deleted')
+                    ->virtualAs('IF(deleted_at IS NULL, 0, 1)');
+            }
 
             // foreign keys
             $table->foreign('property_id')->references('id')->on('properties');
             $table->foreign('utility_id')->references('id')->on('ref_utilities');
             $table->foreign('billing_type_id')->references('id')->on('ref_billing_types');
 
-            // unique keys
-            $table->unique(['property_id', 'utility_id', 'is_deleted'], 'property_utilities_unique_index');
+            if (getenv('DB_CONNECTION') === 'mysql'){
+                // constraint to ensure uniqueness of property_id and utility_id
+                // unique keys
+                $table->unique(['property_id', 'utility_id', 'is_deleted'], 'property_utilities_unique_index');
+            }
         });
+
+        if (getenv('DB_CONNECTION') === 'pgsql'){
+            DB::statement('ALTER TABLE property_utilities ADD is_deleted BOOLEAN GENERATED ALWAYS AS (CASE WHEN deleted_at IS NULL THEN FALSE ELSE TRUE END) STORED');
+            DB::statement('ALTER TABLE property_utilities ADD CONSTRAINT property_utilities_unique_index UNIQUE (property_id, utility_id, is_deleted)');
+        }
     }
 
     /**
