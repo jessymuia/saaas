@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -11,12 +12,18 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // turn off primary key requirement
+        // execute this statement SET GLOBAL sql_require_primary_key = OFF;
+        DB::statement('SET SESSION sql_require_primary_key = OFF;');
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email');
             $table->primary('email');
             $table->string('token');
             $table->timestamp('created_at')->nullable();
         });
+        // turn on primary key requirement
+        // execute this statement SET GLOBAL sql_require_primary_key = ON;
+        DB::statement('SET SESSION sql_require_primary_key = ON;');
     }
 
     /**
