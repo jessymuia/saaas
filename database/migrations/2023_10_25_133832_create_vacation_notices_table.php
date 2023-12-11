@@ -26,7 +26,6 @@ return new class extends Migration
             $table->foreign('tenancy_agreement_id')->references('id')->on('tenancy_agreements');
             $table->foreign('property_id')->references('id')->on('properties');
         });
-        DB::statement('SET SESSION sql_require_primary_key = ON;');
     }
 
     /**

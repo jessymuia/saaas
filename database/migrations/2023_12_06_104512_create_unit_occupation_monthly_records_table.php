@@ -29,6 +29,9 @@ return new class extends Migration
 
         // constraint to ensure that the from_date is not greater than the end_date
         DB::statement('ALTER TABLE unit_occupation_monthly_records ADD CONSTRAINT chk_from_date_less_than_end_date CHECK (from_date <= end_date);');
+
+        // execute this statement SET GLOBAL sql_require_primary_key = ON;
+//        DB::statement('SET SESSION sql_require_primary_key = ON;');
     }
 
     /**
