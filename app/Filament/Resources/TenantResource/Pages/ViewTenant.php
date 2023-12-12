@@ -51,7 +51,7 @@ class ViewTenant extends ViewRecord
             })
             ->orderBy('created_at', 'desc')
             ->select(['id', 'created_at as transaction_date'])
-            ->selectRaw('concat("INV #", id,". Due on ") as transaction, concat("invoice") as transaction_type')
+            ->selectRaw("concat('INV #', id,'. Due on ') as transaction, concat('invoice') as transaction_type")
 //            ->with('creditNote', function ($query){
 //                $query->select('id');
 //            })

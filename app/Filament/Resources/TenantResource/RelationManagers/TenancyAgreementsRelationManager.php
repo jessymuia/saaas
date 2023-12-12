@@ -144,7 +144,7 @@ class TenancyAgreementsRelationManager extends RelationManager
             ->where('tenancy_agreement_id', '=', $tenancyAgreement->id)
             ->orderBy('created_at', 'desc')
             ->select(['id', 'invoice_for_month as transaction_date','invoice_due_date'])
-            ->selectRaw('concat("INV #", id,". Due on ", TO_CHAR(invoice_for_month,"Mon DD, YYYY")) as transaction, concat("invoice") as transaction_type')
+            ->selectRaw("concat('INV #', id,'. Due on ', TO_CHAR(invoice_for_month,'Mon DD, YYYY')) as transaction, concat('invoice') as transaction_type")
 //            ->with('creditNote', function ($query){
 //                $query->select('id');
 //            })
@@ -158,7 +158,7 @@ class TenancyAgreementsRelationManager extends RelationManager
                 $query->where('tenancy_agreement_id', '=', $tenancyAgreement->id);
             })
             ->select(['id', 'created_at as transaction_date','amount_credited as amount'])
-            ->selectRaw('concat("CRN #", id,". ", name,". Issued on ") as transaction, concat("credit_note") as transaction_type')
+            ->selectRaw("concat('CRN #', id,'. ', name,'. Issued on ') as transaction, concat('credit_note') as transaction_type")
             ->get()
             ->toArray();
 //        dd($creditNotes);
@@ -169,7 +169,7 @@ class TenancyAgreementsRelationManager extends RelationManager
                 $query->where('tenancy_agreement_id', '=', $tenancyAgreement->id);
             })
             ->select(['id', 'payment_date as transaction_date','amount'])
-            ->selectRaw('concat("PMT #", id,". Paid on ") as transaction, concat("payment") as transaction_type')
+            ->selectRaw("concat('PMT #', id,'. Paid on ') as transaction, concat('payment') as transaction_type")
             ->get()
             ->toArray();
 //        dd($invoicePayments);
