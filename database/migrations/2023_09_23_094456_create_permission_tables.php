@@ -17,7 +17,7 @@ class CreatePermissionTables extends Migration
     {
         // turn off primary key check
         // execute this statement SET GLOBAL sql_require_primary_key = OFF;
-        DB::statement('SET SESSION sql_require_primary_key = OFF;');
+//        DB::statement('SET SESSION sql_require_primary_key = OFF;');
         $tableNames = config('permission.table_names');
         $columnNames = config('permission.column_names');
         $teams = config('permission.teams');
@@ -123,7 +123,7 @@ class CreatePermissionTables extends Migration
             ->forget(config('permission.cache.key'));
 
         // turn on primary key check
-        DB::statement('SET SESSION sql_require_primary_key = OFF;');
+//        DB::statement('SET SESSION sql_require_primary_key = OFF;');
     }
 
     /**

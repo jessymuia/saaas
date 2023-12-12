@@ -14,7 +14,7 @@ return new class extends Migration
     {
         // turn off primary key requirement
         // execute this statement SET GLOBAL sql_require_primary_key = OFF;
-        DB::statement('SET SESSION sql_require_primary_key = OFF;');
+//        DB::statement('SET SESSION sql_require_primary_key = OFF;');
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email');
             $table->primary('email');
@@ -23,7 +23,7 @@ return new class extends Migration
         });
         // turn on primary key requirement
         // execute this statement SET GLOBAL sql_require_primary_key = ON;
-        DB::statement('SET SESSION sql_require_primary_key = ON;');
+//        DB::statement('SET SESSION sql_require_primary_key = ON;');
     }
 
     /**
