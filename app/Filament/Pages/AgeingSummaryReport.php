@@ -351,7 +351,7 @@ class AgeingSummaryReport extends Page implements HasForms
             ->where('tenancy_agreement_id', '=', $tenancyAgreement->id)
             ->orderBy('created_at', 'desc')
             ->select(['id', 'invoice_for_month as transaction_date','invoice_due_date'])
-            ->selectRaw('concat("INV #", id,". Due on ", TO_CHAR(invoice_for_month,"Mon DD, YYYY")) as transaction, concat("invoice") as transaction_type')
+            ->selectRaw("concat('INV #', id,'. Due on ', TO_CHAR(invoice_for_month,'Mon DD, YYYY')) as transaction, concat('invoice') as transaction_type")
             ->get(['amount','unpaid_amount'])
             ->toArray();
 
