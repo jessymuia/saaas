@@ -53,6 +53,42 @@ class ListInvoices extends ListRecords
                                     ->send();
                             }
                         });
+                }),
+            // button to send out the documents
+            Actions\Action::make('send-invoice-documents')
+                ->label('Send Invoice Documents')
+                ->action(function (){
+                    Invoice::query()
+                        ->where('is_generated', true)
+                        ->where('issue_date', null)
+                        ->chunk(1000, function ($invoices){
+                            $allSuccess = true;
+                            foreach ($invoices as $invoice){
+                                // send the email
+                                try {
+                                    $invoice->sendInvoiceMail();
+                                }catch (\Exception $e){
+                                    // log the error
+                                    Log::error($e->getMessage());
+                                    Log::error($e->getTraceAsString());
+                                    Log::error("Failed to send email for invoice: {$invoice->id}");
+                                    Log::error("_____________________________________________________________________________");
+                                    $allSuccess = false;
+                                    continue;
+                                }
+                            }
+                            if ($allSuccess){
+                                Notification::make()
+                                    ->success()
+                                    ->title('All emails sent successfully')
+                                    ->send();
+                            }else{
+                                Notification::make()
+                                    ->danger()
+                                    ->title('Some emails failed to send')
+                                    ->send();
+                            }
+                        });
                 })
         ];
     }

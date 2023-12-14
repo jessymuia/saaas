@@ -3,9 +3,12 @@
 namespace App\Filament\Resources\InvoiceResource\Pages;
 
 use App\Filament\Resources\InvoiceResource;
+use App\Models\SentEmails;
 use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class ViewInvoice extends ViewRecord
 {
@@ -27,6 +30,35 @@ class ViewInvoice extends ViewRecord
                         ->send();
 
                     return redirect()->route('filament.admin.resources.invoices.view', ['record' => $record->id]);
+                })
+                ->visible(function ($record) {
+                    return !$record->is_confirmed;
+                })
+                ->requiresConfirmation(),
+            // action to sent out email if the invoice is confirmed and generated
+            Actions\Action::make('Send Invoice')
+                ->label(function ($record) {
+                    return $record->issue_date ? 'Invoice Sent' : 'Send Invoice';
+                })
+                ->action(function ($record) {
+                    // send email
+                    if($record->sendInvoiceMail()){
+                        Notification::make('invoiceSent')
+                            ->title('Invoice Sent')
+                            ->success()
+                            ->send();
+                    }else{
+                        Notification::make('invoiceSent')
+                            ->title('Failed sending invoice')
+                            ->danger()
+                            ->send();
+                    }
+                })
+                ->visible(function ($record) {
+                    return $record->is_confirmed && $record->is_generated;
+                })
+                ->disabled(function ($record) {
+                    return $record->is_confirmed && $record->is_generated && $record->issue_date;
                 })
                 ->requiresConfirmation(),
         ];

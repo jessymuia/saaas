@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Mail\CreditNoteEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class CreditNote extends DefaultAppModel
@@ -122,6 +125,51 @@ class CreditNote extends DefaultAppModel
             }
         }catch (\Exception $exception){
             Log::error($exception->getMessage());
+            return false;
+        }
+    }
+
+    public function sendCreditNoteEmail()
+    {
+        try {
+            $email = new CreditNoteEmail($this->id);
+
+            // record the email sent
+            DB::transaction(function () use ($email) {
+                $this->issue_date = now();
+                $this->save();
+
+                // insert record in sent emails
+                $sentEmails = new SentEmails();
+
+                $sentEmails->recipient_email = $this->invoice->tenancyAgreement->tenant->email;
+                $sentEmails->subject = 'Credit Note Email';
+                $sentEmails->body = $email->render();
+                $sentEmails->delivery_status = 'SENT';
+
+                $sentEmails->save();
+
+                // get the file from storage and retrieve its details
+                $emailAttachments = new EmailAttachments();
+                $emailAttachments->sent_email_id = $sentEmails->id;
+                $emailAttachments->file_name = File::name(storage_path('app/' . $this->document_url));
+                $emailAttachments->file_size = File::size(storage_path('app/' . $this->document_url));
+                $emailAttachments->mime_type = File::mimeType(storage_path('app/' . $this->document_url));
+                $emailAttachments->full_file_path = Storage::path(storage_path('app/' . $this->document_url));
+
+                $emailAttachments->save();
+
+                // Mail::to($this->invoice->tenancyAgreement->tenant->email)
+                Mail::to('dundafuta@gmail.com')
+                    ->send($email);
+            });
+
+            return true;
+        }catch (\Exception $exception){
+            Log::error("-------------------------------------------");
+            Log::error("Error sending email: " . $exception->getMessage());
+            Log::error($exception->getTraceAsString());
+            Log::error("-------------------------------------------");
             return false;
         }
     }
