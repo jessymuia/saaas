@@ -24,4 +24,13 @@ class DocumentsController extends Controller
         $path = storage_path('app/credit-notes/'.$creditNote);
         return response()->file($path);
     }
+
+    public function previewReceipt($receipt = null)
+    {
+        if (!$receipt) {
+            abort(404,'Receipt not found');
+        }
+        $path = storage_path('app/invoice_payments/'.$receipt);
+        return response()->file($path);
+    }
 }

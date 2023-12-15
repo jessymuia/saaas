@@ -156,6 +156,33 @@ class InvoicePaymentResource extends Resource
                     ->visible(function (InvoicePayment $record) { // only visible if receipt has been confirmed
                         return !$record->is_confirmed;
                     }),
+                // action to preview the receipt document
+                Tables\Actions\Action::make('preview-receipt')
+                    ->label('Preview Receipt')
+                    ->icon('heroicon-o-document-text')
+                    ->action(function (InvoicePayment $record) {
+                        // get the invoice payment
+                        $filename = str_replace('invoice_payments/', '', $record->document_path);
+                        // preview invoice payment document
+                        return redirect()
+                            ->route('preview.receipt', ['receipt' => $filename]);
+                    })
+                    ->disabled(function (InvoicePayment $record) { // only visible if receipt has been confirmed
+                        return strtotime($record->document_generated_at) === false;
+                    }),
+
+                // action to send the receipt document
+                Tables\Actions\Action::make('send-receipt')
+                    ->label('Send Receipt')
+                    ->icon('heroicon-o-envelope')
+                    ->action(function (InvoicePayment $record) {
+                        // send the invoice payment mail
+                        $record->sendInvoicePaymentEmail();
+                    })
+                    ->disabled(function (InvoicePayment $record) { // only visible if receipt has been confirmed
+                        return strtotime($record->document_generated_at) === false
+                            || strtotime($record->document_sent_at) !== false;
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -24,4 +24,6 @@ Route::group(['middleware' => ['auth']], function () {
         ->name('preview.invoice');
     Route::get('preview/credit-note/{creditNote?}',[DocumentsController::class,'previewCreditNote'])
         ->name('preview.credit-note');
+    Route::get('preview/receipt/{receipt?}',[DocumentsController::class,'previewReceipt'])
+        ->name('preview.receipt');
 });

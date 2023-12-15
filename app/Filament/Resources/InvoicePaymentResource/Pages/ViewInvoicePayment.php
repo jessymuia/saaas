@@ -77,6 +77,19 @@ class ViewInvoicePayment extends ViewRecord
                 ->visible(fn (InvoicePayment $record) => strtotime($record->document_generated_at) === false);
         }
 
+        // button to preview the document
+        if ($this->getRecord()->document_generated_at){
+            $headerActions[] = Actions\Action::make('preview-receipt')
+                ->label("Preview Receipt")
+                ->icon('heroicon-o-document-text')
+                ->action(function(){
+                    $filename = str_replace('invoice_payments/', '', $this->getRecord()->document_path);
+                    // preview invoice payment document
+                    return redirect()
+                        ->route('preview.receipt', $filename);
+                });
+        }
+
         return $headerActions;
     }
 }
