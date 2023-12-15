@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
+use App\Models\AppRole;
 use App\Models\User;
 use App\Utils\AppUtils;
 use Filament\Forms;
@@ -49,13 +50,19 @@ class UserResource extends Resource
                     ->password()
                     ->maxLength(255)
                     ->minLength(8)
+//                    ->rules(['same:password'])
                     ->required(fn (string $operation): bool => $operation === 'create'),
-                Forms\Components\TextInput::make('created_by')
-                    ->hiddenOn(['edit','create'])
-                    ->numeric(),
-                Forms\Components\TextInput::make('updated_by')
-                    ->hiddenOn(['create', 'edit'])
-                    ->numeric(),
+//                Forms\Components\TextInput::make('created_by')
+//                    ->hiddenOn(['edit','create'])
+//                    ->numeric(),
+//                Forms\Components\TextInput::make('updated_by')
+//                    ->hiddenOn(['create', 'edit'])
+//                    ->numeric(),
+                Forms\Components\CheckboxList::make("roles")
+                    ->label("Roles")
+                    ->relationship('roles', 'name')
+                    ->options(AppRole::all()->pluck('name', 'id'))
+                    ->required(),
             ]);
     }
 

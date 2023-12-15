@@ -6,6 +6,7 @@ use App\Models\CreditNote;
 use App\Models\Invoice;
 use App\Models\InvoicePayment;
 use App\Models\Property;
+use App\Utils\AppPermissions;
 use App\Utils\AppUtils;
 use Carbon\Carbon;
 use Filament\Forms\Components\Card;
@@ -46,6 +47,16 @@ class AgeingSummaryReport extends Page implements HasForms
     protected static string $view = 'filament.pages.ageing-summary-report';
 
     public ?array $generateReportForm = [];
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()->can(AppPermissions::READ_INVOICE_PAYMENTS_PERMISSION);
+    }
+
+    public function mount()
+    {
+        abort_unless(auth()->user()->can(AppPermissions::READ_INVOICE_PAYMENTS_PERMISSION), 403);
+    }
 
     public function render(): View
     {
