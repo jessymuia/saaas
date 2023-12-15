@@ -6,6 +6,7 @@ use App\Models\CreditNote;
 use App\Models\Invoice;
 use App\Models\InvoicePayment;
 use App\Models\Property;
+use App\Utils\AppUtils;
 use Carbon\Carbon;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Checkbox;
@@ -37,6 +38,8 @@ class AgeingSummaryReport extends Page implements HasForms
     public $over_ninety_days = false;
 
     public $statementPath;
+
+    protected static ?string $navigationGroup = AppUtils::TENANCY_MANAGEMENT_NAVIGATION_GROUP;
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
