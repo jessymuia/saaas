@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\SentEmailsResource\Pages;
 use App\Filament\Resources\SentEmailsResource\RelationManagers;
 use App\Models\SentEmails;
+use App\Utils\AppUtils;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -16,6 +17,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class SentEmailsResource extends Resource
 {
     protected static ?string $model = SentEmails::class;
+
+    protected static ?string $navigationGroup = AppUtils::TENANCY_MANAGEMENT_NAVIGATION_GROUP;
 
     protected static ?string $navigationIcon = 'heroicon-o-envelope';
 

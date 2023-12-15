@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\InvoiceResource\Pages;
 use App\Filament\Resources\InvoiceResource\RelationManagers;
 use App\Models\Invoice;
+use App\Utils\AppUtils;
 use Barryvdh\Snappy\Facades\SnappyPdf;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -17,6 +18,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class InvoiceResource extends Resource
 {
     protected static ?string $model = Invoice::class;
+
+    protected static ?string $navigationGroup = AppUtils::ACCOUNTING_NAVIGATION_GROUP;
 
     protected static ?string $navigationIcon = 'heroicon-o-document-check';
 

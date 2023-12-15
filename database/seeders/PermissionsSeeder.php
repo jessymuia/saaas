@@ -57,11 +57,11 @@ class PermissionsSeeder extends Seeder
         Permission::findOrCreate(AppPermissions::RESTORE_UNITS_PERMISSION);
 
         // rent payments
-        Permission::findOrCreate(AppPermissions::CREATE_RENT_PAYMENTS_PERMISSION);
-        Permission::findOrCreate(AppPermissions::READ_RENT_PAYMENTS_PERMISSION);
-        Permission::findOrCreate(AppPermissions::UPDATE_RENT_PAYMENTS_PERMISSION);
-        Permission::findOrCreate(AppPermissions::DELETE_RENT_PAYMENTS_PERMISSION);
-        Permission::findOrCreate(AppPermissions::RESTORE_RENT_PAYMENTS_PERMISSION);
+//        Permission::findOrCreate(AppPermissions::CREATE_RENT_PAYMENTS_PERMISSION);
+//        Permission::findOrCreate(AppPermissions::READ_RENT_PAYMENTS_PERMISSION);
+//        Permission::findOrCreate(AppPermissions::UPDATE_RENT_PAYMENTS_PERMISSION);
+//        Permission::findOrCreate(AppPermissions::DELETE_RENT_PAYMENTS_PERMISSION);
+//        Permission::findOrCreate(AppPermissions::RESTORE_RENT_PAYMENTS_PERMISSION);
 
         // services
         Permission::findOrCreate(AppPermissions::CREATE_SERVICES_PERMISSION);
@@ -174,5 +174,33 @@ class PermissionsSeeder extends Seeder
         Permission::findOrCreate(AppPermissions::UPDATE_TENANCY_AGREEMENTS_PERMISSION);
         Permission::findOrCreate(AppPermissions::DELETE_TENANCY_AGREEMENTS_PERMISSION);
         Permission::findOrCreate(AppPermissions::RESTORE_TENANCY_AGREEMENTS_PERMISSION);
+
+        // invoice payments
+        Permission::findOrCreate(AppPermissions::CREATE_INVOICE_PAYMENTS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::READ_INVOICE_PAYMENTS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::UPDATE_INVOICE_PAYMENTS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::DELETE_INVOICE_PAYMENTS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::RESTORE_INVOICE_PAYMENTS_PERMISSION);
+
+        // unit occupation monthly records
+        Permission::findOrCreate(AppPermissions::CREATE_UNIT_OCCUPATION_MONTHLY_RECORDS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::READ_UNIT_OCCUPATION_MONTHLY_RECORDS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::UPDATE_UNIT_OCCUPATION_MONTHLY_RECORDS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::DELETE_UNIT_OCCUPATION_MONTHLY_RECORDS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::RESTORE_UNIT_OCCUPATION_MONTHLY_RECORDS_PERMISSION);
+
+        // sent emails
+        Permission::findOrCreate(AppPermissions::CREATE_SENT_EMAILS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::READ_SENT_EMAILS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::UPDATE_SENT_EMAILS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::DELETE_SENT_EMAILS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::RESTORE_SENT_EMAILS_PERMISSION);
+
+        // email attachments
+        Permission::findOrCreate(AppPermissions::CREATE_EMAIL_ATTACHMENTS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::READ_EMAIL_ATTACHMENTS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::UPDATE_EMAIL_ATTACHMENTS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::DELETE_EMAIL_ATTACHMENTS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::RESTORE_EMAIL_ATTACHMENTS_PERMISSION);
     }
 }

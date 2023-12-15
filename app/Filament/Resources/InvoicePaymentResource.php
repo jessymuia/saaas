@@ -10,6 +10,7 @@ use App\Models\InvoicePayment;
 use App\Models\TenancyAgreement;
 use App\Models\Unit;
 use App\Rules\CheckPaidAmountDoesNotExceedAmountDue;
+use App\Utils\AppUtils;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
@@ -22,6 +23,8 @@ use Illuminate\Support\Facades\Log;
 class InvoicePaymentResource extends Resource
 {
     protected static ?string $model = InvoicePayment::class;
+
+    protected static ?string $navigationGroup = AppUtils::ACCOUNTING_NAVIGATION_GROUP;
 
     protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
 

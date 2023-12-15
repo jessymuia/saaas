@@ -8,6 +8,7 @@ use App\Models\Property;
 use App\Models\Tenant;
 use App\Models\VacationNotice;
 use App\Models\VacationNotices;
+use App\Utils\AppUtils;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -19,6 +20,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class VacationNoticeResource extends Resource
 {
     protected static ?string $model = VacationNotices::class;
+
+    protected static ?string $navigationGroup = AppUtils::TENANCY_MANAGEMENT_NAVIGATION_GROUP;
 
     protected static ?string $navigationIcon = 'heroicon-o-arrow-left-circle';
 

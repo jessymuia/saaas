@@ -7,6 +7,7 @@ use App\Filament\Resources\UtilityResource\Pages;
 use App\Filament\Resources\UtilityResource\RelationManagers;
 use App\Models\RefUtility;
 use App\Models\Utility;
+use App\Utils\AppUtils;
 use Faker\Provider\Text;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -19,6 +20,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class UtilityResource extends Resource
 {
     protected static ?string $model = RefUtility::class;
+
+    protected static ?string $navigationGroup = AppUtils::TENANCY_MANAGEMENT_NAVIGATION_GROUP;
 
     protected static ?string $navigationIcon = 'heroicon-o-bolt';
 

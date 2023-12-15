@@ -10,6 +10,9 @@ use Illuminate\Database\Schema\Blueprint;
 class AppUtils
 {
     const REFERENCES_NAVIGATION_GROUP = 'References';
+    const ACCESS_MANAGEMENT_NAVIGATION_GROUP = 'Access Management';
+    const TENANCY_MANAGEMENT_NAVIGATION_GROUP = 'Tenancy Management';
+    const ACCOUNTING_NAVIGATION_GROUP = 'Accounting';
 
     public static function defaultTableColumns(Blueprint $table)
     {

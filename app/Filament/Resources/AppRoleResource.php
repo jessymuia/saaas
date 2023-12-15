@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\AppRoleResource\Pages;
 use App\Filament\Resources\AppRoleResource\RelationManagers;
 use App\Models\AppRole;
+use App\Utils\AppUtils;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Pages\ViewRecord;
@@ -19,6 +20,8 @@ class AppRoleResource extends Resource
     protected static ?string $model = AppRole::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-plus';
+
+    protected static ?string $navigationGroup = AppUtils::ACCESS_MANAGEMENT_NAVIGATION_GROUP;
 
     public static function form(Form $form): Form
     {

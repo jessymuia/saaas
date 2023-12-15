@@ -15,7 +15,7 @@ class InvoicePaymentPolicy
     public function viewAny(User $user): Response
     {
         //
-        return $user->hasPermissionTo(AppPermissions::READ_RENT_PAYMENTS_PERMISSION)
+        return $user->hasPermissionTo(AppPermissions::READ_INVOICE_PAYMENTS_PERMISSION)
             ? Response::allow()
             : Response::deny('You do not have permissions to view any rent payment');
     }
@@ -26,7 +26,7 @@ class InvoicePaymentPolicy
     public function view(User $user, InvoicePayment $invoicePayment): Response
     {
         //
-        return $user->hasPermissionTo(AppPermissions::READ_RENT_PAYMENTS_PERMISSION)
+        return $user->hasPermissionTo(AppPermissions::READ_INVOICE_PAYMENTS_PERMISSION)
             ? Response::allow()
             : Response::deny('You do not have permissions to view rent payment');
     }
@@ -37,7 +37,7 @@ class InvoicePaymentPolicy
     public function create(User $user): Response
     {
         //
-        return $user->hasPermissionTo(AppPermissions::CREATE_RENT_PAYMENTS_PERMISSION)
+        return $user->hasPermissionTo(AppPermissions::CREATE_INVOICE_PAYMENTS_PERMISSION)
             ? Response::allow()
             : Response::deny('You do not have permissions to create rent payment');
     }
@@ -48,7 +48,7 @@ class InvoicePaymentPolicy
     public function update(User $user, InvoicePayment $invoicePayment): Response
     {
         //
-        return $user->hasPermissionTo(AppPermissions::UPDATE_RENT_PAYMENTS_PERMISSION)
+        return $user->hasPermissionTo(AppPermissions::UPDATE_INVOICE_PAYMENTS_PERMISSION)
             ? Response::allow()
             : Response::deny('You do not have permissions to update rent payment');
     }
@@ -59,7 +59,7 @@ class InvoicePaymentPolicy
     public function delete(User $user, InvoicePayment $invoicePayment): Response
     {
         //
-        return $user->hasPermissionTo(AppPermissions::DELETE_RENT_PAYMENTS_PERMISSION)
+        return $user->hasPermissionTo(AppPermissions::DELETE_INVOICE_PAYMENTS_PERMISSION)
             ? Response::allow()
             : Response::deny('You do not have permissions to delete rent payment');
     }
@@ -70,7 +70,7 @@ class InvoicePaymentPolicy
     public function restore(User $user, InvoicePayment $invoicePayment): Response
     {
         //
-        return $user->hasPermissionTo(AppPermissions::RESTORE_RENT_PAYMENTS_PERMISSION)
+        return $user->hasPermissionTo(AppPermissions::RESTORE_INVOICE_PAYMENTS_PERMISSION)
             ? Response::allow()
             : Response::deny('You do not have permissions to restore rent payment');
     }

@@ -150,4 +150,32 @@ class AppPermissions
     const UPDATE_TENANCY_AGREEMENTS_PERMISSION = 'update-tenancy-agreements';
     const DELETE_TENANCY_AGREEMENTS_PERMISSION = 'delete-tenancy-agreements';
     const RESTORE_TENANCY_AGREEMENTS_PERMISSION = 'restore-tenancy-agreements';
+
+    // invoice payments
+    const CREATE_INVOICE_PAYMENTS_PERMISSION = 'create-invoice-payments';
+    const READ_INVOICE_PAYMENTS_PERMISSION = 'read-invoice-payments';
+    const UPDATE_INVOICE_PAYMENTS_PERMISSION = 'update-invoice-payments';
+    const DELETE_INVOICE_PAYMENTS_PERMISSION = 'delete-invoice-payments';
+    const RESTORE_INVOICE_PAYMENTS_PERMISSION = 'restore-invoice-payments';
+
+    // unit occupation monthly records
+    const CREATE_UNIT_OCCUPATION_MONTHLY_RECORDS_PERMISSION = 'create-unit-occupation-monthly-records';
+    const READ_UNIT_OCCUPATION_MONTHLY_RECORDS_PERMISSION = 'read-unit-occupation-monthly-records';
+    const UPDATE_UNIT_OCCUPATION_MONTHLY_RECORDS_PERMISSION = 'update-unit-occupation-monthly-records';
+    const DELETE_UNIT_OCCUPATION_MONTHLY_RECORDS_PERMISSION = 'delete-unit-occupation-monthly-records';
+    const RESTORE_UNIT_OCCUPATION_MONTHLY_RECORDS_PERMISSION = 'restore-unit-occupation-monthly-records';
+
+    // sent emails
+    const CREATE_SENT_EMAILS_PERMISSION = 'create-sent-emails';
+    const READ_SENT_EMAILS_PERMISSION = 'read-sent-emails';
+    const UPDATE_SENT_EMAILS_PERMISSION = 'update-sent-emails';
+    const DELETE_SENT_EMAILS_PERMISSION = 'delete-sent-emails';
+    const RESTORE_SENT_EMAILS_PERMISSION = 'restore-sent-emails';
+
+    // email attachments
+    const CREATE_EMAIL_ATTACHMENTS_PERMISSION = 'create-email-attachments';
+    const READ_EMAIL_ATTACHMENTS_PERMISSION = 'read-email-attachments';
+    const UPDATE_EMAIL_ATTACHMENTS_PERMISSION = 'update-email-attachments';
+    const DELETE_EMAIL_ATTACHMENTS_PERMISSION = 'delete-email-attachments';
+    const RESTORE_EMAIL_ATTACHMENTS_PERMISSION = 'restore-email-attachments';
 }

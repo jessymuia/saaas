@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\CreditNoteResource\Pages;
 use App\Models\CreditNote;
 use App\Models\Invoice;
+use App\Utils\AppUtils;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -16,6 +17,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class CreditNoteResource extends Resource
 {
     protected static ?string $model = CreditNote::class;
+
+    protected static ?string $navigationGroup = AppUtils::ACCOUNTING_NAVIGATION_GROUP;
 
     protected static ?string $navigationIcon = 'heroicon-o-receipt-refund';
 
