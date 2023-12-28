@@ -13,6 +13,7 @@ class Property extends DefaultAppModel
         'description',
         'property_type_id',
         'number_of_units',
+        'is_vatable',
         'status',
         'archive',
         'created_by',

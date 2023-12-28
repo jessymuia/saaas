@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('number_of_units')->nullable();
             $table->unsignedBigInteger('property_type_id')->nullable();
             $table->text('description')->nullable();
+            $table->boolean('is_vatable')->default(false);
 
             // foreign keys
             $table->foreign('property_type_id')->references('id')->on('ref_property_types');

@@ -40,7 +40,18 @@ class PropertyResource extends Resource
                 Forms\Components\Select::make('property_type_id')
                     ->label('Property Type')
                     ->required()
+                    ->reactive()
+                    ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set){
+                        $propertyTypeId = $get('property_type_id');
+                        \Log::info("property_type_id: $propertyTypeId");
+                        $isVatable = $propertyTypeId == 1;
+                        $set('is_vatable', $isVatable);
+                    })
                     ->relationship('propertyType', 'type'),
+                Forms\Components\Checkbox::make('is_vatable')
+                    ->label('Is Vatable? (is the property VATable?)')
+                    ->reactive()
+                    ->required(),
                 Forms\Components\Textarea::make('description')
                     ->maxLength(65535)
                     ->columnSpanFull(),
@@ -65,6 +76,8 @@ class PropertyResource extends Resource
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\IconColumn::make('status')
+                    ->boolean(),
+                Tables\Columns\IconColumn::make('is_vatable')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_by')
                     ->numeric()

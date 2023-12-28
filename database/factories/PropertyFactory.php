@@ -16,13 +16,16 @@ class PropertyFactory extends Factory
      */
     public function definition(): array
     {
+        $propertyTypeId = $this->faker->numberBetween(1, 2);
+
         return [
             //
             'name' => $this->faker->name(),
             'address' => $this->faker->address(),
             'description' => $this->faker->text(),
-            'property_type_id' => $this->faker->numberBetween(1, 2),
+            'property_type_id' => $propertyTypeId,
             'number_of_units' => $this->faker->numberBetween(20,80),
+            'is_vatable' => $propertyTypeId === 1,
             'created_by' => 1,
         ];
     }

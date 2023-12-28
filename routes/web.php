@@ -15,7 +15,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    // redirect to the admin route
+    return redirect()
+        ->route('filament.admin.pages.dashboard');
 });
 
 // define route to access invoice document and require admin authentication
