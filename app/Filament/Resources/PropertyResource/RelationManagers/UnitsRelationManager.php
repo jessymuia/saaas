@@ -26,6 +26,14 @@ class UnitsRelationManager extends RelationManager
                     ->label('Unit Type')
                     ->required()
                     ->relationship('unitType', 'type'),
+                // display the area text input if the property type of this property is commercial
+                Forms\Components\TextInput::make('area_in_square_feet')
+                    ->numeric()
+                    ->minValue(1)
+                    ->required()
+                    ->visible(function (){
+                        return $this->ownerRecord->property_type_id == 1;
+                    })
             ]);
     }
 
@@ -40,6 +48,14 @@ class UnitsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('unitType.type')
                     ->sortable()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('area_in_square_feet')
+                    ->numeric()
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: function (){
+                        // hide this column if the unit type is not commercial
+                        return $this->ownerRecord->property_type_id != 1;
+                    }),
                 Tables\Columns\IconColumn::make('status')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('createdBy.name')

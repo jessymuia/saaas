@@ -50,8 +50,7 @@ class PropertyResource extends Resource
                     ->relationship('propertyType', 'type'),
                 Forms\Components\Checkbox::make('is_vatable')
                     ->label('Is Vatable? (is the property VATable?)')
-                    ->reactive()
-                    ->required(),
+                    ->reactive(),
                 Forms\Components\Textarea::make('description')
                     ->maxLength(65535)
                     ->columnSpanFull(),

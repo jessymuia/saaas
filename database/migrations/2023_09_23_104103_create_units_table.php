@@ -18,6 +18,12 @@ return new class extends Migration
             $table->string('name');
             $table->unsignedBigInteger('property_id');
             $table->unsignedBigInteger('unit_type_id');
+
+            // square footage of the unit
+            $table->decimal('area_in_square_feet', 14, 2)
+                ->default(0.0)
+                ->comment('square footage of the unit');
+
             if (getenv('DB_CONNECTION') === 'mysql'){
                 $table->boolean('is_deleted')
                     ->virtualAs('IF(deleted_at IS NULL, 0, 1)');

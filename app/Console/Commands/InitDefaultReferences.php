@@ -99,6 +99,9 @@ class InitDefaultReferences extends Command
 //
 //        $propertyType->save();
 
+        /**
+         * DON'T CHANGE THE ORDER OF THE LISTING OF PROPERTY TYPES, NEVER
+        */
         $propertyType = new RefPropertyType();
         $propertyType->type = "Commercial";
         $propertyType->description = "Commercial";
@@ -162,6 +165,8 @@ class InitDefaultReferences extends Command
         $unitType = new RefUnitType();
         $unitType->type = "Office Space";
         $unitType->description = "Office Space";
+
+        $unitType->save();
 
         // confirm that the number of unit types is 4
         RefUnitType::all()->count() != 4

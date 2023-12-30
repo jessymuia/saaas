@@ -11,6 +11,7 @@ class Unit extends DefaultAppModel
         'property_id',
         'name',
         'unit_type_id',
+        'area_in_square_feet',
         'created_by',
         'updated_by',
         'deleted_by',

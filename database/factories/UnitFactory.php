@@ -30,10 +30,14 @@ class UnitFactory extends Factory
             $unitName = $this->faker->regexify('[A-Za-z0-9]{3}');
         }while($property->units()->where('name', $unitName)->count() > 0);
 
+        // generate the area in square feet value if the property type is commercial
+        $areaInSquareFeet = $property->property_type_id == 1 ? $this->faker->numberBetween(100, 1000) : 0.0;
+
         return [
             'property_id' => $propertyID,
             'name' => $unitName,
             'unit_type_id' => $this->faker->numberBetween(1, 2),
+            'area_in_square_feet' => $areaInSquareFeet,
             'created_by' => 1,
         ];
     }
