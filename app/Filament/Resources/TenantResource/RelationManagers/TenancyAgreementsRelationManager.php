@@ -33,7 +33,7 @@ class TenancyAgreementsRelationManager extends RelationManager
                     ->label('Unit')
                     ->required()
                     ->rules([
-                        fn(Get $get) : CheckOccupancyOfUnit => new CheckOccupancyOfUnit($get('start_date')),
+                        fn(Get $get) : CheckOccupancyOfUnit => new CheckOccupancyOfUnit($get('start_date'),$form->getOperation()),
                     ])
                     ->relationship('unit', 'name'),
                 Forms\Components\Select::make('billing_type_id')

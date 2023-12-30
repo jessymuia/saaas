@@ -63,6 +63,9 @@ class InvoiceResource extends Resource
                 Tables\Columns\TextColumn::make('tenancyAgreement.unit.name')
                     ->numeric()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('unpaid_amount')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\IconColumn::make('is_confirmed')
                     ->boolean()
                     ->sortable()
