@@ -14,6 +14,8 @@ class AppUtils
     const TENANCY_MANAGEMENT_NAVIGATION_GROUP = 'Tenancy Management';
     const ACCOUNTING_NAVIGATION_GROUP = 'Accounting';
 
+    const VAT_RATE = 0.16;
+
     public static function defaultTableColumns(Blueprint $table)
     {
         $table->id();

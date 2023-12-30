@@ -19,6 +19,8 @@ return new class extends Migration
             $table->date('bill_date');
             $table->date('due_date');
             $table->decimal('amount', 14, 2);
+            $table->decimal('vat', 14, 2)->default(0.0);
+            $table->decimal('total_amount',14,2);
             $table->unsignedBigInteger('billing_type_id');
             $table->unsignedBigInteger('service_id')->nullable();
             $table->unsignedBigInteger('utility_id')->nullable();

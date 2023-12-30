@@ -13,6 +13,8 @@ class TenancyBill extends DefaultAppModel
         'bill_date',
         'due_date',
         'amount',
+        'vat',
+        'total_amount',
         'billing_type_id',
         'service_id',
         'utility_id',

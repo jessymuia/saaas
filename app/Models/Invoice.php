@@ -48,25 +48,23 @@ class Invoice extends DefaultAppModel
     }
 
     public function getAmountAttribute(){
-        // sum amount of tenancy bills
-        // sum amount of tenancy agreement
+        // sum amount of tenancy bills (includes the rent bill amount)
         $invoiceSum = 0;
-        $invoiceSum += $this->tenancyBills()->sum('amount');
-        $this->tenancyAgreement()->each(function($item) use (&$invoiceSum){
-            $invoiceSum += $item->amount;
-        });
+        $invoiceSum += $this->tenancyBills()->sum('total_amount');
+//        $this->tenancyAgreement()->each(function($item) use (&$invoiceSum){
+//            $invoiceSum += $item->amount;
+//        });
 
         return $invoiceSum;
     }
 
     public function getUnpaidAmountAttribute(){
-        // sum amount of tenancy bills
-        // sum amount of tenancy agreement
+        // sum amount of tenancy bills (includes the rent bill amount)
         $invoiceSum = 0;
-        $invoiceSum += $this->tenancyBills()->sum('amount');
-        $this->tenancyAgreement()->each(function($item) use (&$invoiceSum){
-            $invoiceSum += $item->amount;
-        });
+        $invoiceSum += $this->tenancyBills()->sum('total_amount');
+//        $this->tenancyAgreement()->each(function($item) use (&$invoiceSum){
+//            $invoiceSum += $item->amount;
+//        });
 
         return $invoiceSum - $this->invoicePayments()->sum('amount') - $this->creditNote()->sum('amount_credited');
     }
@@ -89,7 +87,7 @@ class Invoice extends DefaultAppModel
 
     public function generateDocument(Invoice $sI){
         // get all tenancy bills
-        $tenancyBills = $this->tenancyBills()->get(['name','amount']);
+        $tenancyBills = $this->tenancyBills()->get(['name','amount','vat','total_amount']);
 
         Log::error("Count of tenancy bills: ".count($tenancyBills));
 
@@ -117,13 +115,14 @@ class Invoice extends DefaultAppModel
 
             foreach ($tenancyBills as $tenancyBill) {
                 $billsSum += $tenancyBill->amount;
+                $vatTotal += $tenancyBill->vat;
                 $invoiceItems .= '
                     <tr style="height: 30px;">
                         <td class="s_cell_with_right_left_border" colspan="3">'.$tenancyBill->name.'</td>
                         <td class="s_cell_with_right_left_border" colspan="1">1</td>
                         <td class="s_cell_with_right_left_border" colspan="1">'.$tenancyBill->amount.'</td>
-                        <td class="s_cell_with_right_left_border" colspan="1">'.$tenancyBill->amount.'</td>
-                        <td class="s_cell_with_right_left_border" colspan="1">None</td>
+                        <td class="s_cell_with_right_left_border" colspan="1">'.$tenancyBill->vat.'</td>
+                        <td class="s_cell_with_right_left_border" colspan="1">'.$tenancyBill->total_amount.'</td>
                     </tr>';
             }
 
@@ -138,7 +137,7 @@ class Invoice extends DefaultAppModel
                 'payBillAccountNumber'=> $tenantName.'/'.$unitName,
                 'billsTotal'=> number_format($billsSum,2),
                 'vatTotal' => number_format($vatTotal,2),
-                'invoiceTotal' => number_format($billsSum + $vatTotal,2),
+                'invoiceTotal' => number_format($invoice->amount,2),
             ];
 
             $content = File::get(resource_path('documents/templates/invoice-output-document.html'));

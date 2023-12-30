@@ -41,6 +41,14 @@ class TenancyBillsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('amount')
                     ->sortable()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('vat')
+                    ->numeric(2)
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('total_amount')
+                    ->numeric(2)
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('bill_date')
                     ->sortable()
                     ->searchable(),

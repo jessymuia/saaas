@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Utils\AppUtils;
 use Carbon\Carbon;
+use Hamcrest\Util;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -127,7 +129,8 @@ class MeterReading extends DefaultAppModel
             $invoice->save();
         }
 
-//        Log::info('Invoice created: ' . $invoice->id);
+        // establish whether unit is vatable
+        $isVatable = $this->unit->property->property_type_id == 1;
 
         // create tenancy Bill
         $tenancyBill = TenancyBill::create([
@@ -143,6 +146,8 @@ class MeterReading extends DefaultAppModel
                     'Y-m-05'
                 ),
             'amount' => $this->consumption * $propertyUtility->rate_per_unit,
+            'vat' => $isVatable ? ($this->consumption * $propertyUtility->rate_per_unit) * AppUtils::VAT_RATE : 0.0,
+            'total_amount' => ($this->consumption * $propertyUtility->rate_per_unit) + ($isVatable ? ($this->consumption * $propertyUtility->rate_per_unit) * AppUtils::VAT_RATE : 0.0),
             'billing_type_id' => $propertyUtility->billing_type_id,
             'invoice_id' => $invoice->id,
             'utility_id' => $this->utility_id,

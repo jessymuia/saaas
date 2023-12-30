@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Utils\AppUtils;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -95,6 +96,9 @@ class TenancyAgreement extends DefaultAppModel
             return $tenancyBillExists->id;
         }
 
+        // establish if unit is vatable
+        $isVatable = $this->unit->property->property_type_id == 1;
+
         // create tenancy Bill
         $tenancyBill = TenancyBill::create([
             'tenancy_agreement_id' => $this->id,
@@ -111,6 +115,8 @@ class TenancyAgreement extends DefaultAppModel
                     'Y-m-5'
                 ),
             'amount' => $this->amount,
+            'vat' => $isVatable ? $this->amount * AppUtils::VAT_RATE : 0.0,
+            'total_amount' => $this->amount + ($isVatable ? $this->amount * AppUtils::VAT_RATE : 0.0),
             'billing_type_id' => $this->billing_type_id,
             'invoice_id' => $invoice->id,
             'created_by' => auth()->user()->id,
@@ -135,6 +141,8 @@ class TenancyAgreement extends DefaultAppModel
                 ->exists();
 
             if (!$serviceBillExists) {// exit if the service bill exists
+                // establish if property is vatable
+                $isVatable = $this->property->property_type_id == 1;
 
                 // create service bill
                 TenancyBill::create([
@@ -155,6 +163,8 @@ class TenancyAgreement extends DefaultAppModel
                             'Y-m-5'
                         ),
                     'amount' => $service->rate,
+                    'vat' => $isVatable ? $service->rate * AppUtils::VAT_RATE : 0.0,
+                    'total_amount' => $service->rate + ($isVatable ? $service->rate * AppUtils::VAT_RATE : 0.0),
                     'billing_type_id' => $service->billing_type_id,
                     'service_id' => $service->service_id,
                     'invoice_id' => $invoice->id,
