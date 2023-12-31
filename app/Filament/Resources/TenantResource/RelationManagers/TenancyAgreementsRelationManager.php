@@ -53,6 +53,14 @@ class TenancyAgreementsRelationManager extends RelationManager
                     ->required()
                     ->numeric()
                     ->minValue(1),
+                // allow for addition of tenancy agreement files using the file uploader and relationship
+                Forms\Components\FileUpload::make('tenancyAgreementFiles')
+                    ->label('Tenancy Agreement Files')
+                    ->acceptedFileTypes(['application/pdf'])
+                    ->maxSize(1024 * 1024 * 5)
+                    ->disk('local')
+                    ->directory('tenancy_agreement_files')
+                    ->visibility('private'),
             ]);
     }
 
@@ -106,7 +114,7 @@ class TenancyAgreementsRelationManager extends RelationManager
                     ->mutateFormDataUsing(function ($data) {
                         $data['created_by'] = auth()->user()->id;
                         return $data;
-                    }),
+                    })
             ])
             ->actions([
                 Tables\Actions\EditAction::make()

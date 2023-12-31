@@ -76,6 +76,14 @@ class TenancyAgreement extends DefaultAppModel
         return $this->hasMany(UnitOccupationMonthlyRecords::class);
     }
 
+    /**
+     * Tenancy agreement files relationship
+     */
+    public function tenancyAgreementFiles(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(TenancyAgreementFiles::class);
+    }
+
     /*
      * Create the rental bill for the tenancy agreement
      */
