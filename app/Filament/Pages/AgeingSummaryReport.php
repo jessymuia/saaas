@@ -204,6 +204,12 @@ class AgeingSummaryReport extends Page implements HasForms
 
             $outputText .= $propertyFooter;
         }else{
+            $allPropertiesTotalDue = 0;
+            $allPropertyOneToThirtyPastDueTotal = 0;
+            $allPropertyThirtyOneToSixtyPastDueTotal = 0;
+            $allPropertySixtyOneToNinetyPastDueTotal = 0;
+            $allPropertyOverNinetyPastDueTotal = 0;
+
             foreach (Property::all() as $property){
                 $propertyTotalDue = 0;
                 $propertyOneToThirtyPastDue = 0;
@@ -237,7 +243,25 @@ class AgeingSummaryReport extends Page implements HasForms
                 );
 
                 $outputText .= $propertyFooter;
+
+                // add to the sum of all properties total
+                $allPropertiesTotalDue += $propertyTotalDue;
+                $allPropertyOneToThirtyPastDueTotal += $propertyOneToThirtyPastDue;
+                $allPropertyThirtyOneToSixtyPastDueTotal += $propertyThirtyOneToSixtyPastDue;
+                $allPropertySixtyOneToNinetyPastDueTotal += $propertySixtyOneToNinetyPastDue;
+                $allPropertyOverNinetyPastDueTotal += $propertyOverNinetyPastDue;
             }
+
+            $propertiesSubTotalFooter = $this->generatePropertyFooter(
+                'All Properties',
+                $allPropertiesTotalDue,
+                $allPropertyOneToThirtyPastDueTotal,
+                $allPropertyThirtyOneToSixtyPastDueTotal,
+                $allPropertySixtyOneToNinetyPastDueTotal,
+                $allPropertyOverNinetyPastDueTotal
+            );
+
+            $outputText .= $propertiesSubTotalFooter;
         }
 
 
