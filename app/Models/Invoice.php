@@ -126,6 +126,30 @@ class Invoice extends DefaultAppModel
                     </tr>';
             }
 
+            // count the tenancy bills, check if the count is past 19
+            $remainingRows = 14 - $tenancyBills->count();
+
+            for ($i = 0; $i < $remainingRows; $i++) {
+                $invoiceItems .= '
+                    <tr style="height: 30px;">
+                        <td class="s_cell_with_right_left_border" colspan="3"></td>
+                        <td class="s_cell_with_right_left_border" colspan="1"></td>
+                        <td class="s_cell_with_right_left_border" colspan="1"></td>
+                        <td class="s_cell_with_right_left_border" colspan="1"></td>
+                        <td class="s_cell_with_right_left_border" colspan="1"></td>
+                    </tr>';
+            }
+
+            // add the bottom row of the invoice
+            $invoiceItems .= '
+                <tr style="height: 30px;">
+                    <td class="s_bottom_cell" colspan="3"></td>
+                    <td class="s_bottom_cell" colspan="1"></td>
+                    <td class="s_bottom_cell" colspan="1"></td>
+                    <td class="s_bottom_cell" colspan="1"></td>
+                    <td class="s_bottom_cell" colspan="1"></td>
+                </tr>';
+
             $detailsArray = [
                 'customerName' => 'HSE#'.$unitName.' '.$tenantName,
                 'propertyName' => $propertyName,
