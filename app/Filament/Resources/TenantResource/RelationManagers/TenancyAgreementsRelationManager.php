@@ -224,7 +224,7 @@ class TenancyAgreementsRelationManager extends RelationManager
 //                    </tr>';
 //            }
             foreach ($transactions as $transaction) {
-                $signOfTransaction = $transaction['transaction_type'] == 'invoice' ? '+' : '-';
+                $signOfTransaction = $transaction['transaction_type'] == 'invoice' ? '' : '-';
                 $runningBalance += $transaction['transaction_type'] == 'invoice' ? $runningAmountDue + $transaction['amount'] : $runningAmountDue - $transaction['amount'];
                 $statementOfAccountItems .= '
                     <tr style="height: 30px;">
@@ -238,18 +238,16 @@ class TenancyAgreementsRelationManager extends RelationManager
             // check if the statement of account items can fit in one page,
             // if they are more than one page, then add a page break
             // if less than one page, padd the table with empty rows
-            if (count($transactions) < 19){
-                $statementOfAccountItems .= str_repeat(
-                    '
-                            <tr style="height: 30px;">
-                                <td class="s_cell_with_right_left_border" colspan="2"></td>
-                                <td class="s_cell_with_right_left_border" colspan="3"></td>
-                                <td class="s_cell_with_right_left_border" colspan="1"></td>
-                                <td class="s_cell_with_right_left_border" colspan="1"></td>
-                            </tr>',
-                    19 - count($transactions)
-                );
-            }
+            $statementOfAccountItems .= str_repeat(
+                '
+                        <tr style="height: 30px;">
+                            <td class="s_cell_with_right_left_border" colspan="2"></td>
+                            <td class="s_cell_with_right_left_border" colspan="3"></td>
+                            <td class="s_cell_with_right_left_border" colspan="1"></td>
+                            <td class="s_cell_with_right_left_border" colspan="1"></td>
+                        </tr>',
+                19 - count($transactions)
+            );
 
             $current = 0;
             $oneToThirtyPastDue = 0;

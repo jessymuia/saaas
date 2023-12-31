@@ -320,6 +320,23 @@
             padding: 2px 3px 2px 3px;
         }
 
+        .s_bottom_cell {
+            border-left: 1px SOLID #000;
+            border-right: 1px SOLID #000;
+            border-bottom: 1px SOLID #000;
+
+            text-align: left;
+            font-weight: normal;
+            color: #000;
+            font-family: serif;
+            font-size: 8pt;
+            vertical-align: middle;
+            word-wrap: normal;
+            white-space: normal;
+            direction: ltr;
+            padding: 2px 3px 2px 3px;
+        }
+
         .ritz .waffle .s0 {
             text-align: left;
             color: #000;
@@ -466,8 +483,8 @@
         </tr>
         <!-- invoice items header -->
         <tr style="height: 30px; border-top-width: 1px; border-top-color: #000" >
-            <td class="s12b" dir="ltr" colspan="2" style="border-top-width: 1px; border-top-color: #000; border-bottom-width: 1px; border-bottom-color: #000; border-left-width: 1px; border-left-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: bold; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; white-space: normal; direction: ltr;">Date</td>
-            <td class="s12" dir="ltr" colspan="3" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: bold; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">Transaction</td>
+            <td class="s12b" dir="ltr" colspan="2" style="border-top: 1px SOLID #000">Date</td>
+            <td class="s12" dir="ltr" colspan="3" style="border-top: 1px SOLID #000">Transaction</td>
             <td class="s12" dir="ltr" colspan="1" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: bold; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">Amount</td>
             <td class="s12" dir="ltr" colspan="1" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; font-weight: bold; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">Balance</td>
         </tr>
@@ -479,8 +496,7 @@
 
         <!-- start of space -->
         <tr style="height: 30px">
-            <td dir="ltr" colspan="4"></td>
-            <td class="s11" dir="ltr" colspan="4" style="background-color: #ffffff"></td>
+            <td class="s11" dir="ltr" colspan="8" style="border-top: 1px SOLID #000; background-color: #ffffff"></td>
         </tr>
         <!-- end of space -->
 
@@ -491,7 +507,7 @@
             <td class="bold_cell_with_left_top_border" dir="ltr" colspan="1">31-60 days past due</td>
             <td class="bold_cell_with_left_top_border" dir="ltr" colspan="1">61-90 days past due</td>
             <td class="bold_cell_with_left_top_border" dir="ltr" colspan="1">Over 90 days past due</td>
-            <td class="bold_cell_with_left_top_border" dir="ltr" colspan="2">Amount Due</td>
+            <td class="bold_cell_with_left_top_border" style="border-right: 1px SOLID #000" dir="ltr" colspan="2">Amount Due</td>
         </tr>
 
         <tr style="height: 30px;">
@@ -500,13 +516,13 @@
             <td class="normal_cell_with_left_top_bottom_border" dir="ltr" colspan="1" >KES @#thirtyOneToSixtyPastDue</td>
             <td class="normal_cell_with_left_top_bottom_border" dir="ltr" colspan="1" >KES @#sixtyOneToNinetyPastDue</td>
             <td class="normal_cell_with_left_top_bottom_border" dir="ltr" colspan="1" >KES @#overNinetyPastDue</td>
-            <td class="normal_cell_with_left_top_bottom_border" dir="ltr" colspan="2" >KES @#amountDue</td>
+            <td class="normal_cell_with_left_top_bottom_border" style="border-right: 1px SOLID #000" dir="ltr" colspan="2" >KES @#amountDue</td>
         </tr>
         <!-- end statement summary -->
 
-        <tr style="height: 30px;">
-            <td class="s14" dir="ltr" colspan="7" style="background-color: #f3f3f3; text-align: center; font-weight: bold; color: #000; font-family: serif; font-size: 12pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 10px; padding-right: 3px; padding-left: 3px;"></td>
-        </tr>
+<!--        <tr style="height: 30px;">-->
+<!--            <td class="s14" dir="ltr" colspan="7" style="background-color: #f3f3f3; text-align: center; font-weight: bold; color: #000; font-family: serif; font-size: 12pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 10px; padding-right: 3px; padding-left: 3px;"></td>-->
+<!--        </tr>-->
 
         </tbody>
     </table>
