@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Events\TenancyAgreementCreatedEvent;
 use App\Utils\AppUtils;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -19,6 +21,7 @@ class TenancyAgreement extends DefaultAppModel
         'start_date',
         'end_date',
         'amount',
+        'deposit_amount',
         'escalation_rate',
         'escalation_period_in_months',
         'next_escalation_date',
@@ -27,6 +30,10 @@ class TenancyAgreement extends DefaultAppModel
         'deleted_by',
         'status',
         'archive'
+    ];
+
+    protected $dispatchesEvents = [
+        'created' => TenancyAgreementCreatedEvent::class, // dispatch this event once the tenancy agreement is created
     ];
 
     // foreign keys
@@ -92,6 +99,68 @@ class TenancyAgreement extends DefaultAppModel
         return $this->hasMany(EscalationRatesAndAmountsLogs::class);
     }
 
+    /**
+     * Create deposit invoice
+     * @param $billDate
+     * @param $invoice
+     * @return mixed
+     * @throws \Exception
+     *
+     */
+    public function createDepositInvoice(){
+        \Log::info("Event listener reached for creating");
+
+        $creationStatus = -1;
+
+        DB::transaction(function () use ($creationStatus) {
+            if ($this->deposit_amount == 0){
+                return -1;
+            }
+
+            $billDate = new \DateTime(now());
+            // ensure there is no bill for this month
+            $tenancyBillExists = TenancyBill::query()
+                ->where('tenancy_agreement_id', $this->id)
+                ->where('service_id',null)
+                ->where('utility_id',null)
+                ->where('is_deposit',true)
+                ->first();
+
+            if ($tenancyBillExists){ // exit if the rent bill exists
+                $creationStatus = $tenancyBillExists->id;
+            }
+
+            $invoice = new Invoice();
+
+            $invoice->comments = "Invoice for Deposit amount";
+            $invoice->tenancy_agreement_id = $this->id;
+            $invoice->invoice_for_month = now()->format('Y-m-d');
+            $invoice->invoice_due_date = Carbon::parse($this->created_at)->addDays(5)->format('Y-m-d'); // 5 days from tenancy agreement creation
+
+            $invoice->save();
+
+            // create tenancy Bill
+            $tenancyBill = TenancyBill::create([
+                'tenancy_agreement_id' => $this->id,
+                'name' => $this->tenant->name.' Rent/Lease Deposit Bill',
+                'bill_date' => now(),
+                'due_date' => Carbon::parse($this->created_at)->addDays(5)->format('Y-m-d'), // 5 days from tenancy agreement creation
+                'amount' => $this->deposit_amount,
+                'vat' => 0.0,
+                'total_amount' => $this->deposit_amount,
+                'billing_type_id' => $this->billing_type_id,
+                'is_deposit' => true,
+                'invoice_id' => $invoice->id,
+                'created_by' => $this->created_by,
+            ]);
+
+            $creationStatus = $tenancyBill->id;
+        });
+
+
+        return $creationStatus;
+    }
+
     /*
      * Create the rental bill for the tenancy agreement
      */
@@ -116,6 +185,7 @@ class TenancyAgreement extends DefaultAppModel
             })
             ->where('service_id',null)
             ->where('utility_id',null)
+            ->where('is_deposit',false)
             ->first();
 
         if ($tenancyBillExists){ // exit if the rent bill exists

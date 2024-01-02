@@ -24,6 +24,7 @@ return new class extends Migration
             $table->unsignedBigInteger('billing_type_id');
             $table->unsignedBigInteger('service_id')->nullable();
             $table->unsignedBigInteger('utility_id')->nullable();
+            $table->boolean('is_deposit')->default(false);
             $table->unsignedBigInteger('invoice_id')->nullable();
 
             // foreign keys

@@ -25,6 +25,7 @@ class TenancyAgreementFactory extends Factory
         $unitId = $this->selectUnit($startDate,$endDate);
         $tenantId = $this->generateRandomTenant();
         $billingTypeId = $this->generateBillingType();
+        $rentAmount = $this->faker->randomFloat(2, 3500, 100000);
 
         return [
             'unit_id' => $unitId,
@@ -33,7 +34,8 @@ class TenancyAgreementFactory extends Factory
             'billing_type_id' => $billingTypeId,
             'start_date' => $startDate,
             'end_date' => $endDate,
-            'amount' => $this->faker->randomFloat(2, 3500, 100000),
+            'amount' => $rentAmount,
+            'deposit_amount' => $rentAmount * 2,
             'escalation_rate' => $this->faker->randomFloat(2, 0, 50),
             'created_by' => 1,
         ];

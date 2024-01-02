@@ -53,6 +53,10 @@ class TenancyAgreementsRelationManager extends RelationManager
                     ->required()
                     ->numeric()
                     ->minValue(1),
+                Forms\Components\TextInput::make('deposit_amount')
+                    ->required()
+                    ->numeric()
+                    ->minValue(1),
                 Forms\Components\Checkbox::make('is_escalation')
                     ->label('Define Escalation')
                     ->reactive(),
@@ -125,6 +129,10 @@ class TenancyAgreementsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('amount')
                     ->sortable()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('deposit_amount')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\IconColumn::make('status')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_by')
