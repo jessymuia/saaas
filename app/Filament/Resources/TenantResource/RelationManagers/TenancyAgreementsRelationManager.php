@@ -53,14 +53,44 @@ class TenancyAgreementsRelationManager extends RelationManager
                     ->required()
                     ->numeric()
                     ->minValue(1),
+                Forms\Components\Checkbox::make('is_escalation')
+                    ->label('Define Escalation')
+                    ->reactive(),
+                Forms\Components\TextInput::make('escalation_rate')
+                    ->label('Escalation Rate')
+                    ->numeric()
+                    ->maxValue(100)
+                    ->visible(function (Get $get){
+                        return $get('is_escalation') == true;
+                    })
+                    ->requiredIf('is_escalation',true)
+                    ->reactive(),
+                Forms\Components\TextInput::make('escalation_period_in_months')
+                    ->label('Escalation Period(months)')
+                    ->numeric()
+                    ->reactive()
+                    ->visible(function (Get $get){
+                        return $get('is_escalation') == true;
+                    })
+                    ->disabledOn('edit')
+                    ->afterStateUpdated(function (Get $get,Forms\Set $set){
+                        $set('next_escalation_date',today()->addMonths($get('escalation_period_in_months'))->format('Y-m-d'));
+                    })
+                    ->requiredIf('is_escalation',true),
+                Forms\Components\DatePicker::make('next_escalation_date')
+                    ->visible(function (Get $get) use ($form) {
+                        return ($get('is_escalation') == true && $form->getOperation() == 'create');
+                    })
+                    ->reactive()
+                    ->readOnly(),
                 // allow for addition of tenancy agreement files using the file uploader and relationship
-                Forms\Components\FileUpload::make('tenancyAgreementFiles')
-                    ->label('Tenancy Agreement Files')
-                    ->acceptedFileTypes(['application/pdf'])
-                    ->maxSize(1024 * 1024 * 5)
-                    ->disk('local')
-                    ->directory('tenancy_agreement_files')
-                    ->visibility('private'),
+//                Forms\Components\FileUpload::make('tenancyAgreementFiles')
+//                    ->label('Tenancy Agreement Files')
+//                    ->acceptedFileTypes(['application/pdf'])
+//                    ->maxSize(1024 * 1024 * 5)
+//                    ->disk('local')
+//                    ->directory('tenancy_agreement_files')
+//                    ->visibility('private'),
             ]);
     }
 
@@ -84,6 +114,14 @@ class TenancyAgreementsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('end_date')
                     ->sortable()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('next_escalation_date')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('escalation_period_in_months')
+                    ->label('Escalation Period (months)')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('amount')
                     ->sortable()
                     ->searchable(),

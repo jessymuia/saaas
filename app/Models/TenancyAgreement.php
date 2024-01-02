@@ -19,6 +19,9 @@ class TenancyAgreement extends DefaultAppModel
         'start_date',
         'end_date',
         'amount',
+        'escalation_rate',
+        'escalation_period_in_months',
+        'next_escalation_date',
         'created_by',
         'updated_by',
         'deleted_by',
@@ -84,6 +87,11 @@ class TenancyAgreement extends DefaultAppModel
         return $this->hasMany(TenancyAgreementFiles::class);
     }
 
+    public function escalationRateAmountsAndLogs()
+    {
+        return $this->hasMany(EscalationRatesAndAmountsLogs::class);
+    }
+
     /*
      * Create the rental bill for the tenancy agreement
      */
@@ -95,7 +103,17 @@ class TenancyAgreement extends DefaultAppModel
         // ensure there is no bill for this month
         $tenancyBillExists = TenancyBill::query()
             ->where('tenancy_agreement_id', $this->id)
-            ->whereMonth('bill_date', date_format($billDate,'m'))
+            ->where(function ($query) use ($billDate){
+                // check if there is an escalation tied to this tenancy agreement id this month
+                // if present, don't check for existence using the month
+                // if not present, ensure no duplicates by checking bill date month
+                EscalationRatesAndAmountsLogs::query()
+                    ->where('tenancy_agreement_id',$this->id)
+                    ->whereMonth('escalation_date',date_format($billDate,'m'))
+                    ->exists()
+                    ?
+                    : $query->whereMonth('bill_date',date_format($billDate,'m'));
+            })
             ->where('service_id',null)
             ->where('utility_id',null)
             ->first();

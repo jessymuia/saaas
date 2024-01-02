@@ -21,6 +21,9 @@ return new class extends Migration
             $table->date('start_date');
             $table->date('end_date')->nullable();
             $table->decimal('amount', 14, 2);
+            $table->decimal('escalation_rate',5,2)->nullable();
+            $table->integer('escalation_period_in_months')->nullable();
+            $table->date('next_escalation_date')->nullable();
 
             // foreign  keys
             $table->foreign('unit_id')->references('id')->on('units');

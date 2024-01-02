@@ -13,7 +13,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
+        // TODO: Check on the necessity of this command
         $schedule->command('app:generate-monthly-rent-bills-command')->monthlyOn(27, '00:00')->withoutOverlapping();
+        $schedule->command('app:escalate-amounts-command')->dailyAt('00:00')->withoutOverlapping();
     }
 
     /**

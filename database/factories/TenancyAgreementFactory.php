@@ -34,6 +34,7 @@ class TenancyAgreementFactory extends Factory
             'start_date' => $startDate,
             'end_date' => $endDate,
             'amount' => $this->faker->randomFloat(2, 3500, 100000),
+            'escalation_rate' => $this->faker->randomFloat(2, 0, 50),
             'created_by' => 1,
         ];
     }
