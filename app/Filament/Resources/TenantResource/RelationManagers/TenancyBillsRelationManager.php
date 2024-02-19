@@ -91,8 +91,10 @@ class TenancyBillsRelationManager extends RelationManager
                                     ->select('id','unit_id', 'utility_id', 'consumption', 'reading_date')
                                     ->orderBy('reading_date', 'asc')
                                     ->chunk(100, function ($meterReadings) {
-                                        foreach ($meterReadings as $meterReading) {
-                                            $meterReading->createBill();
+                                        if ($meterReadings->isNotEmpty()){
+                                            foreach ($meterReadings as $meterReading) {
+                                                $meterReading->createBill();
+                                            }
                                         }
                                     });
 
