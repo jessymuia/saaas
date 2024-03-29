@@ -53,16 +53,19 @@ class MeterReadingsRelationManager extends RelationManager
                     ->required(),
                 Forms\Components\DatePicker::make('reading_date')
                     ->label('Reading Date')
+                    ->reactive()
                     ->rules([
+                        // check if the page is currently being edited
                         fn(Get $get) : CheckValidReadingDateMeterReading => new CheckValidReadingDateMeterReading(
                             $get('unit_id'),
-                            $get('utility_id')
+                            $get('utility_id'),
+                            $form->getOperation()
                         ),
                     ])
                     ->required(),
                 Forms\Components\TextInput::make('current_reading')
                     ->required()
-                    ->integer()
+                    ->numeric()
                     ->rules([
                         fn(Get $get) : CheckValidCurrentReadingInput => new CheckValidCurrentReadingInput(
                             $get('previous_reading')
@@ -73,7 +76,7 @@ class MeterReadingsRelationManager extends RelationManager
                     }),
                 Forms\Components\TextInput::make('previous_reading')
                     ->required()
-                    ->integer()
+                    ->numeric()
                     ->reactive()
                     ->readOnly(function (Forms\Get $get) {
 //                        return MeterReading::query()->where('unit_id', $get('unit_id'))

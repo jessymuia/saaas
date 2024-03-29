@@ -13,12 +13,16 @@ class CheckValidReadingDateMeterReading implements ValidationRule
     public int $unitId;
     public int $utilityId;
 
+    public string $formOperation;
+
     public function __construct(
         $unitId,
         $utilityId,
+        $formOperation
     ) {
         $this->unitId = $unitId;
         $this->utilityId = $utilityId;
+        $this->formOperation = $formOperation;
     }
 
     /**
@@ -33,14 +37,16 @@ class CheckValidReadingDateMeterReading implements ValidationRule
         //
         Log::info("Value: " . $value);
 
-        $meterReadingExists = \App\Models\MeterReading::query()
-            ->where('unit_id', $this->unitId)
-            ->where('utility_id', $this->utilityId)
-            ->whereMonth('reading_date', Carbon::createFromFormat('Y-m-d', $value)->format('m'))
-            ->exists();
+        if ($this->formOperation !== 'edit') {
+            $meterReadingExists = \App\Models\MeterReading::query()
+                ->where('unit_id', $this->unitId)
+                ->where('utility_id', $this->utilityId)
+                ->whereMonth('reading_date', Carbon::createFromFormat('Y-m-d', $value)->format('m'))
+                ->exists();
 
-        if ($meterReadingExists) {
-            $fail('The reading date must be greater than the previous reading month.');
+            if ($meterReadingExists) {
+                $fail('The reading date must be greater than the previous reading month.');
+            }
         }
     }
 }
