@@ -78,7 +78,16 @@ class TenancyAgreementsRelationManager extends RelationManager
                     })
                     ->disabledOn('edit')
                     ->afterStateUpdated(function (Get $get,Forms\Set $set){
-                        $set('next_escalation_date',today()->addMonths($get('escalation_period_in_months'))->format('Y-m-d'));
+                        // get start date
+//                        $get('start_date');
+                        // convert start date to carbon date data type
+                        $start_date = Carbon::createFromFormat('Y-m-d',$get('start_date'));
+                        $set('next_escalation_date',$start_date->addMonths($get('escalation_period_in_months'))->format('Y-m-d'));
+                        while ($get('next_escalation_date') < today()){
+                            $set('next_escalation_date',Carbon::createFromFormat('Y-m-d',
+                                $get('next_escalation_date'))
+                                ->addMonths($get('escalation_period_in_months'))->format('Y-m-d'));
+                        }
                     })
                     ->requiredIf('is_escalation',true),
                 Forms\Components\DatePicker::make('next_escalation_date')
@@ -87,6 +96,18 @@ class TenancyAgreementsRelationManager extends RelationManager
                     })
                     ->reactive()
                     ->readOnly(),
+//                Forms\Components\Checkbox::make('is_migrating')
+//                    ->label('Are you migrating from another system?')
+//                    ->reactive(),
+//                Forms\Components\TextInput::make('balance_carried_forward')
+//                    ->nullable()
+//                    ->numeric()
+//                    ->minValue(1)
+//                    ->reactive()
+//                    ->visible(function (Get $get){
+//                        return $get('is_migrating') == true;
+//                    })
+//                    ->requiredIf('is_migrating',true),
                 // allow for addition of tenancy agreement files using the file uploader and relationship
 //                Forms\Components\FileUpload::make('tenancyAgreementFiles')
 //                    ->label('Tenancy Agreement Files')
