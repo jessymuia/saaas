@@ -56,6 +56,8 @@ class MeterReadingsRelationManager extends RelationManager
                     ->reactive()
                     ->rules([
                         // check if the page is currently being edited
+                        // TODO: FLAG:MIGRATION ensure that the meter reading is not updated after
+                        // TODO: invoice is generated or so
                         fn(Get $get) : CheckValidReadingDateMeterReading => new CheckValidReadingDateMeterReading(
                             $get('unit_id'),
                             $get('utility_id'),
