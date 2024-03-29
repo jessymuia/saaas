@@ -31,7 +31,7 @@ class TenantResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('email')
                     ->email()
-                    ->required()
+                    ->nullable()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('phone_number')
                     ->tel()

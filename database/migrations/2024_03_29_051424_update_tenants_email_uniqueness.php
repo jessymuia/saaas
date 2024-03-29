@@ -14,7 +14,11 @@ return new class extends Migration
         //
         Schema::table('tenants', function (Blueprint $table) {
             // remove the uniqeness of email column
-            $table->string('email')->default("hamudrealtorsltd@gmail.com")->change();
+            $table->string('email')
+                ->default("hamudrealtorsltd@gmail.com")
+                ->change();
+            // drop the unique index
+            $table->dropUnique('tenants_email_unique');
         });
     }
 

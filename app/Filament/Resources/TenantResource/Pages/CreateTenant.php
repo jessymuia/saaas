@@ -13,7 +13,9 @@ class CreateTenant extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['created_by'] = auth()->user()->id;
-
+        $data['email'] == null
+            ? $data['email'] = 'hamudrealtorsltd@gmail.com'
+            : 1;
         return $data;
     }
 }
