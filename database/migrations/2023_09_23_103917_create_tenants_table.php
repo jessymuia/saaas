@@ -15,7 +15,7 @@ return new class extends Migration
             $table = \App\Utils\AppUtils::defaultTableColumns($table);
 
             $table->string('name');
-            $table->string('email')->unique();
+            $table->string('email')->default("hamudrealtorslts@gmail.com"); # Removed uniqueness property since some tenants don't have emails
             $table->string('phone_number',20)->unique();
         });
     }
