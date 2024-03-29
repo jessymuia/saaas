@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Property extends DefaultAppModel
 {
@@ -29,6 +30,19 @@ class Property extends DefaultAppModel
     public function units()
     {
         return $this->hasMany(Unit::class, 'property_id');
+    }
+
+    public function unitOccupiedBy()
+    {
+        // generate relationship for the above defined query
+         return $this->hasManyThrough(
+             TenancyAgreement::class,
+             Unit::class,
+             'property_id',
+             'unit_id',
+             'id',
+             'id');
+
     }
 
     public function tenancyAgreements()
