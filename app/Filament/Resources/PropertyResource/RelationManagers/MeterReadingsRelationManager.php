@@ -149,6 +149,7 @@ class MeterReadingsRelationManager extends RelationManager
                 Tables\Actions\EditAction::make()
                     ->mutateFormDataUsing(function ($data) {
                         $data['updated_by'] = auth()->user()->id;
+                        $data['consumption'] = $data['current_reading'] - $data['previous_reading'];
 
                         return $data;
                     }),
