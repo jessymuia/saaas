@@ -76,26 +76,30 @@ class TenancyAgreementsRelationManager extends RelationManager
                     ->visible(function (Get $get){
                         return $get('is_escalation') == true;
                     })
-                    ->disabledOn('edit')
+//                    ->disabledOn('edit') // TODO: FLAG:MIGRATION
                     ->afterStateUpdated(function (Get $get,Forms\Set $set){
                         // get start date
 //                        $get('start_date');
                         // convert start date to carbon date data type
                         $start_date = Carbon::createFromFormat('Y-m-d',$get('start_date'));
-                        $set('next_escalation_date',$start_date->addMonths($get('escalation_period_in_months'))->format('Y-m-d'));
-                        while ($get('next_escalation_date') < today()){
-                            $set('next_escalation_date',Carbon::createFromFormat('Y-m-d',
-                                $get('next_escalation_date'))
-                                ->addMonths($get('escalation_period_in_months'))->format('Y-m-d'));
+                        $next_date = $start_date->addMonths($get('escalation_period_in_months'));
+                        while ($next_date < today()){
+                            $next_date = $next_date
+                                ->addMonths($get('escalation_period_in_months'));
                         }
+                        $set('next_escalation_date',$next_date->format('Y-m-d'));
+                        unset($start_date);
+                        unset($next_date);
                     })
                     ->requiredIf('is_escalation',true),
                 Forms\Components\DatePicker::make('next_escalation_date')
                     ->visible(function (Get $get) use ($form) {
-                        return ($get('is_escalation') == true && $form->getOperation() == 'create');
+                        return ($get('is_escalation') == true
+//                            && $form->getOperation() == 'create' TODO: FLAG:MIGRATION
+                        );
                     })
                     ->reactive()
-                    ->readOnly(),
+//                    ->readOnly() // TODO: FLAG:MIGRATION
 //                Forms\Components\Checkbox::make('is_migrating')
 //                    ->label('Are you migrating from another system?')
 //                    ->reactive(),
