@@ -26,7 +26,8 @@ class CreateDepositAmountInvoiceListener
         \Log::info("Listener reached");
         $tenancyAgreement = $event->tenancyAgreement;
 
-        $retuned = $tenancyAgreement->createDepositInvoice();
-        \Log::info("Returned value: " . $retuned);
+        // TODO: Uncomment later
+//        $retuned = $tenancyAgreement->createDepositInvoice();
+//        \Log::info("Returned value: " . $retuned);
     }
 }
