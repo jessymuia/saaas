@@ -21,6 +21,11 @@ class TenancyBillsRelationManager extends RelationManager
         return $form
             ->schema([
                 // empty body
+                Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->unique('tenancy_bills', 'name', ignoreRecord: true)
+                    ->visibleOn(['edit'])
+                    ->maxLength(255),
             ]);
     }
 
@@ -70,14 +75,14 @@ class TenancyBillsRelationManager extends RelationManager
 //                Tables\Actions\CreateAction::make(),
             ])
             ->actions([
-//                Tables\Actions\EditAction::make(),
-//                Tables\Actions\DeleteAction::make()
+                Tables\Actions\EditAction::make(),
+//                Tables\Actions\DeleteAction:: make()
 //                    ->requiresConfirmation()
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+//                Tables\Actions\BulkActionGroup::make([
+//                    Tables\Actions\DeleteBulkAction::make(),
+//                ]),
             ]);
     }
 }
