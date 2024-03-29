@@ -76,9 +76,10 @@ class MeterReadingsRelationManager extends RelationManager
                     ->integer()
                     ->reactive()
                     ->readOnly(function (Forms\Get $get) {
-                        return MeterReading::query()->where('unit_id', $get('unit_id'))
-                            ->where('utility_id', $get('utility_id'))
-                            ->count() > 0;
+//                        return MeterReading::query()->where('unit_id', $get('unit_id'))
+//                            ->where('utility_id', $get('utility_id'))
+//                            ->count() > 0;
+//                        TODO: FLAG:MIGRATION
                     })
                     ->minValue(0)
 
