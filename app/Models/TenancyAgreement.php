@@ -192,6 +192,12 @@ class TenancyAgreement extends DefaultAppModel
             return $tenancyBillExists->id;
         }
 
+        // TODO: Extra check to prevent backdating of migrated users
+        if ($billDate < new \DateTime('2024-03-01')){
+            // check if the bill date is before this date (1st March, 2024)
+            return $tenancyBillExists->id;
+        }
+
         // establish if unit is vatable
         $isVatable = $this->unit->property->property_type_id == 1;
 
@@ -235,6 +241,12 @@ class TenancyAgreement extends DefaultAppModel
                 ->whereMonth('bill_date', date_format($billDate,'m'))
                 ->where('service_id','=',$service->service_id)
                 ->exists();
+
+            // TODO: Extra check to prevent backdating of migrated users
+            if (!$serviceBillExists && ($billDate < new \DateTime('2024-03-01'))){
+                // check if the bill date is before this date (1st March, 2024)
+                $serviceBillExists = true;
+            }
 
             if (!$serviceBillExists) {// exit if the service bill exists
                 // establish if property is vatable
