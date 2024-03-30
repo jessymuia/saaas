@@ -148,7 +148,9 @@ class TenancyBillsRelationManager extends RelationManager
                                             }
                                             $tenancyBillId = $tenancyAgreement->createRentBill($currentDate,$invoice);
                                             $tenancyAgreement->createServiceBill($currentDate,$invoice);
-                                            $tenancyAgreement->createUnitOccupationMonthlyRecord($currentDate,$tenancyBillId);
+                                            if ($tenancyBillId != -1){
+                                                $tenancyAgreement->createUnitOccupationMonthlyRecord($currentDate,$tenancyBillId);
+                                            }
                                         }
                                         $currentDate = date('Y-m-d', strtotime($currentDate . ' +1 month'));
                                     }
@@ -172,6 +174,8 @@ class TenancyBillsRelationManager extends RelationManager
 
                             Notification::make('generate-bills-notification')
                                 ->title('Error')
+                                ->body('An error occurred while generating bills. '
+                                    . $exception->getMessage())
                                 ->danger()
                                 ->send();
                         }
