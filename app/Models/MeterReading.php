@@ -83,8 +83,8 @@ class MeterReading extends DefaultAppModel
             })->value('id');
 
         if (!$tenancyAgreement) {
-            throw new \Exception('No tenancy agreement found for this meter reading for unit: '
-                . $this->unit_id . ' on '
+            throw new \Exception('No tenancy agreement found for this meter reading for unit: id'
+                . $this->unit_id . ' name ' .$this->unit->name.  ' on '
                 . $this->reading_date
                 . ' full record: '. $this->toJson()
             );
