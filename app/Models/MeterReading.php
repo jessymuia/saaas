@@ -79,8 +79,7 @@ class MeterReading extends DefaultAppModel
             ->whereDate('start_date', '<=', $this->reading_date)
             ->where(function ($query) {
                 $query->whereDate('end_date', '>=', $this->reading_date)
-                    ->orWhereNull('end_date')
-                    ->orWhereDate('start_date', '2024-04-01'); // TODO FLAG:MIGRATION
+                    ->orWhereNull('end_date');
             })->value('id');
 
         if (!$tenancyAgreement) {
