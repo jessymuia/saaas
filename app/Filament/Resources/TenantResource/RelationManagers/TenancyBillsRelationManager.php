@@ -122,7 +122,7 @@ class TenancyBillsRelationManager extends RelationManager
                                         }
                                         // check if P4 IS HERE
                                         $currentDate = date('Y-m-d', strtotime($currentDate));
-                                        if (!$tenancyAgreement->monthlyOccupationRecords()->whereMonth('from_date', date('m', strtotime($currentDate)))->exists()) {
+                                        if ($tenancyAgreement->monthlyOccupationRecords()->count() == 0 || !$tenancyAgreement->monthlyOccupationRecords()->whereMonth('from_date', date('m', strtotime($currentDate)))->exists()) {
                                             // check if there is an invoice that is not confirmed for this month
                                             // if there is, then don't create a new one
                                             $invoice = Invoice::query()
