@@ -121,6 +121,7 @@ class TenancyBillsRelationManager extends RelationManager
                                             Log::info('P4 is here A');
                                             $count = $tenancyAgreement->monthlyOccupationRecords()->count();
                                             Log::info('P4 is here A count: '.$count);
+                                            Log::info($tenancyAgreement);
                                         }
                                         // check if P4 IS HERE
                                         $currentDate = date('Y-m-d', strtotime($currentDate));
