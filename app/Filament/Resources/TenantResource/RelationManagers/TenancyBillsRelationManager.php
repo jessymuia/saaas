@@ -106,15 +106,6 @@ class TenancyBillsRelationManager extends RelationManager
                                     ->orderBy('start_date', 'asc')
                                     ->get();
 
-                                // todo: remove
-                                // check if a unit has a unit has the name 'P4'
-                                foreach ($tenancyAgreements as $tenancyAgreement) {
-                                    if ($tenancyAgreement->unit->name == 'P4'){
-                                        Log::info('P4 unit found');
-                                    }
-                                }
-                                // todo: remove
-
                                 // check that the tenancy agreement has no occupation logs for the month
                                 foreach ($tenancyAgreements as $tenancyAgreement) {
                                     // loop through the dates from the start date to the end date
@@ -125,6 +116,11 @@ class TenancyBillsRelationManager extends RelationManager
                                     $currentDate = $startDate;
                                     // assumption: bill is generated beginning of the month TODO: FLAG:MIGRATION
                                     while ($currentDate <= $endDate) {
+                                        // check if P4 IS HERE
+                                        if ($tenancyAgreement->unit->name ='P4'){
+                                            Log::info('P4 is here A');
+                                        }
+                                        // check if P4 IS HERE
                                         $currentDate = date('Y-m-d', strtotime($currentDate));
                                         if (!$tenancyAgreement->monthlyOccupationRecords()->whereMonth('from_date', date('m', strtotime($currentDate)))->exists()) {
                                             // check if there is an invoice that is not confirmed for this month
@@ -135,6 +131,12 @@ class TenancyBillsRelationManager extends RelationManager
                                                 ->where('is_confirmed',0)
                                                 ->where('is_generated',0)
                                                 ->first();
+
+                                            // check if P4 IS HERE
+                                            if ($tenancyAgreement->unit->name ='P4'){
+                                                Log::info('P4 is here B');
+                                            }
+                                            // check if P4 IS HERE
 
                                             if (!$invoice){
                                                 // create invoice if not exists
