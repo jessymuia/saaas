@@ -35,7 +35,7 @@ class DebugCommand extends Command
 
         $this->info("The count: ". $unitOccupationMonthlyRecords->count());
         foreach ($unitOccupationMonthlyRecords as $unitOccupationMonthlyRecord) {
-            $this->info($unitOccupationMonthlyRecord->unitOccupationMonthlyRecords);
+            $this->info($unitOccupationMonthlyRecord);
         }
     }
 }
