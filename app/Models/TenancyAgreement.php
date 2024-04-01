@@ -261,7 +261,7 @@ class TenancyAgreement extends DefaultAppModel
                 TenancyBill::create([
                     'tenancy_agreement_id' => $this->id,
 //                    'name' => $this->tenant->name.' '. TODO: FLAG:MIGRATION removed unnecessary tenant name
-                    'name' => date_format($billDate,'F'). ' '.
+                    'name' => $billDate->modify('+1 month')->format('F'). ' '.
                         Services::query()->where('id','=',$service->service_id)->value('name').
                         ' Service Bill',
                     'bill_date' => now(),
