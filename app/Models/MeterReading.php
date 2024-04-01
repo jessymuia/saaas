@@ -98,6 +98,12 @@ class MeterReading extends DefaultAppModel
             ->select(['rate_per_unit','billing_type_id'])
             ->first();
 
+        // TODO: Extra check to prevent backdating of migrated users
+        if ($this->reading_date < new \DateTime('2024-03-01')){
+            // check if the bill date is before this date (1st Feb, 2024)
+            return -1;
+        }
+
         // create invoice if not exists
         // check if the invoice is confirmed
         // a new invoice is only created if the previous one is confirmed
