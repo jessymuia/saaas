@@ -106,6 +106,15 @@ class TenancyBillsRelationManager extends RelationManager
                                     ->orderBy('start_date', 'asc')
                                     ->get();
 
+                                // todo: remove
+                                // check if a unit has a unit has the name 'P4'
+                                foreach ($tenancyAgreements as $tenancyAgreement) {
+                                    if ($tenancyAgreement->unit->name == 'P4'){
+                                        Log::info('P4 unit found');
+                                    }
+                                }
+                                // todo: remove
+
                                 // check that the tenancy agreement has no occupation logs for the month
                                 foreach ($tenancyAgreements as $tenancyAgreement) {
                                     // loop through the dates from the start date to the end date
