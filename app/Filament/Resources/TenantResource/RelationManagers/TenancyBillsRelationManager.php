@@ -113,6 +113,10 @@ class TenancyBillsRelationManager extends RelationManager
                                     // then create a log
                                     $startDate = $tenancyAgreement->start_date;
                                     $endDate = $tenancyAgreement->end_date > now()->endOfMonth() ? now()->endOfMonth() : $tenancyAgreement->end_date;
+                                    // check if end date is null, then set it to the end of the month
+                                    if (!$endDate){
+                                        $endDate = now()->endOfMonth();
+                                    }
                                     $currentDate = $startDate;
                                     // check if P4 IS HERE todo: remove
                                     if ($tenancyAgreement->unit->name == 'P4'){
