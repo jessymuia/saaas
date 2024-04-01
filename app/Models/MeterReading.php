@@ -109,11 +109,11 @@ class MeterReading extends DefaultAppModel
         // a new invoice is only created if the previous one is confirmed
         // ensure each invoice has its own separate month bills using the due_date from the tenancy bills
         // define invoice for month TODO: FLAG:MIGRATION
-        $invoiceForMonth = $this->reading_date->modify(' +1 month')->format('m');
+        $invoiceForMonthDate = $this->reading_date->modify(' +1 month');
         $invoice = Invoice::query()
             ->where('tenancy_agreement_id', $tenancyAgreement)
 //            ->whereMonth('invoice_for_month', date_format($this->reading_date,'m'))
-            ->whereMonth('invoice_for_month', $invoiceForMonth) // TODO: FLAG:MIGRATION
+            ->whereMonth('invoice_for_month', date_format($invoiceForMonthDate,'m')) // TODO: FLAG:MIGRATION
             ->where('is_confirmed', '=', 0)
             ->where('is_generated', '=', 0)
             ->get()
@@ -123,7 +123,7 @@ class MeterReading extends DefaultAppModel
             $invoice = new Invoice();
             $invoice->tenancy_agreement_id = $tenancyAgreement;
 //            $invoice->invoice_for_month = $this->reading_date; // used to ensure that the invoice is created once per month TODO: FLAG:MIGRATION
-            $invoice->invoice_for_month = $invoiceForMonth; // used to ensure that the invoice is created once per month TODO: FLAG:MIGRATION
+            $invoice->invoice_for_month = $invoiceForMonthDate->startOfMonth(); // used to ensure that the invoice is created once per month TODO: FLAG:MIGRATION
             $invoice->invoice_due_date = // next month 5th or this month 5th if reading date is before 5th
                 date_format(
                     date_add(
