@@ -181,7 +181,7 @@ class TenancyAgreement extends DefaultAppModel
                     ->where('tenancy_agreement_id',$this->id)
                     ->whereMonth('escalation_date',date_format($billDate,'m'))
                     ->exists()
-                    ?
+                    ? $query->where(1,'=',1)
                     : $query->whereMonth('bill_date',date_format($billDate,'m'));
             })
             ->where('service_id',null)

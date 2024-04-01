@@ -114,7 +114,7 @@ class TenancyBillsRelationManager extends RelationManager
                                     $startDate = $tenancyAgreement->start_date;
                                     $endDate = $tenancyAgreement->end_date > now()->endOfMonth() ? now()->endOfMonth() : $tenancyAgreement->end_date;
                                     $currentDate = $startDate;
-                                    // assumption: bill is generated beginning of the month
+                                    // assumption: bill is generated beginning of the month TODO: FLAG:MIGRATION
                                     while ($currentDate <= $endDate) {
                                         $currentDate = date('Y-m-d', strtotime($currentDate));
                                         if (!$tenancyAgreement->monthlyOccupationRecords()->whereMonth('from_date', date('m', strtotime($currentDate)))->exists()) {
@@ -146,7 +146,7 @@ class TenancyBillsRelationManager extends RelationManager
 
                                                 $invoice->save();
                                             }
-                                            $tenancyBillId = $tenancyAgreement->createRentBill($currentDate,$invoice);
+                                            $tenancyBillId = $tenancyAgreement->createRentBill($currentDate,$invoice); //TODO MIGRATION:FLAG review this process
                                             $tenancyAgreement->createServiceBill($currentDate,$invoice);
                                             if ($tenancyBillId != -1){
                                                 $tenancyAgreement->createUnitOccupationMonthlyRecord($currentDate,$tenancyBillId);
