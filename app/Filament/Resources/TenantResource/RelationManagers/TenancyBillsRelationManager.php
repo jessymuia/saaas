@@ -108,6 +108,15 @@ class TenancyBillsRelationManager extends RelationManager
 
                                 // check that the tenancy agreement has no occupation logs for the month
                                 foreach ($tenancyAgreements as $tenancyAgreement) {
+                                    // check if P4 IS HERE todo: remove
+                                    if ($tenancyAgreement->unit->name == 'P4'){
+                                        Log::info('P4 is here A');
+//                                        $count = $tenancyAgreement->monthlyOccupationRecords()->get();
+////                                            Log::info('P4 is here A count: '.$count);
+//                                        Log::info("Tenancy Agreement id: ". $tenancyAgreement->id);
+//                                        Log::info($count);
+                                    }
+                                    // check if P4 IS HERE todo: remove
                                     // loop through the dates from the start date to the end date
                                     // check if the month has a log, if not create a bill
                                     // then create a log
@@ -116,15 +125,6 @@ class TenancyBillsRelationManager extends RelationManager
                                     $currentDate = $startDate;
                                     // assumption: bill is generated beginning of the month TODO: FLAG:MIGRATION
                                     while ($currentDate <= $endDate) {
-                                        // check if P4 IS HERE todo: remove
-                                        if ($tenancyAgreement->unit->name == 'P4'){
-                                            Log::info('P4 is here A');
-                                            $count = $tenancyAgreement->monthlyOccupationRecords()->get();
-//                                            Log::info('P4 is here A count: '.$count);
-                                            Log::info("Tenancy Agreement id: ". $tenancyAgreement->id);
-                                            Log::info($count);
-                                        }
-                                        // check if P4 IS HERE todo: remove
                                         $currentDate = date('Y-m-d', strtotime($currentDate));
                                         if ($tenancyAgreement->monthlyOccupationRecords()->count() == 0 || !$tenancyAgreement->monthlyOccupationRecords()->whereMonth('from_date', date('m', strtotime($currentDate)))->exists()) {
                                             // check if there is an invoice that is not confirmed for this month
