@@ -203,7 +203,7 @@ class TenancyAgreement extends DefaultAppModel
         $isVatable = $this->unit->property->property_type_id == 1;
 
         // define bill month name
-        $nextMonth = date_create_from_format('Y-m-d', $billDate)->modify('+1 month')->format('F');
+        $nextMonth =  $billDate->modify('+1 month')->format('F');
 
         // create tenancy Bill
         $tenancyBill = TenancyBill::create([
