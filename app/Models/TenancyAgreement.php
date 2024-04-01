@@ -208,7 +208,8 @@ class TenancyAgreement extends DefaultAppModel
         // create tenancy Bill
         $tenancyBill = TenancyBill::create([
             'tenancy_agreement_id' => $this->id,
-            'name' => $this->tenant->name.' '. $nextMonth. ' Rent Bill',
+            'name' => $nextMonth. ' Rent Bill',
+//            'name' => $this->tenant->name.' '. $nextMonth. ' Rent Bill', TODO: FLAG:MIGRATION
             'bill_date' => now(),
             'due_date' => // next month 5th
                 date_format(
@@ -259,8 +260,8 @@ class TenancyAgreement extends DefaultAppModel
                 // create service bill
                 TenancyBill::create([
                     'tenancy_agreement_id' => $this->id,
-                    'name' => $this->tenant->name.' '.
-                        date_format($billDate,'F'). ' '.
+//                    'name' => $this->tenant->name.' '. TODO: FLAG:MIGRATION removed unnecessary tenant name
+                    'name' => date_format($billDate,'F'). ' '.
                         Services::query()->where('id','=',$service->service_id)->value('name').
                         ' Service Bill',
                     'bill_date' => now(),

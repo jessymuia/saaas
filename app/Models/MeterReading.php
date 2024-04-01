@@ -145,7 +145,8 @@ class MeterReading extends DefaultAppModel
         // create tenancy Bill
         $tenancyBill = TenancyBill::create([
             'tenancy_agreement_id' => $tenancyAgreement,
-            'name' => TenancyAgreement::find($tenancyAgreement)->tenant->name.' '. date_format($this->reading_date,'F'). ' '. $this->utility->name. ' Bill',
+//            'name' => TenancyAgreement::find($tenancyAgreement)->tenant->name.' '. date_format($this->reading_date,'F'). ' '. $this->utility->name. ' Bill',
+            'name' => date_format($this->reading_date,'F'). ' '. $this->utility->name. ' Bill', // TODO: FLAG:MIGRATION removed unneccesary repetion of tenant name
             'bill_date' => $this->reading_date,
             'due_date' => // next month 15th
                 date_format(
