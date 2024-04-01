@@ -116,15 +116,15 @@ class TenancyBillsRelationManager extends RelationManager
                                     $currentDate = $startDate;
                                     // assumption: bill is generated beginning of the month TODO: FLAG:MIGRATION
                                     while ($currentDate <= $endDate) {
-                                        // check if P4 IS HERE
-                                        if ($tenancyAgreement->unit->name ='P4'){
+                                        // check if P4 IS HERE todo: remove
+                                        if ($tenancyAgreement->unit->name == 'P4'){
                                             Log::info('P4 is here A');
                                             $count = $tenancyAgreement->monthlyOccupationRecords()->get();
 //                                            Log::info('P4 is here A count: '.$count);
                                             Log::info("Tenancy Agreement id: ". $tenancyAgreement->id);
                                             Log::info($count);
                                         }
-                                        // check if P4 IS HERE
+                                        // check if P4 IS HERE todo: remove
                                         $currentDate = date('Y-m-d', strtotime($currentDate));
                                         if ($tenancyAgreement->monthlyOccupationRecords()->count() == 0 || !$tenancyAgreement->monthlyOccupationRecords()->whereMonth('from_date', date('m', strtotime($currentDate)))->exists()) {
                                             // check if there is an invoice that is not confirmed for this month
@@ -136,11 +136,11 @@ class TenancyBillsRelationManager extends RelationManager
                                                 ->where('is_generated',0)
                                                 ->first();
 
-                                            // check if P4 IS HERE
+                                            // check if P4 IS HERE todo: remove
                                             if ($tenancyAgreement->unit->name ='P4'){
                                                 Log::info('P4 is here B');
                                             }
-                                            // check if P4 IS HERE
+                                            // check if P4 IS HERE todo: remove
 
                                             if (!$invoice){
                                                 // create invoice if not exists
