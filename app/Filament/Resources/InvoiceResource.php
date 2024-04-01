@@ -33,9 +33,10 @@ class InvoiceResource extends Resource
                     ->maxLength(1000),
                 Forms\Components\DatePicker::make('issue_date')
                     ->disabled()
-                    ->required(),
+                    ->readOnly(),
                 Forms\Components\DatePicker::make('created_at')
                     ->disabled()
+                    ->readOnly()
                     ->required(),
                 Forms\Components\Toggle::make('is_confirmed')
                     ->label('Confirmed')
