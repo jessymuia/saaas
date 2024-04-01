@@ -132,7 +132,7 @@ class TenancyBillsRelationManager extends RelationManager
                                     // assumption: bill is generated beginning of the month TODO: FLAG:MIGRATION
                                     while ($currentDate <= $endDate) {
                                         $currentDate = date('Y-m-d', strtotime($currentDate));
-                                        if ($tenancyAgreement->monthlyOccupationRecords()->count() == 0 || !$tenancyAgreement->monthlyOccupationRecords()->whereMonth('from_date', date('m', strtotime($currentDate)))->exists()) {
+                                        if (!$tenancyAgreement->monthlyOccupationRecords()->whereMonth('from_date', date('m', strtotime($currentDate)))->exists()) {
                                             // check if there is an invoice that is not confirmed for this month
                                             // if there is, then don't create a new one
                                             $invoice = Invoice::query()

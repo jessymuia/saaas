@@ -294,7 +294,13 @@ class TenancyAgreement extends DefaultAppModel
             $this->start_date > date_format($billDate,'Y-m-01')
                 ? $this->start_date
                 : date_format($billDate,'Y-m-01');
-        $unitOccupationMonthlyRecord->end_date = $this->end_date < date_format($billDate,'Y-m-t')
+        // check if end date is null
+        // if not null, check if it is before the last day of the month
+        $endDate = $this->end_date ?? date_format($billDate,'Y-m-t');
+//        $unitOccupationMonthlyRecord->end_date = $this->end_date < date_format($billDate,'Y-m-t')
+//            ? $this->end_date
+//            : date_format($billDate,'Y-m-t');
+        $unitOccupationMonthlyRecord->end_date = $endDate < date_format($billDate,'Y-m-t')
             ? $this->end_date
             : date_format($billDate,'Y-m-t');
         $unitOccupationMonthlyRecord->tenancy_bill_id = $tenancyBillId;
