@@ -133,7 +133,7 @@ class TenancyBillsRelationManager extends RelationManager
                                             // if there is, then don't create a new one
                                             $invoice = Invoice::query()
                                                 ->where('tenancy_agreement_id', $tenancyAgreement->id)
-                                                ->whereMonth('invoice_for_month', date_format(new \DateTime($currentDate),'m'))
+                                                ->whereMonth('invoice_for_month', date_format(new \DateTime($currentDate),'m')) // TODO: FLAG:MIGRATION
                                                 ->where('is_confirmed',0)
                                                 ->where('is_generated',0)
                                                 ->first();
