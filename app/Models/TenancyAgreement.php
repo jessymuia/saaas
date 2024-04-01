@@ -84,7 +84,7 @@ class TenancyAgreement extends DefaultAppModel
 
     public function monthlyOccupationRecords()
     {
-        return $this->hasMany(UnitOccupationMonthlyRecords::class);
+        return $this->hasMany(UnitOccupationMonthlyRecords::class, 'tenancy_agreement_id', 'id');
     }
 
     /**
