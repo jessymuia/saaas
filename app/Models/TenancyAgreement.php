@@ -194,10 +194,10 @@ class TenancyAgreement extends DefaultAppModel
         }
 
         // TODO: Extra check to prevent backdating of migrated users
-//        if ($billDate < new \DateTime('2024-03-01')){
-//            // check if the bill date is before this date (1st Feb, 2024)
-//            return -1;
-//        }
+        if ($billDate < new \DateTime('2024-03-01')){
+            // check if the bill date is before this date (1st Feb, 2024)
+            return -1;
+        }
 
         // establish if unit is vatable
         $isVatable = $this->unit->property->property_type_id == 1;
