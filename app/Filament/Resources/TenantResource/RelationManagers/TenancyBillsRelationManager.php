@@ -123,6 +123,12 @@ class TenancyBillsRelationManager extends RelationManager
                                     while ($currentDate <= $endDate) {
                                         $currentDate = date('Y-m-d', strtotime($currentDate));
                                         if (!$tenancyAgreement->monthlyOccupationRecords()->whereMonth('from_date', date('m', strtotime($currentDate)))->exists()) {
+                                            // check to ensure no backdating of invoices
+                                            if ($currentDate < '2024-03-01'){
+                                                $currentDate = date('Y-m-d', strtotime($currentDate . ' +1 month'));
+                                                continue;
+                                            }
+
                                             // check if there is an invoice that is not confirmed for this month
                                             // if there is, then don't create a new one
                                             $invoice = Invoice::query()
