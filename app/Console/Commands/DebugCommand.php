@@ -30,7 +30,7 @@ class DebugCommand extends Command
         $tenancyAgreement = 36;
         $unitOccupationMonthlyRecords = TenancyAgreement::query()
             ->where('id', $tenancyAgreement)
-            ->with('unitOccupationMonthlyRecords')
+            ->with('monthlyOccupationRecords')
             ->get();
 
         $this->info("The count: ". $unitOccupationMonthlyRecords->count());
