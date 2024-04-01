@@ -37,5 +37,10 @@ class DebugCommand extends Command
         foreach ($unitOccupationMonthlyRecords as $unitOccupationMonthlyRecord) {
             $this->info($unitOccupationMonthlyRecord);
         }
+
+        $this->info("......................................................");
+
+        // get unit name for this tenancy agreement
+        $this->info("Unit name: ". $unitOccupationMonthlyRecords->first()->unit->name);
     }
 }
