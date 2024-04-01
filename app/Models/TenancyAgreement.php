@@ -202,10 +202,13 @@ class TenancyAgreement extends DefaultAppModel
         // establish if unit is vatable
         $isVatable = $this->unit->property->property_type_id == 1;
 
+        // define bill month name
+        $nextMonth = date_create_from_format('Y-m-d', $billDate)->modify('+1 month')->format('F');
+
         // create tenancy Bill
         $tenancyBill = TenancyBill::create([
             'tenancy_agreement_id' => $this->id,
-            'name' => $this->tenant->name.' '. date_format($billDate,'F'). ' Rent Bill',
+            'name' => $this->tenant->name.' '. $nextMonth. ' Rent Bill',
             'bill_date' => now(),
             'due_date' => // next month 5th
                 date_format(

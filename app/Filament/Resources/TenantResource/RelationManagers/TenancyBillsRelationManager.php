@@ -118,17 +118,7 @@ class TenancyBillsRelationManager extends RelationManager
                                         $endDate = now()->endOfMonth();
                                     }
                                     $currentDate = $startDate;
-                                    // check if P4 IS HERE todo: remove
-                                    if ($tenancyAgreement->unit->name == 'P4'){
-                                        Log::info('P4 is here A');
-                                        Log::info("Start date: ". $tenancyAgreement->start_date);
-                                        Log::info("End date: ". $tenancyAgreement->end_date);
-//                                        $count = $tenancyAgreement->monthlyOccupationRecords()->get();
-////                                            Log::info('P4 is here A count: '.$count);
-//                                        Log::info("Tenancy Agreement id: ". $tenancyAgreement->id);
-//                                        Log::info($count);
-                                    }
-                                    // check if P4 IS HERE todo: remove
+
                                     // assumption: bill is generated beginning of the month TODO: FLAG:MIGRATION
                                     while ($currentDate <= $endDate) {
                                         $currentDate = date('Y-m-d', strtotime($currentDate));
@@ -142,11 +132,6 @@ class TenancyBillsRelationManager extends RelationManager
                                                 ->where('is_generated',0)
                                                 ->first();
 
-                                            // check if P4 IS HERE todo: remove
-                                            if ($tenancyAgreement->unit->name ='P4'){
-                                                Log::info('P4 is here B');
-                                            }
-                                            // check if P4 IS HERE todo: remove
 
                                             if (!$invoice){
                                                 // create invoice if not exists
