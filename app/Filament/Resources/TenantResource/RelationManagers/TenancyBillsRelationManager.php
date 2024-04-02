@@ -8,6 +8,7 @@ use App\Models\TenancyAgreement;
 use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
@@ -24,7 +25,27 @@ class TenancyBillsRelationManager extends RelationManager
     public function form(Form $form): Form
     {
         return $form
-            ->schema([]);
+            ->schema([
+                Forms\Components\TextInput::make('amount')
+                    ->numeric()
+                    ->visible(// if billing is name contains the text 'Garbage'
+                        fn(Get $get) => str_contains($get('name'), 'Garbage')
+                            && $form->getOperation() === 'edit'
+                    )->required(),
+                Forms\Components\TextInput::make('vat')
+                    ->numeric()
+                    ->visible(// if billing is name contains the text 'Garbage'
+                        fn(Get $get) => str_contains($get('name'), 'Garbage')
+                            && $form->getOperation() === 'edit'
+                    )->required(),
+                Forms\Components\TextInput::make('total_amount')
+                    ->numeric()
+                    ->readOnly()
+                    ->visible(// if billing is name contains the text 'Garbage'
+                        fn(Get $get) => str_contains($get('name'), 'Garbage')
+                            && $form->getOperation() === 'edit'
+                    )->required(),
+            ]);
     }
 
     public function table(Table $table): Table
@@ -223,7 +244,7 @@ class TenancyBillsRelationManager extends RelationManager
                     }),
             ])
             ->actions([
-//                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make()
                     ->requiresConfirmation(fn () => 'Are you sure you want to delete this tenancy bill?')
             ])
