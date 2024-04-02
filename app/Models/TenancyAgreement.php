@@ -256,7 +256,6 @@ class TenancyAgreement extends DefaultAppModel
             if (!$serviceBillExists) {// exit if the service bill exists
                 // establish if property is vatable
                 $isVatable = $this->property->property_type_id == 1;
-
                 // create service bill
                 TenancyBill::create([
                     'tenancy_agreement_id' => $this->id,

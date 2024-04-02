@@ -80,4 +80,9 @@ class Property extends DefaultAppModel
     public function vacationNotices(){
         return $this->hasMany(VacationNotices::class, 'property_id');
     }
+
+    public function propertyPaymentDetails()
+    {
+        return $this->hasOne(PropertyPaymentDetails::class, 'property_id');
+    }
 }

@@ -110,6 +110,7 @@ class Invoice extends DefaultAppModel
                 ->first()->name;
 
             $propertyName = $sI->tenancyAgreement->property->name;
+            $propertyId = $sI->tenancyAgreement->property->id;
 
             $unitName = $sI->tenancyAgreement->unit->name;
 
@@ -162,6 +163,18 @@ class Invoice extends DefaultAppModel
                 'billsTotal'=> number_format($billsSum,2),
                 'vatTotal' => number_format($vatTotal,2),
                 'invoiceTotal' => number_format($invoice->amount,2),
+                'bankAccountName' => strtoupper(PropertyPaymentDetails::query()
+                    ->where('property_id', $propertyId)
+                    ->first()->account_name),
+                'bankAccountNumber' => strtoupper(PropertyPaymentDetails::query()
+                    ->where('property_id', $propertyId)
+                    ->first()->account_number),
+                'bankName' => strtoupper(PropertyPaymentDetails::query()
+                    ->where('property_id', $propertyId)
+                    ->first()->bank_name),
+                'mpesaPaybillNumber' => strtoupper(PropertyPaymentDetails::query()
+                    ->where('property_id', $propertyId)
+                    ->first()->mpesa_paybill_number),
             ];
 
             $content = File::get(resource_path('documents/templates/invoice-output-document.html'));

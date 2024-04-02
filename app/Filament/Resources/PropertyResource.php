@@ -120,6 +120,7 @@ class PropertyResource extends Resource
             RelationManagers\MeterReadingsRelationManager::class,
             RelationManagers\VacationNoticesRelationManager::class,
             RelationManagers\UnitsOccupiedByRelationManager::class,
+            RelationManagers\PaymentDetailsRelationManager::class,
         ];
     }
 
