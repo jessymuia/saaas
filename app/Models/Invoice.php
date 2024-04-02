@@ -199,6 +199,9 @@ class Invoice extends DefaultAppModel
                 '_invoice'.
                 '_'.$this->id;
 
+            // remove any spaces in the pdf name, and any slashes and special characters
+            $pdfName = preg_replace('/[\s\/!@#]+/', '_', $pdfName);
+
             // get the path but without the clatter file system
             $pdfPath = Storage::path('invoices') . '/' . $pdfName . '.pdf';
 
