@@ -39,8 +39,7 @@ class TenancyBillsRelationManager extends RelationManager
                             && $form->getOperation() === 'edit'
                     )->required(),
                 Forms\Components\TextInput::make('total_amount')
-                    ->numeric()
-                    ->readOnly()
+                    ->numeric()// TODO: FLAG:MIGRATION Add automatic recalculation of total amount
                     ->visible(// if billing is name contains the text 'Garbage'
                         fn(Get $get) => str_contains($get('name'), 'Garbage')
                             && $form->getOperation() === 'edit'
