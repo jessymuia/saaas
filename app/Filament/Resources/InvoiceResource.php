@@ -68,7 +68,6 @@ class InvoiceResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('unpaid_amount')
                     ->numeric()
-                    ->searchable()
                     ->sortable(),
                 Tables\Columns\IconColumn::make('is_confirmed')
                     ->boolean()
