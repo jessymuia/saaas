@@ -200,7 +200,8 @@ class TenancyAgreement extends DefaultAppModel
         }
 
         // establish if unit is vatable
-        $isVatable = $this->unit->property->property_type_id == 1;
+//        $isVatable = $this->unit->property->property_type_id == 1;
+        $isVatable = $this->unit->property->is_vatable;
 
         // define bill month name
         $nextMonth =  $billDate->modify('+1 month')->format('F');
