@@ -60,12 +60,15 @@ class InvoiceResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('tenancyAgreement.unit.property.name')
                     ->numeric()
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('tenancyAgreement.unit.name')
                     ->numeric()
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('unpaid_amount')
                     ->numeric()
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\IconColumn::make('is_confirmed')
                     ->boolean()
@@ -79,9 +82,11 @@ class InvoiceResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('issue_date')
                     ->date()
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('invoice_for_month')
                     ->date('F, Y')
+                    ->searchable()
                     ->sortable(),
             ])
             ->filters([
