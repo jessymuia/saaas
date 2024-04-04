@@ -42,9 +42,11 @@ class SendInvoiceMail implements ShouldQueue
         try {
             $email = new InvoiceEmail($this->invoice->id);
 
-             $email->to($this->invoice->tenancyAgreement->tenant->email);
-//            Mail::to('dundafuta@gmail.com')
-//                ->send($email);
+//             $email->to($this->invoice->tenancyAgreement->tenant->email);
+//             $email->to("dundafuta@gmail.com");
+//            Mail::to("dundafuta@gmail.com")
+            Mail::to($this->invoice->tenancyAgreement->tenant->email)
+                ->send($email);
 
             DB::transaction(function () use ($email) {
                 $this->invoice->issue_date = now();

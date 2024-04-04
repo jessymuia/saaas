@@ -16,6 +16,7 @@ return new class extends Migration
 
             $table->string('recipient_email');
             $table->string('subject');
+            $table->unsignedBigInteger('reference_id')->nullable(); # id of the referenced item
             $table->text('body');
             $table->enum('delivery_status', ['SENT', 'FAILED','PENDING'])
                 ->default('PENDING');
