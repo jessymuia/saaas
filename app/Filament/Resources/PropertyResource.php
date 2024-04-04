@@ -61,6 +61,9 @@ class PropertyResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('propertyType.type')
                     ->numeric()
                     ->sortable()
