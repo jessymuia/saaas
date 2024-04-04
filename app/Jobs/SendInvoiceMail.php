@@ -57,6 +57,7 @@ class SendInvoiceMail implements ShouldQueue
 
                 $sentEmails->recipient_email = $this->invoice->tenancyAgreement->tenant->email;
                 $sentEmails->subject = 'Invoice Email';
+                $sentEmails->reference_id = $this->invoice->id;
                 $sentEmails->body = $email->render();
                 $sentEmails->delivery_status = 'SENT';
 
@@ -90,6 +91,7 @@ class SendInvoiceMail implements ShouldQueue
 
             $sentEmails->recipient_email = $this->invoice->tenancyAgreement->tenant->email;
             $sentEmails->subject = 'Invoice Email';
+            $sentEmails->reference_id = $this->invoice->id;
             $sentEmails->body = $email->render();
             $sentEmails->delivery_status = 'FAILED';
             $sentEmails->failure_reason = $e->getMessage();

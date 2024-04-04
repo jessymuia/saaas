@@ -11,6 +11,7 @@ class SentEmails extends DefaultAppModel
     protected $fillable = [
         'recipient_email',
         'subject',
+        'reference_id',
         'body',
         'delivery_status',
         'failure_reason',

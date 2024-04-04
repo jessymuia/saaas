@@ -173,6 +173,7 @@ class InvoicePayment extends DefaultAppModel
 
                 $sentEmails->recipient_email = $this->tenant->email;
                 $sentEmails->subject = 'Invoice Payment Email';
+                $sentEmails->reference_id = $this->id;
                 $sentEmails->body = $email->render();
                 $sentEmails->delivery_status = 'SENT';
                 $sentEmails->save();
@@ -189,8 +190,8 @@ class InvoicePayment extends DefaultAppModel
                 $emailAttachments->save();
 
                 // send the mail
-//                Mail::to($this->tenant->email)->send($email);
-                Mail::to('dundafuta@gmail.com')->send($email);
+                Mail::to($this->tenant->email)->send($email);
+//                Mail::to('dundafuta@gmail.com')->send($email);
             });
 
             return true;
@@ -199,6 +200,20 @@ class InvoicePayment extends DefaultAppModel
             Log::error($exception->getTraceAsString());
             Log::error($exception->getMessage());
             Log::error("--------------------------------------------------------");
+
+
+            // insert record in sent emails
+            $sentEmails = new SentEmails();
+
+            $sentEmails->recipient_email = $this->invoice->tenancyAgreement->tenant->email;
+            $sentEmails->subject = 'Invoice Payment Email';
+            $sentEmails->reference_id = $this->invoice->id;
+            $sentEmails->body = $email->render();
+            $sentEmails->delivery_status = 'FAILED';
+            $sentEmails->failure_reason = $exception->getMessage();
+
+            $sentEmails->save();
+
             return false;
         }
     }

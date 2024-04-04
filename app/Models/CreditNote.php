@@ -144,6 +144,7 @@ class CreditNote extends DefaultAppModel
 
                 $sentEmails->recipient_email = $this->invoice->tenancyAgreement->tenant->email;
                 $sentEmails->subject = 'Credit Note Email';
+                $sentEmails->reference_id = $this->id;
                 $sentEmails->body = $email->render();
                 $sentEmails->delivery_status = 'SENT';
 
@@ -159,8 +160,8 @@ class CreditNote extends DefaultAppModel
 
                 $emailAttachments->save();
 
-                // Mail::to($this->invoice->tenancyAgreement->tenant->email)
-                Mail::to('dundafuta@gmail.com')
+                 Mail::to($this->invoice->tenancyAgreement->tenant->email)
+//                Mail::to('dundafuta@gmail.com')
                     ->send($email);
             });
 
@@ -170,6 +171,19 @@ class CreditNote extends DefaultAppModel
             Log::error("Error sending email: " . $exception->getMessage());
             Log::error($exception->getTraceAsString());
             Log::error("-------------------------------------------");
+
+            // insert record in sent emails
+            $sentEmails = new SentEmails();
+
+            $sentEmails->recipient_email = $this->invoice->tenancyAgreement->tenant->email;
+            $sentEmails->subject = 'Credit Note Email';
+            $sentEmails->reference_id = $this->invoice->id;
+            $sentEmails->body = $email->render();
+            $sentEmails->delivery_status = 'FAILED';
+            $sentEmails->failure_reason = $exception->getMessage();
+
+            $sentEmails->save();
+
             return false;
         }
     }
