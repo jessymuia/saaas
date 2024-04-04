@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Jobs\SendEmailJob;
+use App\Jobs\SendInvoiceMail;
 use App\Mail\InvoiceEmail;
 use Barryvdh\Snappy\Facades\SnappyPdf;
 use Carbon\Carbon;
@@ -261,62 +262,63 @@ class Invoice extends DefaultAppModel
 
     public function sendInvoiceMail()
     {
-        try {
-            $email = new InvoiceEmail($this->id);
-
-            // $email->to($this->tenancyAgreement->tenant->email);
-            Mail::to('dundafuta@gmail.com')
-                ->send($email);
-
-            DB::transaction(function () use ($email) {
-                $this->issue_date = now();
-                $this->save();
-
-                // insert record in sent emails
-                $sentEmails = new SentEmails();
-
-                $sentEmails->recipient_email = $this->tenancyAgreement->tenant->email;
-                $sentEmails->subject = 'Invoice Email';
-                $sentEmails->body = $email->render();
-                $sentEmails->delivery_status = 'SENT';
-
-                $sentEmails->save();
-
-                // get the file from storage and retrieve its details
-                $emailAttachments = new EmailAttachments();
-                $emailAttachments->sent_email_id = $sentEmails->id;
-                $emailAttachments->file_name = File::name(storage_path('app/' . $this->document_url));
-                $emailAttachments->file_size = File::size(storage_path('app/' . $this->document_url));
-                $emailAttachments->mime_type = File::mimeType(storage_path('app/' . $this->document_url));
-                $emailAttachments->full_file_path = storage_path('app/' . $this->document_url);
-
-                $emailAttachments->save();
-            });
-            return true;
-        }catch (\Exception $e){
-            Log::error("---------------------------------------------------------------------");
-            Log::error("Failed sending email");
-            Log::error('InvoiceEmail: ' . $e->getMessage());
-            Log::error($e->getLine() . " ". $e->getFile());
-            Log::error($e->getTraceAsString());
-            Log::error("---------------------------------------------------------------------");
-//            Notification::make('invoiceEmail')
-//                ->title('Failed sending invoice')
-//                ->danger()
-//                ->send();
-
-            // insert record in sent emails
-            $sentEmails = new SentEmails();
-
-            $sentEmails->recipient_email = $this->tenancyAgreement->tenant->email;
-            $sentEmails->subject = 'Invoice Email';
-            $sentEmails->body = $email->render();
-            $sentEmails->delivery_status = 'FAILED';
-            $sentEmails->failure_reason = $e->getMessage();
-
-            $sentEmails->save();
-
-            return false;
-        }
+        SendInvoiceMail::dispatch($this);
+//        try {
+//            $email = new InvoiceEmail($this->id);
+//
+//            // $email->to($this->tenancyAgreement->tenant->email);
+//            Mail::to('dundafuta@gmail.com')
+//                ->send($email);
+//
+//            DB::transaction(function () use ($email) {
+//                $this->issue_date = now();
+//                $this->save();
+//
+//                // insert record in sent emails
+//                $sentEmails = new SentEmails();
+//
+//                $sentEmails->recipient_email = $this->tenancyAgreement->tenant->email;
+//                $sentEmails->subject = 'Invoice Email';
+//                $sentEmails->body = $email->render();
+//                $sentEmails->delivery_status = 'SENT';
+//
+//                $sentEmails->save();
+//
+//                // get the file from storage and retrieve its details
+//                $emailAttachments = new EmailAttachments();
+//                $emailAttachments->sent_email_id = $sentEmails->id;
+//                $emailAttachments->file_name = File::name(storage_path('app/' . $this->document_url));
+//                $emailAttachments->file_size = File::size(storage_path('app/' . $this->document_url));
+//                $emailAttachments->mime_type = File::mimeType(storage_path('app/' . $this->document_url));
+//                $emailAttachments->full_file_path = storage_path('app/' . $this->document_url);
+//
+//                $emailAttachments->save();
+//            });
+//            return true;
+//        }catch (\Exception $e){
+//            Log::error("---------------------------------------------------------------------");
+//            Log::error("Failed sending email");
+//            Log::error('InvoiceEmail: ' . $e->getMessage());
+//            Log::error($e->getLine() . " ". $e->getFile());
+//            Log::error($e->getTraceAsString());
+//            Log::error("---------------------------------------------------------------------");
+////            Notification::make('invoiceEmail')
+////                ->title('Failed sending invoice')
+////                ->danger()
+////                ->send();
+//
+//            // insert record in sent emails
+//            $sentEmails = new SentEmails();
+//
+//            $sentEmails->recipient_email = $this->tenancyAgreement->tenant->email;
+//            $sentEmails->subject = 'Invoice Email';
+//            $sentEmails->body = $email->render();
+//            $sentEmails->delivery_status = 'FAILED';
+//            $sentEmails->failure_reason = $e->getMessage();
+//
+//            $sentEmails->save();
+//
+//            return false;
+//        }
     }
 }
