@@ -38,7 +38,8 @@ class ViewInvoice extends ViewRecord
             // action to sent out email if the invoice is confirmed and generated
             Actions\Action::make('Send Invoice')
                 ->label(function ($record) {
-                    return $record->issue_date ? 'Invoice Sent' : 'Send Invoice';
+//                    return $record->issue_date ? 'Invoice Sent' : 'Send Invoice';
+                    return $record->invoiceIsSent() ? 'Invoice Sent' : 'Send Invoice';
                 })
                 ->action(function ($record) {
                     // send email
@@ -58,7 +59,9 @@ class ViewInvoice extends ViewRecord
                     return $record->is_confirmed && $record->is_generated;
                 })
                 ->disabled(function ($record) {
-                    return $record->is_confirmed && $record->is_generated && $record->issue_date;
+//                    return $record->is_confirmed && $record->is_generated && $record->issue_date;
+                    return $record->is_confirmed && $record->is_generated
+                        && $record->invoiceIsSent();
                 })
                 ->requiresConfirmation(),
         ];

@@ -41,6 +41,9 @@ class SentEmailsResource extends Resource
                 Tables\Columns\TextColumn::make('subject')
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('reference_id')
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\IconColumn::make('delivery_status')
                     ->icon(fn(string $state):string => match ($state) {
                         'SENT' => 'heroicon-o-check-circle',

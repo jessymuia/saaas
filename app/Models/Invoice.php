@@ -86,6 +86,18 @@ class Invoice extends DefaultAppModel
         return $this->amount - $creditNoteSum - $this->invoicePayments()->sum('amount');
     }
 
+    public function invoiceIsSent()
+    {
+        // check if the invoice has an issue date, document url and whether the invoice was sent successfully
+        $isSuccessfullySent = SentEmails::query()
+            ->where('reference_id', $this->id)
+            ->where('delivery_status', '=','SENT')
+            ->where('subject', 'Invoice Email')
+            ->exists();
+
+        return $this->issue_date && $this->document_url && $isSuccessfullySent;
+    }
+
     public function generateDocument(Invoice $sI){
         // get all tenancy bills
         $tenancyBills = $this->tenancyBills()->get(['name','amount','vat','total_amount']);
