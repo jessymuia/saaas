@@ -98,7 +98,7 @@ class Invoice extends DefaultAppModel
         return $this->issue_date && $this->document_url && $isSuccessfullySent;
     }
 
-    public function generateDocument(Invoice $sI){
+    public function generateDocument(Invoice $sI,$isRegenerate = false){
         // get all tenancy bills
         $tenancyBills = $this->tenancyBills()->get(['name','amount','vat','total_amount']);
 
@@ -223,6 +223,11 @@ class Invoice extends DefaultAppModel
 
             // get the path but without the clatter file system
             $pdfPath = Storage::path('invoices') . '/' . $pdfName . '.pdf';
+
+            // delete the file if it exists already
+            if ($isRegenerate){
+                unlink($pdfPath);
+            }
 
 //            Storage::url($pdfPath);
 

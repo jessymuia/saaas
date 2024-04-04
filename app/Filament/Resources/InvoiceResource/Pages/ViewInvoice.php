@@ -18,6 +18,32 @@ class ViewInvoice extends ViewRecord
     {
         return [
             Actions\EditAction::make(),
+            Actions\Action::make('Generate Document')
+                ->label(function ($record) {
+                    return $record->is_generated ? 'Regenerate Document' : 'Generate Document';
+                })
+                ->action(function ($record) {
+                    try {
+                        if ($record->is_generated){
+                            $record->generateDocument($record,true);
+                        }else{
+                            $record->generateDocument($record);
+                        }
+                    } catch (\Exception $e) {
+                        Log::error($e->getMessage());
+                        Log::error($e->getTraceAsString());
+                        Log::error("Failed to generate document for invoice: {$record->id}");
+                        Log::error("_____________________________________________________________________________");
+                        Notification::make()
+                            ->danger()
+                            ->title('Failed to generate document')
+                            ->send();
+                    }
+                    Notification::make()
+                        ->success()
+                        ->title('Document generated successfully')
+                        ->send();
+                }),
             // custom action
             Actions\Action::make('Confirm Invoice')
                 ->action(function ($record) {
