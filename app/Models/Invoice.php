@@ -122,6 +122,12 @@ class Invoice extends DefaultAppModel
                 ->where('tenancy_agreements.id','=',$invoice->tenancy_agreement_id)
                 ->first()->name;
 
+            // check if the property has payment details
+            PropertyPaymentDetails::query()
+                ->where('property_id', $sI->tenancyAgreement->property->id)
+                ->first() ??  throw new \Exception('Property Payment Details is missing for property id: '
+                .$sI->tenancyAgreement->property->id .' - '. $sI->tenancyAgreement->property->name);
+
             $propertyName = $sI->tenancyAgreement->property->name;
             $propertyId = $sI->tenancyAgreement->property->id;
 
