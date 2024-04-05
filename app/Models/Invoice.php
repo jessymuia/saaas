@@ -226,7 +226,11 @@ class Invoice extends DefaultAppModel
 
             // delete the file if it exists already
             if ($isRegenerate){
-                unlink($pdfPath);
+                Log::info('Deleting file: '.$pdfPath);
+                // check if file exists then unlink
+                if (file_exists($pdfPath)){
+                    unlink($pdfPath);
+                }
             }
 
 //            Storage::url($pdfPath);
