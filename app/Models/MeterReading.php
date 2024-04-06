@@ -90,6 +90,7 @@ class MeterReading extends DefaultAppModel
             );
         }
 
+        Log::info("Current unit: ".$this->unit_id." Current tenancy agreement: ".$tenancyAgreement); //TODO: To remove
         // get the property utility for this meter reading
         $propertyUtility = PropertyUtility::query()
             ->where('property_id', $this->unit->property_id)
