@@ -91,6 +91,13 @@ class MeterReading extends DefaultAppModel
         }
 
         Log::info("Current unit: ".$this->unit_id." Current tenancy agreement: ".$tenancyAgreement); //TODO: To remove
+        Log::info("Deleted at status: ". $this->unit->deleted_at); //TODO: To remove
+        Log::info("Deleted at status: ". $this->unit == null ? "Is null" : "not null"); //TODO: To remove
+        // if the unit has been deleted, do not create a bill
+//        if ($this->unit == null || $this->unit->deleted_at != null){
+//            return -1;
+//        }
+
         // get the property utility for this meter reading
         $propertyUtility = PropertyUtility::query()
             ->where('property_id', $this->unit->property_id)
