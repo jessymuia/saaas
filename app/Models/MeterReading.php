@@ -91,11 +91,12 @@ class MeterReading extends DefaultAppModel
         }
 
         if(Unit::onlyTrashed()->find($this->unit_id)->exists()){
-            throw new \Exception('Unit has been deleted for this meter reading for unit: id'
-                . $this->unit_id . ' on '
-                . $this->reading_date
-                . ' full record: '. $this->toJson()
-            );
+//            throw new \Exception('Unit has been deleted for this meter reading for unit: id'
+//                . $this->unit_id . ' on '
+//                . $this->reading_date
+//                . ' full record: '. $this->toJson()
+//            );
+            return -1; // TODO: FLAG:MIGRATION consider removing later
         }
 
         // get the property utility for this meter reading
