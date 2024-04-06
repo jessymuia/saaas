@@ -90,13 +90,13 @@ class MeterReading extends DefaultAppModel
             );
         }
 
-//        Log::info("Current unit: ".$this->unit_id." Current tenancy agreement: ".$tenancyAgreement); //TODO: To remove
-//        Log::info("Deleted at status: ". $this->unit->deleted_at); //TODO: To remove
-        Log::info("Deleted at status: ". $this->unit == null ? "Is null" : "not null"); //TODO: To remove
-        // if the unit has been deleted, do not create a bill
-//        if ($this->unit == null || $this->unit->deleted_at != null){
-//            return -1;
-//        }
+        if(Unit::onlyTrashed()->find($this->unit_id)){
+            throw new \Exception('Unit has been deleted for this meter reading for unit: id'
+                . $this->unit_id . ' name ' .$this->unit->name.  ' on '
+                . $this->reading_date
+                . ' full record: '. $this->toJson()
+            );
+        }
 
         // get the property utility for this meter reading
         $propertyUtility = PropertyUtility::query()
