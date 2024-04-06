@@ -207,6 +207,10 @@ class TenancyBillsRelationManager extends RelationManager
                             });
                         }catch (\Exception $exception){
                             Log::error("-----------------------------------------------------------------------");
+                            // log the file causing the error
+                            Log::error('Error generating bills');
+                            Log::error($exception->getFile());
+                            Log::error($exception->getLine() .' '. $exception->getCode());
                             Log::error($exception->getMessage());
                             Log::error($exception->getTraceAsString());
                             Log::error($exception->getLine());
