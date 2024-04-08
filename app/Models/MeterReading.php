@@ -90,7 +90,7 @@ class MeterReading extends DefaultAppModel
             );
         }
 
-        if(Unit::onlyTrashed()->find($this->unit_id)->exists()){
+        if(Unit::onlyTrashed()->find($this->unit_id) != null){
 //            throw new \Exception('Unit has been deleted for this meter reading for unit: id'
 //                . $this->unit_id . ' on '
 //                . $this->reading_date
