@@ -16,7 +16,7 @@ return new class extends Migration
 
             $table->unsignedBigInteger('property_id');
             $table->unsignedBigInteger('utility_id');
-            $table->decimal('rate_per_unit', 14, 2);
+            $table->decimal('rate_per_unit', 18, 6);
             $table->unsignedBigInteger('billing_type_id');
             if (getenv('DB_CONNECTION') === 'mysql'){
                 $table->boolean('is_deleted')

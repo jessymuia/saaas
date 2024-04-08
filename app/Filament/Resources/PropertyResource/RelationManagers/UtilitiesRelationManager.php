@@ -25,9 +25,10 @@ class UtilitiesRelationManager extends RelationManager
                     ->required()
                     ->rules([
                         fn(Get $get) : CheckUniqueUtilityInProperty => new CheckUniqueUtilityInProperty(
-                            $this->ownerRecord->id
+                            $this->ownerRecord->id,$form->getOperation()
                         ),
                     ])
+                    ->disabledOn('edit')
                     ->relationship('utility', 'name'),
                 Forms\Components\Select::make('billing_type_id')
                     ->label('Billing Type')
