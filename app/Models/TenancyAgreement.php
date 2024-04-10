@@ -262,7 +262,8 @@ class TenancyAgreement extends DefaultAppModel
                     'name' => $billDate->format('F'). ' '.
                         Services::query()->where('id','=',$service->service_id)->value('name').
                         ' Service Bill',
-                    'bill_date' => now(),
+//                    'bill_date' => now(),
+                    'bill_date' => $billDate,
                     'due_date' => $billDueDate->format('Y-m-5'),
                     'amount' => $service->rate,
                     'vat' => $isVatable ? $service->rate * AppUtils::VAT_RATE : 0.0,

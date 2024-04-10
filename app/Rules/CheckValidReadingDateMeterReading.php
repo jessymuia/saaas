@@ -42,6 +42,7 @@ class CheckValidReadingDateMeterReading implements ValidationRule
                 ->where('unit_id', $this->unitId)
                 ->where('utility_id', $this->utilityId)
                 ->whereMonth('reading_date', Carbon::createFromFormat('Y-m-d', $value)->format('m'))
+                ->whereYear('reading_date', Carbon::createFromFormat('Y-m-d', $value)->format('Y'))
                 ->exists();
 
             if ($meterReadingExists) {
