@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\PropertyResource\RelationManagers;
 
+use App\Models\Unit;
+use Filament\Actions\DeleteAction;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -94,7 +96,18 @@ class UnitsRelationManager extends RelationManager
                         return $data;
                     }),
                 Tables\Actions\DeleteAction::make()
-                    ->requiresConfirmation('Are you sure you want to delete this unit?'),
+                    ->requiresConfirmation('Are you sure you want to delete this unit?')
+                    ->disabled(function (Unit $unit) { // prevent deletion of units with meter_readings or units that are occupied
+                        // check if this unit has any tenancy_agreement
+                        if ($unit->tenancyAgreements()->count() > 0) {
+                            return true;
+                        }
+                        // check if this unit has any meter_reading
+                        if ($unit->meterReadings()->count() > 0) {
+                            return true;
+                        }
+                        return false;
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -29,4 +29,14 @@ class Unit extends DefaultAppModel
     {
         return $this->belongsTo(RefUnitType::class);
     }
+
+    public function tenancyAgreements()
+    {
+        return $this->hasMany(TenancyAgreement::class);
+    }
+
+    public function meterReadings()
+    {
+        return $this->hasMany(MeterReading::class);
+    }
 }
