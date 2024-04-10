@@ -213,7 +213,8 @@ class TenancyAgreement extends DefaultAppModel
             'tenancy_agreement_id' => $this->id,
             'name' => $nextMonth. ' Rent Bill',
 //            'name' => $this->tenant->name.' '. $nextMonth. ' Rent Bill', TODO: FLAG:MIGRATION
-            'bill_date' => now(),
+//            'bill_date' => now(),
+            'bill_date' => $billDate,
             'due_date' => // this month 5th
                 date_format(
                     date_create(date_format($billDate,'Y-m-d')),
