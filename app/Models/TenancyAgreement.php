@@ -194,7 +194,7 @@ class TenancyAgreement extends DefaultAppModel
         }
 
         // TODO: Extra check to prevent backdating of migrated users
-        if ($billDate < new \DateTime('2024-03-01')){
+        if ($billDate < new \DateTime('2024-04-01')){
             // check if the bill date is before this date (1st Feb, 2024)
             return -1;
         }
@@ -219,16 +219,6 @@ class TenancyAgreement extends DefaultAppModel
                     date_create(date_format($billDate,'Y-m-d')),
                     'Y-m-5'
                 ),
-            // next month 5th
-//                date_format(
-//                    date_add(
-//                        date_create(date_format($billDate,'Y-m-d')),
-//                        date_interval_create_from_date_string(
-//                            date_format($billDate,'d') < 5 ? '0 month' : '1 month'
-//                        )
-//                    ),
-//                    'Y-m-5'
-//                ),
             'amount' => $this->amount,
             'vat' => $isVatable ? $this->amount * AppUtils::VAT_RATE : 0.0,
             'total_amount' => $this->amount + ($isVatable ? $this->amount * AppUtils::VAT_RATE : 0.0),
@@ -243,6 +233,9 @@ class TenancyAgreement extends DefaultAppModel
     public function createServiceBill($billDate,$invoice)
     {
         $billDate = new \DateTime($billDate); // TODO: FLAG:MIGRATION All bills are generated past first of the month
+        if ($billDate < new \DateTime('2024-04-01')){
+            return;
+        }
         // get the various services within this property
         // generate a bill for each for this month, for this tenancy agreement
         $this->property->propertyServices()->get()->each(/**
@@ -251,20 +244,18 @@ class TenancyAgreement extends DefaultAppModel
             // ensure service bill does not exist for the given month
             $serviceBillExists = TenancyBill::query()
                 ->where('tenancy_agreement_id', $this->id)
-                ->whereMonth('bill_date', date_format($billDate,'m'))
-                ->where('service_id','=',$service->service_id)
+                ->whereMonth('bill_date', '=', $billDate->format('m'))
+                ->whereYear('bill_date', trim(date_format($billDate,'Y')))
+                ->where('service_id',$service->service_id)
                 ->exists();
 
             // TODO: Extra check to prevent backdating of migrated users
-            if (!$serviceBillExists && ($billDate < new \DateTime('2024-03-01'))){
-                // check if the bill date is before this date (1st March, 2024)
-                $serviceBillExists = true;
-            }
 
             if (!$serviceBillExists) {// exit if the service bill exists
                 // establish if property is vatable
                 $isVatable = $this->property->property_type_id == 1;
                 // create service bill
+                $billDueDate = $billDate;
                 TenancyBill::create([
                     'tenancy_agreement_id' => $this->id,
 //                    'name' => $this->tenant->name.' '. TODO: FLAG:MIGRATION removed unnecessary tenant name
@@ -272,22 +263,7 @@ class TenancyAgreement extends DefaultAppModel
                         Services::query()->where('id','=',$service->service_id)->value('name').
                         ' Service Bill',
                     'bill_date' => now(),
-                    'due_date' =>
-                        date_format(
-                            date_create(date_format($billDate,'Y-m-d')),
-                            'Y-m-5'
-                        ), // have 5th as the bill due date
-
-//                    // if bill date is before 5th, then 5th of the month, else 5th of the next month
-//                        date_format(
-//                            date_add(
-//                                date_create(date_format($billDate,'Y-m-d')),
-//                                date_interval_create_from_date_string(
-//                                    date_format($billDate,'d') < 5 ? '0 month' : '1 month'
-//                                )
-//                            ),
-//                            'Y-m-5'
-//                        ),
+                    'due_date' => $billDueDate->format('Y-m-5'),
                     'amount' => $service->rate,
                     'vat' => $isVatable ? $service->rate * AppUtils::VAT_RATE : 0.0,
                     'total_amount' => $service->rate + ($isVatable ? $service->rate * AppUtils::VAT_RATE : 0.0),

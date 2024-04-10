@@ -120,8 +120,6 @@ class TenancyBillsRelationManager extends RelationManager
                                             }
                                         }
                                     });
-                                Log::info("Finished generating bills for meter readings"); // TODO: To remove
-
                                 // get all the tenancy agreements that don't have unit_occupation_monthly_logs
                                 // and create tenancy bills for them for rent
                                 // then proceed to create occupation logs for them
@@ -152,7 +150,6 @@ class TenancyBillsRelationManager extends RelationManager
                                                 $currentDate = date('Y-m-d', strtotime($currentDate . ' +1 month'));
                                                 continue;
                                             }
-
                                             // check if there is an invoice that is not confirmed for this month
                                             // if there is, then don't create a new one
                                             $invoice = Invoice::query()
@@ -182,15 +179,11 @@ class TenancyBillsRelationManager extends RelationManager
 
                                                 $invoice->save();
                                             }
-                                            Log::info("On tenancy agreement: {$tenancyAgreement->id} for month: {$currentDate}"); // TODO: To remove
                                             $tenancyBillId = $tenancyAgreement->createRentBill($currentDate,$invoice); //TODO MIGRATION:FLAG review this process
-                                            Log::info("Created rent bill for tenancy agreement: {$tenancyAgreement->id}");// TODO: To remove
                                             $tenancyAgreement->createServiceBill($currentDate,$invoice);
-                                            Log::info("Created service bill for tenancy agreement: {$tenancyAgreement->id}");// TODO: To remove
                                             if ($tenancyBillId != -1){
                                                 $tenancyAgreement->createUnitOccupationMonthlyRecord($currentDate,$tenancyBillId);
                                             }
-                                            Log::info("Created unit occupation monthly record for tenancy agreement: {$tenancyAgreement->id}");// TODO: To remove
                                         }
                                         $currentDate = date('Y-m-d', strtotime($currentDate . ' +1 month'));
                                     }
