@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('services', function (Blueprint $table) {
-            $table = \App\Utils\AppUtils::defaultTableColumns($table);
-
-            $table->string('name')->unique();
-            $table->string('description')->nullable();
-            $table->boolean('is_area_based_service')->default(false);
+        Schema::table('services', function (Blueprint $table) {
+            //
+            $table->boolean('is_area_based_service')
+                ->after('description')
+                ->default(false);
         });
     }
 
@@ -25,6 +24,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('services');
+        Schema::table('services', function (Blueprint $table) {
+            //
+            $table->dropColumn('is_area_based_service');
+        });
     }
 };

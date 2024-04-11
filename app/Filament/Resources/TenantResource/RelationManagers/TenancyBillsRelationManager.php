@@ -185,6 +185,39 @@ class TenancyBillsRelationManager extends RelationManager
                                                 $tenancyAgreement->createUnitOccupationMonthlyRecord($currentDate,$tenancyBillId);
                                             }
                                         }
+                                        // check if given property id then generate the service bills // TODO: MIGRATION:FLAG remove later
+                                        if ($tenancyAgreement->unit->property_id == 13){ // check only for Bellamy
+                                            $invoice = Invoice::query()
+                                                ->where('tenancy_agreement_id', $tenancyAgreement->id)
+                                                ->whereMonth('invoice_for_month', date_format(new \DateTime($currentDate),'m')) // TODO: FLAG:MIGRATION
+                                                ->whereYear('invoice_for_month', date_format(new \DateTime($currentDate),'Y'))
+                                                ->where('is_confirmed',0)
+                                                ->where('is_generated',0)
+                                                ->first();
+
+
+                                            if (!$invoice){
+                                                // create invoice if not exists
+                                                $invoice = new Invoice();
+                                                $invoice->tenancy_agreement_id = $tenancyAgreement->id;
+                                                $invoice->invoice_for_month = $currentDate;
+                                                $invoice->invoice_due_date = // if bill date is before 5th, then due date is 5th of this month, otherwise 5th of next month
+                                                    date_format(
+                                                        date_add(
+                                                            date_create($currentDate),
+                                                            date_interval_create_from_date_string(
+                                                                date_format(new \DateTime($currentDate),'d') < 5 ? '0 month' : '1 month'
+                                                            )
+                                                        ),
+                                                        'Y-m-5'
+                                                    );
+                                                $invoice->created_by = auth()->user()->id;
+
+                                                $invoice->save();
+                                            }
+                                            $tenancyAgreement->createServiceBill($currentDate,$invoice);
+                                        }
+                                        // check if given property id then generate the service bills // TODO: MIGRATION:FLAG remove later
                                         $currentDate = date('Y-m-d', strtotime($currentDate . ' +1 month'));
                                     }
 //                            if (!$tenancyAgreement->unitOccupationMonthlyLogs()->whereMonth('month', now()->month)->exists()) {

@@ -214,7 +214,7 @@ class TenancyAgreement extends DefaultAppModel
             'name' => $nextMonth. ' Rent Bill',
 //            'name' => $this->tenant->name.' '. $nextMonth. ' Rent Bill', TODO: FLAG:MIGRATION
 //            'bill_date' => now(),
-            'bill_date' => $billDate,
+            'bill_date' => $billDate->format('Y-m-01'), // use the start of the month as the bill date
             'due_date' => // this month 5th
                 date_format(
                     date_create(date_format($billDate,'Y-m-d')),
@@ -257,6 +257,26 @@ class TenancyAgreement extends DefaultAppModel
                 $isVatable = $this->property->property_type_id == 1;
                 // create service bill
                 $billDueDate = $billDate;
+
+                $isServiceAreaBased = Services::query()
+                    ->where('id','=',$service->service_id)
+                    ->value('is_area_based_service');
+
+                if ($isServiceAreaBased){
+                    // get the area of the unit
+                    $unitArea = $this->unit->area_in_square_feet;
+                    // get the rate of the service
+                    $serviceRate = $service->rate;
+                    // calculate the amount
+                    $serviceAmount = $unitArea * $serviceRate;
+                    $serviceVat = $serviceAmount * AppUtils::VAT_RATE;
+                }else{
+                    $serviceAmount = $service->rate;
+                    $serviceVat = $isVatable ? $serviceAmount * AppUtils::VAT_RATE : 0.0;
+                }
+
+                $serviceTotalAmount = $serviceAmount + $serviceVat;
+
                 TenancyBill::create([
                     'tenancy_agreement_id' => $this->id,
 //                    'name' => $this->tenant->name.' '. TODO: FLAG:MIGRATION removed unnecessary tenant name
@@ -264,11 +284,14 @@ class TenancyAgreement extends DefaultAppModel
                         Services::query()->where('id','=',$service->service_id)->value('name').
                         ' Service Bill',
 //                    'bill_date' => now(),
-                    'bill_date' => $billDate,
+                    'bill_date' => $billDate->format('Y-m-01'), // use the start of the month as the bill date
                     'due_date' => $billDueDate->format('Y-m-5'),
-                    'amount' => $service->rate,
-                    'vat' => $isVatable ? $service->rate * AppUtils::VAT_RATE : 0.0,
-                    'total_amount' => $service->rate + ($isVatable ? $service->rate * AppUtils::VAT_RATE : 0.0),
+//                    'amount' => $service->rate,
+//                    'vat' => $isVatable ? $service->rate * AppUtils::VAT_RATE : 0.0,
+//                    'total_amount' => $service->rate + ($isVatable ? $service->rate * AppUtils::VAT_RATE : 0.0),
+                    'amount' => $serviceAmount,
+                    'vat' => $serviceVat,
+                    'total_amount' => $serviceTotalAmount,
                     'billing_type_id' => $service->billing_type_id,
                     'service_id' => $service->service_id,
                     'invoice_id' => $invoice->id,

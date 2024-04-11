@@ -34,6 +34,10 @@ class ServicesOfferedResource extends Resource
                 Forms\Components\TextInput::make('description')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\Checkbox::make('is_area_based_service')
+                    ->label('Is Area Based Service?')
+                    ->nullable()
+                    ->default(false),
             ]);
     }
 
@@ -48,6 +52,9 @@ class ServicesOfferedResource extends Resource
                 Tables\Columns\TextColumn::make('description')
                     ->sortable()
                     ->searchable(),
+                Tables\Columns\IconColumn::make('is_area_based_service')
+                    ->boolean()
+                    ->sortable(),
                 Tables\Columns\IconColumn::make('status')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('createdBy.name')

@@ -10,6 +10,7 @@ class Services extends DefaultAppModel
     protected $fillable = [
         'name',
         'description',
+        'is_area_based_service',
         'created_by',
         'updated_by',
         'deleted_by',
