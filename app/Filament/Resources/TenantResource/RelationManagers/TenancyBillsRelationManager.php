@@ -186,7 +186,7 @@ class TenancyBillsRelationManager extends RelationManager
                                             }
                                         }
                                         // check if given property id then generate the service bills // TODO: MIGRATION:FLAG remove later
-                                        if ($tenancyAgreement->unit->property_id == 1){ // check only for Avenue Mall
+                                        if ($tenancyAgreement->unit?->property_id == 1){ // check only for Avenue Mall
                                             $invoice = Invoice::query()
                                                 ->where('tenancy_agreement_id', $tenancyAgreement->id)
                                                 ->whereMonth('invoice_for_month', date_format(new \DateTime($currentDate),'m')) // TODO: FLAG:MIGRATION
