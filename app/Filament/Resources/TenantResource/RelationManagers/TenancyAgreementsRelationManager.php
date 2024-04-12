@@ -129,6 +129,9 @@ class TenancyAgreementsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('id')
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('unit.name')
                     ->sortable()
                     ->searchable(),
@@ -198,12 +201,12 @@ class TenancyAgreementsRelationManager extends RelationManager
                     ->label('Generate Statement of Account')
                     ->action(fn(TenancyAgreement $record)=>$this->generateStatementOfAccount($record)),
 //                    ->action(fn()=>$this->generateStatementOfAccount($this->ownerRecord)),
-//                Tables\Actions\DeleteAction::make()
-//                    ->mutateFormDataUsing(function ($data) {
-//                        $data['deleted_by'] = auth()->user()->id;
-//                        return $data;
-//                    })
-//                    ->requiresConfirmation(fn ($record) => 'Are you sure you want to delete this tenancy agreement?'),
+                Tables\Actions\DeleteAction::make()
+                    ->mutateFormDataUsing(function ($data) {
+                        $data['deleted_by'] = auth()->user()->id;
+                        return $data;
+                    })
+                    ->requiresConfirmation(fn ($record) => 'Are you sure you want to delete this tenancy agreement?'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
