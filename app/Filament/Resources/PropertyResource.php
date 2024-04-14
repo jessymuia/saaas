@@ -124,6 +124,7 @@ class PropertyResource extends Resource
             RelationManagers\VacationNoticesRelationManager::class,
             RelationManagers\UnitsOccupiedByRelationManager::class,
             RelationManagers\PaymentDetailsRelationManager::class,
+//            RelationManagers\PropertyOwnerRelationManager::class,
         ];
     }
 

@@ -27,6 +27,11 @@ class Property extends DefaultAppModel
         return $this->belongsTo(RefPropertyType::class, 'property_type_id');
     }
 
+    public function propertyOwners()
+    {
+        return $this->hasMany(PropertyOwners::class, 'property_id');
+    }
+
     public function units()
     {
         return $this->hasMany(Unit::class, 'property_id');
