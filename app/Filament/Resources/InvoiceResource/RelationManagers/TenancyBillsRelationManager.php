@@ -34,6 +34,9 @@ class TenancyBillsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('id')
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('name')
                     ->sortable()
                     ->searchable(),
@@ -43,7 +46,7 @@ class TenancyBillsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('amount')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('tax_amount')
+                Tables\Columns\TextColumn::make('vat')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('total_amount')
