@@ -16,7 +16,7 @@ class AppUtils
 
     const VAT_RATE = 0.16;
 
-    public static function defaultTableColumns(Blueprint $table)
+    public static function defaultTableColumns(Blueprint $table) // applied to all tables except manual invoices and users
     {
         $table->id();
         $table->timestamps();

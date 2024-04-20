@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Mail\InvoiceEmail;
 use App\Models\EmailAttachments;
+use App\Models\ManualInvoices;
 use App\Models\SentEmails;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -39,23 +40,36 @@ class SendInvoiceMail implements ShouldQueue
     public function handle(): void
     {
         //
+        $recipientEmail = "";
         try {
             $email = new InvoiceEmail($this->invoice->id);
 
 //             $email->to($this->invoice->tenancyAgreement->tenant->email);
 //             $email->to("dundafuta@gmail.com");
 //            Mail::to("dundafuta@gmail.com")
-            Mail::to($this->invoice->tenancyAgreement->tenant->email)
-                ->send($email);
 
-            DB::transaction(function () use ($email) {
+            $typeOfInvoice = "";
+            // check if it is a manual invoice or system generated invoice
+            if (ManualInvoices::find($this->invoice->id)) {
+                $recipientEmail = $this->invoice->property_owner_id != null
+                    ? $this->invoice->propertyOwner->email
+                    : $this->invoice->client->email;
+                $typeOfInvoice = "manual";
+            } else {
+                $recipientEmail = $this->invoice->tenancyAgreement->tenant->email;
+                $typeOfInvoice = "system";
+            }
+
+            Mail::to($recipientEmail)->send($email);
+
+            DB::transaction(function () use ($email, $recipientEmail, $typeOfInvoice) {
                 $this->invoice->issue_date = now();
                 $this->invoice->save();
 
                 // insert record in sent emails
                 $sentEmails = new SentEmails();
 
-                $sentEmails->recipient_email = $this->invoice->tenancyAgreement->tenant->email;
+                $sentEmails->recipient_email = $recipientEmail;
                 $sentEmails->subject = 'Invoice Email';
                 $sentEmails->reference_id = $this->invoice->id;
                 $sentEmails->body = $email->render();
@@ -66,15 +80,26 @@ class SendInvoiceMail implements ShouldQueue
                 // get the file from storage and retrieve its details
                 $emailAttachments = new EmailAttachments();
                 $emailAttachments->sent_email_id = $sentEmails->id;
-                $emailAttachments->file_name = File::name(storage_path('app/' . $this->invoice->document_url));
-                $emailAttachments->file_size = File::size(storage_path('app/' . $this->invoice->document_url));
-                $emailAttachments->mime_type = File::mimeType(storage_path('app/' . $this->invoice->document_url));
-                $emailAttachments->full_file_path = storage_path('app/' . $this->invoice->document_url);
+                if ($typeOfInvoice == "manual") {
+                    $emailAttachments->file_name = File::name(storage_path('app/manual_invoices/' . $this->invoice->document_url));
+                    $emailAttachments->file_size = File::size(storage_path('app/manual_invoices/' . $this->invoice->document_url));
+                    $emailAttachments->mime_type = File::mimeType(storage_path('app/manual_invoices/' . $this->invoice->document_url));
+                    $emailAttachments->full_file_path = storage_path('app/manual_invoices/' . $this->invoice->document_url);
+                } else {
+                    $emailAttachments->file_name = File::name(storage_path('app/invoices/' . $this->invoice->document_url));
+                    $emailAttachments->file_size = File::size(storage_path('app/invoices/' . $this->invoice->document_url));
+                    $emailAttachments->mime_type = File::mimeType(storage_path('app/invoices/' . $this->invoice->document_url));
+                    $emailAttachments->full_file_path = storage_path('app/invoices/' . $this->invoice->document_url);
+                }
+//                $emailAttachments->file_name = File::name(storage_path('app/' . $this->invoice->document_url));
+//                $emailAttachments->file_size = File::size(storage_path('app/' . $this->invoice->document_url));
+//                $emailAttachments->mime_type = File::mimeType(storage_path('app/' . $this->invoice->document_url));
+//                $emailAttachments->full_file_path = storage_path('app/' . $this->invoice->document_url);
 
                 $emailAttachments->save();
             });
 //            return true;
-        }catch (\Exception $e){
+        }catch (\Exception $e) {
             Log::error("---------------------------------------------------------------------");
             Log::error("Failed sending email");
             Log::error('InvoiceEmail: ' . $e->getMessage());
@@ -89,7 +114,7 @@ class SendInvoiceMail implements ShouldQueue
             // insert record in sent emails
             $sentEmails = new SentEmails();
 
-            $sentEmails->recipient_email = $this->invoice->tenancyAgreement->tenant->email;
+            $sentEmails->recipient_email = $recipientEmail;
             $sentEmails->subject = 'Invoice Email';
             $sentEmails->reference_id = $this->invoice->id;
             $sentEmails->body = $email->render();

@@ -3,6 +3,7 @@
 namespace App\Mail;
 
 use App\Models\Invoice;
+use App\Models\ManualInvoices;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Attachment;
@@ -17,6 +18,7 @@ class InvoiceEmail extends Mailable
     use Queueable, SerializesModels;
 
     public $invoice;
+    public $invoiceType;
 
     /**
      * Create a new message instance.
@@ -24,7 +26,8 @@ class InvoiceEmail extends Mailable
     public function __construct($invoiceID)
     {
         //
-        $this->invoice = Invoice::find($invoiceID);
+        $this->invoice = Invoice::find($invoiceID) ?? ManualInvoices::find($invoiceID);
+        $this->invoiceType = ManualInvoices::find($invoiceID) ? 'manual' : 'system';
     }
 
     /**
@@ -32,8 +35,13 @@ class InvoiceEmail extends Mailable
      */
     public function envelope(): Envelope
     {
+        $addressedTo = $this->invoiceType === 'manual'
+            ? $this->invoice->property_owner_id != null
+                ? $this->invoice->propertyOwner->name
+                : $this->invoice->client->name
+            : $this->invoice->tenancyAgreement->tenant->name;
         return new Envelope(
-            subject: 'Invoice #' . $this->invoice->id . ' - ' . $this->invoice->tenancyAgreement->tenant->name,
+            subject: 'Invoice #' . $this->invoice->id . ' - ' . $addressedTo,
         );
     }
 
@@ -42,6 +50,11 @@ class InvoiceEmail extends Mailable
      */
     public function content(): Content
     {
+        $addressedTo = $this->invoiceType === 'manual'
+            ? $this->invoice->property_owner_id != null
+                ? $this->invoice->propertyOwner->name
+                : $this->invoice->client->name
+            : $this->invoice->tenancyAgreement->tenant->name;
         return new Content(
             view: 'mail.invoice',
             with: [
@@ -52,7 +65,7 @@ class InvoiceEmail extends Mailable
                     'invoice_for_month' => $this->invoice->invoice_for_month,
                 ],
                 'companyName' => 'Hamuud Realtors',
-                'tenantName' => $this->invoice->tenancyAgreement->tenant->name,
+                'tenantName' => $addressedTo,
             ]
         );
     }

@@ -16,6 +16,15 @@ class DocumentsController extends Controller
         return response()->file($path);
     }
 
+    public function previewManualInvoice($invoice = null)
+    {
+        if (!$invoice) {
+            abort(404,'Invoice not found');
+        }
+        $path = storage_path('app/manual_invoices/'.$invoice);
+        return response()->file($path);
+    }
+
     public function previewCreditNote($creditNote = null)
     {
         if (!$creditNote) {

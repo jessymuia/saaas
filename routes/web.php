@@ -24,6 +24,8 @@ Route::get('/', function () {
 Route::group(['middleware' => ['auth']], function () {
     Route::get('preview/invoice/{invoice?}',[DocumentsController::class,'previewInvoice'])
         ->name('preview.invoice');
+    Route::get('preview/manual-invoice/{invoice?}',[DocumentsController::class,'previewManualInvoice'])
+        ->name('preview.manual-invoice');
     Route::get('preview/credit-note/{creditNote?}',[DocumentsController::class,'previewCreditNote'])
         ->name('preview.credit-note');
     Route::get('preview/receipt/{receipt?}',[DocumentsController::class,'previewReceipt'])
