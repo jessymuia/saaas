@@ -7,6 +7,7 @@ use App\Filament\Resources\ManualInvoicesResource\RelationManagers;
 use App\Models\Client;
 use App\Models\ManualInvoices;
 use App\Models\PropertyOwners;
+use App\Models\Tenant;
 use Filament\Actions\ViewAction;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -32,6 +33,7 @@ class ManualInvoicesResource extends Resource
                     ->options([
                         'property_owner' => 'Property Owner',
                         'client' => 'Client',
+                        'tenant' => 'Tenant',
                     ])
                     ->reactive()
                     ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set) {
@@ -39,8 +41,13 @@ class ManualInvoicesResource extends Resource
 
                         if ($recipientType === 'property_owner') {
                             $set('client_id', null);
+                            $set('tenant_id', null);
+                        } else if($recipientType === 'client'){
+                            $set('property_owner_id', null);
+                            $set('tenant_id', null);
                         } else {
                             $set('property_owner_id', null);
+                            $set('client_id', null);
                         }
                     })
                     ->required()
@@ -51,7 +58,7 @@ class ManualInvoicesResource extends Resource
                     ->options(PropertyOwners::all()->pluck('name', 'id')->toArray())
                     ->reactive()
                     ->hidden(function (Forms\Get $get) {
-                        return $get('recipient_type') === 'client';
+                        return $get('recipient_type') === 'client' || $get('recipient_type') === 'tenant';
                     })
                     ->required(function (Forms\Get $get) {
                         return $get('recipient_type') === 'property_owner';
@@ -61,10 +68,20 @@ class ManualInvoicesResource extends Resource
                     ->options(Client::all()->pluck('name', 'id')->toArray())
                     ->reactive()
                     ->hidden(function (Forms\Get $get) {
-                        return $get('recipient_type') === 'property_owner';
+                        return $get('recipient_type') === 'property_owner' || $get('recipient_type') === 'tenant';
                     })
                     ->required(function (Forms\Get $get) {
                         return $get('recipient_type') === 'client';
+                    }),
+                Forms\Components\Select::make('tenant_id')
+                    ->label('Tenant')
+                    ->options(Tenant::all()->pluck('name', 'id')->toArray())
+                    ->reactive()
+                    ->hidden(function (Forms\Get $get) {
+                        return $get('recipient_type') === 'property_owner' || $get('recipient_type') === 'client';
+                    })
+                    ->required(function (Forms\Get $get) {
+                        return $get('recipient_type') === 'tenant';
                     }),
                 Forms\Components\DatePicker::make('invoice_for_month')
                     ->label('Invoice For Month')
@@ -98,6 +115,10 @@ class ManualInvoicesResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('client.name')
                     ->label('Client')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('tenant.name')
+                    ->label('Tenant')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('invoice_for_month')

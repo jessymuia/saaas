@@ -16,6 +16,7 @@ class ManualInvoices extends DefaultAppModel
     protected $fillable = [
         'property_owner_id',
         'client_id',
+        'tenant_id',
         'comments',
         'invoice_status',
         'issue_date',
@@ -36,6 +37,11 @@ class ManualInvoices extends DefaultAppModel
     public function client()
     {
         return $this->belongsTo(Client::class);
+    }
+
+    public function tenant()
+    {
+        return $this->belongsTo(Tenant::class);
     }
 
     public function manualInvoiceItems()
