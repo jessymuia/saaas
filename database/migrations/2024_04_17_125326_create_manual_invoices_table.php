@@ -28,6 +28,7 @@ return new class extends Migration
 
             $table->unsignedBigInteger('property_owner_id')->nullable();
             $table->unsignedBigInteger('client_id')->nullable();
+            $table->unsignedBigInteger('tenant_id')->nullable();
             $table->string('comments',1000)->nullable();
             $table->string('invoice_status',20)->nullable();
             $table->date('issue_date')->nullable();
@@ -40,6 +41,7 @@ return new class extends Migration
             // foreign keys
             $table->foreign('property_owner_id')->references('id')->on('property_owners');
             $table->foreign('client_id')->references('id')->on('clients');
+            $table->foreign('tenant_id')->references('id')->on('tenants');
         });
         \Illuminate\Support\Facades\DB::statement("ALTER TABLE manual_invoices ALTER COLUMN id SET DEFAULT nextval('invoices_id_seq');");
     }
