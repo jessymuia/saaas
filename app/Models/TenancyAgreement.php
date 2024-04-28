@@ -25,7 +25,8 @@ class TenancyAgreement extends DefaultAppModel
         'escalation_rate',
         'escalation_period_in_months',
         'next_escalation_date',
-//        'balance_carried_forward', TODO: Uncomment FLAG:MIGRATION
+        'balance_carried_forward',
+        'has_invoice_for_balance_carried_forward',
         'created_by',
         'updated_by',
         'deleted_by',
@@ -98,6 +99,67 @@ class TenancyAgreement extends DefaultAppModel
     public function escalationRateAmountsAndLogs()
     {
         return $this->hasMany(EscalationRatesAndAmountsLogs::class);
+    }
+
+    public function createInvoiceForBalanceCarriedForward()
+    {
+        // check whether the balance carried forward is greater than zero
+        if ($this->balance_carried_forward <= 0){
+            return [
+                "status" => -1,
+                "message" => "Balance carried forward is zero or less than zero. No invoice will be created."
+            ];
+        }
+        // check if the invoice for balance carried forward exists
+        if($this->has_invoice_for_balance_carried_forward){
+            return [
+                "status" => -1,
+                "message" => "Invoice for balance carried forward already exists."
+            ];
+        }
+
+        try {
+            // create invoice for balance carried forward
+            DB::transaction(function (){
+                // create the manual invoice
+                $manualInvoice = ManualInvoices::create([
+                    'comments' => "Invoice for Balance Carried Forward",
+                    'tenant_id' => $this->tenant_id,
+                    'invoice_status' => 'unpaid',
+                    'invoice_for_month' => now()->format('Y-m-d'),
+                    'invoice_due_date' => Carbon::parse(now())->addDays(5)->format('Y-m-d'), // 5 days from now
+                    'created_by' => auth()->user()->id,
+                ]);
+
+                // create the manual invoice item
+                ManualInvoiceItem::create([
+                    'manual_invoice_id' => $manualInvoice->id,
+                    'name' => "Balance Carried Forward Invoice",
+                    'bill_date' => now(),
+                    'due_date' => Carbon::parse(now())->addDays(5)->format('Y-m-d'), // 5 days from now
+                    'amount' => $this->balance_carried_forward,
+                    'vat' => 0.0,
+                    'total_amount' => $this->balance_carried_forward,
+                    'billing_type_id' => $this->billing_type_id,
+                    'category' => 'balance_carried_forward',
+                    'created_by' => auth()->user()->id,
+                ]);
+
+                // update the tenancy agreement to reflect that the invoice for balance carried forward has been created
+                $this->has_invoice_for_balance_carried_forward = true;
+                $this->save();
+            });
+            return [
+                "status" => 1,
+                "message" => "Invoice for balance carried forward created successfully."
+            ];
+        } catch (\Exception $e) {
+            Log::error("Error creating invoice for balance carried forward: ".$e->getMessage());
+            return [
+                "status" => -1,
+                "message" => "Error creating invoice for balance carried forward."
+            ];
+        }
     }
 
     /**

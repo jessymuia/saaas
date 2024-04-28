@@ -25,6 +25,8 @@ return new class extends Migration
             $table->decimal('escalation_rate',5,2)->nullable();
             $table->integer('escalation_period_in_months')->nullable();
             $table->date('next_escalation_date')->nullable();
+            $table->decimal('balance_carried_forward',14,2)->default(0);
+            $table->boolean('has_invoice_for_balance_carried_forward')->default(false);
 
             // foreign  keys
             $table->foreign('unit_id')->references('id')->on('units');
