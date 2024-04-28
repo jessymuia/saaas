@@ -23,6 +23,7 @@ return new class extends Migration
             $table->decimal('vat', 14, 2)->default(0.0);
             $table->decimal('total_amount',14,2);
             $table->unsignedBigInteger('billing_type_id');
+            $table->enum('category', ['ordinary', 'balance_carried_forward'])->default('ordinary');
 
             // foreign keys
             $table->foreign('billing_type_id')->references('id')->on('ref_billing_types');

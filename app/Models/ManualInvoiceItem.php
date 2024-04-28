@@ -16,6 +16,7 @@ class ManualInvoiceItem extends DefaultAppModel
         'vat',
         'total_amount',
         'billing_type_id',
+        'category',
     ];
 
     public function manualInvoice()

@@ -16,7 +16,7 @@ return new class extends Migration
 
             $table->string('name');
             $table->string('email')->default("hamudrealtorslts@gmail.com"); # Removed uniqueness property since some tenants don't have emails
-            $table->string('phone_number',20)->unique();
+            $table->string('phone_number',20); # Removed uniqueness property since some tenants don't have phone numbers
         });
     }
 

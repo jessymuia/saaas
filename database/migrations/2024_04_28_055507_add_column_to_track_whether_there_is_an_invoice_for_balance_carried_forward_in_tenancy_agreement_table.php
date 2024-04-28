@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('manual_invoices', function (Blueprint $table) {
+        Schema::table('tenancy_agreements', function (Blueprint $table) {
             //
-            $table->unsignedBigInteger('tenant_id')->nullable()->after('client_id');
-
-            $table->foreign('tenant_id')->references('id')->on('tenants');
+            $table->boolean('has_invoice_for_balance_carried_forward')->default(false);
         });
     }
 
@@ -24,10 +22,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('manual_invoices', function (Blueprint $table) {
+        Schema::table('tenancy_agreements', function (Blueprint $table) {
             //
-            $table->dropForeign(['tenant_id']);
-            $table->dropColumn('tenant_id');
+            $table->dropColumn('has_invoice_for_balance_carried_forward');
         });
     }
 };

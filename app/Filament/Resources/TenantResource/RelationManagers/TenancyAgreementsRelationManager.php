@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
+use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -58,6 +59,10 @@ class TenancyAgreementsRelationManager extends RelationManager
                     ->required()
                     ->numeric()
                     ->minValue(1),
+                Forms\Components\TextInput::make('balance_carried_forward')
+                    ->nullable()
+                    ->numeric()
+                    ->minValue(0),
                 Forms\Components\Checkbox::make('is_escalation')
                     ->label('Define Escalation')
                     ->reactive(),
@@ -158,6 +163,10 @@ class TenancyAgreementsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('amount')
                     ->sortable()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('balance_carried_forward')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('deposit_amount')
                     ->sortable()
                     ->searchable()
@@ -201,6 +210,34 @@ class TenancyAgreementsRelationManager extends RelationManager
                     ->label('Generate Statement of Account')
                     ->action(fn(TenancyAgreement $record)=>$this->generateStatementOfAccount($record)),
 //                    ->action(fn()=>$this->generateStatementOfAccount($this->ownerRecord)),
+                Tables\Actions\Action::make('generate-invoice-for-balance-carried-forward')
+                    ->label('Bill Balance Carried Forward')
+                    ->icon("heroicon-m-document-check")
+                    ->requiresConfirmation(fn($record) => 'Are you sure you would like to create an invoice for the balance carried forward for this tenancy agreement?')
+                    ->action(function (TenancyAgreement $record) {
+                        $response = $record->createInvoiceForBalanceCarriedForward();
+
+                        if ($response["status"] == -1){
+                            // pop up a toast message
+                            Notification::make()
+                                ->title('Error')
+                                ->danger()
+                                ->body($response["message"])
+                                ->duration(5000)
+                                ->icon('heroicon-o-x-circle')
+                                ->send();
+                        }
+                        if ($response["status"] == 1){
+                            // pop up a toast message
+                            Notification::make()
+                                ->title('Success')
+                                ->success()
+                                ->body($response["message"])
+                                ->duration(5000)
+                                ->icon('heroicon-o-check-circle')
+                                ->send();
+                        }
+                    }),
                 Tables\Actions\DeleteAction::make()
                     ->mutateFormDataUsing(function ($data) {
                         $data['deleted_by'] = auth()->user()->id;
