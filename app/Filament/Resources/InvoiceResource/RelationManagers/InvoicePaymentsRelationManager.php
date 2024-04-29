@@ -36,6 +36,10 @@ class InvoicePaymentsRelationManager extends RelationManager
                     ->maxLength(255),
                 Forms\Components\TextInput::make('payment_reference')
                     ->maxLength(255),
+                Forms\Components\Checkbox::make('is_confirmed')
+                    ->label('Confirm Payment')
+                    ->hiddenOn(['create'])
+                    ->default(false),
                 Forms\Components\Textarea::make('description')
                     ->label('Additional Information')
                     ->maxLength(65535)
@@ -131,6 +135,15 @@ class InvoicePaymentsRelationManager extends RelationManager
 
                         return $data;
                     }),
+                Tables\Actions\Action::make('generate-receipt')
+                    ->label("Generate Receipt")
+                    ->icon('heroicon-o-document-text')
+                    ->action(function(InvoicePayment $record){
+                        // get the invoice payment
+                        $invoicePayment = InvoicePayment::find($record->id);
+                        $invoicePayment->generateInvoicePaymentReceipt();
+                    })
+                    ->visible(fn (InvoicePayment $record) => strtotime($record->document_generated_at) === false),
                 // action to preview the receipt document
                 Tables\Actions\Action::make('preview-receipt')
                     ->label('Preview Receipt')
