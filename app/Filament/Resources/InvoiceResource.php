@@ -118,6 +118,7 @@ class InvoiceResource extends Resource
             //
             RelationManagers\TenancyBillsRelationManager::class,
             RelationManagers\CreditNoteRelationManager::class,
+            RelationManagers\InvoicePaymentsRelationManager::class,
         ];
     }
 
