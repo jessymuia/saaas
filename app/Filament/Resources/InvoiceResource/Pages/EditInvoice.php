@@ -17,4 +17,12 @@ class EditInvoice extends EditRecord
 //            Actions\DeleteAction::make(),
         ];
     }
+
+//    protected function getHeaderWidgets(): array
+//    {
+//        return [
+//            //
+//            InvoiceResource\Widgets\InvoiceViewStats::class,
+//        ];
+//    }
 }

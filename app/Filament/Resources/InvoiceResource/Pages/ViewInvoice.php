@@ -92,4 +92,12 @@ class ViewInvoice extends ViewRecord
                 ->requiresConfirmation(),
         ];
     }
+
+//    protected function getHeaderWidgets(): array
+//    {
+//        return [
+//            //
+//            InvoiceResource\Widgets\InvoiceViewStats::class,
+//        ];
+//    }
 }
