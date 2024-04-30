@@ -7,6 +7,7 @@ use App\Rules\CheckPaidAmountDoesNotExceedAmountDue;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
+use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -36,10 +37,6 @@ class InvoicePaymentsRelationManager extends RelationManager
                     ->maxLength(255),
                 Forms\Components\TextInput::make('payment_reference')
                     ->maxLength(255),
-                Forms\Components\Checkbox::make('is_confirmed')
-                    ->label('Confirm Payment')
-                    ->hiddenOn(['create'])
-                    ->default(false),
                 Forms\Components\Textarea::make('description')
                     ->label('Additional Information')
                     ->maxLength(65535)
@@ -134,6 +131,24 @@ class InvoicePaymentsRelationManager extends RelationManager
                         $data['updated_by'] = auth()->id();
 
                         return $data;
+                    }),
+                Tables\Actions\Action::make('confirm-invoice-payment')
+                    ->label("Confirm")
+                    ->action(function(InvoicePayment $record){
+                        // update the is_confirmed label of this Invoice Payment
+                        $isUpdated = $record->update(['is_confirmed' => true]);
+
+                        if ($isUpdated){
+                            Notification::make()
+                                ->title('Invoice Payment Confirmed')
+                                ->success()
+                                ->send();
+                        }else{
+                            Notification::make()
+                                ->danger()
+                                ->title('Invoice Payment Confirmation Failed')
+                                ->send();
+                        }
                     }),
                 Tables\Actions\Action::make('generate-receipt')
                     ->label("Generate Receipt")
