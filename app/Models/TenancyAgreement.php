@@ -264,7 +264,7 @@ class TenancyAgreement extends DefaultAppModel
         // establish if unit is vatable
 //        $isVatable = $this->unit->property->property_type_id == 1;
         if ($this->unit == null){
-            Log::error("The unit causing error");
+            Log::error("The tenancy agreement causing error: ".$this->id);
         }
         $isVatable = $this->unit->property->is_vatable;
 
