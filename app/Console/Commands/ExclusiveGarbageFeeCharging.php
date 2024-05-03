@@ -55,6 +55,9 @@ class ExclusiveGarbageFeeCharging extends Command
         foreach ($tenancyAgreements as $tenancyAgreement){
             $invoice = Invoice::query()
                 ->where('tenancy_agreement_id', $tenancyAgreement->id)
+                ->whereHas('tenancyBills',function ($query) use ($billDate){
+                    $query->where('bill_date', $billDate->format('Y-m-01'));
+                })
                 ->whereMonth('invoice_for_month', date_format($billDate,'m')) // TODO: FLAG:MIGRATION
 //                ->where('is_confirmed',0)
 //                ->where('is_generated',0)
