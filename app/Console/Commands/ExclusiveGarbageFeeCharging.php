@@ -47,6 +47,9 @@ class ExclusiveGarbageFeeCharging extends Command
                 $query->where('end_date', '>=', $billDate->format('Y-m-d'))
                     ->orWhereNull('end_date');
             })
+            ->whereHas('unit',function ($query){
+                $query->whereNotIn('units.name',["WG02","WG03","WG04","WG05","WG06","WG07","WG08","WG09","WG10"]);
+            })
             ->get();
 
         // display on terminal number of tenancy agreements in this property
