@@ -31,13 +31,21 @@ class PropertyOwnersResource extends Resource
                 Forms\Components\Select::make('property_id')
                     ->label('Property')
                     ->required()
-                    ->options(
-                        // pick properties without owners
-                        Property::query()
-                            ->whereDoesntHave('propertyOwners')
-                            ->get()
-                            ->mapWithKeys(fn ($property) => [$property->id => $property->name])
-                    ),
+                    ->options(function () use ($form) {
+                        return Property::query()
+                            ->where(function ($query) use ($form){
+                                if ($form->getOperation() == "edit"){
+                                    \Log::info("Edit operation");
+                                    \Log::info($form->getRecord()->property_id);
+                                    $query->whereDoesntHave('propertyOwners')
+                                        ->orWhere('id', $form->getRecord()->property_id);
+                                }else{
+                                    \Log::info("Another operation");
+                                    $query->whereDoesntHave('propertyOwners');
+                                }
+                            })
+                            ->pluck('name', 'id');
+                    }),
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
