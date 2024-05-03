@@ -81,7 +81,7 @@ class ExclusiveGarbageFeeCharging extends Command
              */ function ($service) use ($invoice,$billDate,$tenancyAgreement) {
                 // ensure service bill does not exist for the given month
                 $serviceBillExists = TenancyBill::query()
-                    ->where('tenancy_agreement_id', $this->id)
+                    ->where('tenancy_agreement_id', $tenancyAgreement->id)
                     ->whereMonth('bill_date', '=', $billDate->format('m'))
                     ->whereYear('bill_date', trim(date_format($billDate,'Y')))
                     ->where('service_id',$service->service_id)
@@ -115,8 +115,8 @@ class ExclusiveGarbageFeeCharging extends Command
                     $serviceTotalAmount = $serviceAmount + $serviceVat;
 
                     TenancyBill::create([
-                        'tenancy_agreement_id' => $this->id,
-//                    'name' => $this->tenant->name.' '. TODO: FLAG:MIGRATION removed unnecessary tenant name
+                        'tenancy_agreement_id' => $tenancyAgreement->id,
+//                    'name' => $tenancyAgreement->tenant->name.' '. TODO: FLAG:MIGRATION removed unnecessary tenant name
                         'name' => $billDate->format('F'). ' '.
                             Services::query()->where('id','=',$service->service_id)->value('name').
                             ' Service Bill',
