@@ -132,7 +132,7 @@ class ExclusiveGarbageFeeCharging extends Command
                         'billing_type_id' => $service->billing_type_id,
                         'service_id' => $service->service_id,
                         'invoice_id' => $invoice->id,
-                        'created_by' => auth()->user()->id
+                        'created_by' => null,
                     ]);
                 }
             });
