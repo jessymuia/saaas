@@ -30,7 +30,7 @@ class ManualInvoiceRelationManager extends RelationManager
                     ->required(),
                 Forms\Components\TextInput::make('amount')
                     ->required()
-                    ->type('number')
+                    ->numeric()
                     ->reactive()
                     ->afterStateUpdated(function (Forms\Get $get,Forms\Set $set) {
                         $isVatable = $get('is_vatable');
