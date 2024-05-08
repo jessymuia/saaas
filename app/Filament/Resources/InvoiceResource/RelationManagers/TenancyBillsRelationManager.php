@@ -2,6 +2,9 @@
 
 namespace App\Filament\Resources\InvoiceResource\RelationManagers;
 
+use App\Models\Invoice;
+use App\Models\RefBillingType;
+use App\Utils\AppUtils;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -20,19 +23,76 @@ class TenancyBillsRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                // empty body
+                //
                 Forms\Components\TextInput::make('name')
                     ->required()
-                    ->unique('tenancy_bills', 'name', ignoreRecord: true)
-                    ->visibleOn(['edit'])
                     ->maxLength(255),
+                Forms\Components\DatePicker::make('bill_date')
+                    ->required(),
+                Forms\Components\DatePicker::make('due_date')
+                    ->rules('after:bill_date')
+                    ->required(),
+                Forms\Components\TextInput::make('amount')
+                    ->required()
+                    ->numeric()
+                    ->reactive()
+                    ->afterStateUpdated(function (Forms\Get $get,Forms\Set $set) {
+                        $isVatable = $get('is_vatable');
+
+                        $amount = $get('amount') ?? 0.0;
+                        $amount = '' ?  0 : $amount;
+
+                        if ($isVatable) {
+                            $set('vat', AppUtils::VAT_RATE * $amount);
+                        }else {
+                            $set('vat', 0.0);
+                        }
+
+                        $set('total_amount', ($amount + $get('vat') ));
+                    }),
+                Forms\Components\Checkbox::make('is_vatable')
+                    ->reactive()
+                    ->default(false)
+                    ->afterStateUpdated(function (Forms\Get $get,Forms\Set $set) {
+                        $isVatable = $get('is_vatable');
+
+                        $amount = $get('amount') ?? 0.0;
+                        $amount = '' ?  0.0 : $amount;
+
+                        if ($isVatable) {
+                            $set('vat', AppUtils::VAT_RATE * $amount);
+                        } else {
+                            $set('vat', 0.0);
+                        }
+                        $set('total_amount', ($amount + $get('vat')));
+                    }),
+                Forms\Components\TextInput::make('vat')
+                    ->required()
+                    ->readOnly()
+                    ->reactive()
+                    ->default(0)
+                    ->type('number'),
+                Forms\Components\TextInput::make('total_amount')
+                    ->required()
+                    ->readOnly()
+                    ->reactive()
+                    ->afterStateUpdated(function (Forms\Get $get,Forms\Set $set) {
+                        $amount = $get('amount') ?? 0;
+                        $vat = $get('vat') ?? 0;
+
+                        $set('total_amount', $amount + $vat);
+                    })
+                    ->type('number'),
+                Forms\Components\Select::make('billing_type_id')
+                    ->options(RefBillingType::get()->pluck('type', 'id')->toArray())
+                    ->required(),
             ]);
     }
 
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('id')
+
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->sortable()
@@ -81,10 +141,27 @@ class TenancyBillsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-//                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                    ->mutateFormDataUsing(function ($data){
+                        $data['created_by'] = auth()->user()->id;
+                        $data['tenancy_agreement_id'] = $this->ownerRecord->tenancy_agreement_id;
+
+                        return $data;
+                    })
+                    ->hidden(function () {
+                        return $this->ownerRecord->is_confirmed;
+                    }),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->mutateFormDataUsing(function ($data){
+                        $data['updated_by'] = auth()->user()->id;
+
+                        return $data;
+                    })
+                    ->hidden(function () {
+                        return $this->ownerRecord->is_confirmed;
+                    }),
 //                Tables\Actions\DeleteAction:: make()
 //                    ->requiresConfirmation()
             ])
