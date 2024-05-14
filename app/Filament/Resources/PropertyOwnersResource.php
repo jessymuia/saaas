@@ -88,6 +88,9 @@ class PropertyOwnersResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\Action::make('generate-statement-of-account')
+                    ->label('Generate Statement of Account')
+                    ->action(fn(PropertyOwners $record)=>$record->generateStatementOfAccount()),
                 Tables\Actions\EditAction::make()
                     ->mutateFormDataUsing(fn ($data) => [
                         'updated_by' => auth()->user()->id,
