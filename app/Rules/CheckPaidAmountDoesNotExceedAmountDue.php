@@ -3,6 +3,7 @@
 namespace App\Rules;
 
 use App\Models\Invoice;
+use App\Models\ManualInvoices;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
@@ -25,7 +26,9 @@ class CheckPaidAmountDoesNotExceedAmountDue implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         // get the invoice
-        $invoice = Invoice::find($this->invoiceID);
+        $invoice = Invoice::find($this->invoiceID) != null ?
+            Invoice::find($this->invoiceID) :
+            ManualInvoices::find($this->invoiceID);
 
         $invoiceTotalDue = $invoice->totalDue();
         // if the total due is a decimal value, round up

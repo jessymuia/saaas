@@ -170,6 +170,7 @@ class ManualInvoicesResource extends Resource
         return [
             //
             RelationManagers\ManualInvoiceRelationManager::class,
+            RelationManagers\InvoicePaymentsRelationManager::class,
         ];
     }
 

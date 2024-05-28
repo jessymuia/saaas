@@ -17,6 +17,8 @@ class InvoicePayment extends DefaultAppModel
     protected $fillable = [
         'invoice_id',
         'tenant_id',
+        'client_id',
+        'property_owner_id',
         'payment_type_id',
         'received_by',
         'payment_date',
@@ -38,7 +40,10 @@ class InvoicePayment extends DefaultAppModel
     // foreign keys
     public function invoice()
     {
-        return $this->belongsTo(Invoice::class);
+        // check if a record is present of type invoice otherwise, result to Manual Invoices
+        return Invoice::find($this->invoice_id) != null ?
+            $this->belongsTo(Invoice::class) :
+            $this->belongsTo(ManualInvoices::class);
     }
 
     public function paymentType()
@@ -59,6 +64,16 @@ class InvoicePayment extends DefaultAppModel
     public function tenant()
     {
         return $this->belongsTo(Tenant::class);
+    }
+
+    public function client()
+    {
+        return $this->belongsTo(Client::class);
+    }
+
+    public function propertyOwner()
+    {
+        return $this->belongsTo(PropertyOwners::class);
     }
 
     public function generateInvoicePaymentReceipt()

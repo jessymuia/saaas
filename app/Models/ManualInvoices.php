@@ -49,6 +49,11 @@ class ManualInvoices extends DefaultAppModel
         return $this->hasMany(ManualInvoiceItem::class, 'manual_invoice_id', 'id');
     }
 
+    public function invoicePayments()
+    {
+        return $this->hasMany(InvoicePayment::class,'invoice_id','id');
+    }
+
     public function getAmountAttribute(){
         // sum amount of tenancy bills (includes the rent bill amount)
         $invoiceSum = 0;
@@ -68,9 +73,21 @@ class ManualInvoices extends DefaultAppModel
 //            $invoiceSum += $item->amount;
 //        });
 
-//        return $invoiceSum - $this->invoicePayments()->sum('amount') - $this->creditNote()->sum('amount_credited');
-        return $invoiceSum - 0;
+        return $invoiceSum - $this->invoicePayments()->sum('amount') - $this->creditNote()->sum('amount_credited');
+//        return $invoiceSum - 0;
         // TODO: Work on credit note and invoice payments for manual invoices
+    }
+
+    public function creditNote(){
+        return $this->hasMany(CreditNote::class,'invoice_id','id'); // Setup Credit Note for Manual Invoices
+    }
+
+    public function totalDue()
+    {
+        // get the sum of all credit notes
+        $creditNoteSum = $this->creditNote()->sum('amount_credited');
+        // get the total due
+        return $this->amount - $creditNoteSum - $this->invoicePayments()->sum('amount');
     }
 
     public function generateDocument(ManualInvoices $sI,$isRegenerate = false){
