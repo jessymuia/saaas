@@ -59,6 +59,10 @@ class TenancyAgreementsRelationManager extends RelationManager
                     ->required()
                     ->numeric()
                     ->minValue(1),
+                Forms\Components\TextInput::make('balance_carried_forward')
+                    ->nullable()
+                    ->numeric()
+                    ->minValue(0),
                 Forms\Components\Checkbox::make('is_escalation')
                     ->label('Define Escalation')
                     ->reactive(),
