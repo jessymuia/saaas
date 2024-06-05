@@ -94,8 +94,7 @@ class ManualInvoices extends DefaultAppModel
         // get all tenancy bills
         Log::info($sI->manualInvoiceItems()->get());
 
-//        $tenancyBills = $this->manualInvoiceItems()->get(['name','amount','vat','total_amount']);
-        $tenancyBills = $sI->manualInvoiceItems()->get(['name','amount','vat','total_amount']);
+        $tenancyBills = $this->manualInvoiceItems()->get(['name','amount','vat','total_amount']);
 
         Log::error("Count of invoice items: ".count($tenancyBills));
 
@@ -117,12 +116,18 @@ class ManualInvoices extends DefaultAppModel
 //                ->where('tenancy_agreements.id','=',$invoice->tenancy_agreement_id)
 //                ->first()->name;
 
-            $invoiceAddressedTo = $invoice->property_owner_id
-                ? PropertyOwners::find($invoice->property_owner_id)->name
-                : Client::find($invoice->client_id)->name;
-            $invoiceToAddress = $invoice->property_owner_id
-                ? PropertyOwners::find($invoice->property_owner_id)->address
-                : Client::find($invoice->client_id)->address;
+            if ($invoice->property_owner_id) {
+                $invoiceAddressedTo = PropertyOwners::find($invoice->property_owner_id)->name;
+                $invoiceToAddress = PropertyOwners::find($invoice->property_owner_id)->address;
+            } elseif ($invoice->client_id) {
+                $invoiceAddressedTo = Client::find($invoice->client_id)->name;
+                $invoiceToAddress = Client::find($invoice->client_id)->address;
+            } elseif ($invoice->tenant_id) {
+                $invoiceAddressedTo = Tenant::find($invoice->tenant_id)->name;
+                $invoiceToAddress = Tenant::find($invoice->tenant_id)->address;
+            } else {
+                throw new \Exception('Invoice is missing a recipient');
+            }
 
 
             // check if the property has payment details
