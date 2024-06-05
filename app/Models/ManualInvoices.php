@@ -92,7 +92,7 @@ class ManualInvoices extends DefaultAppModel
 
     public function generateDocument(ManualInvoices $sI,$isRegenerate = false){
         // get all tenancy bills
-        Log::info($this);
+        Log::info($sI->manualInvoiceItems()->get());
 
 //        $tenancyBills = $this->manualInvoiceItems()->get(['name','amount','vat','total_amount']);
         $tenancyBills = $sI->manualInvoiceItems()->get(['name','amount','vat','total_amount']);
