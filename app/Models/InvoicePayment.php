@@ -82,16 +82,34 @@ class InvoicePayment extends DefaultAppModel
             // invoice current
 //            $invoice = Invoice::find($this->id);
 
-            // check if any of below variables are empty
-            TenancyAgreement::find($this->invoice->tenancy_agreement_id)->tenant->first()->name ??  throw new \Exception('Tenancy Agreement is missing');
-            TenancyAgreement::find($this->invoice->tenancy_agreement_id)->property->first()->name ??  throw new \Exception('Property is missing');
-            TenancyAgreement::find($this->invoice->tenancy_agreement_id)->unit->first()->name ??  throw new \Exception('Property Unit is missing');
+            // check if the payment is for a manual invoice or a normal invoice
+            if(Invoice::find($this->invoice_id) != null) {
+                // check if any of below variables are empty
+                TenancyAgreement::find($this->invoice->tenancy_agreement_id)->tenant->first()->name ??  throw new \Exception('Tenancy Agreement is missing');
+                TenancyAgreement::find($this->invoice->tenancy_agreement_id)->property->first()->name ??  throw new \Exception('Property is missing');
+                TenancyAgreement::find($this->invoice->tenancy_agreement_id)->unit->first()->name ??  throw new \Exception('Property Unit is missing');
 
-            $tenantName = $this->invoice->tenancyAgreement->tenant->name;
+                $tenantName = $this->invoice->tenancyAgreement->tenant->name;
+                $propertyName = $this->invoice->tenancyAgreement->property->name;
+                $unitName = $this->invoice->tenancyAgreement->unit->name;
 
-            $propertyName = $this->invoice->tenancyAgreement->property->name;
+                $customerName = $unitName.' '.$tenantName;
+            }else{ // if it is a manual invoice
+                $manualInvoice = ManualInvoices::find($this->invoice_id);
 
-            $unitName = $this->invoice->tenancyAgreement->unit->name;
+                // check if the invoice is for a tenant, client or property owner
+                if($manualInvoice->tenant_id != null){
+                    $customerName = $manualInvoice->tenant->name;
+                }elseif($manualInvoice->client_id != null){
+                    $customerName = $manualInvoice->client->name;
+                }elseif($manualInvoice->property_owner_id != null){
+                    $customerName = $manualInvoice->propertyOwner->name;
+                }else{
+                    throw new \Exception('Invoice to is missing');
+                }
+
+                $propertyName = "";
+            }
 
             $receiptItems = '
                     <tr style="height: 30px;">
@@ -100,8 +118,21 @@ class InvoicePayment extends DefaultAppModel
                         <td class="s8" dir="ltr" colspan="2" style="border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; text-align: center; color: #000; font-family: serif; font-size: 9pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">'.$this->amount.'</td>
                     </tr>';
 
+//            $detailsArray = [
+//                'customerName' => $unitName.' '.$tenantName,
+//                'propertyName' => $propertyName,
+//                'receiptDate' => Carbon::createFromFormat('Y-m-d H:i:s', $this->created_at)
+//                    ->format('M j, Y'),
+//                'logoUrl'=>'file://'.getcwd().'/images/hamud_top_doc_logo.png',
+//                'receiptItemsHTML' => $receiptItems,
+//                'receiptNumber' => $this->id,
+//                'totalAmountPaid' => number_format($this->amount,2),
+//                'paymentType' => $this->paymentType->type,
+//                'paidBy' => $this->paid_by,
+//            ];
+
             $detailsArray = [
-                'customerName' => $unitName.' '.$tenantName,
+                'customerName' => $customerName,
                 'propertyName' => $propertyName,
                 'receiptDate' => Carbon::createFromFormat('Y-m-d H:i:s', $this->created_at)
                     ->format('M j, Y'),
@@ -123,11 +154,10 @@ class InvoicePayment extends DefaultAppModel
 
             $pdfName = "invoice_payment_receipt".
                 '_for_' .
-                $tenantName . '_' .
+                $customerName . '_' .
                 $propertyName .
-                '_for_unit_' .
-                $unitName .
-                '_'. $this->id. '_'.
+                '_for_invoice_' .
+                 $this->id. '_'.
                 Carbon::createFromFormat('Y-m-d H:i:s',$this->created_at)->format('F, Y');
 
             // get the path but without the clatter file system
