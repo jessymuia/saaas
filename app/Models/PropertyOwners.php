@@ -64,15 +64,13 @@ class PropertyOwners extends DefaultAppModel
 //            ->toArray();
 
         // get all invoice payments
-//        $invoicePayments = InvoicePayment::query()
-//            ->orderBy('payment_date', 'desc')
-//            ->whereHas('invoice', function ($query) use ($tenancyAgreement) {
-//                $query->where('tenancy_agreement_id', '=', $tenancyAgreement->id);
-//            })
-//            ->select(['id', 'payment_date as transaction_date','amount'])
-//            ->selectRaw("concat('PMT #', id,'. Paid on ') as transaction, concat('payment') as transaction_type")
-//            ->get()
-//            ->toArray();
+        $invoicePayments = InvoicePayment::query()
+            ->orderBy('payment_date', 'desc')
+            ->where('property_owner_id','=',$this->id)
+            ->select(['id', 'payment_date as transaction_date','amount'])
+            ->selectRaw("concat('PMT #', id,'. Paid on ') as transaction, concat('payment') as transaction_type")
+            ->get()
+            ->toArray();
 
         // merge the three arrays
         $transactions = array_merge($invoices, $creditNotes ?? [], $invoicePayments ?? []);
