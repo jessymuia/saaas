@@ -5,6 +5,7 @@ namespace App\Filament\Resources\TenantResource\RelationManagers;
 use App\Models\CreditNote;
 use App\Models\Invoice;
 use App\Models\InvoicePayment;
+use App\Models\ManualInvoices;
 use App\Models\TenancyAgreement;
 use App\Rules\CheckOccupancyOfUnit;
 use Carbon\Carbon;
@@ -270,6 +271,21 @@ class TenancyAgreementsRelationManager extends RelationManager
 //            })
             ->get(['amount','unpaid_amount'])
             ->toArray();
+
+        $manualInvoices = ManualInvoices::query()
+            ->where('tenant_id', '=', $tenancyAgreement->tenant_id)
+            ->orderBy('created_at', 'desc')
+            ->select(['id', 'invoice_for_month as transaction_date','invoice_due_date'])
+            ->selectRaw("concat('INV #', id,'. Due on ', TO_CHAR(invoice_for_month,'Mon DD, YYYY')) as transaction, concat('invoice') as transaction_type")
+            ->get(['amount','unpaid_amount'])
+            ->toArray();
+
+        // combine the two arrays, and sort them by transaction date
+        $invoices = array_merge($invoices, $manualInvoices);
+        usort($invoices, function ($a, $b) {
+            return $a['transaction_date'] <=> $b['transaction_date'];
+        });
+
 //        dd($invoices);
         // get all credit notes and convert to array
         $creditNotes = CreditNote::query()
@@ -285,8 +301,8 @@ class TenancyAgreementsRelationManager extends RelationManager
         // get all invoice payments
         $invoicePayments = InvoicePayment::query()
             ->orderBy('payment_date', 'desc')
-            ->whereHas('invoice', function ($query) use ($tenancyAgreement) {
-                $query->where('tenancy_agreement_id', '=', $tenancyAgreement->id);
+            ->where(function ($query) use ($tenancyAgreement) {
+                $query->where('tenant_id', '=', $tenancyAgreement->tenant_id);
             })
             ->select(['id', 'payment_date as transaction_date','amount'])
             ->selectRaw("concat('PMT #', id,'. Paid on ') as transaction, concat('payment') as transaction_type")
