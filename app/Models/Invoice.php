@@ -29,6 +29,7 @@ class Invoice extends DefaultAppModel
         'issue_date',
         'invoice_for_month',
         'invoice_due_date',
+        'is_confirmed',
         'is_generated',
         'document_url',
         'status',
