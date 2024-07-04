@@ -54,25 +54,26 @@ class CorrectEscalation extends Command
                 ->chunk(100, function ($tenancyAgreements) {
                     foreach ($tenancyAgreements as $tenancyAgreement) {
                         // calculate new amount
-                        $newAmount = $tenancyAgreement->amount + ($tenancyAgreement->amount * ($tenancyAgreement->escalation_rate / 100));
-//                        $nextEscalationDate = Carbon::parse($tenancyAgreement->next_escalation_date)->addMonths($tenancyAgreement->escalation_period_in_months);
-                        // define the number of decimal places
-                        $newAmount = number_format($newAmount, 2,'.','');
-                        // capture the past amount and log it in escalation rates and amounts logs
-                        EscalationRatesAndAmountsLogs::create(
-                            [
-                                'tenancy_agreement_id' => $tenancyAgreement->id,
-                                'escalation_rate' => $tenancyAgreement->escalation_rate,
-                                'previous_amount' => $tenancyAgreement->amount,
-                                'new_amount' => $newAmount,
-                                'escalation_date' => $tenancyAgreement->next_escalation_date,
-                                'status' => 1,
-                                'archive' => 0,
-                            ]
-                        );
-
-                        // update the tenancy agreement with the new amount and next escalation date
-                        $tenancyAgreement->update(['amount' => $newAmount]);
+//                        $newAmount = $tenancyAgreement->amount + ($tenancyAgreement->amount * ($tenancyAgreement->escalation_rate / 100));
+                        $nextEscalationDate = Carbon::parse($tenancyAgreement->next_escalation_date)->addMonths($tenancyAgreement->escalation_period_in_months);
+//                        // define the number of decimal places
+//                        $newAmount = number_format($newAmount, 2,'.','');
+//                        // capture the past amount and log it in escalation rates and amounts logs
+//                        EscalationRatesAndAmountsLogs::create(
+//                            [
+//                                'tenancy_agreement_id' => $tenancyAgreement->id,
+//                                'escalation_rate' => $tenancyAgreement->escalation_rate,
+//                                'previous_amount' => $tenancyAgreement->amount,
+//                                'new_amount' => $newAmount,
+//                                'escalation_date' => $tenancyAgreement->next_escalation_date,
+//                                'status' => 1,
+//                                'archive' => 0,
+//                            ]
+//                        );
+//
+//                        // update the tenancy agreement with the new amount and next escalation date
+//                        $tenancyAgreement->update(['amount' => $newAmount]);
+                        $tenancyAgreement->update(['next_escalation_date' => $nextEscalationDate]);
                     }
                 });
         });
