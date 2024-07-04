@@ -38,6 +38,7 @@ class EscalateAmountsCommand extends Command
         // get all tenancy agreements that are active and have escalation date today
         \DB::transaction(function () {
             TenancyAgreement::query()
+                ->whereNotNull('escalation_rate')
                 ->where('next_escalation_date', now()->format('Y-m-d'))
                 ->where('status', 1)
                 ->chunk(100, function ($tenancyAgreements) {
