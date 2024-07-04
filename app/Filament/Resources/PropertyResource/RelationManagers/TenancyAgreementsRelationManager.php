@@ -82,7 +82,7 @@ class TenancyAgreementsRelationManager extends RelationManager
                     ->visible(function (Get $get){
                         return $get('is_escalation') == true;
                     })
-                    ->disabledOn('edit')
+//                    ->disabledOn('edit')
                     ->afterStateUpdated(function (Get $get,Forms\Set $set){
                         $set('next_escalation_date',today()->addMonths($get('escalation_period_in_months'))->format('Y-m-d'));
                     })
