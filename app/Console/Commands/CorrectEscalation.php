@@ -34,7 +34,7 @@ class CorrectEscalation extends Command
             $countOfAgreements = TenancyAgreement::query()
                 ->whereNotNull('escalation_rate')
                 ->count();
-            $countOfAgreements == 13
+            $countOfAgreements == 11
                 ? TenancyAgreement::query()
                     ->whereNotNull('escalation_rate')
                     ->chunk(100, function ($tenancyAgreements) {
