@@ -39,7 +39,7 @@ class CorrectEscalation extends Command
                     ->whereNotNull('escalation_rate')
                     ->chunk(100, function ($tenancyAgreements) {
                         foreach ($tenancyAgreements as $tenancyAgreement) {
-                            $nextEscalationDate = Carbon::parse($tenancyAgreement->next_escalation_date)->addMonths($tenancyAgreement->escalation_period_in_months);
+                            $nextEscalationDate = Carbon::parse($tenancyAgreement->start_date)->addMonths($tenancyAgreement->escalation_period_in_months);
                             $tenancyAgreement->update(['next_escalation_date' => $nextEscalationDate]);
                         }
                     })
