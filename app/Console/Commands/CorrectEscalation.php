@@ -31,9 +31,10 @@ class CorrectEscalation extends Command
         // update the next escalation date for all tenancy agreements where escalation rate is not null
         \DB::transaction(function () {
             // verify that the records are 13 before updating
-            TenancyAgreement::query()
+            $countOfAgreements = TenancyAgreement::query()
                 ->whereNotNull('escalation_rate')
-                ->count() == 13
+                ->count();
+            $countOfAgreements == 13
                 ? TenancyAgreement::query()
                     ->whereNotNull('escalation_rate')
                     ->chunk(100, function ($tenancyAgreements) {
@@ -42,7 +43,7 @@ class CorrectEscalation extends Command
                             $tenancyAgreement->update(['next_escalation_date' => $nextEscalationDate]);
                         }
                     })
-                : $this->info("The number of records is not 13");
+                : $this->info("The number of records is $countOfAgreements");
         });
 
         // check if the next escalation date is in the past or has passed and escalate the amount by given amount
