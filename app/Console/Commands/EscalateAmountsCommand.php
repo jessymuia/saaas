@@ -43,10 +43,12 @@ class EscalateAmountsCommand extends Command
                 ->chunk(100, function ($tenancyAgreements) {
                     foreach ($tenancyAgreements as $tenancyAgreement) {
                         // for each tenancy agreement, create an invoice that bills up to the present day
-                        $this->createInvoiceAndTenancyBill($tenancyAgreement);
+//                        $this->createInvoiceAndTenancyBill($tenancyAgreement);
                         // calculate new amount
                         $newAmount = $tenancyAgreement->amount + ($tenancyAgreement->amount * ($tenancyAgreement->escalation_rate / 100));
                         $nextEscalationDate = Carbon::parse($tenancyAgreement->next_escalation_date)->addMonths($tenancyAgreement->escalation_period_in_months);
+
+                        $newAmount = number_format($newAmount, 2, '.', '');
 
                         // capture the past amount and log it in escalation rates and amounts logs
                         EscalationRatesAndAmountsLogs::create(
