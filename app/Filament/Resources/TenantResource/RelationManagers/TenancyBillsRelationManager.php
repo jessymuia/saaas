@@ -30,19 +30,19 @@ class TenancyBillsRelationManager extends RelationManager
                     ->numeric()
                     ->visible(// if billing is name contains the text 'Garbage'
                         fn(Get $get) => str_contains($get('name'), 'Garbage')
-                            && $form->getOperation() === 'edit'
+                            && ($form->getOperation() === 'edit' || auth()->user()->hasRole('admin'))
                     )->required(),
                 Forms\Components\TextInput::make('vat')
                     ->numeric()
                     ->visible(// if billing is name contains the text 'Garbage'
                         fn(Get $get) => str_contains($get('name'), 'Garbage')
-                            && $form->getOperation() === 'edit'
+                            && ($form->getOperation() === 'edit' || auth()->user()->hasRole('admin'))
                     )->required(),
                 Forms\Components\TextInput::make('total_amount')
                     ->numeric()// TODO: FLAG:MIGRATION Add automatic recalculation of total amount
                     ->visible(// if billing is name contains the text 'Garbage'
                         fn(Get $get) => str_contains($get('name'), 'Garbage')
-                            && $form->getOperation() === 'edit'
+                            && ($form->getOperation() === 'edit' || auth()->user()->hasRole('admin'))
                     )->required(),
             ]);
     }
