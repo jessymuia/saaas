@@ -137,6 +137,14 @@ class TenancyBillsRelationManager extends RelationManager
                                     // check if the month has a log, if not create a bill
                                     // then create a log
                                     $startDate = $tenancyAgreement->start_date;
+
+                                    // added logic to avoid going back in time largely
+                                    $startOfLastMonth = now()->subMonth()->startOfMonth();
+                                    // check if the start date is before the start of last month, then set it to the start of last month
+                                    if ($startDate < $startOfLastMonth){
+                                        $startDate = $startOfLastMonth;
+                                    }
+
                                     $endDate = $tenancyAgreement->end_date > now()->endOfMonth() ? now()->endOfMonth() : $tenancyAgreement->end_date;
                                     // check if end date is null, then set it to the end of the month
                                     if (!$endDate){
