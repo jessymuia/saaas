@@ -81,15 +81,15 @@ class SendInvoiceMail implements ShouldQueue
                 $emailAttachments = new EmailAttachments();
                 $emailAttachments->sent_email_id = $sentEmails->id;
                 if ($typeOfInvoice == "manual") {
-                    $emailAttachments->file_name = File::name(storage_path('app/manual_invoices/' . $this->invoice->document_url));
-                    $emailAttachments->file_size = File::size(storage_path('app/manual_invoices/' . $this->invoice->document_url));
-                    $emailAttachments->mime_type = File::mimeType(storage_path('app/manual_invoices/' . $this->invoice->document_url));
-                    $emailAttachments->full_file_path = storage_path('app/manual_invoices/' . $this->invoice->document_url);
+                    $emailAttachments->file_name = File::name(storage_path('app/' . $this->invoice->document_url));
+                    $emailAttachments->file_size = File::size(storage_path('app/' . $this->invoice->document_url));
+                    $emailAttachments->mime_type = File::mimeType(storage_path('app/' . $this->invoice->document_url));
+                    $emailAttachments->full_file_path = storage_path('app/' . $this->invoice->document_url);
                 } else {
-                    $emailAttachments->file_name = File::name(storage_path('app/invoices/' . $this->invoice->document_url));
-                    $emailAttachments->file_size = File::size(storage_path('app/invoices/' . $this->invoice->document_url));
-                    $emailAttachments->mime_type = File::mimeType(storage_path('app/invoices/' . $this->invoice->document_url));
-                    $emailAttachments->full_file_path = storage_path('app/invoices/' . $this->invoice->document_url);
+                    $emailAttachments->file_name = File::name(storage_path('app/' . $this->invoice->document_url));
+                    $emailAttachments->file_size = File::size(storage_path('app/' . $this->invoice->document_url));
+                    $emailAttachments->mime_type = File::mimeType(storage_path('app/' . $this->invoice->document_url));
+                    $emailAttachments->full_file_path = storage_path('app/' . $this->invoice->document_url);
                 }
 //                $emailAttachments->file_name = File::name(storage_path('app/' . $this->invoice->document_url));
 //                $emailAttachments->file_size = File::size(storage_path('app/' . $this->invoice->document_url));
