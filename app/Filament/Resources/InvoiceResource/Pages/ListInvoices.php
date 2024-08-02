@@ -59,6 +59,7 @@ class ListInvoices extends ListRecords
                 ->label('Send Invoice Documents')
                 ->action(function (){
                     Invoice::query()
+                        ->where('is_confirmed', true)
                         ->where('is_generated', true)
                         ->where('issue_date', null)
                         ->chunk(1000, function ($invoices){
