@@ -102,6 +102,7 @@ class PropertyOwnersResource extends Resource
                 Tables\Actions\Action::make('generate-invoice-for-balance-carried-forward')
                     ->label('Bill Balance Carried Forward')
                     ->icon("heroicon-m-document-check")
+                    ->disabled(fn(PropertyOwners $record) => $record->has_invoice_for_balance_carried_forward)
                     ->requiresConfirmation(fn($record) => 'Are you sure you would like to create an invoice for the balance carried forward for this property owner?')
                     ->action(function (PropertyOwners $record) {
                         $response = $record->createInvoiceForBalanceCarriedForward();
