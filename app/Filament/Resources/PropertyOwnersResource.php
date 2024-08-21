@@ -9,6 +9,7 @@ use App\Models\PropertyOwners;
 use App\Utils\AppUtils;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -59,6 +60,10 @@ class PropertyOwnersResource extends Resource
                 Forms\Components\TextInput::make('address')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\TextInput::make('balance_carried_forward')
+                    ->required()
+                    ->numeric()
+                    ->minValue(0),
             ]);
     }
 
@@ -83,6 +88,9 @@ class PropertyOwnersResource extends Resource
                 Tables\Columns\TextColumn::make('address')
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('balance_carried_forward')
+                    ->searchable()
+                    ->sortable(),
             ])
             ->filters([
                 //
@@ -91,6 +99,34 @@ class PropertyOwnersResource extends Resource
                 Tables\Actions\Action::make('generate-statement-of-account')
                     ->label('Generate Statement of Account')
                     ->action(fn(PropertyOwners $record)=>$record->generateStatementOfAccount()),
+                Tables\Actions\Action::make('generate-invoice-for-balance-carried-forward')
+                    ->label('Bill Balance Carried Forward')
+                    ->icon("heroicon-m-document-check")
+                    ->requiresConfirmation(fn($record) => 'Are you sure you would like to create an invoice for the balance carried forward for this property owner?')
+                    ->action(function (PropertyOwners $record) {
+                        $response = $record->createInvoiceForBalanceCarriedForward();
+
+                        if ($response["status"] == -1){
+                            // pop up a toast message
+                            Notification::make()
+                                ->title('Error')
+                                ->danger()
+                                ->body($response["message"])
+                                ->duration(5000)
+                                ->icon('heroicon-o-x-circle')
+                                ->send();
+                        }
+                        if ($response["status"] == 1){
+                            // pop up a toast message
+                            Notification::make()
+                                ->title('Success')
+                                ->success()
+                                ->body($response["message"])
+                                ->duration(5000)
+                                ->icon('heroicon-o-check-circle')
+                                ->send();
+                        }
+                    }),
                 Tables\Actions\EditAction::make()
                     ->mutateFormDataUsing(fn ($data) => [
                         'updated_by' => auth()->user()->id,
