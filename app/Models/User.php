@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -11,7 +13,7 @@ use Laravel\Sanctum\HasApiTokens;
 use OwenIt\Auditing\Auditable;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements \OwenIt\Auditing\Contracts\Auditable
+class User extends Authenticatable implements \OwenIt\Auditing\Contracts\Auditable, FilamentUser
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes,Auditable, HasRoles;
 
@@ -67,5 +69,11 @@ class User extends Authenticatable implements \OwenIt\Auditing\Contracts\Auditab
     public function deletedBy()
     {
         return $this->belongsTo(User::class,'deleted_by');
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        // allow all users to access
+        return true;
     }
 }
