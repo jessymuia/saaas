@@ -112,16 +112,22 @@ class InvoiceResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
 //                Tables\Actions\EditAction::make(),
-            Tables\Actions\Action::make('View Invoice')
-                ->icon('heroicon-o-document-text')
-                ->disabled(fn (Invoice $invoice) => !$invoice->is_generated)
-                ->url(function (Invoice $invoice) {
-                    if (!$invoice->is_generated) {
-                        return route('preview.invoice',['invoice'=>null]);
-                    }
-                    $fileName = str_replace('invoices/','',$invoice->document_url);
-                    return route('preview.invoice',['invoice'=>$fileName]);
-                }),
+                Tables\Actions\Action::make('View Invoice')
+                    ->icon('heroicon-o-document-text')
+                    ->disabled(fn (Invoice $invoice) => !$invoice->is_generated)
+                    ->url(function (Invoice $invoice) {
+                        if (!$invoice->is_generated) {
+                            return route('preview.invoice',['invoice'=>null]);
+                        }
+                        $fileName = str_replace('invoices/','',$invoice->document_url);
+                        return route('preview.invoice',['invoice'=>$fileName]);
+                    }),
+                Tables\Actions\DeleteAction::make()
+                    ->requiresConfirmation(fn (Invoice $invoice) => 'Are you sure you would like to delete this invoice?')
+                    ->mutateFormDataUsing(fn ($data) => [
+                        'deleted_by' => auth()->user()->id,
+                    ]),
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
