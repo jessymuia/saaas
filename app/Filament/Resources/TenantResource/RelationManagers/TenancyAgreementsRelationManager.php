@@ -520,6 +520,9 @@ class TenancyAgreementsRelationManager extends RelationManager
         $invoices = array_merge($invoices, $manualInvoices);
         // obtain unpaid amount for each invoice
         foreach ($invoices as $key => $invoice){
+            // check for null results
+            if(Invoice::query()->find($invoice['invoice_id']) == null)
+                Log::error("This one is an error, invoice id: ".$invoice['invoice_id']);
             $invoice['unpaid_amount'] = Invoice::query()->find($invoice['invoice_id'])->unpaid_amount;
             $invoice['amount'] = Invoice::query()->find($invoice['invoice_id'])->amount;
             $invoices[$key] = $invoice;
