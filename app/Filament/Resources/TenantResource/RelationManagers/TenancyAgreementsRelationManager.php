@@ -505,7 +505,7 @@ class TenancyAgreementsRelationManager extends RelationManager
             ->orderBy('created_at', 'desc')
             ->select(['id as invoice_id', 'invoice_for_month as transaction_date','invoice_due_date'])
             ->selectRaw("concat('INV #', id,'. Due on ', TO_CHAR(invoice_for_month,'Mon DD, YYYY')) as transaction, concat('invoice') as transaction_type")
-            ->where('deleted_at', '=', null)
+            ->where('deleted_at', 'is', null)
             ->get(['amount','unpaid_amount'])
             ->toArray();
 
@@ -525,8 +525,8 @@ class TenancyAgreementsRelationManager extends RelationManager
             // check for null results
             if(Invoice::query()->find($invoice['invoice_id']) == null)
                 Log::error("This one is an error, invoice id: ".$invoice['invoice_id']);
-            $invoice['unpaid_amount'] = Invoice::query()->find($invoice['invoice_id'])->unpaid_amount;
-            $invoice['amount'] = Invoice::query()->find($invoice['invoice_id'])->amount;
+            $invoice['unpaid_amount'] = Invoice::query()->find($invoice['invoice_id'])->unpaid_amount ?? ManualInvoices::query()->find($invoice['invoice_id'])->unpaid_amount;
+            $invoice['amount'] = Invoice::query()->find($invoice['invoice_id'])->amount ?? ManualInvoices::query()->find($invoice['invoice_id'])->amount;
             $invoices[$key] = $invoice;
         }
 
