@@ -505,6 +505,7 @@ class TenancyAgreementsRelationManager extends RelationManager
             ->orderBy('created_at', 'desc')
             ->select(['id as invoice_id', 'invoice_for_month as transaction_date','invoice_due_date'])
             ->selectRaw("concat('INV #', id,'. Due on ', TO_CHAR(invoice_for_month,'Mon DD, YYYY')) as transaction, concat('invoice') as transaction_type")
+            ->where('is_confirmed', '=', true)
             ->get(['amount','unpaid_amount'])
             ->toArray();
 
@@ -513,6 +514,7 @@ class TenancyAgreementsRelationManager extends RelationManager
             ->orderBy('created_at', 'desc')
             ->select(['id as invoice_id', 'invoice_for_month as transaction_date','invoice_due_date'])
             ->selectRaw("concat('INV #', id,'. Due on ', TO_CHAR(invoice_for_month,'Mon DD, YYYY')) as transaction, concat('invoice') as transaction_type")
+            ->where('is_confirmed','=', true)
             ->get(['amount','unpaid_amount'])
             ->toArray();
 
@@ -542,6 +544,7 @@ class TenancyAgreementsRelationManager extends RelationManager
             })
             ->select(['id', 'invoice_id', 'created_at as transaction_date','amount_credited as amount'])
             ->selectRaw("concat('CRN #', id,'. ', name,'. Issued on ') as transaction, concat('credit_note') as transaction_type")
+            ->where('is_confirmed', '=', true)
             ->get()
             ->toArray();
 
@@ -564,6 +567,7 @@ class TenancyAgreementsRelationManager extends RelationManager
             })
             ->select(['id', 'invoice_id', 'payment_date as transaction_date','amount'])
             ->selectRaw("concat('PMT #', id,'. Paid on ') as transaction, concat('payment') as transaction_type")
+            ->where('is_confirmed', '=', true)
             ->get()
             ->toArray();
 

@@ -98,7 +98,8 @@ class PropertyOwnersResource extends Resource
             ->actions([
                 Tables\Actions\Action::make('generate-statement-of-account')
                     ->label('Generate Statement of Account')
-                    ->action(fn(PropertyOwners $record)=>$record->generateStatementOfAccount()),
+                    ->action(fn(PropertyOwners $record)=>$record->generateStatementOfAccountVersionTwo()),
+//                    ->action(fn(PropertyOwners $record)=>$record->generateStatementOfAccount()),
                 Tables\Actions\Action::make('generate-invoice-for-balance-carried-forward')
                     ->label('Bill Balance Carried Forward')
                     ->icon("heroicon-m-document-check")
