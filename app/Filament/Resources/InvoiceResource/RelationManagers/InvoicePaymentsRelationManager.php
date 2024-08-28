@@ -29,9 +29,9 @@ class InvoicePaymentsRelationManager extends RelationManager
                     ->required(),
                 Forms\Components\TextInput::make('amount')
                     ->required()
-                    ->numeric()
+                    ->numeric(),
 //                    ->rule(fn (Get $get) => new CheckPaidAmountDoesNotExceedAmountDue($get('invoice_id'))),
-                    ->rule(fn (Get $get) => new CheckPaidAmountDoesNotExceedAmountDue($this->ownerRecord->id)),
+//                    ->rule(fn (Get $get) => new CheckPaidAmountDoesNotExceedAmountDue($this->ownerRecord->id)),
                 Forms\Components\TextInput::make('paid_by')
                     ->required()
                     ->maxLength(255),
