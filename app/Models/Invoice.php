@@ -174,7 +174,9 @@ class Invoice extends DefaultAppModel
             $detailsArray = [
                 'customerName' => 'HSE#'.$unitName.' '.$tenantName,
                 'propertyName' => $propertyName,
-                'invoiceDate'=> Carbon::createFromFormat('Y-m-d H:i:s', $this->created_at)
+//                'invoiceDate'=> Carbon::createFromFormat('Y-m-d H:i:s', $this->created_at)
+//                    ->format('M j, Y'),
+                'invoiceDate'=> Carbon::createFromFormat('Y-m-d H:i:s', $this->invoice_for_month)
                     ->format('M j, Y'),
                 'logoUrl'=>'file://'.getcwd().'/images/hamud_top_doc_logo.png',
                 'invoiceItemsHTML' => $invoiceItems,
