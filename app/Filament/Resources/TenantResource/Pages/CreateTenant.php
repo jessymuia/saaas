@@ -14,7 +14,7 @@ class CreateTenant extends CreateRecord
     {
         $data['created_by'] = auth()->user()->id;
         $data['email'] == null
-            ? $data['email'] = 'hamudrealtorsltd@gmail.com'
+            ? $data['email'] = 'info@keyquestrealtors.com'
             : 1;
         return $data;
     }
