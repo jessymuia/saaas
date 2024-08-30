@@ -45,6 +45,18 @@ class ViewInvoice extends ViewRecord
                         ->send();
                 }),
             // custom action
+            Actions\Action::make('view-docoument')
+                ->label('View Document')
+                ->action(function ($record) {
+                    if (!$record->is_generated) {
+                        return route('preview.invoice',['invoice'=>null]);
+                    }
+                    $fileName = str_replace('invoices/','',$record->document_url);
+                    return route('preview.invoice',['invoice'=>$fileName]);
+                })
+                ->visible(function ($record) {
+                    return $record->is_generated;
+                }),
             Actions\Action::make('Confirm Invoice')
                 ->action(function ($record) {
                     $record->is_confirmed = true;
