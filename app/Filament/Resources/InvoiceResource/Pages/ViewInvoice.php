@@ -47,7 +47,7 @@ class ViewInvoice extends ViewRecord
             // custom action
             Actions\Action::make('view-docoument')
                 ->label('View Document')
-                ->action(function ($record) {
+                ->url(function ($record) {
                     if (!$record->is_generated) {
                         return route('preview.invoice',['invoice'=>null]);
                     }
