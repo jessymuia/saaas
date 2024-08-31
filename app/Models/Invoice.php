@@ -285,6 +285,10 @@ class Invoice extends DefaultAppModel
                 return false;
             }
         }catch (\Exception $exception){
+            // print the stack trace and the error message
+            Log::error("Failed to generate document for invoice: {$this->id}");
+            Log::error($exception->getLine());
+            Log::error($exception->getTraceAsString());
             Log::error($exception->getMessage());
             return false;
         }
