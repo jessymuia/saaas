@@ -96,6 +96,9 @@ class MeterReadingsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('id')
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('unit.name')
                     ->sortable()
                     ->searchable(),
