@@ -136,10 +136,10 @@ class ManualInvoices extends DefaultAppModel
 //                    ->first() ??  throw new \Exception('Property Payment Details is missing for property id: '
 //                .$sI->tenancyAgreement->property->id .' - '. $sI->tenancyAgreement->property->name);
             $hamudPaymentDetails = [
-                'account_name' => 'HAMUD REALTORS LIMITED',
+                'account_name' => 'KEYQUEST REALTORS LIMITED',
                 'account_number' => '2046025124',
                 'bank_name' => 'ABSA BANK',
-                'branch' => 'BARCLAYS PLAZA',
+                'branch' => 'ABSA TOWERS',
                 'mpesa_paybill_number' => '303030',
             ];
 
