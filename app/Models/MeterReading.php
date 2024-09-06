@@ -118,8 +118,7 @@ class MeterReading extends DefaultAppModel
         // a new invoice is only created if the previous one is confirmed
         // ensure each invoice has its own separate month bills using the due_date from the tenancy bills
         // define invoice for month TODO: FLAG:MIGRATION
-        $invoiceForMonthDate = $this->reading_date;
-        $invoiceForMonthDate = $invoiceForMonthDate->modify(' +1 month'); //use next month since utilities are billed post-usage
+        $invoiceForMonthDate = $this->reading_date->startOfMonth()->addMonth();
         $invoice = Invoice::query()
             ->where('tenancy_agreement_id', $tenancyAgreement)
             ->whereMonth('invoice_for_month', date_format($invoiceForMonthDate,'m')) //
