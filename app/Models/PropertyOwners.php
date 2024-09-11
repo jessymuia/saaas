@@ -342,7 +342,7 @@ class PropertyOwners extends DefaultAppModel
 //            ->toArray();
 
         $invoices = ManualInvoices::query()
-            ->where('tenant_id', '=', $this->id)
+            ->where('property_owner_id', '=', $this->id)
             ->orderBy('created_at', 'desc')
             ->select(['id as invoice_id', 'invoice_for_month as transaction_date','invoice_due_date'])
             ->selectRaw("concat('INV #', id,'. Due on ', TO_CHAR(invoice_for_month,'Mon DD, YYYY')) as transaction, concat('invoice') as transaction_type")
