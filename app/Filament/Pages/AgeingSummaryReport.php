@@ -5,6 +5,7 @@ namespace App\Filament\Pages;
 use App\Models\CreditNote;
 use App\Models\Invoice;
 use App\Models\InvoicePayment;
+use App\Models\ManualInvoices;
 use App\Models\Property;
 use App\Utils\AppPermissions;
 use App\Utils\AppUtils;
@@ -390,28 +391,91 @@ class AgeingSummaryReport extends Page implements HasForms
             ->orderBy('created_at', 'desc')
             ->select(['id', 'invoice_for_month as transaction_date','invoice_due_date'])
             ->selectRaw("concat('INV #', id,'. Due on ', TO_CHAR(invoice_for_month,'Mon DD, YYYY')) as transaction, concat('invoice') as transaction_type")
+//            ->with('creditNote', function ($query){
+//                $query->select('id');
+//            })
             ->get(['amount','unpaid_amount'])
             ->toArray();
+
+//        dd($invoices);
+
+        $manualInvoices = ManualInvoices::query()
+            ->where('tenant_id', '=', $tenancyAgreement->tenant_id)
+            ->orderBy('created_at', 'desc')
+            ->select(['id', 'invoice_for_month as transaction_date','invoice_due_date'])
+            ->selectRaw("concat('INV #', id,'. Due on ', TO_CHAR(invoice_for_month,'Mon DD, YYYY')) as transaction, concat('invoice') as transaction_type")
+            ->get(['amount','unpaid_amount'])
+            ->toArray();
+
+        // combine the two arrays, and sort them by transaction date
+        $invoices = array_merge($invoices, $manualInvoices);
+        usort($invoices, function ($a, $b) {
+            return $a['transaction_date'] <=> $b['transaction_date'];
+        });
+
+//        dd($invoices);
+        // get all credit notes and convert to array
+        $creditNotes = CreditNote::query()
+            ->orderBy('created_at', 'desc')
+            ->whereHas('invoice', function ($query) use ($tenancyAgreement) {
+                $query->where('tenancy_agreement_id', '=', $tenancyAgreement->id);
+            })
+            ->select(['id', 'created_at as transaction_date','amount_credited as amount'])
+            ->selectRaw("concat('CRN #', id,'. ', name,'. Issued on ') as transaction, concat('credit_note') as transaction_type")
+            ->get()
+            ->toArray();
+//        dd($creditNotes);
+        // get all invoice payments
+        $invoicePayments = InvoicePayment::query()
+            ->orderBy('payment_date', 'desc')
+            ->where(fn($query) => $query
+                ->where('tenant_id', '=', $tenancyAgreement->tenant_id)
+            )
+//            ->where(function ($query) use ($tenancyAgreement) {
+//                $query->where('tenant_id', '=', $tenancyAgreement->tenant_id);
+//            })
+            ->select(['id', 'payment_date as transaction_date','amount'])
+            ->selectRaw("concat('PMT #', id,'. Paid on ') as transaction, concat('payment') as transaction_type")
+            ->get()
+            ->toArray();
+//        dd($invoicePayments);
+
+        // merge the three arrays
+        $transactions = array_merge($invoices, $creditNotes, $invoicePayments);
+        // sort the array by transaction date
+        usort($transactions, function ($a, $b) {
+            return $a['transaction_date'] <=> $b['transaction_date'];
+        });
 
         $current = 0;
         $oneToThirtyPastDue = 0;
         $thirtyOneToSixtyPastDue = 0;
         $sixtyOneToNinetyPastDue = 0;
         $overNinetyPastDue = 0;
-        // iterate over the invoices obtaining the current, 1-30, 31-60, 61-90, over 90
-        foreach ($invoices as $invoice) {
-            $invoiceDueDate = Carbon::createFromFormat('Y-m-d',$invoice['invoice_due_date']);
-            $daysDifference = $invoiceDueDate->diffInDays(Carbon::now());
-            if ($daysDifference > 90){
-                $overNinetyPastDue += $invoice['amount'];
-            } elseif ($daysDifference > 60){
-                $sixtyOneToNinetyPastDue += $invoice['amount'];
-            } elseif ($daysDifference > 30){
-                $thirtyOneToSixtyPastDue += $invoice['amount'];
-            } elseif ($daysDifference > 0 ){
-                $oneToThirtyPastDue += $invoice['amount'];
-            } elseif ($daysDifference == 0){
-                $current += $invoice['amount'];
+        // obtain the total due
+        $amountDue = 0;
+//        dd($transactions);
+        foreach ($transactions as $transaction) {
+            if ($transaction['transaction_type'] == 'invoice') {
+                $amountDue += $transaction['amount'];
+
+                $invoiceDueDate = Carbon::createFromFormat('Y-m-d',$transaction['invoice_due_date']);
+                $daysDifference = $invoiceDueDate->diffInDays(Carbon::now());
+                if ($daysDifference > 90){
+                    $overNinetyPastDue += $transaction['unpaid_amount'];
+                } elseif ($daysDifference > 60){
+                    $sixtyOneToNinetyPastDue += $transaction['unpaid_amount'];
+                } elseif ($daysDifference > 30){
+                    $thirtyOneToSixtyPastDue += $transaction['unpaid_amount'];
+                } elseif ($daysDifference > 0 ){
+                    $oneToThirtyPastDue += $transaction['unpaid_amount'];
+                } elseif ($daysDifference == 0){
+                    $current += $transaction['unpaid_amount'];
+                }
+            } elseif ($transaction['transaction_type'] == 'credit_note') {
+                $amountDue -= $transaction['amount'];
+            } elseif ($transaction['transaction_type'] == 'payment') {
+                $amountDue -= $transaction['amount'];
             }
         }
 
