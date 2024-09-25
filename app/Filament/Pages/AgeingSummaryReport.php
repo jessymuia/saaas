@@ -90,22 +90,6 @@ class AgeingSummaryReport extends Page implements HasForms
         return $form;
     }
 
-    public array $rules = [
-        'property' => ['required'],
-        'zero_to_thirty_days' => ['required'],
-        'thirty_one_to_sixty_days' => ['required'],
-        'sixty_one_to_ninety_days' => ['required'],
-        'over_ninety_days' => ['required'],
-    ];
-
-    public array $messages = [
-        'property.required' => 'Please select a property',
-        'zero_to_thirty_days.required' => 'Please select at least one range',
-        'thirty_one_to_sixty_days.required' => 'Please select at least one range',
-        'sixty_one_to_ninety_days.required' => 'Please select at least one range',
-        'over_ninety_days.required' => 'Please select at least one range',
-    ];
-
     public function submitGenerateReportForm()
     {
         $submittedFormData = $this->form->getState();
@@ -118,22 +102,31 @@ class AgeingSummaryReport extends Page implements HasForms
     public function customValidate($submittedFormData)
     {
         $rules = [
-            'property' => ['nullable'],
-            'zero_to_thirty_days' => ['nullable'],
-            'thirty_one_to_sixty_days' => ['nullable'],
-            'sixty_one_to_ninety_days' => ['nullable'],
-            'over_ninety_days' => ['nullable'],
+            'property' => ['nullable','numeric','exists:properties,id'],
+            'zero_to_thirty_days' => ['nullable','boolean'],
+            'thirty_one_to_sixty_days' => ['nullable','boolean'],
+            'sixty_one_to_ninety_days' => ['nullable','boolean'],
+            'over_ninety_days' => ['nullable','boolean'],
         ];
 
         $messages = [
-            'property.required' => 'Please select a property',
-            'zero_to_thirty_days.required' => 'Please select at least one range',
-            'thirty_one_to_sixty_days.required' => 'Please select at least one range',
-            'sixty_one_to_ninety_days.required' => 'Please select at least one range',
-            'Over_ninety_days.required' => 'Please select at least one range',
+            'property.numeric' => 'Please select a valid property',
+            'property.exists' => 'Please select a valid property',
+            'zero_to_thirty_days.boolean' => 'Invalid value for 0-30 days',
+            'thirty_one_to_sixty_days.boolean' => 'Invalid value for 31-60 days',
+            'sixty_one_to_ninety_days.boolean' => 'Invalid value for 61-90 days',
+            'Over_ninety_days.boolean' => 'Invalid value for over 90 days',
         ];
 
         $validator = Validator::make($submittedFormData, $rules, $messages);
+
+
+        if ($validator->fails()) {
+            foreach ($validator->errors()->all() as $error) {
+                $this->displayErrorNotification($error);
+            }
+            return false;
+        }
 
         // ensure at least one range is selected (set to true)
         $atLeastOneRangeSelected = false;
@@ -145,26 +138,16 @@ class AgeingSummaryReport extends Page implements HasForms
             $atLeastOneRangeSelected = true;
         }else if ($submittedFormData['over_ninety_days']) {
             $atLeastOneRangeSelected = true;
-        }
-
-        if (!$atLeastOneRangeSelected){
-            $this->displayErrorNotification('Please select at least one range');
-            return false;
-        }
-
-        if ($validator->fails()) {
-            foreach ($validator->errors()->all() as $error) {
-                $this->displayErrorNotification($error);
-            }
-            return false;
+        }else{
+            $atLeastOneRangeSelected = false;
         }
 
         // get the validated data
-        $this->property = $submittedFormData['property'];
-        $this->zero_to_thirty_days = $submittedFormData['zero_to_thirty_days'];
-        $this->thirty_one_to_sixty_days = $submittedFormData['thirty_one_to_sixty_days'];
-        $this->sixty_one_to_ninety_days = $submittedFormData['sixty_one_to_ninety_days'];
-        $this->over_ninety_days = $submittedFormData['over_ninety_days'];
+        $this->property = $submittedFormData['property'] == 'null' ? null : $submittedFormData['property'];
+        $this->zero_to_thirty_days = $atLeastOneRangeSelected ? $submittedFormData['zero_to_thirty_days'] : true;
+        $this->thirty_one_to_sixty_days = $atLeastOneRangeSelected ? $submittedFormData['thirty_one_to_sixty_days'] : true;
+        $this->sixty_one_to_ninety_days = $atLeastOneRangeSelected ? $submittedFormData['sixty_one_to_ninety_days'] : true;
+        $this->over_ninety_days = $atLeastOneRangeSelected ? $submittedFormData['over_ninety_days'] : true;
 
         $outputText = '';
 
@@ -222,17 +205,17 @@ class AgeingSummaryReport extends Page implements HasForms
 
                 $outputText .= $propertyHeader;
 
-                foreach ($property->tenancyAgreements()->get() as $tenancyAgreements){
-                    $row = $this->generateSingleStatementOfAccount($tenancyAgreements);
+                foreach ($property->tenancyAgreements()->get() as $tenancyAgreement){
+                    $row = $this->generateSingleStatementOfAccount($tenancyAgreement);
 
                     $outputText .= $row['rowContentHtml'];
-                }
 
-                $propertyTotalDue += $row['pendingPayments']['total_due'];
-                $propertyOneToThirtyPastDue += $row['pendingPayments']['zero_to_thirty_days'] ?? 0;
-                $propertyThirtyOneToSixtyPastDue += $row['pendingPayments']['thirty_one_to_sixty_days'] ?? 0;
-                $propertySixtyOneToNinetyPastDue += $row['pendingPayments']['sixty_one_to_ninety_days'] ?? 0;
-                $propertyOverNinetyPastDue += $row['pendingPayments']['over_ninety_days'] ?? 0;
+                    $propertyTotalDue += $row['pendingPayments']['total_due'];
+                    $propertyOneToThirtyPastDue += $row['pendingPayments']['zero_to_thirty_days'] ?? 0;
+                    $propertyThirtyOneToSixtyPastDue += $row['pendingPayments']['thirty_one_to_sixty_days'] ?? 0;
+                    $propertySixtyOneToNinetyPastDue += $row['pendingPayments']['sixty_one_to_ninety_days'] ?? 0;
+                    $propertyOverNinetyPastDue += $row['pendingPayments']['over_ninety_days'] ?? 0;
+                }
 
                 $propertyFooter = $this->generatePropertyFooter(
                     $property->name,
@@ -284,16 +267,13 @@ class AgeingSummaryReport extends Page implements HasForms
             $content = str_replace("@#$key", $value, $content);
         }
 
-        $pdfName = "Ageing Summary Report".
+        $pdfName = str_replace(" ","","Ageing Summary Report".
             '_as_of_' .
-            now()->format('F j, Y h:i:s');
+            now()->format('F j, Y h:i:s'));
 
         // get the path but without the clatter file system
         $pdfPath = Storage::path('ageing_summary_reports') . '/' . $pdfName . '.pdf';
 
-//            Storage::url($pdfPath);
-
-//            Storage::put($pdfPath, $content);
         $snappy = App::make('snappy.pdf');
         $snappy->setOption('enable-local-file-access', true);
         $snappy->setOption('disable-smart-shrinking', false);
@@ -397,7 +377,7 @@ class AgeingSummaryReport extends Page implements HasForms
             ->get(['amount','unpaid_amount'])
             ->toArray();
 
-//        dd($invoices);
+
 
         $manualInvoices = ManualInvoices::query()
             ->where('tenant_id', '=', $tenancyAgreement->tenant_id)
@@ -413,7 +393,7 @@ class AgeingSummaryReport extends Page implements HasForms
             return $a['transaction_date'] <=> $b['transaction_date'];
         });
 
-//        dd($invoices);
+
         // get all credit notes and convert to array
         $creditNotes = CreditNote::query()
             ->orderBy('created_at', 'desc')
@@ -424,7 +404,7 @@ class AgeingSummaryReport extends Page implements HasForms
             ->selectRaw("concat('CRN #', id,'. ', name,'. Issued on ') as transaction, concat('credit_note') as transaction_type")
             ->get()
             ->toArray();
-//        dd($creditNotes);
+
         // get all invoice payments
         $invoicePayments = InvoicePayment::query()
             ->orderBy('payment_date', 'desc')
@@ -438,7 +418,6 @@ class AgeingSummaryReport extends Page implements HasForms
             ->selectRaw("concat('PMT #', id,'. Paid on ') as transaction, concat('payment') as transaction_type")
             ->get()
             ->toArray();
-//        dd($invoicePayments);
 
         // merge the three arrays
         $transactions = array_merge($invoices, $creditNotes, $invoicePayments);
@@ -454,7 +433,7 @@ class AgeingSummaryReport extends Page implements HasForms
         $overNinetyPastDue = 0;
         // obtain the total due
         $amountDue = 0;
-//        dd($transactions);
+
         foreach ($transactions as $transaction) {
             if ($transaction['transaction_type'] == 'invoice') {
                 $amountDue += $transaction['amount'];
