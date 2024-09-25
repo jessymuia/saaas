@@ -464,7 +464,7 @@ class AgeingSummaryReport extends Page implements HasForms
         $rowContentHtml  = '
             <tr style="height: 30px;">
                 <td class="details_header_cell_for_statement_summary" colspan="1">'.$tenancyAgreement->unit->name.'</td>
-                <td class="details_header_cell_for_statement_summary" colspan="4">'.$tenancyAgreement->tenant->name ?? 'Name not defined'.'</td>';
+                <td class="details_header_cell_for_statement_summary" colspan="4">'.$tenancyAgreement?->tenant?->name ?? 'Name not defined'.'</td>';
 
         if ($this->zero_to_thirty_days){
             $rowContentHtml .= '<td class="table_cell_for_statement_summary" colspan="1">'.number_format($oneToThirtyPastDue,2).'</td>';
