@@ -64,7 +64,7 @@ class InvoiceEmail extends Mailable
                     'invoice_due_date' => $this->invoice->invoice_due_date,
                     'invoice_for_month' => $this->invoice->invoice_for_month,
                 ],
-                'companyName' => 'Hamuud Realtors',
+                'companyName' => 'Keyquest Realtors Limited',
                 'tenantName' => $addressedTo,
             ]
         );

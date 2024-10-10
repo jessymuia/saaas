@@ -37,7 +37,7 @@ class AmountEscalationNotificationEmail extends Mailable
         $oldRentAmount = $emailData['oldRentAmount'];
         $escalationStartDate = $emailData['escalationStartDate'];
         $escalationEndDate = $emailData['escalationEndDate'];
-        $companyName = 'Hamud Realtors';
+        $companyName = 'Keyquest Realtors Limited';
     }
 
     /**

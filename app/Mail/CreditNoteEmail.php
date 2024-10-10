@@ -17,7 +17,7 @@ class CreditNoteEmail extends Mailable
     use Queueable, SerializesModels;
 
     public $creditNote;
-    public $companyName = 'Hamuud Realtors';
+    public $companyName = 'Keyquest Realtors Limited';
 
     /**
      * Create a new message instance.
