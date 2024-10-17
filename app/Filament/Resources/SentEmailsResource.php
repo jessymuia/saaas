@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Exports\SentEmailsExporter;
 use App\Filament\Resources\SentEmailsResource\Pages;
 use App\Filament\Resources\SentEmailsResource\RelationManagers;
 use App\Models\SentEmails;
@@ -11,6 +12,9 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Actions\Exports\Enums\ExportFormat;
+use Filament\Tables\Actions\ExportAction;
+use Filament\Tables\Actions\ExportBulkAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -76,10 +80,24 @@ class SentEmailsResource extends Resource
                 // Tables\Actions\EditAction::make(),
                 // action to resend email
             ])
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(SentEmailsExporter::class)
+                    ->formats([
+                        ExportFormat::Csv
+                    ])
+                
+            ])
             ->bulkActions([
-//                Tables\Actions\BulkActionGroup::make([
-//                    Tables\Actions\DeleteBulkAction::make(),
-//                ]),
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
+                ]),
+                ExportBulkAction::make()
+                    ->exporter(SentEmailsExporter::class)
+                    ->formats([
+                        ExportFormat::Csv
+                    ])
+
             ]);
     }
 

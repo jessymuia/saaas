@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Exports\ManualInvoicesExporter;
 use App\Filament\Resources\ManualInvoicesResource\Pages;
 use App\Filament\Resources\ManualInvoicesResource\RelationManagers;
 use App\Models\Client;
@@ -14,6 +15,9 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Actions\Exports\Enums\ExportFormat;
+use Filament\Tables\Actions\ExportAction;
+use Filament\Tables\Actions\ExportBulkAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -158,10 +162,24 @@ class ManualInvoicesResource extends Resource
                         return route('preview.manual-invoice',['invoice'=>$fileName]);
                     }),
             ])
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(ManualInvoicesExporter::class)
+                    ->formats([
+                        ExportFormat::Csv
+                    ])
+                
+            ])
             ->bulkActions([
-//                Tables\Actions\BulkActionGroup::make([
-//                    Tables\Actions\DeleteBulkAction::make(),
-//                ]),
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
+                ]),
+                ExportBulkAction::make()
+                    ->exporter(ManualInvoicesExporter::class)
+                    ->formats([
+                        ExportFormat::Csv
+                    ])
+
             ]);
     }
 
