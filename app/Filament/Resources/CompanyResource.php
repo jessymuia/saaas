@@ -52,7 +52,6 @@ class CompanyResource extends Resource
                     ->maxLength(255),
                 Forms\Components\FileUpload::make('logo')
                     ->label('Company logo')
-                    ->disk('local')
                     ->directory('logos')
                     ->preserveFilenames()
                     ->acceptedFileTypes(['image/jpeg', 'image/jpg', 'image/png'])
