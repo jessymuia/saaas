@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Knp\Snappy\Pdf;
+use App\Models\Company;
 
 class Invoice extends DefaultAppModel
 {
@@ -171,14 +172,24 @@ class Invoice extends DefaultAppModel
                     <td class="s_bottom_cell" colspan="1"></td>
                 </tr>';
 
+            
+            //get the details of latest company; update to logged in company
+            $company = Company::latest()->first();
+
             $detailsArray = [
+                'companyName' => $company->name,
+                'companyAddress' => $company->address,
+                'companyEmail' => $company->email,
+                'companyPhoneNumber' => $company->phone_number,
+                'companyLocation' => $company->location,
                 'customerName' => 'HSE#'.$unitName.' '.$tenantName,
                 'propertyName' => $propertyName,
 //                'invoiceDate'=> Carbon::createFromFormat('Y-m-d H:i:s', $this->created_at)
 //                    ->format('M j, Y'),
                 'invoiceDate'=> Carbon::createFromFormat('Y-m-d', $this->invoice_for_month)
                     ->format('M j, Y'),
-                'logoUrl'=>'file://'.getcwd().'/images/hamud_top_doc_logo.png',
+                // 'logoUrl'=>'file://'.getcwd().'/images/hamud_top_doc_logo.png',
+                'logoUrl'=>'file://'.getcwd().'/storage/'.$company->logo,
                 'invoiceItemsHTML' => $invoiceItems,
                 'invoiceNumber' => $this->id,
                 'payBillAccountNumber'=> $tenantName.'/'.$unitName,

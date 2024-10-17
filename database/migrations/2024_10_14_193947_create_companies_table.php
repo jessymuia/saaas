@@ -16,12 +16,16 @@ return new class extends Migration
 
             $table->string('name');
             $table->string('email');
+            $table->string('phone_number');
             $table->string('logo')->nullable();
+            $table->string('location'); //physical location
             $table->string('address'); //physical address
             $table->string('account_name');
             $table->string('account_number');
+            $table->string('bank_name');
             $table->string('bank_branch');
             $table->string('branch_swift_code');
+            $table->integer('mpesa_paybill_number');
         });
     }
 

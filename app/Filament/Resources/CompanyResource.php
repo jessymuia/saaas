@@ -34,6 +34,12 @@ class CompanyResource extends Resource
                     ->email()
                     ->required()
                     ->maxLength(255),
+                Forms\Components\TextInput::make('phone_number')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('location')
+                    ->required()
+                    ->maxLength(255),
                 Forms\Components\TextInput::make('address')
                     ->label('Physical address')
                     ->required()
@@ -44,10 +50,17 @@ class CompanyResource extends Resource
                 Forms\Components\TextInput::make('account_number')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\TextInput::make('bank_name')
+                    ->required()
+                    ->maxLength(255),
                 Forms\Components\TextInput::make('bank_branch')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('branch_swift_code')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('mpesa_paybill_number')
+                    ->numeric()
                     ->required()
                     ->maxLength(255),
                 Forms\Components\FileUpload::make('logo')
@@ -72,7 +85,13 @@ class CompanyResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->sortable()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('phone_number')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('email')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('location')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('address')
@@ -84,12 +103,18 @@ class CompanyResource extends Resource
                 Tables\Columns\TextColumn::make('account_number')
                     ->sortable()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('bank_name')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('bank_branch')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('branch_swift_code')
                     ->sortable()
                     ->searchable(), 
+                Tables\Columns\TextColumn::make('mpesa_paybill_number')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\IconColumn::make('status')
                     ->boolean(),
                 Tables\Columns\IconColumn::make('archive')
