@@ -14,6 +14,9 @@ use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Actions\Exports\Enums\ExportFormat;
+use Filament\Tables\Actions\ExportAction;
+use Filament\Tables\Actions\ExportBulkAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\DB;
@@ -124,11 +127,24 @@ class TenancyBillsRelationManager extends RelationManager
                 Tables\Actions\DeleteAction::make()
                     ->requiresConfirmation(fn () => 'Are you sure you want to delete this tenancy bill?')
             ])
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(TenancyBillsRelationManager::class)
+                    ->formats([
+                        ExportFormat::Csv
+                    ])
+                
+            ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()
-                        ->requiresConfirmation(fn ($records) => 'Are you sure you want to delete these records?'),
+                    Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
                 ]),
+                ExportBulkAction::make()
+                    ->exporter(TenancyBillsRelationManager::class)
+                    ->formats([
+                        ExportFormat::Csv
+                    ])
+
             ]);
     }
 }

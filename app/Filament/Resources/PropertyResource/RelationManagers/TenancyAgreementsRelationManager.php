@@ -10,6 +10,9 @@ use Filament\Forms\Get;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Actions\Exports\Enums\ExportFormat;
+use Filament\Tables\Actions\ExportAction;
+use Filament\Tables\Actions\ExportBulkAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -198,16 +201,24 @@ class TenancyAgreementsRelationManager extends RelationManager
                         return $data;
                     }),
             ])
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(TenancyAgreementsRelationManager::class)
+                    ->formats([
+                        ExportFormat::Csv
+                    ])
+                
+            ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()
-                        ->requiresConfirmation(fn ($records) => "Are you sure you want to delete these records?")
-                        ->mutateFormDataUsing(function ($data) {
-                            $data['deleted_by'] = auth()->user()->id;
-
-                            return $data;
-                        }),
+                    Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
                 ]),
+                ExportBulkAction::make()
+                    ->exporter(TenancyAgreementsRelationManager::class)
+                    ->formats([
+                        ExportFormat::Csv
+                    ])
+
             ]);
     }
 }

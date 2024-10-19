@@ -10,6 +10,9 @@ use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Actions\Exports\Enums\ExportFormat;
+use Filament\Tables\Actions\ExportAction;
+use Filament\Tables\Actions\ExportBulkAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -140,11 +143,24 @@ class CreditNoteRelationManager extends RelationManager
                         return route('preview.credit-note', ['creditNote' => $fileName]);
                     }),
             ])
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(CreditNoteRelationManager::class)
+                    ->formats([
+                        ExportFormat::Csv
+                    ])
+                
+            ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-//                    Tables\Actions\DeleteBulkAction::make()
-//                        ->requiresConfirmation(),
+                    Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
                 ]),
+                ExportBulkAction::make()
+                    ->exporter(CreditNoteRelationManager::class)
+                    ->formats([
+                        ExportFormat::Csv
+                    ])
+
             ]);
     }
 }
