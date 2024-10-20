@@ -189,7 +189,7 @@ class Invoice extends DefaultAppModel
                 'invoiceDate'=> Carbon::createFromFormat('Y-m-d', $this->invoice_for_month)
                     ->format('M j, Y'),
                 // 'logoUrl'=>'file://'.getcwd().'/images/hamud_top_doc_logo.png',
-                'logoUrl'=>'file://'.getcwd().'/storage/'.$company->logo,
+                'logoUrl'=> 'file://'.storage_path('/app/public/'.$company->logo),
                 'invoiceItemsHTML' => $invoiceItems,
                 'invoiceNumber' => $this->id,
                 'payBillAccountNumber'=> $tenantName.'/'.$unitName,

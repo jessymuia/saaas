@@ -145,7 +145,7 @@ class InvoicePayment extends DefaultAppModel
                 'propertyName' => $propertyName,
                 'receiptDate' => Carbon::createFromFormat('Y-m-d H:i:s', $this->created_at)
                     ->format('M j, Y'),
-                'logoUrl'=>'file://'.getcwd().'/storage/'.$company->logo,
+                'logoUrl'=> 'file://'.storage_path('/app/public/'.$company->logo),
                 // 'logoUrl'=>'file://'.getcwd().'/images/hamud_top_doc_logo.png',
                 'receiptItemsHTML' => $receiptItems,
                 'receiptNumber' => $this->id,

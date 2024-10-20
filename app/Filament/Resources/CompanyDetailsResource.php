@@ -84,9 +84,6 @@ class CompanyDetailsResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\ImageColumn::make('logo')
-                    ->circular()
-                    ->size(50),
                 Tables\Columns\TextColumn::make('phone_number')
                     ->sortable()
                     ->searchable(),
@@ -145,6 +142,11 @@ class CompanyDetailsResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('View logo')
+                    ->url(function (CompanyDetails $company){
+                        $fileName = str_replace('logos/', '', $company->logo);
+                        return route('preview.company-logo', ['companyLogo' => $fileName]);
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

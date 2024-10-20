@@ -202,6 +202,9 @@ class ManualInvoices extends DefaultAppModel
                     <td class="s_bottom_cell" colspan="1"></td>
                 </tr>';
 
+            $fileName = str_replace('logos/', '', $company->logo);
+            $logoUrl = route('preview.company-logo', ['companyLogo' => $fileName]);
+
             $detailsArray = [
                 'companyName' => $company->name,
                 'companyAddress' => $company->address,
@@ -212,8 +215,8 @@ class ManualInvoices extends DefaultAppModel
                 'invoiceToAddress' => $invoiceToAddress,
                 'invoiceDate'=> Carbon::createFromFormat('Y-m-d H:i:s', $this->created_at)
                     ->format('M j, Y'),
-                'logoUrl'=>'file://'.getcwd().'/storage/'.$company->logo,
-                // 'logoUrl'=>'file://'.getcwd().'/images/hamud_top_doc_logo.png',
+//                'logoUrl' => $logoUrl,
+                'logoUrl'=>'file://'.storage_path('/app/public/'.$company->logo),
                 'invoiceItemsHTML' => $invoiceItems,
                 'invoiceNumber' => $this->id,
                 'payBillAccountNumber'=> $hamudPaymentDetails['mpesa_paybill_number'],
