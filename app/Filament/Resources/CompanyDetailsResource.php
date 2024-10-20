@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\CompanyResource\Pages;
-use App\Filament\Resources\CompanyResource\RelationManagers;
-use App\Models\Company;
+use App\Filament\Resources\CompanyDetailsResource\Pages;
+use App\Filament\Resources\CompanyDetailsResource\RelationManagers;
+use App\Models\CompanyDetails;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,10 +13,12 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Utils\AppUtils;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
-class CompanyResource extends Resource
+class CompanyDetailsResource extends Resource
 {
-    protected static ?string $model = Company::class;
+    protected static ?string $model = CompanyDetails::class;
 
     protected static ?string $navigationGroup = AppUtils::ACCESS_MANAGEMENT_NAVIGATION_GROUP;
 
@@ -36,7 +38,7 @@ class CompanyResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('phone_number')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(20),
                 Forms\Components\TextInput::make('location')
                     ->required()
                     ->maxLength(255),
@@ -46,23 +48,23 @@ class CompanyResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('account_name')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(100),
                 Forms\Components\TextInput::make('account_number')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(20),
                 Forms\Components\TextInput::make('bank_name')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(50),
                 Forms\Components\TextInput::make('bank_branch')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(50),
                 Forms\Components\TextInput::make('branch_swift_code')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(20),
                 Forms\Components\TextInput::make('mpesa_paybill_number')
                     ->numeric()
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(20),
                 Forms\Components\FileUpload::make('logo')
                     ->label('Company logo')
                     ->directory('logos')
@@ -79,12 +81,12 @@ class CompanyResource extends Resource
                 Tables\Columns\TextColumn::make('id')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\ImageColumn::make('logo')
-                    ->circular()
-                    ->size(50),
                 Tables\Columns\TextColumn::make('name')
                     ->sortable()
                     ->searchable(),
+                Tables\Columns\ImageColumn::make('logo')
+                    ->circular()
+                    ->size(50),
                 Tables\Columns\TextColumn::make('phone_number')
                     ->sortable()
                     ->searchable(),
@@ -111,7 +113,7 @@ class CompanyResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('branch_swift_code')
                     ->sortable()
-                    ->searchable(), 
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('mpesa_paybill_number')
                     ->sortable()
                     ->searchable(),
@@ -119,11 +121,12 @@ class CompanyResource extends Resource
                     ->boolean(),
                 Tables\Columns\IconColumn::make('archive')
                     ->boolean(),
-                Tables\Columns\TextColumn::make('created_by')
+                Tables\Columns\TextColumn::make('createdBy.name')
                     ->numeric()
                     ->sortable()
+                    ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_by')
+                Tables\Columns\TextColumn::make('updatedBy.name')
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -145,7 +148,8 @@ class CompanyResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->requiresConfirmation("Are you sure you want to delete this company?"),
                 ]),
             ]);
     }
@@ -162,6 +166,7 @@ class CompanyResource extends Resource
         return [
             'index' => Pages\ListCompanies::route('/'),
             'create' => Pages\CreateCompany::route('/create'),
+            'view' => Pages\ViewCompany::route('/{record}'),
             'edit' => Pages\EditCompany::route('/{record}/edit'),
         ];
     }

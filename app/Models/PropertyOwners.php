@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\CompanyDetails;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,7 +11,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use App\Models\Company;
 
 class PropertyOwners extends DefaultAppModel
 {
@@ -237,7 +237,7 @@ class PropertyOwners extends DefaultAppModel
                 }
             }
             //get the latest company; switch to company of logged in user
-            $company = Company::latest()->first();
+            $company = CompanyDetails::latest()->first();
 
             $detailsArray = [
 //                'customerName' => $unitName.' '.$tenancyAgreement->tenant->name,
@@ -495,6 +495,8 @@ class PropertyOwners extends DefaultAppModel
                     $current += $invoice['unpaid_amount'];
                 }
             }
+
+            $company = CompanyDetails::latest()->first();
 
             $detailsArray = [
 //                'customerName' => $unitName.' '.$tenancyAgreement->tenant->name,

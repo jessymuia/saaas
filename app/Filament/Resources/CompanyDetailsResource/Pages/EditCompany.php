@@ -1,19 +1,20 @@
 <?php
 
-namespace App\Filament\Resources\CompanyResource\Pages;
+namespace App\Filament\Resources\CompanyDetailsResource\Pages;
 
-use App\Filament\Resources\CompanyResource;
+use App\Filament\Resources\CompanyDetailsResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
 class EditCompany extends EditRecord
 {
-    protected static string $resource = CompanyResource::class;
+    protected static string $resource = CompanyDetailsResource::class;
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()
+                ->requiresConfirmation("Are you sure you want to delete this company?"),
         ];
     }
 

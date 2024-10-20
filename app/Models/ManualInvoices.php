@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use App\Models\Company;
+use App\Models\CompanyDetails;
 
 class ManualInvoices extends DefaultAppModel
 {
@@ -138,7 +138,7 @@ class ManualInvoices extends DefaultAppModel
 //                .$sI->tenancyAgreement->property->id .' - '. $sI->tenancyAgreement->property->name);
 
             //currently using the latest company registered change to logged in company
-            $company = Company::latest()->first();
+            $company = CompanyDetails::latest()->first();
             $hamudPaymentDetails = [
                 'account_name' => $company->account_name,
                 'account_number' => $company->account_number,
@@ -212,7 +212,7 @@ class ManualInvoices extends DefaultAppModel
                 'invoiceToAddress' => $invoiceToAddress,
                 'invoiceDate'=> Carbon::createFromFormat('Y-m-d H:i:s', $this->created_at)
                     ->format('M j, Y'),
-                'logoUrl' => 'file://' . getcwd() . '/storage/' . $company->logo,
+                'logoUrl'=>'file://'.getcwd().'/storage/'.$company->logo,
                 // 'logoUrl'=>'file://'.getcwd().'/images/hamud_top_doc_logo.png',
                 'invoiceItemsHTML' => $invoiceItems,
                 'invoiceNumber' => $this->id,

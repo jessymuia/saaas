@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
-use App\Models\Company;
+use App\Models\CompanyDetails;
 
 class InvoicePayment extends DefaultAppModel
 {
@@ -133,7 +133,7 @@ class InvoicePayment extends DefaultAppModel
 //            ];
 
             //currently using the latest company registered change to logged in company
-            $company = Company::latest()->first();
+            $company = CompanyDetails::latest()->first();
 
             $detailsArray = [
                 'companyName' => $company->name,

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
-class Company extends DefaultAppModel
+class CompanyDetails extends DefaultAppModel
 {
     protected $fillable = [
         'name',
@@ -28,4 +28,17 @@ class Company extends DefaultAppModel
         'updated_by',
         'deleted_by'
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function () {
+            static::query()->delete();
+        });
+
+        static::created(function ($model) {
+            \Log::info('New record created with ID: ' . $model->id);
+        });
+    }
 }

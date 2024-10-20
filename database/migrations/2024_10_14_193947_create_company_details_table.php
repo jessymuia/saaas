@@ -11,20 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('companies', function (Blueprint $table) {
+        Schema::create('company_details', function (Blueprint $table) {
             $table = \App\Utils\AppUtils::defaultTableColumns($table);
 
             $table->string('name');
             $table->string('email');
-            $table->string('phone_number');
+            $table->string('phone_number', 20);
             $table->string('logo')->nullable();
             $table->string('location'); //physical location
             $table->string('address'); //physical address
-            $table->string('account_name');
-            $table->string('account_number');
-            $table->string('bank_name');
+            $table->string('account_name', 100);
+            $table->string('account_number', 20);
+            $table->string('bank_name', 50);
             $table->string('bank_branch');
-            $table->string('branch_swift_code');
+            $table->string('branch_swift_code', 20);
             $table->integer('mpesa_paybill_number');
         });
     }
@@ -34,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('companies');
+        Schema::dropIfExists('company_details');
     }
 };

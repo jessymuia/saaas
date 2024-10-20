@@ -204,10 +204,10 @@ class PermissionsSeeder extends Seeder
         Permission::findOrCreate(AppPermissions::RESTORE_EMAIL_ATTACHMENTS_PERMISSION);
 
         // companies
-        Permission::findOrCreate(AppPermissions::CREATE_COMPANIES_PERMISSION);
-        Permission::findOrCreate(AppPermissions::READ_COMPANIES_PERMISSION);
-        Permission::findOrCreate(AppPermissions::UPDATE_COMPANIES_PERMISSION);
-        Permission::findOrCreate(AppPermissions::DELETE_COMPANIES_PERMISSION);
-        Permission::findOrCreate(AppPermissions::RESTORE_COMPANIES_PERMISSION);
+        Permission::findOrCreate(AppPermissions::CREATE_COMPANY_DETAILS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::READ_COMPANY_DETAILS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::UPDATE_COMPANY_DETAILS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::DELETE_COMPANY_DETAILS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::RESTORE_COMPANY_DETAILS_PERMISSION);
     }
 }

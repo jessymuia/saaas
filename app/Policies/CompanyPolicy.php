@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Models\Company;
+use App\Models\CompanyDetails;
 use App\Models\User;
 use App\Utils\AppPermissions;
 use Illuminate\Auth\Access\Response;
@@ -23,7 +23,7 @@ class CompanyPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Company $company): Response
+    public function view(User $user, CompanyDetails $company): Response
     {
         //
         return $user->hasPermissionTo(AppPermissions::READ_COMPANIES_PERMISSION)
@@ -45,7 +45,7 @@ class CompanyPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Company $company): Response
+    public function update(User $user, CompanyDetails $company): Response
     {
         //
         return $user->hasPermissionTo(AppPermissions::UPDATE_COMPANIES_PERMISSION)
@@ -56,7 +56,7 @@ class CompanyPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Company $company): Response
+    public function delete(User $user, CompanyDetails $company): Response
     {
         //
         return $user->hasPermissionTo(AppPermissions::DELETE_COMPANIES_PERMISSION)
@@ -67,7 +67,7 @@ class CompanyPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Company $company): Response
+    public function restore(User $user, CompanyDetails $company): Response
     {
         //
         return $user->hasPermissionTo(AppPermissions::RESTORE_COMPANIES_PERMISSION)
@@ -78,7 +78,7 @@ class CompanyPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Company $company): bool
+    public function forceDelete(User $user, CompanyDetails $company): bool
     {
         //
         return false;

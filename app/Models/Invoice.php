@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Knp\Snappy\Pdf;
-use App\Models\Company;
+use App\Models\CompanyDetails;
 
 class Invoice extends DefaultAppModel
 {
@@ -172,9 +172,9 @@ class Invoice extends DefaultAppModel
                     <td class="s_bottom_cell" colspan="1"></td>
                 </tr>';
 
-            
+
             //get the details of latest company; update to logged in company
-            $company = Company::latest()->first();
+            $company = CompanyDetails::latest()->first();
 
             $detailsArray = [
                 'companyName' => $company->name,

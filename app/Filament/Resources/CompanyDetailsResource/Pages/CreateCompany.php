@@ -1,14 +1,13 @@
 <?php
 
-namespace App\Filament\Resources\CompanyResource\Pages;
+namespace App\Filament\Resources\CompanyDetailsResource\Pages;
 
-use App\Filament\Resources\CompanyResource;
-use Filament\Actions;
+use App\Filament\Resources\CompanyDetailsResource;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateCompany extends CreateRecord
 {
-    protected static string $resource = CompanyResource::class;
+    protected static string $resource = CompanyDetailsResource::class;
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
