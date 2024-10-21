@@ -128,7 +128,7 @@ class VacationNoticeResource extends Resource
                     ->formats([
                         ExportFormat::Csv
                     ])
-                
+                    ->fileDisk('local')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -139,7 +139,7 @@ class VacationNoticeResource extends Resource
                     ->formats([
                         ExportFormat::Csv
                     ])
-
+                    ->fileDisk('local')
             ]);
     }
 

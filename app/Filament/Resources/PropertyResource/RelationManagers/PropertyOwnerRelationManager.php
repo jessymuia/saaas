@@ -50,7 +50,7 @@ class PropertyOwnerRelationManager extends RelationManager
                     ->formats([
                         ExportFormat::Csv
                     ])
-                
+                    ->fileDisk('local')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -61,7 +61,7 @@ class PropertyOwnerRelationManager extends RelationManager
                     ->formats([
                         ExportFormat::Csv
                     ])
-
+                    ->fileDisk('local')
             ]);
     }
 }

@@ -61,7 +61,7 @@ class UnitsOccupiedByRelationManager extends RelationManager
                     ->formats([
                         ExportFormat::Csv
                     ])
-                
+                    ->fileDisk('local')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -72,7 +72,7 @@ class UnitsOccupiedByRelationManager extends RelationManager
                     ->formats([
                         ExportFormat::Csv
                     ])
-
+                    ->fileDisk('local')
             ]);
     }
 }

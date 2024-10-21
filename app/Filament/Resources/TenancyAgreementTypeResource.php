@@ -86,7 +86,7 @@ class TenancyAgreementTypeResource extends Resource
                     ->formats([
                         ExportFormat::Csv
                     ])
-                
+                    ->fileDisk('local')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -97,7 +97,7 @@ class TenancyAgreementTypeResource extends Resource
                     ->formats([
                         ExportFormat::Csv
                     ])
-
+                    ->fileDisk('local')
             ]);
     }
 

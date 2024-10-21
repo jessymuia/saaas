@@ -133,7 +133,7 @@ class TenancyBillsRelationManager extends RelationManager
                     ->formats([
                         ExportFormat::Csv
                     ])
-                
+                    ->fileDisk('local')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -144,7 +144,7 @@ class TenancyBillsRelationManager extends RelationManager
                     ->formats([
                         ExportFormat::Csv
                     ])
-
+                    ->fileDisk('local')
             ]);
     }
 }

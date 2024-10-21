@@ -106,6 +106,7 @@ class BillingTypeResource extends Resource
                     ->formats([
                         ExportFormat::Csv
                     ])
+                    ->fileDisk('local')
                 
             ])
             ->bulkActions([
@@ -117,7 +118,7 @@ class BillingTypeResource extends Resource
                     ->formats([
                         ExportFormat::Csv
                     ])
-
+                    ->fileDisk('local')
             ]);
     }
 
