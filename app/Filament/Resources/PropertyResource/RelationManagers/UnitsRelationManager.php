@@ -9,6 +9,9 @@ use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Actions\Exports\Enums\ExportFormat;
+use Filament\Tables\Actions\ExportAction;
+use Filament\Tables\Actions\ExportBulkAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -109,11 +112,24 @@ class UnitsRelationManager extends RelationManager
                         return false;
                     }),
             ])
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(UnitsRelationManager::class)
+                    ->formats([
+                        ExportFormat::Csv
+                    ])
+                    ->fileDisk('local')
+            ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()
-                        ->requiresConfirmation('Are you sure you want to delete selected units?'),
+                    Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
                 ]),
+                ExportBulkAction::make()
+                    ->exporter(UnitsRelationManager::class)
+                    ->formats([
+                        ExportFormat::Csv
+                    ])
+                    ->fileDisk('local')
             ]);
     }
 }

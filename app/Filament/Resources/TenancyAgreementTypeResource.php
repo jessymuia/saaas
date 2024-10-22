@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Exports\TenancyAgreementExporter;
 use App\Filament\Resources\TenancyAgreementTypeResource\Pages;
 use App\Filament\Resources\TenancyAgreementTypeResource\RelationManagers;
 use App\Models\RefTenancyAgreementType;
@@ -12,6 +13,9 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Actions\Exports\Enums\ExportFormat;
+use Filament\Tables\Actions\ExportAction;
+use Filament\Tables\Actions\ExportBulkAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -76,11 +80,24 @@ class TenancyAgreementTypeResource extends Resource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(TenancyAgreementExporter::class)
+                    ->formats([
+                        ExportFormat::Csv
+                    ])
+                    ->fileDisk('local')
+            ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()
-                        ->requiresConfirmation('Are you sure you want to delete the selected records?'),
+                    Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
                 ]),
+                ExportBulkAction::make()
+                    ->exporter(TenancyAgreementExporter::class)
+                    ->formats([
+                        ExportFormat::Csv
+                    ])
+                    ->fileDisk('local')
             ]);
     }
 

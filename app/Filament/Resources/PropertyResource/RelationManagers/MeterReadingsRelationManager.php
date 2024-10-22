@@ -12,6 +12,9 @@ use Filament\Forms\Get;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Actions\Exports\Enums\ExportFormat;
+use Filament\Tables\Actions\ExportAction;
+use Filament\Tables\Actions\ExportBulkAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -164,15 +167,24 @@ class MeterReadingsRelationManager extends RelationManager
                         return $data;
                     }),
             ])
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(MeterReadingsRelationManager::class)
+                    ->formats([
+                        ExportFormat::Csv
+                    ])
+                    ->fileDisk('local')
+            ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()
-                        ->mutateFormDataUsing(function ($data) {
-                            $data['deleted_by'] = auth()->user()->id;
-
-                            return $data;
-                        }),
+                    Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
                 ]),
+                ExportBulkAction::make()
+                    ->exporter(MeterReadingsRelationManager::class)
+                    ->formats([
+                        ExportFormat::Csv
+                    ])
+                    ->fileDisk('local')
             ]);
     }
 }

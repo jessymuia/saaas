@@ -16,6 +16,9 @@ use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Actions\Exports\Enums\ExportFormat;
+use Filament\Tables\Actions\ExportAction;
+use Filament\Tables\Actions\ExportBulkAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\App;
@@ -247,15 +250,24 @@ class TenancyAgreementsRelationManager extends RelationManager
                     })
                     ->requiresConfirmation(fn ($record) => 'Are you sure you want to delete this tenancy agreement?'),
             ])
+            ->headerActions([
+                ExportAction::make()
+                    ->exporter(TenancyAgreementsRelationManager::class)
+                    ->formats([
+                        ExportFormat::Csv
+                    ])
+                    ->fileDisk('local')
+            ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-//                    Tables\Actions\DeleteBulkAction::make()
-//                        ->mutateFormDataUsing(function ($data) {
-//                            $data['deleted_by'] = auth()->user()->id;
-//                            return $data;
-//                        })
-//                        ->requiresConfirmation(fn ($records) => 'Are you sure you want to delete the selected tenancy agreements?'),
+                    Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
                 ]),
+                ExportBulkAction::make()
+                    ->exporter(TenancyAgreementsRelationManager::class)
+                    ->formats([
+                        ExportFormat::Csv
+                    ])
+                    ->fileDisk('local')
             ]);
     }
 
