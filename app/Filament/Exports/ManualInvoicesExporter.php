@@ -34,7 +34,15 @@ class ManualInvoicesExporter extends Exporter
             ExportColumn::make('invoice_due_date'),
             ExportColumn::make('is_confirmed'),
             ExportColumn::make('is_generated'),
-            ExportColumn::make('document_url'),
+            ExportColumn::make('document_url')
+                ->label('Document URL')
+                ->state(function (ManualInvoices $manualInvoice) {
+                    if (!$manualInvoice->is_generated){
+                        return 'Not generated';
+                    }
+                    $fileName = str_replace('manual_invoices/','',$manualInvoice->document_url);
+                    return route('preview.manual-invoice', ['invoice' => $fileName]);
+                }),
         ];
     }
 

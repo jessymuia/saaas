@@ -32,7 +32,15 @@ class InvoiceExporter extends Exporter
             ExportColumn::make('invoice_due_date'),
             ExportColumn::make('is_confirmed'),
             ExportColumn::make('is_generated'),
-            ExportColumn::make('document_url'),
+            ExportColumn::make('document_url')
+                ->label('Document URL')
+                ->state(function (Invoice $invoice) {
+                    if (!$invoice->is_generated){
+                        return 'Not generated';
+                    }
+                    $fileName = str_replace('invoices/','',$invoice->document_url);
+                    return route('preview.invoice', ['invoice' => $fileName]);
+                }),
         ];
     }
 
