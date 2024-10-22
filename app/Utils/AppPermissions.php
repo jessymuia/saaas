@@ -178,4 +178,11 @@ class AppPermissions
     const UPDATE_EMAIL_ATTACHMENTS_PERMISSION = 'update-email-attachments';
     const DELETE_EMAIL_ATTACHMENTS_PERMISSION = 'delete-email-attachments';
     const RESTORE_EMAIL_ATTACHMENTS_PERMISSION = 'restore-email-attachments';
+
+    // company details permissions
+    const CREATE_COMPANY_DETAILS_PERMISSION = 'create-company-details';
+    const READ_COMPANY_DETAILS_PERMISSION = 'read-company-details';
+    const UPDATE_COMPANY_DETAILS_PERMISSION = 'update-company-details';
+    const DELETE_COMPANY_DETAILS_PERMISSION = 'delete-company-details';
+    const RESTORE_COMPANY_DETAILS_PERMISSION = 'restore-company-details';
 }

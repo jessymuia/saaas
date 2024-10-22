@@ -31,3 +31,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('preview/receipt/{receipt?}',[DocumentsController::class,'previewReceipt'])
         ->name('preview.receipt');
 });
+
+Route::get('preview/company-logo/{companyLogo?}',[DocumentsController::class,'previewCompanyLogo'])
+    ->name('preview.company-logo');

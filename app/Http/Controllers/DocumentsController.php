@@ -42,4 +42,12 @@ class DocumentsController extends Controller
         $path = storage_path('app/invoice_payments/'.$receipt);
         return response()->file($path);
     }
+
+    public function previewCompanyLogo($companyLogo = null){
+        if (!$companyLogo) {
+            abort(404,'Logo not found');
+        }
+        $path = storage_path('app/public/logos/'.$companyLogo);
+        return response()->file($path);
+    }
 }

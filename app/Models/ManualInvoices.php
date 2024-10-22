@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use App\Models\CompanyDetails;
 
 class ManualInvoices extends DefaultAppModel
 {
@@ -135,12 +136,15 @@ class ManualInvoices extends DefaultAppModel
 //                    ->where('property_id', $sI->tenancyAgreement->property->id)
 //                    ->first() ??  throw new \Exception('Property Payment Details is missing for property id: '
 //                .$sI->tenancyAgreement->property->id .' - '. $sI->tenancyAgreement->property->name);
+
+            //currently using the latest company registered change to logged in company
+            $company = CompanyDetails::latest()->first();
             $hamudPaymentDetails = [
-                'account_name' => 'KEYQUEST REALTORS LIMITED',
-                'account_number' => '2046025124',
-                'bank_name' => 'ABSA BANK',
-                'branch' => 'ABSA TOWERS',
-                'mpesa_paybill_number' => '303030',
+                'account_name' => $company->account_name,
+                'account_number' => $company->account_number,
+                'bank_name' => $company->bank_name,
+                'branch' => $company->bank_branch,
+                'mpesa_paybill_number' => $company->mpesa_paybill_number,
             ];
 
 //            $propertyName = $sI->tenancyAgreement->property->name;
@@ -198,12 +202,21 @@ class ManualInvoices extends DefaultAppModel
                     <td class="s_bottom_cell" colspan="1"></td>
                 </tr>';
 
+            $fileName = str_replace('logos/', '', $company->logo);
+            $logoUrl = route('preview.company-logo', ['companyLogo' => $fileName]);
+
             $detailsArray = [
+                'companyName' => $company->name,
+                'companyAddress' => $company->address,
+                'companyEmail' => $company->email,
+                'companyPhoneNumber' => $company->phone_number,
+                'companyLocation' => $company->location,
                 'customerName' => $invoiceAddressedTo,
                 'invoiceToAddress' => $invoiceToAddress,
                 'invoiceDate'=> Carbon::createFromFormat('Y-m-d H:i:s', $this->created_at)
                     ->format('M j, Y'),
-                'logoUrl'=>'file://'.getcwd().'/images/hamud_top_doc_logo.png',
+//                'logoUrl' => $logoUrl,
+                'logoUrl'=>'file://'.storage_path('/app/public/'.$company->logo),
                 'invoiceItemsHTML' => $invoiceItems,
                 'invoiceNumber' => $this->id,
                 'payBillAccountNumber'=> $hamudPaymentDetails['mpesa_paybill_number'],

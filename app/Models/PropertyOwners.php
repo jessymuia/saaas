@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\CompanyDetails;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -235,13 +236,21 @@ class PropertyOwners extends DefaultAppModel
                     $current += $invoice['amount'];
                 }
             }
+            //get the latest company; switch to company of logged in user
+            $company = CompanyDetails::latest()->first();
 
             $detailsArray = [
 //                'customerName' => $unitName.' '.$tenancyAgreement->tenant->name,
+                'companyName' => $company->name,
+                'companyAddress' => $company->address,
+                'companyEmail' => $company->email,
+                'companyPhoneNumber' => $company->phone_number,
+                'companyLocation' => $company->location,
                 'customerName' => $unitName.' '.$this->name,
                 'propertyName' => $propertyName,
                 'dateGenerated'=> Carbon::now()->format('M j, Y'),
-                'logoUrl'=>'file://'.getcwd().'/images/hamud_top_doc_logo.png',
+                'logoUrl'=> 'file://'.storage_path('/app/public/'.$company->logo),
+                // 'logoUrl'=>'file://'.getcwd().'/images/hamud_top_doc_logo.png',
                 'amountDue' => number_format($amountDue,2),
                 'amountEnc' => number_format(0,2),
                 'statementOfAccountItemsHTML' => $statementOfAccountItems,
@@ -487,12 +496,20 @@ class PropertyOwners extends DefaultAppModel
                 }
             }
 
+            $company = CompanyDetails::latest()->first();
+
             $detailsArray = [
 //                'customerName' => $unitName.' '.$tenancyAgreement->tenant->name,
+                'companyName' => $company->name,
+                'companyAddress' => $company->address,
+                'companyEmail' => $company->email,
+                'companyPhoneNumber' => $company->phone_number,
+                'companyLocation' => $company->location,
                 'customerName' => $unitName.' '.$this->name,
                 'propertyName' => $propertyName,
                 'dateGenerated'=> Carbon::now()->format('M j, Y'),
-                'logoUrl'=>'file://'.getcwd().'/images/hamud_top_doc_logo.png',
+                'logoUrl'=>'file://'.storage_path('/app/public/'.$company->logo),
+                // 'logoUrl'=>'file://'.getcwd().'/images/hamud_top_doc_logo.png',
                 'amountDue' => number_format($amountDue,2),
                 'amountEnc' => number_format(0,2),
                 'statementOfAccountItemsHTML' => $statementOfAccountItems,

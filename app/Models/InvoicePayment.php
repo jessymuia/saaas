@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use App\Models\CompanyDetails;
 
 class InvoicePayment extends DefaultAppModel
 {
@@ -131,12 +132,21 @@ class InvoicePayment extends DefaultAppModel
 //                'paidBy' => $this->paid_by,
 //            ];
 
+            //currently using the latest company registered change to logged in company
+            $company = CompanyDetails::latest()->first();
+
             $detailsArray = [
+                'companyName' => $company->name,
+                'companyAddress' => $company->address,
+                'companyEmail' => $company->email,
+                'companyPhoneNumber' => $company->phone_number,
+                'companyLocation' => $company->location,
                 'customerName' => $customerName,
                 'propertyName' => $propertyName,
                 'receiptDate' => Carbon::createFromFormat('Y-m-d H:i:s', $this->created_at)
                     ->format('M j, Y'),
-                'logoUrl'=>'file://'.getcwd().'/images/hamud_top_doc_logo.png',
+                'logoUrl'=> 'file://'.storage_path('/app/public/'.$company->logo),
+                // 'logoUrl'=>'file://'.getcwd().'/images/hamud_top_doc_logo.png',
                 'receiptItemsHTML' => $receiptItems,
                 'receiptNumber' => $this->id,
                 'totalAmountPaid' => number_format($this->amount,2),
