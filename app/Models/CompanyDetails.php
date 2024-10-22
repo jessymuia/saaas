@@ -33,12 +33,12 @@ class CompanyDetails extends DefaultAppModel
     {
         parent::boot();
 
-        static::creating(function () {
-            static::query()->delete();
-        });
-
         static::created(function ($model) {
             \Log::info('New record created with ID: ' . $model->id);
+            // updated the deleted_by field of all other records and delete them
+            static::query()
+                ->where('id', '!=', $model->id)
+                ->update(['deleted_by' => $model->created_by, 'deleted_at' => now()]);
         });
     }
 }
