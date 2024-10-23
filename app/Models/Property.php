@@ -17,10 +17,34 @@ class Property extends DefaultAppModel
         'is_vatable',
         'status',
         'archive',
+        'created_at',
         'created_by',
+        'updated_at',
         'updated_by',
+        'deleted_at',
         'deleted_by'
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($model) {
+            $model->created_by = auth()->id();
+            $model->saveQuietly();
+        });
+
+        static::updated(function ($model) {
+            $model->updated_by = auth()->id();
+            $model->saveQuietly();
+        });
+
+        static::deleting(function ($model) {
+            $model->deleted_by = auth()->id();
+            $model->deleted_at = now();
+            $model->save();
+        });
+    }
 
     public function propertyType()
     {
