@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\TenantResource\RelationManagers;
 
+use App\Filament\Exports\TenantExporter;
 use App\Models\Invoice;
 use App\Models\MeterReading;
 use App\Models\TenancyAgreement;
@@ -115,12 +116,12 @@ class TenancyBillsRelationManager extends RelationManager
                         // handle errors
                         AppUtils::generateBills();
                     })
-                    ->requiresConfirmation("Are you sure you want to generate bills for this month? Please verify the meter readings before proceeding"),
+                    ->requiresConfirmation(),
                 Tables\Actions\Action::make('generate-bills-for-next-month')
                     ->action(function (): void{
                         AppUtils::generateBills(isBillsForNextMonth: true);
                     })
-                    ->requiresConfirmation("Are you sure you want to generate bills for coming month?"),
+                    ->requiresConfirmation(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -129,7 +130,7 @@ class TenancyBillsRelationManager extends RelationManager
             ])
             ->headerActions([
                 ExportAction::make()
-                    ->exporter(TenancyBillsRelationManager::class)
+                    ->exporter(TenantExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])
@@ -140,7 +141,7 @@ class TenancyBillsRelationManager extends RelationManager
                     Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
                 ]),
                 ExportBulkAction::make()
-                    ->exporter(TenancyBillsRelationManager::class)
+                    ->exporter(TenantExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])

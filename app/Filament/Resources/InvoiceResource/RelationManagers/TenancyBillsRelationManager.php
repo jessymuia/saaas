@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\InvoiceResource\RelationManagers;
 
+use App\Filament\Exports\InvoiceExporter;
 use App\Models\Invoice;
 use App\Models\RefBillingType;
 use App\Utils\AppUtils;
@@ -170,7 +171,7 @@ class TenancyBillsRelationManager extends RelationManager
             ])
             ->headerActions([
                 ExportAction::make()
-                    ->exporter(TenancyBillsRelationManager::class)
+                    ->exporter(InvoiceExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])
@@ -181,7 +182,7 @@ class TenancyBillsRelationManager extends RelationManager
                     Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
                 ]),
                 ExportBulkAction::make()
-                    ->exporter(TenancyBillsRelationManager::class)
+                    ->exporter(InvoiceExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PropertyResource\RelationManagers;
 
+use App\Filament\Exports\PropertyExporter;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -60,7 +61,7 @@ class VacationNoticesRelationManager extends RelationManager
             ])
             ->headerActions([
                 ExportAction::make()
-                    ->exporter(VacationNoticesRelationManager::class)
+                    ->exporter(PropertyExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])
@@ -71,7 +72,7 @@ class VacationNoticesRelationManager extends RelationManager
                     Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
                 ]),
                 ExportBulkAction::make()
-                    ->exporter(VacationNoticesRelationManager::class)
+                    ->exporter(PropertyExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])

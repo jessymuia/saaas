@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PropertyResource\RelationManagers;
 
+use App\Filament\Exports\PropertyExporter;
 use App\Models\Unit;
 use Filament\Actions\DeleteAction;
 use Filament\Forms;
@@ -114,7 +115,7 @@ class UnitsRelationManager extends RelationManager
             ])
             ->headerActions([
                 ExportAction::make()
-                    ->exporter(UnitsRelationManager::class)
+                    ->exporter(PropertyExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])
@@ -125,7 +126,7 @@ class UnitsRelationManager extends RelationManager
                     Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
                 ]),
                 ExportBulkAction::make()
-                    ->exporter(UnitsRelationManager::class)
+                    ->exporter(PropertyExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])
