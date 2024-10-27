@@ -169,8 +169,6 @@ class PropertyResource extends Resource
                         'propertyOwners',
                     ]);
 
-                    
-
                     $data = [
                         'properties' => $properties,
                         'timestamp' => now()->format('Y-m-d H:i:s'),

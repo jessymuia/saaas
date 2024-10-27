@@ -111,7 +111,6 @@
             <p><span class="detail-label">Email:</span> {{ $company->email }}</p>
         </div>
     </div>
-          
         <!-- {{ $company }}
         <p>
         <img src="url({{ URL::asset('images/hamud_top_doc_logo.png')}})" style="display: block; max-width: 100%;"  height="73"  alt="Hamud Realtor Logo"/>

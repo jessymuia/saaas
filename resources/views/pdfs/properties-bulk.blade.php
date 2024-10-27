@@ -72,7 +72,6 @@
         <p>Generated on: {{ $timestamp }}</p>
         <p>Total Properties: {{ $properties->count() }}</p>
     </div>
-
     <div class="summary-section">
         <div class="section-title">Summary</div>
         <div class="property-info">
