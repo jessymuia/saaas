@@ -185,4 +185,10 @@ class AppPermissions
     const UPDATE_COMPANY_DETAILS_PERMISSION = 'update-company-details';
     const DELETE_COMPANY_DETAILS_PERMISSION = 'delete-company-details';
     const RESTORE_COMPANY_DETAILS_PERMISSION = 'restore-company-details';
+
+    // pdfs
+    const GENERATE_PDF_FILE_PERMISSION = 'generate-pdf-file';
+    
+    // csv
+    const GENERATE_CSV_FILE_PERMISSION = 'generate-csv-file';
 }
