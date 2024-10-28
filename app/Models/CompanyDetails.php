@@ -26,7 +26,8 @@ class CompanyDetails extends DefaultAppModel
         'archive',
         'created_by',
         'updated_by',
-        'deleted_by'
+        'deleted_by',
+        'deleted_at'
     ];
 
     protected static function boot()
@@ -39,6 +40,20 @@ class CompanyDetails extends DefaultAppModel
             static::query()
                 ->where('id', '!=', $model->id)
                 ->update(['deleted_by' => $model->created_by, 'deleted_at' => now()]);
+
+            $model->created_by = auth()->id();
+            $model->saveQuietly();
+        });
+
+        static::updated(function ($model) {
+            $model->updated_by = auth()->id();
+            $model->saveQuietly();
+        });
+
+        static::deleting(function ($model) {
+            $model->deleted_by = auth()->id();
+            $model->deleted_at = now();
+            $model->save();
         });
     }
 }

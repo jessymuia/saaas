@@ -86,11 +86,11 @@ class UserResource extends Resource
                 Tables\Columns\IconColumn::make('status')
                     ->sortable()
                     ->boolean(),
-                Tables\Columns\TextColumn::make('created_by')
+                Tables\Columns\TextColumn::make('createdBy.name')
                     ->sortable()
                     ->numeric()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_by')
+                Tables\Columns\TextColumn::make('updatedBy.name')
                     ->numeric()
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
