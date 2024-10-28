@@ -69,10 +69,12 @@ class AuditResource extends Resource
                 Tables\Columns\TextColumn::make('auditable_id')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\JsonColumn::make('old_values')
-                    ->sortable()
-                    ->searchable(),
-                Tables\Columns\JsonColumn::make('new_values')
+                Tables\Columns\TextColumn::make('old_values')
+                    ->view('filament.tables.columns.json')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('new_values')
+                    ->view('filament.tables.columns.json')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('url')
