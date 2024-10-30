@@ -121,19 +121,17 @@ class TenancyBillsRelationManager extends RelationManager
                         AppUtils::generateBills(isBillsForNextMonth: true);
                     })
                     ->requiresConfirmation("Are you sure you want to generate bills for coming month?"),
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make()
-                    ->requiresConfirmation(fn () => 'Are you sure you want to delete this tenancy bill?')
-            ])
-            ->headerActions([
                 ExportAction::make()
                     ->exporter(TenancyBillsRelationManager::class)
                     ->formats([
                         ExportFormat::Csv
                     ])
                     ->fileDisk('local')
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->requiresConfirmation(fn () => 'Are you sure you want to delete this tenancy bill?')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
