@@ -202,7 +202,13 @@ class TenancyAgreementsRelationManager extends RelationManager
                     ->mutateFormDataUsing(function ($data) {
                         $data['created_by'] = auth()->user()->id;
                         return $data;
-                    })
+                    }),
+                ExportAction::make()
+                    ->exporter(TenancyAgreementsRelationManager::class)
+                    ->formats([
+                        ExportFormat::Csv
+                    ])
+                    ->fileDisk('local')
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
@@ -249,14 +255,6 @@ class TenancyAgreementsRelationManager extends RelationManager
                         return $data;
                     })
                     ->requiresConfirmation(fn ($record) => 'Are you sure you want to delete this tenancy agreement?'),
-            ])
-            ->headerActions([
-                ExportAction::make()
-                    ->exporter(TenancyAgreementsRelationManager::class)
-                    ->formats([
-                        ExportFormat::Csv
-                    ])
-                    ->fileDisk('local')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
