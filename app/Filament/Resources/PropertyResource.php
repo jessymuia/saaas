@@ -63,7 +63,14 @@ class PropertyResource extends Resource
 
     public static function table(Table $table): Table
     {
+        $query = auth()->user()->hasRole('admin')
+            ? Property::query()
+            : auth()->user()->properties()->where('property_management_users.status', true)
+                ->select('properties.*')
+                ->getQuery();
+
         return $table
+            ->query($query)
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->sortable()

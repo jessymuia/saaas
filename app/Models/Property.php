@@ -90,4 +90,10 @@ class Property extends DefaultAppModel
     {
         return $this->hasOne(PropertyPaymentDetails::class, 'property_id');
     }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'property_management_users', 'property_id', 'user_id')
+            ->withPivot('status', 'role_id');
+    }
 }

@@ -185,4 +185,11 @@ class AppPermissions
     const UPDATE_COMPANY_DETAILS_PERMISSION = 'update-company-details';
     const DELETE_COMPANY_DETAILS_PERMISSION = 'delete-company-details';
     const RESTORE_COMPANY_DETAILS_PERMISSION = 'restore-company-details';
+
+    // property management users permissions
+    const CREATE_PROPERTY_MANAGEMENT_USERS_PERMISSION = 'create-property-management-users';
+    const READ_PROPERTY_MANAGEMENT_USERS_PERMISSION = 'read-property-management-users';
+    const UPDATE_PROPERTY_MANAGEMENT_USERS_PERMISSION = 'update-property-management-users';
+    const DELETE_PROPERTY_MANAGEMENT_USERS_PERMISSION = 'delete-property-management-users';
+    const RESTORE_PROPERTY_MANAGEMENT_USERS_PERMISSION = 'restore-property-management-users';
 }
