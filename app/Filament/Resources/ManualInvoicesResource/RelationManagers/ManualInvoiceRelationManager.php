@@ -153,6 +153,12 @@ class ManualInvoiceRelationManager extends RelationManager
 
                         return $data;
                     }),
+                ExportAction::make()
+                    ->exporter(ManualInvoiceRelationManager::class)
+                    ->formats([
+                        ExportFormat::Csv
+                    ])
+                    ->fileDisk('local')
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
@@ -167,14 +173,6 @@ class ManualInvoiceRelationManager extends RelationManager
 
                         return $data;
                     })
-            ])
-            ->headerActions([
-                ExportAction::make()
-                    ->exporter(ManualInvoiceRelationManager::class)
-                    ->formats([
-                        ExportFormat::Csv
-                    ])
-                    ->fileDisk('local')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

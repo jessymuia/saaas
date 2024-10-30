@@ -150,6 +150,12 @@ class MeterReadingsRelationManager extends RelationManager
 
                     return $data;
                 }),
+                ExportAction::make()
+                    ->exporter(MeterReadingsRelationManager::class)
+                    ->formats([
+                        ExportFormat::Csv
+                    ])
+                    ->fileDisk('local')
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
@@ -166,14 +172,6 @@ class MeterReadingsRelationManager extends RelationManager
 
                         return $data;
                     }),
-            ])
-            ->headerActions([
-                ExportAction::make()
-                    ->exporter(MeterReadingsRelationManager::class)
-                    ->formats([
-                        ExportFormat::Csv
-                    ])
-                    ->fileDisk('local')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

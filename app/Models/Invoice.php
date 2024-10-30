@@ -36,8 +36,11 @@ class Invoice extends DefaultAppModel
         'status',
         'archive',
         'created_by',
+        'created_at',
         'updated_by',
+        'updated_at',
         'deleted_by',
+        'deleted_at'
     ];
 
     protected $appends = ['amount','unpaid_amount'];
@@ -48,6 +51,27 @@ class Invoice extends DefaultAppModel
 
     public function tenancyBills(){
         return $this->hasMany(TenancyBill::class,'invoice_id','id');
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($model) {
+            $model->created_by = auth()->id();
+            $model->saveQuietly();
+        });
+
+        static::updated(function ($model) {
+            $model->updated_by = auth()->id();
+            $model->saveQuietly();
+        });
+
+        static::deleting(function ($model) {
+            $model->deleted_by = auth()->id();
+            $model->deleted_at = now();
+            $model->save();
+        });
     }
 
     public function getAmountAttribute(){
