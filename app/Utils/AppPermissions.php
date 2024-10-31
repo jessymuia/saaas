@@ -185,4 +185,11 @@ class AppPermissions
     const UPDATE_COMPANY_DETAILS_PERMISSION = 'update-company-details';
     const DELETE_COMPANY_DETAILS_PERMISSION = 'delete-company-details';
     const RESTORE_COMPANY_DETAILS_PERMISSION = 'restore-company-details';
+
+    // audits permissions
+    const CREATE_AUDITS_PERMISSION = 'create-audits';
+    const READ_AUDITS_PERMISSION = 'read-audits';
+    const UPDATE_AUDITS_PERMISSION = 'update-audits';
+    const DELETE_AUDITS_PERMISSION = 'delete-audits';
+    const RESTORE_AUDITS_PERMISSION = 'restore-audits';
 }
