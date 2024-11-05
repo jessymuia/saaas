@@ -90,6 +90,12 @@ class UnitsRelationManager extends RelationManager
 
                         return $data;
                     }),
+                ExportAction::make()
+                    ->exporter(UnitsRelationManager::class)
+                    ->formats([
+                        ExportFormat::Csv
+                    ])
+                    ->fileDisk('local')
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
@@ -111,14 +117,6 @@ class UnitsRelationManager extends RelationManager
                         }
                         return false;
                     }),
-            ])
-            ->headerActions([
-                ExportAction::make()
-                    ->exporter(UnitsRelationManager::class)
-                    ->formats([
-                        ExportFormat::Csv
-                    ])
-                    ->fileDisk('local')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

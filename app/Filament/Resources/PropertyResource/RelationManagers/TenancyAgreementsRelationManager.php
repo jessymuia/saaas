@@ -185,6 +185,12 @@ class TenancyAgreementsRelationManager extends RelationManager
 
                         return $data;
                     }),
+                ExportAction::make()
+                    ->exporter(TenancyAgreementsRelationManager::class)
+                    ->formats([
+                        ExportFormat::Csv
+                    ])
+                    ->fileDisk('local')
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
@@ -200,14 +206,6 @@ class TenancyAgreementsRelationManager extends RelationManager
 
                         return $data;
                     }),
-            ])
-            ->headerActions([
-                ExportAction::make()
-                    ->exporter(TenancyAgreementsRelationManager::class)
-                    ->formats([
-                        ExportFormat::Csv
-                    ])
-                    ->fileDisk('local')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
