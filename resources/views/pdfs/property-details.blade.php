@@ -102,7 +102,7 @@
 
         <div class="letterhead-container">
         <div class="logo-container">
-        <img src="url({{ URL::asset('images/hamud_top_doc_logo.png')}})" style="display: block; max-width: 100%;"  height="73"  alt="Hamud Realtor Logo"/>
+        <img src="{{ $company -> logoUrl }}" style="display: block; max-width: 100%;"  height="73"  alt="Hamud Realtor Logo"/>
         </div>
         <div class="contact-details">
             <p><span class="detail-label">Location:</span>{{ $company->location }}</p>

@@ -135,7 +135,7 @@ class PropertyResource extends Resource
 
                     $pdf = Pdf::loadView('pdfs.property-details', $data);
                     
-                    $pdf->setPaper('A4', 'landscape');
+                    $pdf->setPaper('A4', 'portrait');
 
                     return response()->streamDownload(function () use ($pdf) {
                         echo $pdf->output();

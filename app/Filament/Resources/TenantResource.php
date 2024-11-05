@@ -6,12 +6,14 @@ use App\Filament\Exports\TenantExporter;
 use App\Filament\Resources\TenantResource\Pages;
 use App\Filament\Resources\TenantResource\RelationManagers;
 use App\Models\Tenant;
+use App\Models\CompanyDetails;
 use App\Utils\AppUtils;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Actions\ExportBulkAction;
@@ -90,6 +92,36 @@ class TenantResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('generatePdf')
+                ->label('Generate PDF')
+                ->icon('heroicon-m-document-arrow-down')
+               
+                ->action(function (Tenant $record) {
+                    // Get the tenant with its relationships
+                    $tenant = $record->load([
+                        'tenancyAgreements',
+                        'tenancyBills',
+                        'invoices',
+                        'invoicePayments',
+                    ]);
+    
+                    $company = CompanyDetails::latest()->first();
+    
+                    $data = [
+                        'tenant' => $tenant,
+                        'timestamp' => now()->format('Y-m-d H:i:s'),
+                        'company' => $company
+                    ];
+    
+                    $pdf = Pdf::loadView('pdfs.tenant-details', $data);
+                    
+                    $pdf->setPaper('A4', 'portrait');
+    
+                    return response()->streamDownload(function () use ($pdf) {
+                        echo $pdf->output();
+                    }, "tenant-{$tenant->id}-details.pdf");
+                }),
+                
             ])
             ->headerActions([
                 ExportAction::make()

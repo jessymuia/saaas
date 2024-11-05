@@ -8,6 +8,9 @@ use App\Filament\Resources\InvoiceResource\RelationManagers;
 use App\Models\Invoice;
 use App\Utils\AppUtils;
 use Barryvdh\Snappy\Facades\SnappyPdf;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\CompanyDetails;
+use Filament\Notifications\Notification;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -131,7 +134,47 @@ class InvoiceResource extends Resource
                     ->mutateFormDataUsing(fn ($data) => [
                         'deleted_by' => auth()->user()->id,
                     ]),
+                    Tables\Actions\Action::make('generatePdf')
+                    ->label('Generate PDF')
+                    ->icon('heroicon-m-document-arrow-down')
+                    ->action(function ($record) {
+                            $invoice = $record->load([
+                                'tenancyAgreement.tenant',
+                                'tenancyAgreement.unit.property',
+                                'tenancyBills',
+                                'creditNote',
+                                'invoicePayments'
+                            ]);
 
+                            $company = CompanyDetails::latest()->first();
+
+                            $subTotal = $invoice->tenancyBills->sum('amount');
+                            $vatTotal = $invoice->tenancyBills->sum('vat');
+                            $total = $invoice->tenancyBills->sum('total_amount');
+                            $creditNotes = $invoice->creditNote->sum('amount_credited');
+                            $payments = $invoice->invoicePayments->sum('amount');
+                            $balance = $total - $creditNotes - $payments;
+
+                            $data = [
+                                'invoice' => $invoice,
+                                'company' => $company,
+                                'subTotal' => $subTotal,
+                                'vatTotal' => $vatTotal,
+                                'total' => $total,
+                                'creditNotes' => $creditNotes,
+                                'payments' => $payments,
+                                'balance' => $balance,
+                                'timestamp' => now()->format('Y-m-d H:i:s')
+                            ];
+
+                            $pdf = Pdf::loadView('pdfs.invoice-details', $data);
+                            $pdf->setPaper('A4', 'portrait');
+
+                            return response()->streamDownload(function () use ($pdf) {
+                                echo $pdf->output();
+                            }, "invoice-{$invoice->id}-details.pdf");
+                    }),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->headerActions([
                 ExportAction::make()
