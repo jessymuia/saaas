@@ -127,6 +127,12 @@ class CreditNoteRelationManager extends RelationManager
                                 }
                             });
                     }),
+                ExportAction::make()
+                    ->exporter(CreditNoteRelationManager::class)
+                    ->formats([
+                        ExportFormat::Csv
+                    ])
+                    ->fileDisk('local')
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->disabled(fn($record) => $record->is_document_generated),
@@ -142,14 +148,6 @@ class CreditNoteRelationManager extends RelationManager
                         $fileName = str_replace('credit-notes/', '', $creditNote->document_url);
                         return route('preview.credit-note', ['creditNote' => $fileName]);
                     }),
-            ])
-            ->headerActions([
-                ExportAction::make()
-                    ->exporter(CreditNoteRelationManager::class)
-                    ->formats([
-                        ExportFormat::Csv
-                    ])
-                    ->fileDisk('local')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -87,6 +87,12 @@ class UtilitiesRelationManager extends RelationManager
 
                         return $data;
                     }),
+                ExportAction::make()
+                    ->exporter(UtilitiesRelationManager::class)
+                    ->formats([
+                        ExportFormat::Csv
+                    ])
+                    ->fileDisk('local')
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
@@ -100,14 +106,6 @@ class UtilitiesRelationManager extends RelationManager
                         $data['deleted_by'] = auth()->id();
                         return $data;
                     }),
-            ])
-            ->headerActions([
-                ExportAction::make()
-                    ->exporter(UtilitiesRelationManager::class)
-                    ->formats([
-                        ExportFormat::Csv
-                    ])
-                    ->fileDisk('local')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -123,7 +123,13 @@ class InvoicePaymentsRelationManager extends RelationManager
                         $data['received_by'] = auth()->id();
 
                         return $data;
-                    })
+                    }),
+                ExportAction::make()
+                    ->exporter(InvoicePaymentsRelationManager::class)
+                    ->formats([
+                        ExportFormat::Csv
+                    ])
+                    ->fileDisk('local')
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -192,14 +198,6 @@ class InvoicePaymentsRelationManager extends RelationManager
                     }),
                 Tables\Actions\DeleteAction::make()
                     ->requiresConfirmation("Are you sure you want to delete this record?")
-            ])
-            ->headerActions([
-                ExportAction::make()
-                    ->exporter(InvoicePaymentsRelationManager::class)
-                    ->formats([
-                        ExportFormat::Csv
-                    ])
-                    ->fileDisk('local')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

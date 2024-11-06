@@ -192,4 +192,11 @@ class AppPermissions
     const UPDATE_PROPERTY_MANAGEMENT_USERS_PERMISSION = 'update-property-management-users';
     const DELETE_PROPERTY_MANAGEMENT_USERS_PERMISSION = 'delete-property-management-users';
     const RESTORE_PROPERTY_MANAGEMENT_USERS_PERMISSION = 'restore-property-management-users';
+
+    // audits permissions
+    const CREATE_AUDITS_PERMISSION = 'create-audits';
+    const READ_AUDITS_PERMISSION = 'read-audits';
+    const UPDATE_AUDITS_PERMISSION = 'update-audits';
+    const DELETE_AUDITS_PERMISSION = 'delete-audits';
+    const RESTORE_AUDITS_PERMISSION = 'restore-audits';
 }
