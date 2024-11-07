@@ -9,6 +9,7 @@ use Barryvdh\Snappy\Facades\SnappyPdf;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Filament\Notifications\Notification;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
@@ -71,6 +72,20 @@ class Invoice extends DefaultAppModel
             $model->deleted_by = auth()->id();
             $model->deleted_at = now();
             $model->save();
+        });
+    }
+
+    public function scopeAccessibleByUser(Builder $query, User $user)
+    {
+        if ($user->hasRole('admin')) {
+            return $query;
+        }
+
+        return $query->whereHas('tenancyAgreement.unit.property', function (Builder $query) use ($user) {
+            $query->whereHas('users', function (Builder $query) use ($user) {
+                $query->where('user_id', $user->id)
+                    ->where('property_management_users.status', true);
+            });
         });
     }
 
