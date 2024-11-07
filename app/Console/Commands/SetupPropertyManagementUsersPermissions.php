@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\AppRole;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Spatie\Permission\Models\Permission;
@@ -41,12 +42,13 @@ class SetupPropertyManagementUsersPermissions extends Command
             Permission::findOrCreate($permission);
         }
 
-        $admin = User::findOrFail(1);
-        if ($admin) {
-            $admin->givePermissionTo($permissions);
-            $this->info('Property management users permissions loaded & assigned to admin.');
+        // find the admin role
+        $adminRole = AppRole::where('name', 'admin')->first();
+        if ($adminRole) {
+            $adminRole->givePermissionTo($permissions);
+            $this->info('Audits permissions loaded & assigned to admin role.');
         } else {
-            $this->error('Admin user not found.');
+            $this->error('Admin role not found.');
         }
     }
 }
