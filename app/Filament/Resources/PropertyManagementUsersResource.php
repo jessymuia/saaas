@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\PropertyManagementUsersResource\Pages;
 use App\Filament\Resources\PropertyManagementUsersResource\RelationManagers;
 use App\Models\PropertyManagementUsers;
+use Filament\Actions\DeleteAction;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -31,9 +32,6 @@ class PropertyManagementUsersResource extends Resource
                     ->required(),
                 Forms\Components\Select::make('property_id')
                     ->relationship('property', 'name')
-                    ->required(),
-                Forms\Components\Select::make('role_id')
-                    ->relationship('role', 'name')
                     ->required(),
             ]);
     }
@@ -82,10 +80,12 @@ class PropertyManagementUsersResource extends Resource
             ->defaultSort('property.name')
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->requiresConfirmation("Are you sure you want to delete this property management user?")
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+//                    Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }

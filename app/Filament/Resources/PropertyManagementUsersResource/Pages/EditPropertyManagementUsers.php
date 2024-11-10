@@ -13,7 +13,8 @@ class EditPropertyManagementUsers extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()
+                ->requiresConfirmation("Are you sure you want to delete this record?")
         ];
     }
 }

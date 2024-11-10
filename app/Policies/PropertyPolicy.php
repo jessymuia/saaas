@@ -14,10 +14,8 @@ class PropertyPolicy
      */
     public function viewAny(User $user): Response
     {
-        return $user->hasRole('admin') || (
-            $user->hasPermissionTo(AppPermissions::READ_PROPERTIES_PERMISSION) &&
-            $user->properties()->where('property_management_users.status', true)->exists()
-        )
+        return
+            $user->hasPermissionTo(AppPermissions::READ_PROPERTIES_PERMISSION)
             ? Response::allow()
             : Response::deny('You do not have permissions to view property');
     }
@@ -27,10 +25,7 @@ class PropertyPolicy
      */
     public function view(User $user, Property $property): Response
     {
-        return $user->hasRole('admin') || (
-            $user->hasPermissionTo(AppPermissions::READ_PROPERTIES_PERMISSION) &&
-            $this->canAccessProperty($user, $property)
-        )
+        return $user->hasPermissionTo(AppPermissions::READ_PROPERTIES_PERMISSION)
             ? Response::allow()
             : Response::deny('You do not have permissions to view property');
     }
@@ -41,10 +36,8 @@ class PropertyPolicy
     public function create(User $user): Response
     {
         //
-        return $user->hasRole('admin') || (
-            $user->hasPermissionTo(AppPermissions::CREATE_PROPERTIES_PERMISSION) &&
-            $user->properties()->where('property_management_users.status', true)->exists()
-        )
+        return
+            $user->hasPermissionTo(AppPermissions::CREATE_PROPERTIES_PERMISSION)
             ? Response::allow()
             : Response::deny('You do not have permissions to create property');
     }
@@ -55,10 +48,8 @@ class PropertyPolicy
     public function update(User $user, Property $property): Response
     {
         //
-        return $user->hasRole('admin') || (
-            $user->hasPermissionTo(AppPermissions::UPDATE_PROPERTIES_PERMISSION) &&
-            $this->canAccessProperty($user, $property)
-        )
+        return
+            $user->hasPermissionTo(AppPermissions::UPDATE_PROPERTIES_PERMISSION)
             ? Response::allow()
             : Response::deny('You do not have permissions to update property');
     }
@@ -69,10 +60,8 @@ class PropertyPolicy
     public function delete(User $user, Property $property): Response
     {
         //
-        return $user->hasRole('admin') || (
-            $user->hasPermissionTo(AppPermissions::DELETE_PROPERTIES_PERMISSION) &&
-            $this->canAccessProperty($user, $property)
-        )
+        return
+            $user->hasPermissionTo(AppPermissions::DELETE_PROPERTIES_PERMISSION)
             ? Response::allow()
             : Response::deny('You do not have permissions to delete property');
     }
@@ -83,10 +72,8 @@ class PropertyPolicy
     public function restore(User $user, Property $property): Response
     {
         //
-        return $user->hasRole('admin') || (
-            $user->hasPermissionTo(AppPermissions::RESTORE_PROPERTIES_PERMISSION) &&
-            $this->canAccessProperty($user, $property)
-        )
+        return
+            $user->hasPermissionTo(AppPermissions::RESTORE_PROPERTIES_PERMISSION)
             ? Response::allow()
             : Response::deny('You do not have permissions to restore property');
     }

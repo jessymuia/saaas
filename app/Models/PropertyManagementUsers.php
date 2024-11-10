@@ -14,7 +14,6 @@ class PropertyManagementUsers extends DefaultAppModel
     protected $fillable = [
         'property_id',
         'user_id',
-        'role_id',
         'status',
         'archive',
         'created_at',
