@@ -90,6 +90,7 @@ class VacationNoticeResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->query(VacationNotices::accessibleByUser(auth()->user()))
             ->columns([
                 //
                 Tables\Columns\TextColumn::make('property.name')

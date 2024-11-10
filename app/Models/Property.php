@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -44,6 +45,21 @@ class Property extends DefaultAppModel
             $model->deleted_at = now();
             $model->save();
         });
+    }
+
+    public function scopeAccessibleByUser(Builder $query, User $user)
+    {
+        if ($user->hasRole('admin')) {
+            return $query;
+        }
+
+        return auth()->user()->hasRole('admin')
+            ? Property::query()
+            : auth()->user()->properties()
+                ->where('property_management_users.status', true)
+                ->where('property_management_users.deleted_at', null)
+                ->select('properties.*')
+                ->getQuery();
     }
 
     public function propertyType()
@@ -113,5 +129,11 @@ class Property extends DefaultAppModel
     public function propertyPaymentDetails()
     {
         return $this->hasOne(PropertyPaymentDetails::class, 'property_id');
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'property_management_users', 'property_id', 'user_id')
+            ->withPivot('status', 'role_id');
     }
 }

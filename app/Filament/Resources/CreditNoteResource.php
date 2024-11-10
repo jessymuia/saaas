@@ -55,6 +55,7 @@ class CreditNoteResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->query(CreditNote::accessibleByUser(auth()->user()))
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label('#')

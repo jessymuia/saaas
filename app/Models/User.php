@@ -100,4 +100,10 @@ class User extends Authenticatable implements \OwenIt\Auditing\Contracts\Auditab
         // allow all users to access
         return true;
     }
+
+    public function properties()
+    {
+        return $this->belongsToMany(Property::class, 'property_management_users',  'user_id', 'property_id')
+            ->withPivot('status', 'role_id');
+    }
 }

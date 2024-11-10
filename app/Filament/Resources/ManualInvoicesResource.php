@@ -108,6 +108,7 @@ class ManualInvoicesResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->query(ManualInvoices::accessibleByUser(auth()->user()))
             ->columns([
                 //
                 Tables\Columns\TextColumn::make('id')

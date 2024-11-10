@@ -64,6 +64,7 @@ class PropertyResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->query(Property::accessibleByUser(auth()->user()))
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->sortable()

@@ -47,6 +47,7 @@ class TenantResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->query(Tenant::accessibleByUser(auth()->user()))
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->sortable()

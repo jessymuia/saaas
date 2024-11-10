@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\CompanyDetails;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
@@ -54,6 +55,20 @@ class PropertyOwners extends DefaultAppModel
     public function property()
     {
         return $this->belongsTo(Property::class, 'property_id');
+    }
+
+    public function scopeAccessibleByUser(Builder $query, User $user)
+    {
+        if ($user->hasRole('admin')) {
+            return $query;
+        }
+
+        return $query->whereHas('property', function (Builder $query) use ($user) {
+            $query->whereHas('users', function (Builder $query) use ($user) {
+                $query->where('user_id', $user->id)
+                    ->where('property_management_users.status', true); // Only include properties the user is actively managing
+            });
+        });
     }
 
     public function createInvoiceForBalanceCarriedForward()
