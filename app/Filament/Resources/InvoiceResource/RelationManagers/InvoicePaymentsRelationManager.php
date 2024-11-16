@@ -125,7 +125,13 @@ class InvoicePaymentsRelationManager extends RelationManager
                         $data['received_by'] = auth()->id();
 
                         return $data;
-                    })
+                    }),
+                ExportAction::make()
+                    ->exporter(InvoiceExporter::class)
+                    ->formats([
+                        ExportFormat::Csv
+                    ])
+                    ->fileDisk('local')
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -193,7 +199,7 @@ class InvoicePaymentsRelationManager extends RelationManager
                                 'client',
                                 'propertyOwner'
                             ]);
-                
+
                             $company = CompanyDetails::latest()->first();
                             if (!$company) {
                                 Notification::make()
@@ -203,20 +209,20 @@ class InvoicePaymentsRelationManager extends RelationManager
                                     ->send();
                                 return;
                             }
-                
+
                             // Get recipient details
-                            $recipientName = $payment->tenant_id ? $payment->tenant->name : 
-                                           ($payment->client_id ? $payment->client->name : 
+                            $recipientName = $payment->tenant_id ? $payment->tenant->name :
+                                           ($payment->client_id ? $payment->client->name :
                                            ($payment->property_owner_id ? $payment->propertyOwner->name : 'N/A'));
-                            
-                            $recipientAddress = $payment->tenant_id ? $payment->tenant->address : 
-                                              ($payment->client_id ? $payment->client->address : 
+
+                            $recipientAddress = $payment->tenant_id ? $payment->tenant->address :
+                                              ($payment->client_id ? $payment->client->address :
                                               ($payment->property_owner_id ? $payment->propertyOwner->address : 'N/A'));
-                
+
                             // Format dates
                             $paymentDate = \Carbon\Carbon::parse($payment->payment_date)->format('F j, Y');
                             $receiptDate = \Carbon\Carbon::parse($payment->created_at)->format('F j, Y');
-                
+
                             $data = [
                                 'payment' => $payment,
                                 'company' => $company,
@@ -227,33 +233,33 @@ class InvoicePaymentsRelationManager extends RelationManager
                                 'logoData' => $company->logo ? base64_encode(file_get_contents(storage_path('app/public/' . $company->logo))) : null,
                                 'logoExtension' => $company->logo ? pathinfo(storage_path('app/public/' . $company->logo), PATHINFO_EXTENSION) : null,
                             ];
-                
+
                             $pdf = Pdf::loadView('pdfs.invoice-payment', $data);
                             $pdf->setPaper('A4', 'portrait');
-                            
+
                             // Set additional PDF options
                             $pdf->setOption('isPhpEnabled', true);
                             $pdf->setOption('isRemoteEnabled', true);
                             $pdf->setOption('isHtml5ParserEnabled', true);
-                
+
                             return response()->streamDownload(
                                 function () use ($pdf) {
                                     echo $pdf->output();
-                                }, 
-                                "invoice-payment-{$payment->id}.pdf", 
+                                },
+                                "invoice-payment-{$payment->id}.pdf",
                                 [
                                     'Content-Type' => 'application/pdf',
                                     'Content-Disposition' => 'attachment'
                                 ]
                             );
-                
+
                         } catch (\Exception $e) {
                             Notification::make()
                                 ->title('Error generating PDF')
                                 ->body($e->getMessage())
                                 ->danger()
                                 ->send();
-                            
+
                             \Log::error('PDF Generation Error:', [
                                 'error' => $e->getMessage(),
                                 'payment_id' => $record->id,
@@ -273,18 +279,10 @@ class InvoicePaymentsRelationManager extends RelationManager
                         return strtotime($record->document_generated_at) === false
                             || strtotime($record->document_sent_at) !== false;
                     }),
-                
+
                 Tables\Actions\DeleteAction::make()
                     ->requiresConfirmation()
-                
-            ])
-            ->headerActions([
-                ExportAction::make()
-                    ->exporter(InvoiceExporter::class)
-                    ->formats([
-                        ExportFormat::Csv
-                    ])
-                    ->fileDisk('local')
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

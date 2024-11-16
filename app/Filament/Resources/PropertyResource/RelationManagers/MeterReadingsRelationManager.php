@@ -145,12 +145,18 @@ class MeterReadingsRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()
-                ->mutateFormDataUsing(function ($data) {
-                    $data['created_by'] = auth()->user()->id;
-                    $data['consumption'] = $data['current_reading'] - $data['previous_reading'];
+                    ->mutateFormDataUsing(function ($data) {
+                        $data['created_by'] = auth()->user()->id;
+                        $data['consumption'] = $data['current_reading'] - $data['previous_reading'];
 
-                    return $data;
-                }),
+                        return $data;
+                    }),
+                ExportAction::make()
+                    ->exporter(PropertyExporter::class)
+                    ->formats([
+                        ExportFormat::Csv
+                    ])
+                    ->fileDisk('local')
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
@@ -167,14 +173,6 @@ class MeterReadingsRelationManager extends RelationManager
 
                         return $data;
                     }),
-            ])
-            ->headerActions([
-                ExportAction::make()
-                    ->exporter(PropertyExporter::class)
-                    ->formats([
-                        ExportFormat::Csv
-                    ])
-                    ->fileDisk('local')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

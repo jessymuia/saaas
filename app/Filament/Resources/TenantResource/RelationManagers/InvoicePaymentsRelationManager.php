@@ -111,19 +111,17 @@ class InvoicePaymentsRelationManager extends RelationManager
             ])
             ->headerActions([
 //                Tables\Actions\CreateAction::make(),
-            ])
-            ->actions([
-                Tables\Actions\ViewAction::make()
-                    ->url(fn ($record) => route('filament.admin.resources.invoice-payments.view', $record)),
-//                Tables\Actions\DeleteAction::make(),
-            ])
-            ->headerActions([
                 ExportAction::make()
                     ->exporter(TenantExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])
                     ->fileDisk('local')
+            ])
+            ->actions([
+                Tables\Actions\ViewAction::make()
+                    ->url(fn ($record) => route('filament.admin.resources.invoice-payments.view', $record)),
+//                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -155,6 +155,12 @@ class TenancyBillsRelationManager extends RelationManager
                     ->hidden(function () {
                         return $this->ownerRecord->is_confirmed;
                     }),
+                ExportAction::make()
+                    ->exporter(InvoiceExporter::class)
+                    ->formats([
+                        ExportFormat::Csv
+                    ])
+                    ->fileDisk('local')
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
@@ -168,14 +174,6 @@ class TenancyBillsRelationManager extends RelationManager
                     }),
 //                Tables\Actions\DeleteAction:: make()
 //                    ->requiresConfirmation()
-            ])
-            ->headerActions([
-                ExportAction::make()
-                    ->exporter(InvoiceExporter::class)
-                    ->formats([
-                        ExportFormat::Csv
-                    ])
-                    ->fileDisk('local')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
