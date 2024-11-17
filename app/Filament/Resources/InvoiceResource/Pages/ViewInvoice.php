@@ -105,11 +105,12 @@ class ViewInvoice extends ViewRecord
         ];
     }
 
-//    protected function getHeaderWidgets(): array
-//    {
-//        return [
-//            //
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            //
 //            InvoiceResource\Widgets\InvoiceViewStats::class,
-//        ];
-//    }
+            InvoiceResource\Widgets\InvoiceDetailsWidget::class,
+        ];
+    }
 }
