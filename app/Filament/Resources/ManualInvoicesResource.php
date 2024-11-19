@@ -154,6 +154,7 @@ class ManualInvoicesResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('View Invoice'),
                 Tables\Actions\Action::make('generatePdf')
     ->label('Generate PDF')
     ->icon('heroicon-m-document-arrow-down')

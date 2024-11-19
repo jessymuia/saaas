@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\PropertyResource\RelationManagers;
 
-use App\Filament\Exports\PropertyExporter;
+use App\Filament\Exports\UnitsOccupiedExporter;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -52,7 +52,7 @@ class UnitsOccupiedByRelationManager extends RelationManager
             ->headerActions([
 //                Tables\Actions\CreateAction::make(),
                 ExportAction::make()
-                    ->exporter(PropertyExporter::class)
+                    ->exporter(UnitsOccupiedExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])
@@ -67,7 +67,7 @@ class UnitsOccupiedByRelationManager extends RelationManager
                     Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
                 ]),
                 ExportBulkAction::make()
-                    ->exporter(PropertyExporter::class)
+                    ->exporter(UnitsOccupiedExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])

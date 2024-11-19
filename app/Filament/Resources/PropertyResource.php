@@ -118,7 +118,9 @@ class PropertyResource extends Resource
                     // Get the property with its relationships
                     $property = $record->load([
                         'propertyType',
-                        'units',
+                        'units' => function ($query) {
+                            $query->orderBy('name');  
+                        },
                         'utilities',
                         'propertyServices',
                         'propertyPaymentDetails',
@@ -126,7 +128,7 @@ class PropertyResource extends Resource
                     ]);
 
                     $company = CompanyDetails::latest()->first();
-
+                   
                     $data = [
                         'property' => $property,
                         'timestamp' => now()->format('Y-m-d H:i:s'),
@@ -139,7 +141,7 @@ class PropertyResource extends Resource
 
                     return response()->streamDownload(function () use ($pdf) {
                         echo $pdf->output();
-                    }, "property-{$property->id}-details.pdf");
+                    }, "{$property->name}-{$property->id}-details.pdf");
                 }),
                 
             ])
@@ -155,34 +157,6 @@ class PropertyResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
                 ]),
-                Tables\Actions\BulkAction::make('generateBulkPdf')
-                ->label('Generate PDF')
-                ->icon('heroicon-m-document-arrow-down')
-                
-                ->action(function ($records) {
-                    $properties = $records->load([
-                        'propertyType',
-                        'units',
-                        'utilities',
-                        'propertyServices',
-                        'propertyPaymentDetails',
-                        'propertyOwners',
-                    ]);
-
-                    $data = [
-                        'properties' => $properties,
-                        'timestamp' => now()->format('Y-m-d H:i:s'),
-                    ];
-
-                    $pdf = Pdf::loadView('pdfs.properties-bulk-details', $data);
-                    
-                    $pdf->setPaper('A4', 'landscape');
-
-                    return response()->streamDownload(function () use ($pdf) {
-                        echo $pdf->output();
-                    }, "properties-report-" . now()->format('Y-m-d') . ".pdf");
-                    
-                }),
                 ExportBulkAction::make()
                     ->exporter(PropertyExporter::class)
                     ->formats([

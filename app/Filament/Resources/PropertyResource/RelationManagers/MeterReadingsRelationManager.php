@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\PropertyResource\RelationManagers;
 
-use App\Filament\Exports\PropertyExporter;
+use App\Filament\Exports\MeterReadingsExporter;
 use App\Models\MeterReading;
 use App\Models\PropertyUtility;
 use App\Rules\CheckValidCurrentReadingInput;
@@ -152,7 +152,8 @@ class MeterReadingsRelationManager extends RelationManager
                         return $data;
                     }),
                 ExportAction::make()
-                    ->exporter(PropertyExporter::class)
+                    ->exporter(MeterReadingsExporter::class)
+
                     ->formats([
                         ExportFormat::Csv
                     ])
@@ -167,7 +168,7 @@ class MeterReadingsRelationManager extends RelationManager
                         return $data;
                     }),
                 Tables\Actions\DeleteAction::make()
-                    ->requiresConfirmation()
+                ->requiresConfirmation("Are you sure you want to delete this record?")
                     ->mutateFormDataUsing(function ($data) {
                         $data['deleted_by'] = auth()->user()->id;
 
@@ -179,7 +180,7 @@ class MeterReadingsRelationManager extends RelationManager
                     Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
                 ]),
                 ExportBulkAction::make()
-                    ->exporter(PropertyExporter::class)
+                    ->exporter(MeterReadingsExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])

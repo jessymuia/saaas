@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\TenantResource\RelationManagers;
 
+use App\Filament\Exports\InvoiceExporter;
 use App\Filament\Exports\TenantExporter;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
@@ -76,7 +77,7 @@ class InvoicesRelationManager extends RelationManager
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
                 ExportAction::make()
-                    ->exporter(TenantExporter::class)
+                    ->exporter(InvoiceExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])
@@ -91,7 +92,7 @@ class InvoicesRelationManager extends RelationManager
                     Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
                 ]),
                 ExportBulkAction::make()
-                    ->exporter(TenantExporter::class)
+                    ->exporter(InvoiceExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])

@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\PropertyResource\RelationManagers;
 
-use App\Filament\Exports\PropertyExporter;
+use App\Filament\Exports\UtilitiesExporter;
 use App\Rules\CheckUniqueUtilityInProperty;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -89,7 +89,7 @@ class UtilitiesRelationManager extends RelationManager
                         return $data;
                     }),
                 ExportAction::make()
-                    ->exporter(PropertyExporter::class)
+                    ->exporter(UtilitiesExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])
@@ -102,7 +102,7 @@ class UtilitiesRelationManager extends RelationManager
                         return $data;
                     }),
                 Tables\Actions\DeleteAction::make()
-                    ->requiresConfirmation()
+                    ->requiresConfirmation('Are you sure you want to delete this utility?')
                     ->mutateFormDataUsing(function ($data) {
                         $data['deleted_by'] = auth()->id();
                         return $data;
@@ -113,7 +113,7 @@ class UtilitiesRelationManager extends RelationManager
                     Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
                 ]),
                 ExportBulkAction::make()
-                    ->exporter(PropertyExporter::class)
+                    ->exporter(UtilitiesExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])

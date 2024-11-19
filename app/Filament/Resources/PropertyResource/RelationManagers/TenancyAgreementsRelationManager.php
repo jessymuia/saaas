@@ -2,7 +2,8 @@
 
 namespace App\Filament\Resources\PropertyResource\RelationManagers;
 
-use App\Filament\Exports\PropertyExporter;
+use App\Filament\Exports\TenancyAgreementExporter;
+use App\Models\TenancyAgreement;
 use App\Rules\CheckOccupancyOfUnit;
 use Faker\Provider\Text;
 use Filament\Forms;
@@ -187,7 +188,7 @@ class TenancyAgreementsRelationManager extends RelationManager
                         return $data;
                     }),
                 ExportAction::make()
-                    ->exporter(PropertyExporter::class)
+                    ->exporter(TenancyAgreementExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])
@@ -213,7 +214,7 @@ class TenancyAgreementsRelationManager extends RelationManager
                     Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
                 ]),
                 ExportBulkAction::make()
-                    ->exporter(PropertyExporter::class)
+                    ->exporter(TenancyAgreementExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])

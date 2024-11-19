@@ -110,7 +110,7 @@ class ClientResource extends Resource
                     // Download the PDF
                     return response()->streamDownload(function () use ($pdf) {
                         echo $pdf->output();
-                    }, "client-{$client->id}-details.pdf");
+                    }, "{$client->name}-{$client->id}-details.pdf");
                 })
             ])
             ->headerActions([

@@ -142,7 +142,7 @@ class PropertyOwnersResource extends Resource
                         'updated_by' => auth()->user()->id,
                     ]),
                 Tables\Actions\DeleteAction::make()
-                    ->requiresConfirmation()
+                ->requiresConfirmation("Are you sure you want to delete this record?")
                     ->mutateFormDataUsing(fn ($data) => [
                         'deleted_by' => auth()->user()->id,
                     ]),

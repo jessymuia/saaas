@@ -93,33 +93,26 @@ class TenantResource extends Resource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('generatePdf')
-                ->label('Generate PDF')
-                ->icon('heroicon-m-document-arrow-down')
-               
-                ->action(function (Tenant $record) {
-                    // Get the tenant with its relationships
-                    $tenant = $record->load([
-                        'tenancyAgreements',
-                        'tenancyBills',
-                        'invoices',
-                        'invoicePayments',
-                    ]);
+                    ->label('Generate PDF')
+                    ->icon('heroicon-m-document-arrow-down')
+                    ->action(function (Tenant $record) {
+                        $tenant = $record->load([
+                            'tenancyAgreements.tenancyBills' // Make sure to load the relationship properly
+                        ]);
+
+                        $company = CompanyDetails::latest()->first();
+
+                        $pdf = Pdf::loadView('pdfs.tenant-details', [
+                            'tenant' => $tenant,
+                            'company' => $company,
+                            'bills' => $tenant->tenancyAgreements->flatMap->tenancyBills
+                        ]);
     
-                    $company = CompanyDetails::latest()->first();
-    
-                    $data = [
-                        'tenant' => $tenant,
-                        'timestamp' => now()->format('Y-m-d H:i:s'),
-                        'company' => $company
-                    ];
-    
-                    $pdf = Pdf::loadView('pdfs.tenant-details', $data);
-                    
                     $pdf->setPaper('A4', 'portrait');
     
                     return response()->streamDownload(function () use ($pdf) {
                         echo $pdf->output();
-                    }, "tenant-{$tenant->id}-details.pdf");
+                    }, "{$tenant->name}-{$tenant->id}-details.pdf");
                 }),
                 
             ])

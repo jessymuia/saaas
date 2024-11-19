@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\TenantResource\RelationManagers;
 
+use App\Filament\Exports\TenancyAgreementExporter;
 use App\Filament\Exports\TenantExporter;
 use App\Models\CreditNote;
 use App\Models\Invoice;
@@ -205,7 +206,7 @@ class TenancyAgreementsRelationManager extends RelationManager
                         return $data;
                     }),
                 ExportAction::make()
-                    ->exporter(TenantExporter::class)
+                    ->exporter(TenancyAgreementExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])
@@ -262,7 +263,7 @@ class TenancyAgreementsRelationManager extends RelationManager
                     Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
                 ]),
                 ExportBulkAction::make()
-                    ->exporter(TenantExporter::class)
+                    ->exporter(TenancyAgreementExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])
