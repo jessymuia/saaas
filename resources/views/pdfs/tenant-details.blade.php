@@ -9,99 +9,63 @@
             line-height: 1.6;
             margin: 20px;
         }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f5f5f5;
+        }
+        .amount {
+            text-align: right;
+        }
+        .date {
+            white-space: nowrap;
+        }
         .header {
             text-align: center;
             margin-bottom: 30px;
         }
         .company-info {
             margin-bottom: 20px;
-            text-align: center;
-        }
-        .timestamp {
-            text-align: right;
-            font-size: 0.8em;
-            margin-bottom: 20px;
-            color: #666;
-        }
-        .section {
-            margin-bottom: 20px;
         }
         .section-title {
             font-weight: bold;
-            margin-bottom: 10px;
+            margin: 20px 0 10px;
             padding-bottom: 5px;
             border-bottom: 1px solid #ccc;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 15px;
+        .status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
         }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-            font-size: 0.9em;
+        .status-active {
+            background-color: #dcfce7;
+            color: #166534;
         }
-        th {
-            background-color: #f5f5f5;
-        }
-        .letterhead-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .logo-container {
-            flex: 0 0 300px;
-        }
-        
-        .logo-container img {
-            max-width: 100%;
-            height: auto;
-        }
-        
-        .contact-details {
-            flex: 0 0 400px;
-            text-align: right;
-        }
-        
-        .contact-details p {
-            margin: 5px 0;
-            font-size: 14px;
-            line-height: 1.4;
-        }
-        
-        .detail-label {
-            font-weight: bold;
-        }
-        
-        .page-title {
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-            margin: 20px 0;
+        .status-inactive {
+            background-color: #fee2e2;
+            color: #991b1b;
         }
     </style>
 </head>
 <body>
 <div class="header">
-        <h1>Tenants Details </h1>
-        <!-- <p>Generated on: {{ $timestamp }}</p> -->
-
-        <div class="letterhead-container">
-        <div class="logo-container">
-        <img src="/app/public/'.$company->logo" style="display: block; max-width: 100%;"  height="73"  alt="Hamud Realtor Logo"/>
+        <h1>Tenant Details</h1>
+        @if($company)
+        <div class="company-info">
+            <p>{{ $company->name }}</p>
+            <p>{{ $company->address }}</p>
+            <p>{{ $company->phone_number }}</p>
         </div>
-        <div class="contact-details">
-            <p><span class="detail-label">Location:</span>{{ $company->location }}</p>
-            <p><span class="detail-label">Address:</span>{{ $company->address }}</p>
-            <p><span class="detail-label">Phone:</span>{{ $company->phone_number }}</p>
-            <p><span class="detail-label">Email:</span> {{ $company->email }}</p>
-        </div>
+        @endif
     </div>
 
     <div class="section">
@@ -121,12 +85,15 @@
             </tr>
             <tr>
                 <th>Status</th>
-                <td>{{ $tenant->status ? 'Active' : 'Inactive' }}</td>
+                <td>
+                    <span class="status status-{{ strtolower($tenant->status) }}">
+                        {{ $tenant->status }}
+                    </span>
+                </td>
             </tr>
         </table>
     </div>
 
-    @if($tenant->tenancyAgreements->count() > 0)
     <div class="section">
         <div class="section-title">Tenancy Agreements</div>
         <table>
@@ -139,95 +106,59 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($tenant->tenancyAgreements as $agreement)
+                @forelse($tenant->tenancyAgreements as $agreement)
                 <tr>
                     <td>{{ $agreement->id }}</td>
-                    <td>{{ $agreement->start_date }}</td>
-                    <td>{{ $agreement->end_date }}</td>
-                    <td>{{ $agreement->status }}</td>
+                    <td>{{ $agreement->start_date ? date('Y-m-d', strtotime($agreement->start_date)) : '' }}</td>
+                    <td>{{ $agreement->end_date ? date('Y-m-d', strtotime($agreement->end_date)) : 'Ongoing' }}</td>
+                    <td>
+                        @php
+                            $agreementStatus = !$agreement->end_date || Carbon\Carbon::parse($agreement->end_date)->isFuture() 
+                                ? 'Active' 
+                                : 'Inactive';
+                        @endphp
+                        <span class="status status-{{ strtolower($agreementStatus) }}">
+                            {{ $agreementStatus }}
+                        </span>
+                    </td>
                 </tr>
-                @endforeach
+                @empty
+                <tr>
+                    <td colspan="4" style="text-align: center;">No agreements found</td>
+                </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
-    @endif
 
-    @if($tenant->tenancyBills->count() > 0)
     <div class="section">
         <div class="section-title">Tenancy Bills</div>
         <table>
             <thead>
                 <tr>
                     <th>Bill ID</th>
-                    <th>Amount</th>
+                    <th>Bill Date</th>
+                    <th>Name</th>
+                    <th class="amount">Total Amount</th>
                     <th>Due Date</th>
-                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach($tenant->tenancyBills as $bill)
+                @forelse($bills as $bill)
                 <tr>
                     <td>{{ $bill->id }}</td>
-                    <td>{{ $bill->amount }}</td>
-                    <td>{{ $bill->due_date }}</td>
-                    <td>{{ $bill->status }}</td>
+                    <td class="date">{{ $bill->bill_date ? date('Y-m-d', strtotime($bill->bill_date)) : '' }}</td>
+                    <td>{{ $bill->name }}</td>
+                    <td class="amount">{{ number_format($bill->total_amount, 2) }}</td>
+                    <td class="date">{{ $bill->due_date ? date('Y-m-d', strtotime($bill->due_date)) : '' }}</td>
                 </tr>
-                @endforeach
+                @empty
+                <tr>
+                    <td colspan="5" style="text-align: center;">No bills found</td>
+                </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
-    @endif
-
-    @if($tenant->invoices->count() > 0)
-    <div class="section">
-        <div class="section-title">Invoices</div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Invoice ID</th>
-                    <th>Amount</th>
-                    <th>Date</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($tenant->invoices as $invoice)
-                <tr>
-                    <td>{{ $invoice->id }}</td>
-                    <td>{{ $invoice->amount }}</td>
-                    <td>{{ $invoice->invoice_date }}</td>
-                    <td>{{ $invoice->status }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-    @endif
-
-    @if($tenant->invoicePayments->count() > 0)
-    <div class="section">
-        <div class="section-title">Invoice Payments</div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Payment ID</th>
-                    <th>Amount</th>
-                    <th>Date</th>
-                    <th>Method</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($tenant->invoicePayments as $payment)
-                <tr>
-                    <td>{{ $payment->id }}</td>
-                    <td>{{ $payment->amount }}</td>
-                    <td>{{ $payment->payment_date }}</td>
-                    <td>{{ $payment->payment_method }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-    @endif
 </body>
 </html>

@@ -93,6 +93,20 @@
             font-weight: bold;
             margin: 20px 0;
         }
+        .empty-state {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-style: italic;
+        }
+        .unit-number {
+            font-weight: bold;
+            color: #333;
+        }
+        .inactive-row {
+            background-color: #f9f9f9;
+            color: #666;
+        }
     </style>
 </head>
 <body>
@@ -154,21 +168,42 @@
         <table>
             <thead>
                 <tr>
-                    <th>Unit Number</th>
+                    <th>Unit Name</th>
                     <th>Status</th>
                     <th>Description</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($property->units as $unit)
-                <tr>
-                    <td>{{ $unit->unit_number }}</td>
-                    <td>{{ $unit->status ? 'Active' : 'Inactive' }}</td>
-                    <td>{{ $unit->description }}</td>
+                <tr class="{{ !$unit->status ? 'inactive-row' : '' }}">
+                    <td>
+                        Unit {{ $unit->name }}
+                    </td>
+                    <td>
+                        @if($unit->status)
+                            <strong>Active</strong>
+                        @else
+                            Inactive
+                        @endif
+                    </td>
+                    <td>
+                        @if(!empty($unit->description))
+                            {{ $unit->description }}
+                        @else
+                            <em>No description available</em>
+                        @endif
+                    </td>
                 </tr>
                 @endforeach
             </tbody>
         </table>
+    </div>
+    @else
+    <div class="section">
+        <div class="section-title">Units</div>
+        <div class="empty-state">
+            No units have been added to this property yet.
+        </div>
     </div>
     @endif
 
