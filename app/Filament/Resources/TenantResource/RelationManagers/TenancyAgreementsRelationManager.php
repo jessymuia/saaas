@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\TenantResource\RelationManagers;
 
 use App\Filament\Exports\TenancyAgreementExporter;
-use App\Filament\Exports\TenantExporter;
 use App\Models\CreditNote;
 use App\Models\Invoice;
 use App\Models\InvoicePayment;

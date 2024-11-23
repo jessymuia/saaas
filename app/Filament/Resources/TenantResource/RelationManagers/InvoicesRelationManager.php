@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\TenantResource\RelationManagers;
 
 use App\Filament\Exports\InvoiceExporter;
-use App\Filament\Exports\TenantExporter;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;

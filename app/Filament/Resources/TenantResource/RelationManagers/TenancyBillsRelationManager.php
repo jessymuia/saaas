@@ -117,12 +117,12 @@ class TenancyBillsRelationManager extends RelationManager
                         // handle errors
                         AppUtils::generateBills();
                     })
-                    ->requiresConfirmation("Are you sure you want to generate bills for this month? Please verify the meter readings before proceeding"),
+                    ->requiresConfirmation(" Are you sure you want to generate bills for this month? Please verify the meter readings before proceeding "),
                 Tables\Actions\Action::make('generate-bills-for-next-month')
                     ->action(function (): void{
                         AppUtils::generateBills(isBillsForNextMonth: true);
                     })
-                    ->requiresConfirmation("Are you sure you want to generate bills for coming month?"),
+                    ->requiresConfirmation(" Are you sure you want to generate bills for coming month? "),
                 ExportAction::make()
                     ->exporter(TenancyBillsExporter::class)
                     ->formats([
