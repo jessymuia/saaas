@@ -34,7 +34,7 @@ class Tenant extends DefaultAppModel
             'id',
             'id');
     }
-    public function getStatusAttribute(): string
+    public function getTenancyStatusAttribute(): string
     {
         $latestAgreement = $this->tenancyAgreements()
             ->latest('start_date')
@@ -44,12 +44,12 @@ class Tenant extends DefaultAppModel
             return 'Inactive';
         }
 
-       
+
         if (!$latestAgreement->end_date || Carbon::parse($latestAgreement->end_date)->isFuture()) {
             return 'Active';
         }
 
-        
+
         return 'Inactive';
     }
 

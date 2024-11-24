@@ -86,8 +86,8 @@
             <tr>
                 <th>Status</th>
                 <td>
-                    <span class="status status-{{ strtolower($tenant->status) }}">
-                        {{ $tenant->status }}
+                    <span class="status status-{{ strtolower($tenant->tenancy_status) }}">
+                        {{ $tenant->tenancy_status }}
                     </span>
                 </td>
             </tr>
@@ -113,8 +113,8 @@
                     <td>{{ $agreement->end_date ? date('Y-m-d', strtotime($agreement->end_date)) : 'Ongoing' }}</td>
                     <td>
                         @php
-                            $agreementStatus = !$agreement->end_date || Carbon\Carbon::parse($agreement->end_date)->isFuture() 
-                                ? 'Active' 
+                            $agreementStatus = !$agreement->end_date || Carbon\Carbon::parse($agreement->end_date)->isFuture()
+                                ? 'Active'
                                 : 'Inactive';
                         @endphp
                         <span class="status status-{{ strtolower($agreementStatus) }}">
