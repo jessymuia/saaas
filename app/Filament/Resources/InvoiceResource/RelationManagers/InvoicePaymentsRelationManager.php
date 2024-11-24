@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\InvoiceResource\RelationManagers;
 
 
+use App\Filament\Exports\InvoicePaymentExporter;
 use App\Models\InvoicePayment;
 use App\Rules\CheckPaidAmountDoesNotExceedAmountDue;
 use Filament\Forms;
@@ -126,7 +127,7 @@ class InvoicePaymentsRelationManager extends RelationManager
                         return $data;
                     }),
                 ExportAction::make()
-                    ->exporter(InvoicePayment::class)
+                    ->exporter(InvoicePaymentExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])
@@ -184,7 +185,7 @@ class InvoicePaymentsRelationManager extends RelationManager
                     ->disabled(function (InvoicePayment $record) { // only visible if receipt has been confirmed
                         return strtotime($record->document_generated_at) === false;
                     }),
-                   
+
                 // action to send the receipt document
                 Tables\Actions\Action::make('send-receipt')
                     ->label('Send Receipt')
@@ -207,7 +208,7 @@ class InvoicePaymentsRelationManager extends RelationManager
                     Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
                 ]),
                 ExportBulkAction::make()
-                    ->exporter(InvoicePayment::class)
+                    ->exporter(InvoicePaymentExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])
