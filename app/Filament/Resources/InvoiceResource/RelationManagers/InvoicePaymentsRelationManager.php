@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\InvoiceResource\RelationManagers;
 
+
+use App\Filament\Exports\InvoicePaymentExporter;
 use App\Models\InvoicePayment;
 use App\Rules\CheckPaidAmountDoesNotExceedAmountDue;
 use Filament\Forms;
@@ -11,6 +13,7 @@ use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use App\Models\CompanyDetails;
 use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Actions\ExportBulkAction;
@@ -124,7 +127,7 @@ class InvoicePaymentsRelationManager extends RelationManager
                         return $data;
                     }),
                 ExportAction::make()
-                    ->exporter(InvoicePaymentsRelationManager::class)
+                    ->exporter(InvoicePaymentExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])
@@ -195,6 +198,7 @@ class InvoicePaymentsRelationManager extends RelationManager
                         return strtotime($record->document_generated_at) === false
                             || strtotime($record->document_sent_at) !== false;
                     }),
+
                 Tables\Actions\DeleteAction::make()
                     ->requiresConfirmation("Are you sure you want to delete this record?")
             ])
@@ -203,7 +207,7 @@ class InvoicePaymentsRelationManager extends RelationManager
                     Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
                 ]),
                 ExportBulkAction::make()
-                    ->exporter(InvoicePaymentsRelationManager::class)
+                    ->exporter(InvoicePaymentExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])

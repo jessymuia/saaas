@@ -6,6 +6,7 @@ use App\Filament\Exports\PropertyExporter;
 use App\Filament\Resources\PropertyResource\Pages;
 use App\Filament\Resources\PropertyResource\RelationManagers;
 use App\Models\Property;
+use App\Models\CompanyDetails;
 use App\Models\TenancyAgreement;
 use App\Utils\AppUtils;
 use Filament\Forms;
@@ -13,6 +14,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Actions\ExportBulkAction;
@@ -109,6 +111,40 @@ class PropertyResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('generatePdf')
+                ->label('Generate PDF')
+                ->icon('heroicon-m-document-arrow-down')
+               
+                ->action(function ($record) {
+                    // Get the property with its relationships
+                    $property = $record->load([
+                        'propertyType',
+                        'units' => function ($query) {
+                            $query->orderBy('name');  
+                        },
+                        'utilities',
+                        'propertyServices',
+                        'propertyPaymentDetails',
+                        'propertyOwners',
+                    ]);
+
+                    $company = CompanyDetails::latest()->first();
+                   
+                    $data = [
+                        'property' => $property,
+                        'timestamp' => now()->format('Y-m-d H:i:s'),
+                        'company' => $company
+                    ];
+
+                    $pdf = Pdf::loadView('pdfs.property-details', $data);
+                    
+                    $pdf->setPaper('A4', 'portrait');
+
+                    return response()->streamDownload(function () use ($pdf) {
+                        echo $pdf->output();
+                    }, "{$property->name}-{$property->id}-details.pdf");
+                }),
+                
             ])
             ->headerActions([
                 ExportAction::make()

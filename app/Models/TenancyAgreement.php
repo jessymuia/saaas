@@ -72,6 +72,10 @@ class TenancyAgreement extends DefaultAppModel
     {
         return $this->belongsTo(Tenant::class);
     }
+    public function tenancyBills()
+    {
+        return $this->hasMany(TenancyBill::class);
+    }
 
     public function agreementType()
     {

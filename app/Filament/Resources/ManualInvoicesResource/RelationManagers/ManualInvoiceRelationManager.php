@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ManualInvoicesResource\RelationManagers;
 
+use App\Filament\Exports\ManualInvoicesExporter;
 use App\Models\RefBillingType;
 use App\Utils\AppUtils;
 use Filament\Forms;
@@ -154,7 +155,7 @@ class ManualInvoiceRelationManager extends RelationManager
                         return $data;
                     }),
                 ExportAction::make()
-                    ->exporter(ManualInvoiceRelationManager::class)
+                    ->exporter(ManualInvoicesExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])
@@ -179,7 +180,7 @@ class ManualInvoiceRelationManager extends RelationManager
                     Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
                 ]),
                 ExportBulkAction::make()
-                    ->exporter(ManualInvoiceRelationManager::class)
+                    ->exporter(ManualInvoicesExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])

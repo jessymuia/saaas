@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PropertyResource\RelationManagers;
 
+use App\Filament\Exports\MeterReadingsExporter;
 use App\Models\MeterReading;
 use App\Models\PropertyUtility;
 use App\Rules\CheckValidCurrentReadingInput;
@@ -144,14 +145,14 @@ class MeterReadingsRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()
-                ->mutateFormDataUsing(function ($data) {
-                    $data['created_by'] = auth()->user()->id;
-                    $data['consumption'] = $data['current_reading'] - $data['previous_reading'];
+                    ->mutateFormDataUsing(function ($data) {
+                        $data['created_by'] = auth()->user()->id;
+                        $data['consumption'] = $data['current_reading'] - $data['previous_reading'];
 
-                    return $data;
-                }),
+                        return $data;
+                    }),
                 ExportAction::make()
-                    ->exporter(MeterReadingsRelationManager::class)
+                    ->exporter(MeterReadingsExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])
@@ -166,7 +167,7 @@ class MeterReadingsRelationManager extends RelationManager
                         return $data;
                     }),
                 Tables\Actions\DeleteAction::make()
-                    ->requiresConfirmation('Are you sure you want to delete this record?')
+                    ->requiresConfirmation("Are you sure you want to delete this record?")
                     ->mutateFormDataUsing(function ($data) {
                         $data['deleted_by'] = auth()->user()->id;
 
@@ -178,7 +179,7 @@ class MeterReadingsRelationManager extends RelationManager
                     Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
                 ]),
                 ExportBulkAction::make()
-                    ->exporter(MeterReadingsRelationManager::class)
+                    ->exporter(MeterReadingsExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Tenant extends DefaultAppModel
 {
@@ -58,6 +59,25 @@ class Tenant extends DefaultAppModel
             'id',
             'id');
     }
+    public function getTenancyStatusAttribute(): string
+    {
+        $latestAgreement = $this->tenancyAgreements()
+            ->latest('start_date')
+            ->first();
+
+        if (!$latestAgreement) {
+            return 'Inactive';
+        }
+
+
+        if (!$latestAgreement->end_date || Carbon::parse($latestAgreement->end_date)->isFuture()) {
+            return 'Active';
+        }
+
+
+        return 'Inactive';
+    }
+
 
     // get invoices belonging to given tenant
     public function invoices()

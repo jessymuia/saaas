@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\TenantResource\RelationManagers;
 
+use App\Filament\Exports\InvoicePaymentExporter;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
@@ -110,26 +111,24 @@ class InvoicePaymentsRelationManager extends RelationManager
             ])
             ->headerActions([
 //                Tables\Actions\CreateAction::make(),
+                ExportAction::make()
+                    ->exporter(InvoicePaymentExporter::class)
+                    ->formats([
+                        ExportFormat::Csv
+                    ])
+                    ->fileDisk('local')
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
                     ->url(fn ($record) => route('filament.admin.resources.invoice-payments.view', $record)),
 //                Tables\Actions\DeleteAction::make(),
             ])
-            ->headerActions([
-                ExportAction::make()
-                    ->exporter(InvoicePaymentsRelationManager::class)
-                    ->formats([
-                        ExportFormat::Csv
-                    ])
-                    ->fileDisk('local')
-            ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
                 ]),
                 ExportBulkAction::make()
-                    ->exporter(InvoicePaymentsRelationManager::class)
+                    ->exporter(InvoicePaymentExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])

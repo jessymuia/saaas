@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\TenantResource\RelationManagers;
 
+use App\Filament\Exports\InvoiceExporter;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
@@ -74,25 +75,23 @@ class InvoicesRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
-            ])
-            ->actions([
-                Tables\Actions\ViewAction::make()
-                ->url(fn ($record) => route('filament.admin.resources.invoices.view', $record)),
-            ])
-            ->headerActions([
                 ExportAction::make()
-                    ->exporter(InvoicesRelationManager::class)
+                    ->exporter(InvoiceExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])
                     ->fileDisk('local')
+            ])
+            ->actions([
+                Tables\Actions\ViewAction::make()
+                ->url(fn ($record) => route('filament.admin.resources.invoices.view', $record)),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
                 ]),
                 ExportBulkAction::make()
-                    ->exporter(InvoicesRelationManager::class)
+                    ->exporter(InvoiceExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])

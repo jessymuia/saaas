@@ -6,12 +6,14 @@ use App\Filament\Exports\ClientExporter;
 use App\Filament\Resources\ClientResource\Pages;
 use App\Filament\Resources\ClientResource\RelationManagers;
 use App\Models\Client;
+use App\Models\CompanyDetails;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Actions\ExportBulkAction;
 use Illuminate\Database\Eloquent\Builder;
@@ -101,6 +103,33 @@ class ClientResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('pdf')
+                ->label('Export PDF')
+                ->icon('heroicon-m-document-arrow-down')
+                ->action(function ($record) {
+                    // Load the client with its related manual invoices
+                    $client = $record->load('manualInvoices');
+
+                    $company = CompanyDetails::latest()->first();
+
+                    $data = [
+                        'client' => $client,
+                        'company' => $company,
+                        //'invoices' => $client->manualInvoices,
+                        'timestamp' => now()->format('Y-m-d H:i:s')
+                    ];
+
+                    // Generate PDF using the view
+                    $pdf = Pdf::loadView('pdfs.client-details', $data);
+                    
+                    // Optional: Set paper size and orientation
+                    $pdf->setPaper('a4', 'portrait');
+
+                    // Download the PDF
+                    return response()->streamDownload(function () use ($pdf) {
+                        echo $pdf->output();
+                    }, "{$client->name}-{$client->id}-details.pdf");
+                })
             ])
             ->headerActions([
                 ExportAction::make()

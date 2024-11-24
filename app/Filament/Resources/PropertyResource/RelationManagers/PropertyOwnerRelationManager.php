@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PropertyResource\RelationManagers;
 
+use App\Filament\Exports\PropertyOwnerExporter;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -39,25 +40,24 @@ class PropertyOwnerRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-            ])
-            ->headerActions([
                 ExportAction::make()
-                    ->exporter(PropertyOwnerRelationManager::class)
+                    ->exporter(PropertyOwnerExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])
                     ->fileDisk('local')
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->requiresConfirmation("Are you sure you want to delete this property owner?"),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
                 ]),
                 ExportBulkAction::make()
-                    ->exporter(PropertyOwnerRelationManager::class)
+                    ->exporter(PropertyOwnerExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])

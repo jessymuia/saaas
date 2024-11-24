@@ -186,6 +186,12 @@ class AppPermissions
     const DELETE_COMPANY_DETAILS_PERMISSION = 'delete-company-details';
     const RESTORE_COMPANY_DETAILS_PERMISSION = 'restore-company-details';
 
+    // pdfs
+    const GENERATE_PDF_FILE_PERMISSION = 'generate-pdf-file';
+    
+    // csv
+    const GENERATE_CSV_FILE_PERMISSION = 'generate-csv-file';
+
     // property management users permissions
     const CREATE_PROPERTY_MANAGEMENT_USERS_PERMISSION = 'create-property-management-users';
     const READ_PROPERTY_MANAGEMENT_USERS_PERMISSION = 'read-property-management-users';

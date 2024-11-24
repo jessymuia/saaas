@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PropertyResource\RelationManagers;
 
+use App\Filament\Exports\PaymentDetailsExporter;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -62,7 +63,7 @@ class PaymentDetailsRelationManager extends RelationManager
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
                 ExportAction::make()
-                    ->exporter(PaymentDetailsRelationManager::class)
+                    ->exporter(PaymentDetailsExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])
@@ -77,7 +78,7 @@ class PaymentDetailsRelationManager extends RelationManager
                     Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
                 ]),
                 ExportBulkAction::make()
-                    ->exporter(PaymentDetailsRelationManager::class)
+                    ->exporter(PaymentDetailsExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])

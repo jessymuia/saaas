@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ManualInvoicesResource\RelationManagers;
 
+use App\Filament\Exports\InvoicePaymentExporter;
 use App\Models\InvoicePayment;
 use App\Rules\CheckPaidAmountDoesNotExceedAmountDue;
 use Filament\Forms;
@@ -125,7 +126,7 @@ class InvoicePaymentsRelationManager extends RelationManager
                         return $data;
                     }),
                 ExportAction::make()
-                    ->exporter(InvoicePaymentsRelationManager::class)
+                    ->exporter(InvoicePaymentExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])
@@ -204,7 +205,7 @@ class InvoicePaymentsRelationManager extends RelationManager
                     Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
                 ]),
                 ExportBulkAction::make()
-                    ->exporter(InvoicePaymentsRelationManager::class)
+                    ->exporter(InvoicePaymentExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])

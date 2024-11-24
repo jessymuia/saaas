@@ -8,6 +8,9 @@ use App\Filament\Resources\InvoiceResource\RelationManagers;
 use App\Models\Invoice;
 use App\Utils\AppUtils;
 use Barryvdh\Snappy\Facades\SnappyPdf;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\CompanyDetails;
+use Filament\Notifications\Notification;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -132,7 +135,8 @@ class InvoiceResource extends Resource
                     ->mutateFormDataUsing(fn ($data) => [
                         'deleted_by' => auth()->user()->id,
                     ]),
-
+                                
+              
             ])
             ->headerActions([
                 ExportAction::make()

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\InvoiceResource\RelationManagers;
 
+use App\Filament\Exports\CreditNoteExporter;
 use App\Models\CreditNote;
 use App\Models\Invoice;
 use Filament\Actions\Action;
@@ -128,7 +129,7 @@ class CreditNoteRelationManager extends RelationManager
                             });
                     }),
                 ExportAction::make()
-                    ->exporter(CreditNoteRelationManager::class)
+                    ->exporter(CreditNoteExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])
@@ -154,7 +155,7 @@ class CreditNoteRelationManager extends RelationManager
                     Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
                 ]),
                 ExportBulkAction::make()
-                    ->exporter(CreditNoteRelationManager::class)
+                    ->exporter(CreditNoteExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])

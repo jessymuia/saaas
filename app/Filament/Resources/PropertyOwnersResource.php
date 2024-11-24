@@ -11,6 +11,10 @@ use App\Utils\AppUtils;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\CompanyDetails;
+use App\Models\ManualInvoices;
+use App\Models\InvoicePayment;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -159,6 +163,84 @@ class PropertyOwnersResource extends Resource
                     ->mutateFormDataUsing(fn ($data) => [
                         'deleted_by' => auth()->user()->id,
                     ]),
+                Tables\Actions\Action::make('generatePdf')
+                    ->label('Generate PDF')
+                    ->icon('heroicon-m-document-arrow-down')
+                    ->action(function (PropertyOwners $record) {
+                        try {
+                            // Load the property owner with its relationships
+                            $propertyOwner = $record->load([
+                                'property'
+                            ]);
+
+                            $company = CompanyDetails::latest()->first();
+                            if (!$company) {
+                                Notification::make()
+                                    ->title('Error')
+                                    ->body('Company details not found')
+                                    ->danger()
+                                    ->send();
+                                return;
+                            }
+
+                            // Get all manual invoices for this property owner
+                            $invoices = ManualInvoices::where('property_owner_id', $propertyOwner->id)
+                                ->where('is_confirmed', true)
+                                ->get();
+
+                            // Calculate totals
+                            $totalInvoiced = $invoices->sum('amount');
+                            $totalPaid = InvoicePayment::where('property_owner_id', $propertyOwner->id)
+                                ->where('is_confirmed', true)
+                                ->sum('amount');
+                            $balance = $totalInvoiced - $totalPaid + $propertyOwner->balance_carried_forward;
+
+                            $data = [
+                                'propertyOwner' => $propertyOwner,
+                                'company' => $company,
+                                'invoices' => $invoices,
+                                'totalInvoiced' => $totalInvoiced,
+                                'totalPaid' => $totalPaid,
+                                'balance' => $balance,
+                                'balanceCarriedForward' => $propertyOwner->balance_carried_forward,
+                                'timestamp' => now()->format('Y-m-d H:i:s'),
+                                'logoData' => $company->logo ? base64_encode(file_get_contents(storage_path('app/public/' . $company->logo))) : null,
+                                'logoExtension' => $company->logo ? pathinfo(storage_path('app/public/' . $company->logo), PATHINFO_EXTENSION) : null,
+                            ];
+
+                            $pdf = Pdf::loadView('pdfs.property-owners-details', $data);
+                            $pdf->setPaper('A4', 'portrait');
+
+                            // Set additional PDF options
+                            $pdf->setOption('isPhpEnabled', true);
+                            $pdf->setOption('isRemoteEnabled', true);
+                            $pdf->setOption('isHtml5ParserEnabled', true);
+
+                            return response()->streamDownload(
+                                function () use ($pdf) {
+                                    echo $pdf->output();
+                                },
+                                "property-owners-{$propertyOwner->id}-details.pdf",
+                                [
+                                    'Content-Type' => 'application/pdf',
+                                    'Content-Disposition' => 'attachment'
+                                ]
+                            );
+
+                        } catch (\Exception $e) {
+                            Notification::make()
+                                ->title('Error generating PDF')
+                                ->body($e->getMessage())
+                                ->danger()
+                                ->send();
+
+                            \Log::error('PDF Generation Error:', [
+                                'error' => $e->getMessage(),
+                                'property_owner_id' => $record->id,
+                                'stack_trace' => $e->getTraceAsString()
+                            ]);
+                        }
+                    }),
             ])
             ->headerActions([
                 ExportAction::make()

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PropertyResource\RelationManagers;
 
+use App\Filament\Exports\UtilitiesExporter;
 use App\Rules\CheckUniqueUtilityInProperty;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -88,7 +89,7 @@ class UtilitiesRelationManager extends RelationManager
                         return $data;
                     }),
                 ExportAction::make()
-                    ->exporter(UtilitiesRelationManager::class)
+                    ->exporter(UtilitiesExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])
@@ -112,7 +113,7 @@ class UtilitiesRelationManager extends RelationManager
                     Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
                 ]),
                 ExportBulkAction::make()
-                    ->exporter(UtilitiesRelationManager::class)
+                    ->exporter(UtilitiesExporter::class)
                     ->formats([
                         ExportFormat::Csv
                     ])
