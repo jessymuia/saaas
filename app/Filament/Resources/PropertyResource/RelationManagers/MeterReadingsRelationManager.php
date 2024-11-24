@@ -168,7 +168,7 @@ class MeterReadingsRelationManager extends RelationManager
                         return $data;
                     }),
                 Tables\Actions\DeleteAction::make()
-                ->requiresConfirmation("Are you sure you want to delete this record?")
+                    ->requiresConfirmation("Are you sure you want to delete this record?")
                     ->mutateFormDataUsing(function ($data) {
                         $data['deleted_by'] = auth()->user()->id;
 
