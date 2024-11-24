@@ -198,7 +198,7 @@ class InvoicePaymentsRelationManager extends RelationManager
                             || strtotime($record->document_sent_at) !== false;
                     }),
                 Tables\Actions\DeleteAction::make()
-                ->requiresConfirmation("Are you sure you want to delete this record?")
+                    ->requiresConfirmation("Are you sure you want to delete this record?")
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
