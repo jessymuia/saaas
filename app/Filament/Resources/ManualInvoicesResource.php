@@ -152,7 +152,16 @@ class ManualInvoicesResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->icon('heroicon-o-document-text')
+                    ->disabled(fn (ManualInvoices $invoice) => !$invoice->is_generated)
+                    ->url(function (ManualInvoices $invoice) {
+                        if (!$invoice->is_generated) {
+                            return route('preview.manual-invoice',['invoice'=>null]);
+                        }
+                        $fileName = str_replace('manual_invoices/','',$invoice->document_url);
+                        return route('preview.manual-invoice',['invoice'=>$fileName]);
+                    }),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('View Invoice'),
                 Tables\Actions\Action::make('generatePdf')
@@ -189,12 +198,12 @@ class ManualInvoicesResource extends Resource
             $balance = $total - $creditNotes - $payments;
 
             // Get recipient details
-            $recipientName = $invoice->property_owner_id ? $invoice->propertyOwner->name : 
-                           ($invoice->client_id ? $invoice->client->name : 
+            $recipientName = $invoice->property_owner_id ? $invoice->propertyOwner->name :
+                           ($invoice->client_id ? $invoice->client->name :
                            ($invoice->tenant_id ? $invoice->tenant->name : 'N/A'));
-            
-            $recipientAddress = $invoice->property_owner_id ? $invoice->propertyOwner->address : 
-                              ($invoice->client_id ? $invoice->client->address : 
+
+            $recipientAddress = $invoice->property_owner_id ? $invoice->propertyOwner->address :
+                              ($invoice->client_id ? $invoice->client->address :
                               ($invoice->tenant_id ? $invoice->tenant->address : 'N/A'));
 
             $data = [
@@ -217,17 +226,17 @@ class ManualInvoicesResource extends Resource
             // Configure PDF
             $pdf = Pdf::loadView('pdfs.manual-invoices-details', $data);
             $pdf->setPaper('A4', 'portrait');
-            
+
             // Set additional PDF options
             $pdf->setOption('isPhpEnabled', true);
             $pdf->setOption('isRemoteEnabled', true);
             $pdf->setOption('isHtml5ParserEnabled', true);
-            
+
             return response()->streamDownload(
                 function () use ($pdf) {
                     echo $pdf->output();
-                }, 
-                "manual-invoices-{$invoice->id}-details.pdf", 
+                },
+                "manual-invoices-{$invoice->id}-details.pdf",
                 [
                     'Content-Type' => 'application/pdf',
                     'Content-Disposition' => 'attachment'
@@ -240,7 +249,7 @@ class ManualInvoicesResource extends Resource
                 ->body($e->getMessage())
                 ->danger()
                 ->send();
-            
+
             \Log::error('PDF Generation Error:', [
                 'error' => $e->getMessage(),
                 'invoice_id' => $record->id,
