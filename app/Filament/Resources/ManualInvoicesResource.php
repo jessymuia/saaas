@@ -167,6 +167,7 @@ class ManualInvoicesResource extends Resource
                 Tables\Actions\Action::make('generatePdf')
                     ->label('Generate PDF')
                     ->icon('heroicon-m-document-arrow-down')
+                    ->visible(false)
                     ->action(function (ManualInvoices $record) {
                         try {
                             // Load the invoice with its relationships
