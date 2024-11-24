@@ -49,7 +49,8 @@ class PropertyOwnerRelationManager extends RelationManager
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->requiresConfirmation("Are you sure you want to delete this property owner?"),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
