@@ -153,7 +153,6 @@ class MeterReadingsRelationManager extends RelationManager
                     }),
                 ExportAction::make()
                     ->exporter(MeterReadingsExporter::class)
-
                     ->formats([
                         ExportFormat::Csv
                     ])

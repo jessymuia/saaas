@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class Client extends DefaultAppModel
 {
@@ -13,11 +14,39 @@ class Client extends DefaultAppModel
         'phone_number',
         'address',
         'description',
+        'status',
+        'created_at',
+        'created_by',
+        'updated_by',
+        'updated_at',
+        'deleted_by',
+        'deleted_at'
     ];
 
 
     public function manualInvoices()
     {
         return $this->hasMany(ManualInvoices::class);
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($model) {
+            $model->created_by = auth()->id();
+            $model->saveQuietly();
+        });
+
+        static::updated(function ($model) {
+            $model->updated_by = auth()->id();
+            $model->saveQuietly();
+        });
+
+        static::deleting(function ($model) {
+            $model->deleted_by = auth()->id();
+            $model->deleted_at = now();
+            $model->save();
+        });
     }
 }

@@ -52,9 +52,33 @@ class User extends Authenticatable implements \OwenIt\Auditing\Contracts\Auditab
         'status' => 'boolean',
         'archive' => 'boolean',
         'created_at' => 'datetime:Y-m-d H:i:s',
+        'created_by' => 'integer',
         'updated_at' => 'datetime:Y-m-d H:i:s',
-        'deleted_at' => 'datetime:Y-m-d H:i:s'
+        'updated_by' => 'integer',
+        'deleted_at' => 'datetime:Y-m-d H:i:s',
+        'deleted_by' => 'integer'
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($model) {
+            $model->created_by = auth()->id();
+            $model->saveQuietly();
+        });
+
+        static::updated(function ($model) {
+            $model->updated_by = auth()->id();
+            $model->saveQuietly();
+        });
+
+        static::deleting(function ($model) {
+            $model->deleted_by = auth()->id();
+            $model->deleted_at = now();
+            $model->save();
+        });
+    }
 
     public function createdBy()
     {
@@ -75,5 +99,11 @@ class User extends Authenticatable implements \OwenIt\Auditing\Contracts\Auditab
     {
         // allow all users to access
         return true;
+    }
+
+    public function properties()
+    {
+        return $this->belongsToMany(Property::class, 'property_management_users',  'user_id', 'property_id')
+            ->withPivot('status', 'role_id');
     }
 }

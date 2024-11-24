@@ -78,6 +78,7 @@ class PropertyOwnersResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->query(PropertyOwners::accessibleByUser(auth()->user()))
             ->columns([
                 //
                 Tables\Columns\TextColumn::make('name')
@@ -99,6 +100,22 @@ class PropertyOwnersResource extends Resource
                 Tables\Columns\TextColumn::make('balance_carried_forward')
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('createdBy.name')
+                    ->numeric()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updatedBy.name')
+                    ->numeric()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                    Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true)
             ])
             ->filters([
                 //

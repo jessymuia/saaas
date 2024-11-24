@@ -201,7 +201,6 @@ class InvoicePaymentsRelationManager extends RelationManager
 
                 Tables\Actions\DeleteAction::make()
                     ->requiresConfirmation("Are you sure you want to delete this record?")
-
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -58,6 +58,7 @@ class InvoiceResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->query(Invoice::accessibleByUser(auth()->user()))
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->searchable()

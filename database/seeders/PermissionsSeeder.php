@@ -215,5 +215,19 @@ class PermissionsSeeder extends Seeder
 
         // csv
         Permission::findOrCreate(AppPermissions::GENERATE_CSV_FILE_PERMISSION);
+
+        // property management users
+        Permission::findOrCreate(AppPermissions::CREATE_PROPERTY_MANAGEMENT_USERS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::READ_PROPERTY_MANAGEMENT_USERS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::UPDATE_PROPERTY_MANAGEMENT_USERS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::DELETE_PROPERTY_MANAGEMENT_USERS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::RESTORE_PROPERTY_MANAGEMENT_USERS_PERMISSION);
+
+        // audits
+        Permission::findOrCreate(AppPermissions::CREATE_AUDITS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::READ_AUDITS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::UPDATE_AUDITS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::DELETE_AUDITS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::RESTORE_AUDITS_PERMISSION);
     }
 }

@@ -111,6 +111,7 @@ class ManualInvoicesResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->query(ManualInvoices::accessibleByUser(auth()->user()))
             ->columns([
                 //
                 Tables\Columns\TextColumn::make('id')
@@ -147,6 +148,24 @@ class ManualInvoicesResource extends Resource
                 Tables\Columns\TextColumn::make('comments')
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('createdBy.name')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updatedBy.name')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true)
             ])
             ->filters([
                 //

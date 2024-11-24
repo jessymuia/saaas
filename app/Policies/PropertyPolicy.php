@@ -14,10 +14,10 @@ class PropertyPolicy
      */
     public function viewAny(User $user): Response
     {
-        //
-        return $user->hasPermissionTo(AppPermissions::READ_PROPERTIES_PERMISSION)
+        return
+            $user->hasPermissionTo(AppPermissions::READ_PROPERTIES_PERMISSION)
             ? Response::allow()
-            : Response::deny('You do not have permissions to view any property');
+            : Response::deny('You do not have permissions to view property');
     }
 
     /**
@@ -25,7 +25,6 @@ class PropertyPolicy
      */
     public function view(User $user, Property $property): Response
     {
-        //
         return $user->hasPermissionTo(AppPermissions::READ_PROPERTIES_PERMISSION)
             ? Response::allow()
             : Response::deny('You do not have permissions to view property');
@@ -37,7 +36,8 @@ class PropertyPolicy
     public function create(User $user): Response
     {
         //
-        return $user->hasPermissionTo(AppPermissions::CREATE_PROPERTIES_PERMISSION)
+        return
+            $user->hasPermissionTo(AppPermissions::CREATE_PROPERTIES_PERMISSION)
             ? Response::allow()
             : Response::deny('You do not have permissions to create property');
     }
@@ -48,7 +48,8 @@ class PropertyPolicy
     public function update(User $user, Property $property): Response
     {
         //
-        return $user->hasPermissionTo(AppPermissions::UPDATE_PROPERTIES_PERMISSION)
+        return
+            $user->hasPermissionTo(AppPermissions::UPDATE_PROPERTIES_PERMISSION)
             ? Response::allow()
             : Response::deny('You do not have permissions to update property');
     }
@@ -59,7 +60,8 @@ class PropertyPolicy
     public function delete(User $user, Property $property): Response
     {
         //
-        return $user->hasPermissionTo(AppPermissions::DELETE_PROPERTIES_PERMISSION)
+        return
+            $user->hasPermissionTo(AppPermissions::DELETE_PROPERTIES_PERMISSION)
             ? Response::allow()
             : Response::deny('You do not have permissions to delete property');
     }
@@ -70,7 +72,8 @@ class PropertyPolicy
     public function restore(User $user, Property $property): Response
     {
         //
-        return $user->hasPermissionTo(AppPermissions::RESTORE_PROPERTIES_PERMISSION)
+        return
+            $user->hasPermissionTo(AppPermissions::RESTORE_PROPERTIES_PERMISSION)
             ? Response::allow()
             : Response::deny('You do not have permissions to restore property');
     }
@@ -82,5 +85,13 @@ class PropertyPolicy
     {
         //
         return false;
+    }
+
+    protected function canAccessProperty(User $user, Property $property): bool
+    {
+        return $user->properties()
+            ->where('properties.id', $property->id)
+            ->where('property_management_users.status', true)
+            ->exists();
     }
 }

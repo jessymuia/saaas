@@ -122,7 +122,7 @@ class TenancyBillsRelationManager extends RelationManager
                     ->action(function (): void{
                         AppUtils::generateBills(isBillsForNextMonth: true);
                     })
-                    ->requiresConfirmation(" Are you sure you want to generate bills for coming month? "),
+                    ->requiresConfirmation(" Are you sure you want to generate bills for coming month?"),
                 ExportAction::make()
                     ->exporter(TenancyBillsExporter::class)
                     ->formats([

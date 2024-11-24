@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Jobs\SendInvoiceMail;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
@@ -26,9 +27,36 @@ class ManualInvoices extends DefaultAppModel
         'is_confirmed',
         'is_generated',
         'document_url',
+        'created_by',
+        'created_at',
+        'updated_by',
+        'updated_at',
+        'deleted_by',
+        'deleted_at'
     ];
 
     protected $appends = ['amount','unpaid_amount'];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($model) {
+            $model->created_by = auth()->id();
+            $model->saveQuietly();
+        });
+
+        static::updated(function ($model) {
+            $model->updated_by = auth()->id();
+            $model->saveQuietly();
+        });
+
+        static::deleting(function ($model) {
+            $model->deleted_by = auth()->id();
+            $model->deleted_at = now();
+            $model->save();
+        });
+    }
 
     public function propertyOwner()
     {
@@ -53,6 +81,20 @@ class ManualInvoices extends DefaultAppModel
     public function invoicePayments()
     {
         return $this->hasMany(InvoicePayment::class,'invoice_id','id');
+    }
+
+    public function scopeAccessibleByUser(Builder $query, User $user)
+    {
+        if ($user->hasRole('admin')) {
+            return $query;
+        }
+
+        return $query->whereHas('tenant.tenancyAgreements.property', function (Builder $query) use ($user) {
+            $query->whereHas('users', function (Builder $query) use ($user) {
+                $query->where('user_id', $user->id)
+                    ->where('property_management_users.status', true); // Only include properties the user is actively managing
+            });
+        });
     }
 
     public function getAmountAttribute(){
