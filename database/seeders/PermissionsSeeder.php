@@ -215,5 +215,9 @@ class PermissionsSeeder extends Seeder
 
         // csv
         Permission::findOrCreate(AppPermissions::GENERATE_CSV_FILE_PERMISSION);
+
+        //lease schedule
+        Permission::findOrCreate(AppPermissions::GENERATE_LEASE_SCHEDULE_PERMISSION);
+
     }
 }
