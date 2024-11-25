@@ -83,4 +83,10 @@ class TenancyAgreementPolicy
         //
         return false;
     }
+
+
+    public function generateLeaseSchedule(User $user, TenancyAgreement $tenancyAgreement): Response
+    {
+        return Response::allow();
+    }
 }

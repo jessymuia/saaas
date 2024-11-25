@@ -191,4 +191,7 @@ class AppPermissions
     
     // csv
     const GENERATE_CSV_FILE_PERMISSION = 'generate-csv-file';
+
+    // lease schedule
+    const GENERATE_LEASE_SCHEDULE_PERMISSION = 'generate_lease_schedule';
 }
