@@ -16,6 +16,7 @@ use Filament\Notifications\Notification;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use App\Utils\AppPermissions;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Actions\Exports\Enums\ExportFormat;
@@ -186,6 +187,7 @@ class ManualInvoicesResource extends Resource
                 Tables\Actions\Action::make('generatePdf')
                     ->label('Generate PDF')
                     ->icon('heroicon-m-document-arrow-down')
+                    ->visible(fn () => auth()->user()->can(AppPermissions::GENERATE_MANUAL_INVOICE_PDF))
                     ->visible(false)
                     ->action(function (ManualInvoices $record) {
                         try {

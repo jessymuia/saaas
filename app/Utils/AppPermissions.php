@@ -205,4 +205,25 @@ class AppPermissions
     const UPDATE_AUDITS_PERMISSION = 'update-audits';
     const DELETE_AUDITS_PERMISSION = 'delete-audits';
     const RESTORE_AUDITS_PERMISSION = 'restore-audits';
+
+        // property
+        const GENERATE_PROPERTY_PDF = 'generate_property_pdf';
+
+        // invoice
+        const GENERATE_INVOICE_PDF = 'generate_invoice_pdf';
+    
+        // client
+        const GENERATE_CLIENT_PDF = 'generate_client_pdf';
+    
+        // tenant
+        const GENERATE_TENANT_PDF = 'generate_tenant_pdf';
+    
+        // manual invoice
+        const GENERATE_MANUAL_INVOICE_PDF = 'generate_manual_invoice_pdf';
+    
+        // invoice payment
+        const GENERATE_INVOICE_PAYMENT_PDF = 'generate_invoice_payment_pdf';
+    
+        // property owner
+        const GENERATE_PROPERTY_OWNER_PDF = 'generate_property_owner_pdf';
 }
