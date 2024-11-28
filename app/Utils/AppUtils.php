@@ -50,6 +50,7 @@ class AppUtils
                     ->where('has_bill', false)
                     ->select('id','unit_id', 'utility_id', 'consumption', 'reading_date')
                     ->orderBy('reading_date', 'asc')
+                    ->whereHas('tenancyAgreement')
                     ->chunk(100, function ($meterReadings) {
                         if ($meterReadings->isNotEmpty()){
                             foreach ($meterReadings as $meterReading) {
