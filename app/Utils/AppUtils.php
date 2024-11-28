@@ -50,7 +50,14 @@ class AppUtils
                     ->where('has_bill', false)
                     ->select('id','unit_id', 'utility_id', 'consumption', 'reading_date')
                     ->orderBy('reading_date', 'asc')
-                    ->whereHas('tenancyAgreement')
+                    ->whereHas('tenancyAgreement', function ($query){
+                        // check for active tenancy agreements
+                        $query->whereDate('start_date', '<=', DB::raw('meter_readings.reading_date'))
+                            ->where(function ($query) {
+                                $query->whereDate('end_date', '>=', DB::raw('meter_readings.reading_date'))
+                                    ->orWhereNull('end_date');
+                            });
+                    })
                     ->chunk(100, function ($meterReadings) {
                         if ($meterReadings->isNotEmpty()){
                             foreach ($meterReadings as $meterReading) {
