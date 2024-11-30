@@ -106,7 +106,10 @@ class AppUtils
                     // assumption: bill is generated beginning of the month TODO: FLAG:MIGRATION
                     while ($currentDate <= $endDate) {
                         $currentDate = date('Y-m-d', strtotime($currentDate));
-                        Log::info("Current date: ". $currentDate);
+                        if ($tenancyAgreement->unit?->property_id == 19){
+                            Log::info("Current date: ". $currentDate);
+                            Log::info("End date: ". $endDate);
+                        }
                         if (!$tenancyAgreement->monthlyOccupationRecords()->whereMonth('from_date', date('m', strtotime($currentDate)))->exists()) {
                             // check to ensure no backdating of invoices
                             if ($currentDate < '2024-03-01'){
