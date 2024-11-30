@@ -88,7 +88,7 @@ class AppUtils
                     }
 
                     if ($isBillsForNextMonth){
-                        $endDate = $tenancyAgreement->end_date > now()->addMonth()->endOfMonth() ? now()->endOfMonth() : $tenancyAgreement->end_date;
+                        $endDate = $tenancyAgreement->end_date > now()->addMonth()->endOfMonth() ? now()->addMonth()->endOfMonth() : $tenancyAgreement->end_date;
                         // check if end date is null, then set it to the end of the month
                         if (!$endDate){
                             $endDate = now()->addMonth()->endOfMonth();
