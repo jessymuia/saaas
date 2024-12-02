@@ -79,7 +79,15 @@ class MeterReading extends DefaultAppModel
 
     public function tenancyAgreement()
     {
-        return $this->belongsTo(TenancyAgreement::class);
+//        return $this->belongsTo(TenancyAgreement::class);
+        return $this->hasOneThrough(
+            TenancyAgreement::class,
+            Unit::class,
+            'id',
+            'unit_id',
+            'unit_id',
+            'id'
+        );
     }
 
     public function utility()
