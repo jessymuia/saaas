@@ -11,6 +11,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Resources\Resource;
+use App\Utils\AppPermissions;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -106,6 +107,7 @@ class ClientResource extends Resource
                 Tables\Actions\Action::make('pdf')
                 ->label('Export PDF')
                 ->icon('heroicon-m-document-arrow-down')
+                ->visible(fn () => auth()->user()->can(AppPermissions::GENERATE_CLIENT_PDF))
                 ->action(function ($record) {
                     // Load the client with its related manual invoices
                     $client = $record->load('manualInvoices');

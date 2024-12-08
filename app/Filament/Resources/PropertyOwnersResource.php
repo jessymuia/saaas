@@ -16,6 +16,7 @@ use App\Models\CompanyDetails;
 use App\Models\ManualInvoices;
 use App\Models\InvoicePayment;
 use Filament\Resources\Resource;
+use App\Utils\AppPermissions;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Actions\Exports\Enums\ExportFormat;
@@ -166,6 +167,7 @@ class PropertyOwnersResource extends Resource
                 Tables\Actions\Action::make('generatePdf')
                     ->label('Generate PDF')
                     ->icon('heroicon-m-document-arrow-down')
+                    ->visible(fn () => auth()->user()->can(AppPermissions::GENERATE_PROPERTY_OWNER_PDF))
                     ->action(function (PropertyOwners $record) {
                         try {
                             // Load the property owner with its relationships
