@@ -691,6 +691,24 @@ class TenancyAgreementsRelationManager extends RelationManager
                 }
             }
 
+            // include balance carried forward in the days due calculation
+            if($balanceCarriedForward != 0){
+                $balForwardCreation = Carbon::createFromFormat('Y-m-d',$tenancyAgreement['created_at']->toDateString());
+                $balForwardDaysDiff = $balForwardCreation->diffInDays(Carbon::now());
+                
+                if ($balForwardDaysDiff > 90){
+                    $overNinetyPastDue += $balanceCarriedForward;
+                } elseif ($balForwardDaysDiff > 60){
+                    $sixtyOneToNinetyPastDue += $balanceCarriedForward;
+                } elseif ($balForwardDaysDiff > 30){
+                    $thirtyOneToSixtyPastDue += $balanceCarriedForward;
+                } elseif ($balForwardDaysDiff > 0 ){
+                    $oneToThirtyPastDue += $balanceCarriedForward;
+                } elseif ($balForwardDaysDiff == 0){
+                    $current += $balanceCarriedForward;
+                }
+            }
+
             $company = CompanyDetails::latest()->first();
             if (!$company) {
                 Notification::make()
