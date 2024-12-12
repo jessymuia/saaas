@@ -35,20 +35,15 @@ return [
 
     'pdf' => [
         'enabled' => true,
-        'binary'  => '"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe"',
+        'binary'  => '"' . str_replace('/', '\\', env('WKHTML_PDF_BINARY', '/usr/bin/wkhtmltopdf')) . '"',
         'timeout' => false,
-        'options' => [
-            'disable-smart-shrinking' => true,
-            'zoom' => 1,
-            'page-size' => 'A4',
-            'encoding' => 'UTF-8'
-        ],
-        'env' => [],
+        'options' => [],
+        'env'     => [],
     ],
 
     'image' => [
         'enabled' => true,
-        'binary'  => '"C:\Program Files\wkhtmltopdf\bin\wkhtmltoimage.exe"',
+        'binary'  => '"' . str_replace('/', '\\', env('WKHTML_IMG_BINARY', '/usr/bin/wkhtmltoimage')) . '"',
         'timeout' => false,
         'options' => [],
         'env'     => [],
