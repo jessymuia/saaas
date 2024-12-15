@@ -126,9 +126,14 @@ class Property extends DefaultAppModel
         return $this->hasMany(VacationNotices::class, 'property_id');
     }
 
+    // public function propertyPaymentDetails()
+    // {
+    //     return $this->hasOne(PropertyPaymentDetails::class, 'property_id');
+    // }
+    // In your Property model
     public function propertyPaymentDetails()
     {
-        return $this->hasOne(PropertyPaymentDetails::class, 'property_id');
+        return $this->hasMany(PropertyPaymentDetails::class);
     }
 
     public function users()

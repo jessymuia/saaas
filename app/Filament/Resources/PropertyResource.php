@@ -112,39 +112,54 @@ class PropertyResource extends Resource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('generatePdf')
-                ->label('Generate PDF')
-                ->icon('heroicon-m-document-arrow-down')
-               
-                ->action(function ($record) {
-                    // Get the property with its relationships
-                    $property = $record->load([
-                        'propertyType',
-                        'units' => function ($query) {
-                            $query->orderBy('name');  
-                        },
-                        'utilities',
-                        'propertyServices',
-                        'propertyPaymentDetails',
-                        'propertyOwners',
-                    ]);
-
-                    $company = CompanyDetails::latest()->first();
-                   
-                    $data = [
-                        'property' => $property,
-                        'timestamp' => now()->format('Y-m-d H:i:s'),
-                        'company' => $company
-                    ];
-
-                    $pdf = Pdf::loadView('pdfs.property-details', $data);
+                    ->label('Generate PDF')
+                    ->icon('heroicon-m-document-arrow-down')
+                    ->action(function ($record) {
+                 
+                        $property = $record->load([
+                            'propertyType',
+                            'units' => function ($query) {
+                                $query->orderBy('name');
+                            },
+                            'utilities',
+                            'propertyServices',
+                            'propertyPaymentDetails' => function ($query) {
+                                $query->where('status', true); 
+                            },
+                            'propertyOwners' => function ($query) {
+                                $query->where('status', true); 
+                            },
+                        ]);
                     
-                    $pdf->setPaper('A4', 'portrait');
-
-                    return response()->streamDownload(function () use ($pdf) {
-                        echo $pdf->output();
-                    }, "{$property->name}-{$property->id}-details.pdf");
-                }),
-                
+                 
+                        if (!$property->propertyPaymentDetails) {
+                            $property->setRelation('propertyPaymentDetails', collect([]));
+                        }
+                    
+                     
+                        $company = CompanyDetails::latest()->first();
+                        if (!$company) {
+                            throw new \Exception('Company details not found. Please set up company details first.');
+                        }
+                    
+                        $data = [
+                            'property' => $property,
+                            'timestamp' => now()->format('Y-m-d H:i:s'),
+                            'company' => $company,
+                            'logoUrl' => $company->logo_url,
+                            'companyLocation' => $company->location,
+                            'companyAddress' => $company->address,
+                            'companyPhoneNumber' => $company->phone_number,
+                            'companyEmail' => $company->email,
+                        ];
+                    
+                        $pdf = Pdf::loadView('pdfs.property-details', $data);
+                        $pdf->setPaper('A4', 'portrait');
+                    
+                        return response()->streamDownload(function () use ($pdf) {
+                            echo $pdf->output();
+                        }, "{$property->name}-{$property->id}-details.pdf");
+                    }),
             ])
             ->headerActions([
                 ExportAction::make()
@@ -170,7 +185,6 @@ class PropertyResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
             RelationManagers\UnitsRelationManager::class,
             RelationManagers\TenancyAgreementsRelationManager::class,
             RelationManagers\UtilitiesRelationManager::class,
@@ -179,7 +193,6 @@ class PropertyResource extends Resource
             RelationManagers\VacationNoticesRelationManager::class,
             RelationManagers\UnitsOccupiedByRelationManager::class,
             RelationManagers\PaymentDetailsRelationManager::class,
-//            RelationManagers\PropertyOwnerRelationManager::class,
         ];
     }
 
