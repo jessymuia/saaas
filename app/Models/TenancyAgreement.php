@@ -178,57 +178,57 @@ class TenancyAgreement extends DefaultAppModel
             if (!Storage::exists($storagePath)) {
                 Storage::makeDirectory($storagePath);
             }
-    
+
             $endDate = $customEndDate ?? $this->end_date ?? now()->addYear();
             $startDate = Carbon::parse($this->start_date);
             $endDateCarbon = Carbon::parse($endDate);
             $duration = $startDate->diffInMonths($endDateCarbon) . ' months';
-            
+
             $payments = $this->invoicePayments()
                 ->where('invoice_payments.is_confirmed', true)
                 ->get();
-                
+
             $totalDueAmount = $this->amount * $startDate->diffInMonths($endDateCarbon);
             $totalPaidAmount = $payments->sum('amount');
-          
+
             $paymentScheduleHTML = '';
             $currentDate = $startDate->copy();
             $paymentsMade = 0;
             $paymentsOverdue = 0;
             $upcomingPayments = 0;
-            
+
             while ($currentDate <= $endDateCarbon) {
                 $dueAmount = $this->amount;
-                
+
                 if ($this->is_escalation && $this->next_escalation_date) {
                     $escalationDate = Carbon::parse($this->next_escalation_date);
                     if ($currentDate->gte($escalationDate)) {
                         $dueAmount += ($dueAmount * ($this->escalation_rate / 100));
                     }
                 }
-                
+
                 $isPaid = $payments->where('payment_date', $currentDate->format('Y-m-d'))->sum('amount') >= $dueAmount;
                 $status = $isPaid ? 'Paid' : ($currentDate->isPast() ? 'Overdue' : 'Upcoming');
-                
+
                 if ($isPaid) $paymentsMade++;
                 elseif ($currentDate->isPast()) $paymentsOverdue++;
                 else $upcomingPayments++;
-                
+
                 $paymentScheduleHTML .= "
                     <tr>
                         <td>{$currentDate->format('M j, Y')}</td>
                         <td>" . number_format($dueAmount, 2) . "</td>
                         <td>{$status}</td>
                     </tr>";
-                
+
                 $currentDate->addMonth();
             }
-            
+
             $company = CompanyDetails::latest()->first();
             if (!$company) {
                 throw new \Exception('Company details not found');
             }
-            
+
             $escalationDetails = '';
             if ($this->is_escalation) {
                 $escalationDetails = "
@@ -239,19 +239,19 @@ class TenancyAgreement extends DefaultAppModel
                         <td>{$this->escalation_period_in_months} months</td>
                     </tr>";
             }
-            
+
             $templatePath = resource_path('views/documents/templates/lease-schedule-report.blade.php');
             if (!File::exists($templatePath)) {
                 throw new \Exception("Template file not found at: {$templatePath}");
             }
-            
+
             $detailsArray = [
                 'companyName' => $company->name,
                 'companyAddress' => $company->address,
                 'companyEmail' => $company->email,
                 'companyPhoneNumber' => $company->phone_number,
                 'logoUrl' => 'file:///' . str_replace('\\', '/', storage_path('app/public/' . $company->logo)),
-                
+
                 'tenancyAgreementId' => $this->id,
                 'tenantName' => $this->tenant->name,
                 'propertyName' => $this->property->name,
@@ -259,60 +259,65 @@ class TenancyAgreement extends DefaultAppModel
                 'startDate' => $startDate->format('M j, Y'),
                 'endDate' => $endDateCarbon->format('M j, Y'),
                 'duration' => $duration,
-                
+
                 'paymentPeriod' => 'Monthly',
                 'paymentDue' => number_format($this->amount, 2),
                 'totalDueAmount' => number_format($totalDueAmount, 2),
                 'totalPaidAmount' => number_format($totalPaidAmount, 2),
                 'escalationDetails' => $escalationDetails,
-                
+
                 'paymentScheduleHTML' => $paymentScheduleHTML,
                 'paymentsMade' => $paymentsMade,
                 'paymentsOverdue' => $paymentsOverdue,
                 'upcomingPayments' => $upcomingPayments,
-                
+
                 'generatedDate' => now()->format('M j, Y H:i:s'),
             ];
-            
+
             $content = File::get($templatePath);
             foreach ($detailsArray as $key => $value) {
                 $content = str_replace("@#$key", (string)$value, $content);
             }
-            
+
             $pdfName = str_replace(' ', '_', $this->tenant->name) . "-{$this->id}-lease.pdf";
             $pdfPath = Storage::path($storagePath . '/' . $pdfName);
-            
+
+            // check if file exists
+            if (File::exists($pdfPath)) {
+                File::delete($pdfPath);
+            }
+
             $snappy = App::make('snappy.pdf');
             $snappy->setOption('enable-local-file-access', true);
             $snappy->setOption('margin-bottom', '1in');
             $snappy->setOption('margin-left', '1in');
             $snappy->setOption('margin-right', '1in');
             $snappy->setOption('margin-top', '1in');
-            
+
             Log::info('Generating PDF at: ' . $pdfPath);
             $snappy->generateFromHtml($content, $pdfPath);
-            
+
             if (!File::exists($pdfPath)) {
                 throw new \Exception('PDF file was not generated');
             }
-            
+
             return response()->download($pdfPath)->deleteFileAfterSend(false);
-            
+
         } catch (\Exception $exception) {
             Log::error('Lease Schedule Generation Error:');
             Log::error($exception->getMessage());
             Log::error($exception->getTraceAsString());
-            
+
             Notification::make()
                 ->title('Error')
                 ->body('Failed to generate lease schedule report: ' . $exception->getMessage())
                 ->danger()
                 ->send();
-                
+
             return false;
         }
     }
-    
+
     /**
      * Create deposit invoice
      * @param $billDate
