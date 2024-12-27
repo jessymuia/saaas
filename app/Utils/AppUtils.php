@@ -50,6 +50,14 @@ class AppUtils
                     ->where('has_bill', false)
                     ->select('id','unit_id', 'utility_id', 'consumption', 'reading_date')
                     ->orderBy('reading_date', 'asc')
+                    ->whereHas('tenancyAgreement', function ($query){
+                        // check for active tenancy agreements
+                        $query->whereDate('start_date', '<=', DB::raw('meter_readings.reading_date'))
+                            ->where(function ($query) {
+                                $query->whereDate('end_date', '>=', DB::raw('meter_readings.reading_date'))
+                                    ->orWhereNull('end_date');
+                            });
+                    })
                     ->chunk(100, function ($meterReadings) {
                         if ($meterReadings->isNotEmpty()){
                             foreach ($meterReadings as $meterReading) {
@@ -80,7 +88,7 @@ class AppUtils
                     }
 
                     if ($isBillsForNextMonth){
-                        $endDate = $tenancyAgreement->end_date > now()->addMonth()->endOfMonth() ? now()->endOfMonth() : $tenancyAgreement->end_date;
+                        $endDate = $tenancyAgreement->end_date > now()->addMonth()->endOfMonth() ? now()->addMonth()->endOfMonth() : $tenancyAgreement->end_date;
                         // check if end date is null, then set it to the end of the month
                         if (!$endDate){
                             $endDate = now()->addMonth()->endOfMonth();
@@ -98,6 +106,10 @@ class AppUtils
                     // assumption: bill is generated beginning of the month TODO: FLAG:MIGRATION
                     while ($currentDate <= $endDate) {
                         $currentDate = date('Y-m-d', strtotime($currentDate));
+                        if ($tenancyAgreement->unit?->property_id == 19){
+                            Log::info("Current date: ". $currentDate);
+                            Log::info("End date: ". $endDate);
+                        }
                         if (!$tenancyAgreement->monthlyOccupationRecords()->whereMonth('from_date', date('m', strtotime($currentDate)))->exists()) {
                             // check to ensure no backdating of invoices
                             if ($currentDate < '2024-03-01'){

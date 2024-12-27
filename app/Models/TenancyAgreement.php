@@ -34,12 +34,36 @@ class TenancyAgreement extends DefaultAppModel
         'balance_carried_forward',
         'has_invoice_for_balance_carried_forward',
         'created_by',
+        'created_at',
         'updated_by',
+        'updated_at',
         'deleted_by',
+        'deleted_at',
         'status',
         'archive'
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($model) {
+            $model->created_by = auth()->id();
+            $model->saveQuietly();
+        });
+
+        static::updated(function ($model) {
+            $model->updated_by = auth()->id();
+            $model->saveQuietly();
+        });
+
+        static::deleting(function ($model) {
+            $model->deleted_by = auth()->id();
+            $model->deleted_at = now();
+            $model->save();
+        });
+    }
+    
     protected $dispatchesEvents = [
         'created' => TenancyAgreementCreatedEvent::class, // dispatch this event once the tenancy agreement is created
     ];

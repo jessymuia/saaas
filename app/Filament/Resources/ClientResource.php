@@ -11,6 +11,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Resources\Resource;
+use App\Utils\AppPermissions;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -79,6 +80,24 @@ class ClientResource extends Resource
                 Tables\Columns\TextColumn::make('description')
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\IconColumn::make('status')
+                    ->boolean(),
+                Tables\Columns\TextColumn::make('createdBy.name')
+                    ->numeric()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updatedBy.name')
+                    ->numeric()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true)
             ])
             ->filters([
                 //
@@ -86,32 +105,31 @@ class ClientResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('pdf')
-                ->label('Export PDF')
-                ->icon('heroicon-m-document-arrow-down')
-                ->action(function ($record) {
-                    // Load the client with its related manual invoices
-                    $client = $record->load('manualInvoices');
+                    ->label('Generate PDF')
+                    ->icon('heroicon-m-document-arrow-down')
+                    ->visible(fn () => auth()->user()->can(AppPermissions::GENERATE_CLIENT_PDF))
+                    ->action(function ($record) {
+                        $client = $record->load('manualInvoices');
 
-                    $company = CompanyDetails::latest()->first();
+                        $company = CompanyDetails::latest()->first();
 
-                    $data = [
-                        'client' => $client,
-                        'company' => $company,
-                        //'invoices' => $client->manualInvoices,
-                        'timestamp' => now()->format('Y-m-d H:i:s')
-                    ];
+                        if (!$company) {
+                            throw new \Exception('Company details not found. Please set up company details first.');
+                        }
 
-                    // Generate PDF using the view
-                    $pdf = Pdf::loadView('pdfs.client-details', $data);
-                    
-                    // Optional: Set paper size and orientation
-                    $pdf->setPaper('a4', 'portrait');
+                        $data = [
+                            'client' => $client,
+                            'company' => $company,
+                            'timestamp' => now()->format('Y-m-d H:i:s')
+                        ];
 
-                    // Download the PDF
-                    return response()->streamDownload(function () use ($pdf) {
-                        echo $pdf->output();
-                    }, "{$client->name}-{$client->id}-details.pdf");
-                })
+                        $pdf = Pdf::loadView('pdfs.client-details', $data);
+                        $pdf->setPaper('A4', 'portrait');
+
+                        return response()->streamDownload(function () use ($pdf) {
+                            echo $pdf->output();
+                        }, "{$client->name}-{$client->id}-details.pdf");
+                    })
             ])
             ->headerActions([
                 ExportAction::make()

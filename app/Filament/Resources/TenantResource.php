@@ -14,6 +14,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Utils\AppPermissions;
 use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Actions\ExportBulkAction;
@@ -49,6 +50,7 @@ class TenantResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->query(Tenant::accessibleByUser(auth()->user()))
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->sortable()
@@ -61,15 +63,15 @@ class TenantResource extends Resource
                     ->searchable(),
                 Tables\Columns\IconColumn::make('status')
                     ->boolean(),
-                Tables\Columns\TextColumn::make('created_by')
+                Tables\Columns\TextColumn::make('createdBy.name')
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_by')
+                Tables\Columns\TextColumn::make('updatedBy.name')
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('deleted_by')
+                Tables\Columns\TextColumn::make('deletedBy.name')
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -95,26 +97,53 @@ class TenantResource extends Resource
                 Tables\Actions\Action::make('generatePdf')
                     ->label('Generate PDF')
                     ->icon('heroicon-m-document-arrow-down')
+                    ->visible(fn () => auth()->user()->can(AppPermissions::GENERATE_TENANT_PDF))
                     ->action(function (Tenant $record) {
-                        $tenant = $record->load([
-                            'tenancyAgreements.tenancyBills' // Make sure to load the relationship properly
-                        ]);
-
-                        $company = CompanyDetails::latest()->first();
-
-                        $pdf = Pdf::loadView('pdfs.tenant-details', [
-                            'tenant' => $tenant,
-                            'company' => $company,
-                            'bills' => $tenant->tenancyAgreements->flatMap->tenancyBills
-                        ]);
-    
-                    $pdf->setPaper('A4', 'portrait');
-    
-                    return response()->streamDownload(function () use ($pdf) {
-                        echo $pdf->output();
-                    }, "{$tenant->name}-{$tenant->id}-details.pdf");
-                }),
-                
+                        try {
+                            ini_set('max_execution_time', 300);
+                            
+                            $tenant = $record->load([
+                                'tenancyAgreements.tenancyBills'
+                            ]);
+                    
+                            $company = CompanyDetails::latest()->first();
+                            if (!$company) {
+                                throw new \Exception('Company details not found. Please set up company details first.');
+                            }
+                    
+                            $data = [
+                                'tenant' => $tenant,
+                                'company' => $company,
+                                'bills' => $tenant->tenancyAgreements->flatMap->tenancyBills
+                            ];
+                    
+                            $pdf = Pdf::loadView('pdfs.tenant-details', $data);
+                            $pdf->setPaper('A4', 'portrait');
+                    
+                            $pdf->setOption('isPhpEnabled', true);
+                            $pdf->setOption('isRemoteEnabled', true);
+                            $pdf->setOption('isHtml5ParserEnabled', true);
+                    
+                            return response()->streamDownload(
+                                function () use ($pdf) {
+                                    echo $pdf->output();
+                                },
+                                "{$tenant->name}-{$tenant->id}-details.pdf",
+                                [
+                                    'Content-Type' => 'application/pdf',
+                                    'Content-Disposition' => 'attachment'
+                                ]
+                            );
+                    
+                        } catch (\Exception $e) {
+                            \Log::error('PDF Generation Error:', [
+                                'error' => $e->getMessage(),
+                                'tenant_id' => $record->id,
+                                'stack_trace' => $e->getTraceAsString()
+                            ]);
+                            throw $e;
+                        }
+                    }),
             ])
             ->headerActions([
                 ExportAction::make()

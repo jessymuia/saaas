@@ -17,11 +17,35 @@ class SentEmails extends DefaultAppModel
         'failure_reason',
         'read_at',
         'created_by',
+        'created_at',
         'updated_by',
+        'updated_at',
         'deleted_by',
+        'deleted_at',
         'status',
         'archive'
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($model) {
+            $model->created_by = auth()->id();
+            $model->saveQuietly();
+        });
+
+        static::updated(function ($model) {
+            $model->updated_by = auth()->id();
+            $model->saveQuietly();
+        });
+
+        static::deleting(function ($model) {
+            $model->deleted_by = auth()->id();
+            $model->deleted_at = now();
+            $model->save();
+        });
+    }
 
     public function emailAttachments(){
         return $this->hasMany(EmailAttachments::class,'sent_email_id','id');

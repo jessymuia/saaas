@@ -16,6 +16,7 @@ use Filament\Notifications\Notification;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use App\Utils\AppPermissions;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Actions\Exports\Enums\ExportFormat;
@@ -111,6 +112,7 @@ class ManualInvoicesResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->query(ManualInvoices::accessibleByUser(auth()->user()))
             ->columns([
                 //
                 Tables\Columns\TextColumn::make('id')
@@ -147,6 +149,24 @@ class ManualInvoicesResource extends Resource
                 Tables\Columns\TextColumn::make('comments')
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('createdBy.name')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updatedBy.name')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true)
             ])
             ->filters([
                 //
@@ -154,100 +174,111 @@ class ManualInvoicesResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\Action::make('View Invoice'),
+                Tables\Actions\Action::make('View Invoice')
+                    ->icon('heroicon-o-document-text')
+                    ->disabled(fn (ManualInvoices $invoice) => !$invoice->is_generated)
+                    ->url(function (ManualInvoices $invoice) {
+                        if (!$invoice->is_generated) {
+                            return route('preview.manual-invoice',['invoice'=>null]);
+                        }
+                        $fileName = str_replace('manual_invoices/','',$invoice->document_url);
+                        return route('preview.manual-invoice',['invoice'=>$fileName]);
+                    }),
                 Tables\Actions\Action::make('generatePdf')
-    ->label('Generate PDF')
-    ->icon('heroicon-m-document-arrow-down')
-    ->action(function (ManualInvoices $record) {
-        try {
-            // Load the invoice with its relationships
-            $invoice = $record->load([
-                'propertyOwner',
-                'client',
-                'tenant',
-                'manualInvoiceItems',
-                'invoicePayments',
-                'creditNote'
-            ]);
+                    ->label('Generate PDF')
+                    ->icon('heroicon-m-document-arrow-down')
+                    ->visible(fn () => auth()->user()->can(AppPermissions::GENERATE_MANUAL_INVOICE_PDF))
+                    ->visible(false)
+                    ->action(function (ManualInvoices $record) {
+                        try {
+                            // Load the invoice with its relationships
+                            $invoice = $record->load([
+                                'propertyOwner',
+                                'client',
+                                'tenant',
+                                'manualInvoiceItems',
+                                'invoicePayments',
+                                'creditNote'
+                            ]);
 
-            $company = CompanyDetails::latest()->first();
-            if (!$company) {
-                Notification::make()
-                    ->title('Error')
-                    ->body('Company details not found')
-                    ->danger()
-                    ->send();
-                return;
-            }
+                            $company = CompanyDetails::latest()->first();
+                            if (!$company) {
+                                Notification::make()
+                                    ->title('Error')
+                                    ->body('Company details not found')
+                                    ->danger()
+                                    ->send();
+                                return;
+                            }
 
-            // Calculate totals
-            $subTotal = $invoice->manualInvoiceItems->sum('amount');
-            $vatTotal = $invoice->manualInvoiceItems->sum('vat');
-            $total = $invoice->manualInvoiceItems->sum('total_amount');
-            $creditNotes = $invoice->creditNote->sum('amount_credited');
-            $payments = $invoice->invoicePayments->sum('amount');
-            $balance = $total - $creditNotes - $payments;
+                            // Calculate totals
+                            $subTotal = $invoice->manualInvoiceItems->sum('amount');
+                            $vatTotal = $invoice->manualInvoiceItems->sum('vat');
+                            $total = $invoice->manualInvoiceItems->sum('total_amount');
+                            $creditNotes = $invoice->creditNote->sum('amount_credited');
+                            $payments = $invoice->invoicePayments->sum('amount');
+                            $balance = $total - $creditNotes - $payments;
 
-            // Get recipient details
-            $recipientName = $invoice->property_owner_id ? $invoice->propertyOwner->name : 
-                           ($invoice->client_id ? $invoice->client->name : 
-                           ($invoice->tenant_id ? $invoice->tenant->name : 'N/A'));
-            
-            $recipientAddress = $invoice->property_owner_id ? $invoice->propertyOwner->address : 
-                              ($invoice->client_id ? $invoice->client->address : 
-                              ($invoice->tenant_id ? $invoice->tenant->address : 'N/A'));
+                            // Get recipient details
+                            $recipientName = $invoice->property_owner_id ? $invoice->propertyOwner->name :
+                                           ($invoice->client_id ? $invoice->client->name :
+                                           ($invoice->tenant_id ? $invoice->tenant->name : 'N/A'));
 
-            $data = [
-                'invoice' => $invoice,
-                'company' => $company,
-                'recipientName' => $recipientName,
-                'recipientAddress' => $recipientAddress,
-                'subTotal' => $subTotal,
-                'vatTotal' => $vatTotal,
-                'total' => $total,
-                'creditNotes' => $creditNotes,
-                'payments' => $payments,
-                'balance' => $balance,
-                'timestamp' => now()->format('Y-m-d H:i:s'),
-                // Convert company logo to base64 if it exists
-                'logoData' => $company->logo ? base64_encode(file_get_contents(storage_path('app/public/' . $company->logo))) : null,
-                'logoExtension' => $company->logo ? pathinfo(storage_path('app/public/' . $company->logo), PATHINFO_EXTENSION) : null,
-            ];
+                            $recipientAddress = $invoice->property_owner_id ? $invoice->propertyOwner->address :
+                                              ($invoice->client_id ? $invoice->client->address :
+                                              ($invoice->tenant_id ? $invoice->tenant->address : 'N/A'));
 
-            // Configure PDF
-            $pdf = Pdf::loadView('pdfs.manual-invoices-details', $data);
-            $pdf->setPaper('A4', 'portrait');
-            
-            // Set additional PDF options
-            $pdf->setOption('isPhpEnabled', true);
-            $pdf->setOption('isRemoteEnabled', true);
-            $pdf->setOption('isHtml5ParserEnabled', true);
-            
-            return response()->streamDownload(
-                function () use ($pdf) {
-                    echo $pdf->output();
-                }, 
-                "manual-invoices-{$invoice->id}-details.pdf", 
-                [
-                    'Content-Type' => 'application/pdf',
-                    'Content-Disposition' => 'attachment'
-                ]
-            );
+                            $data = [
+                                'invoice' => $invoice,
+                                'company' => $company,
+                                'recipientName' => $recipientName,
+                                'recipientAddress' => $recipientAddress,
+                                'subTotal' => $subTotal,
+                                'vatTotal' => $vatTotal,
+                                'total' => $total,
+                                'creditNotes' => $creditNotes,
+                                'payments' => $payments,
+                                'balance' => $balance,
+                                'timestamp' => now()->format('Y-m-d H:i:s'),
+                                // Convert company logo to base64 if it exists
+                                'logoData' => $company->logo ? base64_encode(file_get_contents(storage_path('app/public/' . $company->logo))) : null,
+                                'logoExtension' => $company->logo ? pathinfo(storage_path('app/public/' . $company->logo), PATHINFO_EXTENSION) : null,
+                            ];
 
-        } catch (\Exception $e) {
-            Notification::make()
-                ->title('Error generating PDF')
-                ->body($e->getMessage())
-                ->danger()
-                ->send();
-            
-            \Log::error('PDF Generation Error:', [
-                'error' => $e->getMessage(),
-                'invoice_id' => $record->id,
-                'stack_trace' => $e->getTraceAsString()
-            ]);
-        }
-    })
+                            // Configure PDF
+                            $pdf = Pdf::loadView('pdfs.manual-invoices-details', $data);
+                            $pdf->setPaper('A4', 'portrait');
+
+                            // Set additional PDF options
+                            $pdf->setOption('isPhpEnabled', true);
+                            $pdf->setOption('isRemoteEnabled', true);
+                            $pdf->setOption('isHtml5ParserEnabled', true);
+
+                            return response()->streamDownload(
+                                function () use ($pdf) {
+                                    echo $pdf->output();
+                                },
+                                "manual-invoices-{$invoice->id}-details.pdf",
+                                [
+                                    'Content-Type' => 'application/pdf',
+                                    'Content-Disposition' => 'attachment'
+                                ]
+                            );
+
+                        } catch (\Exception $e) {
+                            Notification::make()
+                                ->title('Error generating PDF')
+                                ->body($e->getMessage())
+                                ->danger()
+                                ->send();
+
+                            \Log::error('PDF Generation Error:', [
+                                'error' => $e->getMessage(),
+                                'invoice_id' => $record->id,
+                                'stack_trace' => $e->getTraceAsString()
+                            ]);
+                        }
+                    })
             ])
             ->headerActions([
                 ExportAction::make()

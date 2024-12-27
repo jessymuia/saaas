@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -17,10 +18,49 @@ class Property extends DefaultAppModel
         'is_vatable',
         'status',
         'archive',
+        'created_at',
         'created_by',
+        'updated_at',
         'updated_by',
+        'deleted_at',
         'deleted_by'
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($model) {
+            $model->created_by = auth()->id();
+            $model->saveQuietly();
+        });
+
+        static::updated(function ($model) {
+            $model->updated_by = auth()->id();
+            $model->saveQuietly();
+        });
+
+        static::deleting(function ($model) {
+            $model->deleted_by = auth()->id();
+            $model->deleted_at = now();
+            $model->save();
+        });
+    }
+
+    public function scopeAccessibleByUser(Builder $query, User $user)
+    {
+        if ($user->hasRole('admin')) {
+            return $query;
+        }
+
+        return auth()->user()->hasRole('admin')
+            ? Property::query()
+            : auth()->user()->properties()
+                ->where('property_management_users.status', true)
+                ->where('property_management_users.deleted_at', null)
+                ->select('properties.*')
+                ->getQuery();
+    }
 
     public function propertyType()
     {
@@ -86,8 +126,19 @@ class Property extends DefaultAppModel
         return $this->hasMany(VacationNotices::class, 'property_id');
     }
 
+    // public function propertyPaymentDetails()
+    // {
+    //     return $this->hasOne(PropertyPaymentDetails::class, 'property_id');
+    // }
+    // In your Property model
     public function propertyPaymentDetails()
     {
-        return $this->hasOne(PropertyPaymentDetails::class, 'property_id');
+        return $this->hasMany(PropertyPaymentDetails::class);
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'property_management_users', 'property_id', 'user_id')
+            ->withPivot('status', 'role_id');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
@@ -13,11 +14,35 @@ class Tenant extends DefaultAppModel
         'email',
         'phone_number',
         'created_by',
+        'created_at',
         'updated_by',
+        'updated_at',
         'deleted_by',
+        'deleted_at',
         'status',
         'archive'
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($model) {
+            $model->created_by = auth()->id();
+            $model->saveQuietly();
+        });
+
+        static::updated(function ($model) {
+            $model->updated_by = auth()->id();
+            $model->saveQuietly();
+        });
+
+        static::deleting(function ($model) {
+            $model->deleted_by = auth()->id();
+            $model->deleted_at = now();
+            $model->save();
+        });
+    }
 
     public function tenancyAgreements()
     {
@@ -34,7 +59,7 @@ class Tenant extends DefaultAppModel
             'id',
             'id');
     }
-    public function getStatusAttribute(): string
+    public function getTenancyStatusAttribute(): string
     {
         $latestAgreement = $this->tenancyAgreements()
             ->latest('start_date')
@@ -44,12 +69,12 @@ class Tenant extends DefaultAppModel
             return 'Inactive';
         }
 
-       
+
         if (!$latestAgreement->end_date || Carbon::parse($latestAgreement->end_date)->isFuture()) {
             return 'Active';
         }
 
-        
+
         return 'Inactive';
     }
 
@@ -70,5 +95,19 @@ class Tenant extends DefaultAppModel
     public function invoicePayments()
     {
         return $this->hasMany(InvoicePayment::class, 'tenant_id', 'id');
+    }
+
+    public function scopeAccessibleByUser(Builder $query, User $user)
+    {
+        if ($user->hasRole('admin')) {
+            return $query;
+        }
+
+        return $query->whereHas('tenancyAgreements.unit.property', function (Builder $query) use ($user) {
+            $query->whereHas('users', function (Builder $query) use ($user) {
+                $query->where('user_id', $user->id)
+                    ->where('property_management_users.status', true);
+            });
+        });
     }
 }

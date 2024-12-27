@@ -15,6 +15,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Utils\AppPermissions;
 use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Actions\ExportBulkAction;
@@ -66,6 +67,7 @@ class PropertyResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->query(Property::accessibleByUser(auth()->user()))
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->sortable()
@@ -87,11 +89,11 @@ class PropertyResource extends Resource
                     ->boolean(),
                 Tables\Columns\IconColumn::make('is_vatable')
                     ->boolean(),
-                Tables\Columns\TextColumn::make('created_by')
+                Tables\Columns\TextColumn::make('createdBy.name')
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_by')
+                Tables\Columns\TextColumn::make('updatedBy.name')
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -111,39 +113,55 @@ class PropertyResource extends Resource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('generatePdf')
-                ->label('Generate PDF')
-                ->icon('heroicon-m-document-arrow-down')
-               
-                ->action(function ($record) {
-                    // Get the property with its relationships
-                    $property = $record->load([
-                        'propertyType',
-                        'units' => function ($query) {
-                            $query->orderBy('name');  
-                        },
-                        'utilities',
-                        'propertyServices',
-                        'propertyPaymentDetails',
-                        'propertyOwners',
-                    ]);
+                    ->label('Generate PDF')
+                    ->icon('heroicon-m-document-arrow-down')
+                    ->visible(fn () => auth()->user()->can(AppPermissions::GENERATE_PROPERTY_PDF))
+                    ->action(function ($record) {
 
-                    $company = CompanyDetails::latest()->first();
-                   
-                    $data = [
-                        'property' => $property,
-                        'timestamp' => now()->format('Y-m-d H:i:s'),
-                        'company' => $company
-                    ];
+                        $property = $record->load([
+                            'propertyType',
+                            'units' => function ($query) {
+                                $query->orderBy('name');
+                            },
+                            'utilities',
+                            'propertyServices',
+                            'propertyPaymentDetails' => function ($query) {
+                                $query->where('status', true);
+                            },
+                            'propertyOwners' => function ($query) {
+                                $query->where('status', true);
+                            },
+                        ]);
 
-                    $pdf = Pdf::loadView('pdfs.property-details', $data);
-                    
-                    $pdf->setPaper('A4', 'portrait');
+                        $company = CompanyDetails::latest()->first();
 
-                    return response()->streamDownload(function () use ($pdf) {
-                        echo $pdf->output();
-                    }, "{$property->name}-{$property->id}-details.pdf");
-                }),
-                
+                        if (!$property->propertyPaymentDetails) {
+                            $property->setRelation('propertyPaymentDetails', collect([]));
+                        }
+
+
+                        if (!$company) {
+                            throw new \Exception('Company details not found. Please set up company details first.');
+                        }
+
+                        $data = [
+                            'property' => $property,
+                            'timestamp' => now()->format('Y-m-d H:i:s'),
+                            'company' => $company,
+                            'logoUrl' => $company->logo_url,
+                            'companyLocation' => $company->location,
+                            'companyAddress' => $company->address,
+                            'companyPhoneNumber' => $company->phone_number,
+                            'companyEmail' => $company->email,
+                        ];
+
+                        $pdf = Pdf::loadView('pdfs.property-details', $data);
+                        $pdf->setPaper('A4', 'portrait');
+
+                        return response()->streamDownload(function () use ($pdf) {
+                            echo $pdf->output();
+                        }, "{$property->name}-{$property->id}-details.pdf");
+                    }),
             ])
             ->headerActions([
                 ExportAction::make()
@@ -169,7 +187,6 @@ class PropertyResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
             RelationManagers\UnitsRelationManager::class,
             RelationManagers\TenancyAgreementsRelationManager::class,
             RelationManagers\UtilitiesRelationManager::class,
@@ -178,7 +195,6 @@ class PropertyResource extends Resource
             RelationManagers\VacationNoticesRelationManager::class,
             RelationManagers\UnitsOccupiedByRelationManager::class,
             RelationManagers\PaymentDetailsRelationManager::class,
-//            RelationManagers\PropertyOwnerRelationManager::class,
         ];
     }
 

@@ -213,11 +213,34 @@ class PermissionsSeeder extends Seeder
         // pdfs
         Permission::findOrCreate(AppPermissions::GENERATE_PDF_FILE_PERMISSION);
 
+        // For specific PDF permissions:
+        Permission::findOrCreate(AppPermissions::GENERATE_PROPERTY_PDF);
+        Permission::findOrCreate(AppPermissions::GENERATE_INVOICE_PDF);
+        Permission::findOrCreate(AppPermissions::GENERATE_CLIENT_PDF);
+        Permission::findOrCreate(AppPermissions::GENERATE_TENANT_PDF);
+        Permission::findOrCreate(AppPermissions::GENERATE_MANUAL_INVOICE_PDF);
+        Permission::findOrCreate(AppPermissions::GENERATE_INVOICE_PAYMENT_PDF);
+        Permission::findOrCreate(AppPermissions::GENERATE_PROPERTY_OWNER_PDF);
+
         // csv
         Permission::findOrCreate(AppPermissions::GENERATE_CSV_FILE_PERMISSION);
 
         //lease schedule
         Permission::findOrCreate(AppPermissions::GENERATE_LEASE_SCHEDULE_PERMISSION);
 
+
+        // property management users
+        Permission::findOrCreate(AppPermissions::CREATE_PROPERTY_MANAGEMENT_USERS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::READ_PROPERTY_MANAGEMENT_USERS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::UPDATE_PROPERTY_MANAGEMENT_USERS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::DELETE_PROPERTY_MANAGEMENT_USERS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::RESTORE_PROPERTY_MANAGEMENT_USERS_PERMISSION);
+
+        // audits
+        Permission::findOrCreate(AppPermissions::CREATE_AUDITS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::READ_AUDITS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::UPDATE_AUDITS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::DELETE_AUDITS_PERMISSION);
+        Permission::findOrCreate(AppPermissions::RESTORE_AUDITS_PERMISSION);
     }
 }
