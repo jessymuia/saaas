@@ -15,6 +15,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Utils\AppPermissions;
 use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Actions\ExportBulkAction;
@@ -114,6 +115,7 @@ class PropertyResource extends Resource
                 Tables\Actions\Action::make('generatePdf')
                     ->label('Generate PDF')
                     ->icon('heroicon-m-document-arrow-down')
+                    ->visible(fn () => auth()->user()->can(AppPermissions::GENERATE_PROPERTY_PDF))
                     ->action(function ($record) {
                  
                         $property = $record->load([
@@ -130,6 +132,10 @@ class PropertyResource extends Resource
                                 $query->where('status', true); 
                             },
                         ]);
+
+
+                    $company = CompanyDetails::latest()->first();
+                   
                     
                  
                         if (!$property->propertyPaymentDetails) {
@@ -137,7 +143,6 @@ class PropertyResource extends Resource
                         }
                     
                      
-                        $company = CompanyDetails::latest()->first();
                         if (!$company) {
                             throw new \Exception('Company details not found. Please set up company details first.');
                         }

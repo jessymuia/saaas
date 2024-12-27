@@ -14,6 +14,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Utils\AppPermissions;
 use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Actions\ExportBulkAction;
@@ -96,6 +97,7 @@ class TenantResource extends Resource
                 Tables\Actions\Action::make('generatePdf')
                     ->label('Generate PDF')
                     ->icon('heroicon-m-document-arrow-down')
+                    ->visible(fn () => auth()->user()->can(AppPermissions::GENERATE_TENANT_PDF))
                     ->action(function (Tenant $record) {
                         try {
                             ini_set('max_execution_time', 300);

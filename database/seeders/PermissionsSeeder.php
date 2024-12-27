@@ -213,6 +213,15 @@ class PermissionsSeeder extends Seeder
         // pdfs
         Permission::findOrCreate(AppPermissions::GENERATE_PDF_FILE_PERMISSION);
 
+        // For specific PDF permissions:
+        Permission::findOrCreate(AppPermissions::GENERATE_PROPERTY_PDF);
+        Permission::findOrCreate(AppPermissions::GENERATE_INVOICE_PDF);
+        Permission::findOrCreate(AppPermissions::GENERATE_CLIENT_PDF);
+        Permission::findOrCreate(AppPermissions::GENERATE_TENANT_PDF);
+        Permission::findOrCreate(AppPermissions::GENERATE_MANUAL_INVOICE_PDF);
+        Permission::findOrCreate(AppPermissions::GENERATE_INVOICE_PAYMENT_PDF);
+        Permission::findOrCreate(AppPermissions::GENERATE_PROPERTY_OWNER_PDF);
+
         // csv
         Permission::findOrCreate(AppPermissions::GENERATE_CSV_FILE_PERMISSION);
 
