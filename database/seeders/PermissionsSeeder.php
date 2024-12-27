@@ -228,7 +228,6 @@ class PermissionsSeeder extends Seeder
         //lease schedule
         Permission::findOrCreate(AppPermissions::GENERATE_LEASE_SCHEDULE_PERMISSION);
 
-
         // property management users
         Permission::findOrCreate(AppPermissions::CREATE_PROPERTY_MANAGEMENT_USERS_PERMISSION);
         Permission::findOrCreate(AppPermissions::READ_PROPERTY_MANAGEMENT_USERS_PERMISSION);
