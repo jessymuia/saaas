@@ -35,20 +35,15 @@ return [
 
     'pdf' => [
         'enabled' => true,
-        'binary'  => env('WKHTML_PDF_BINARY', '/usr/bin/wkhtmltopdf'),
+        'binary'  => '"' . env('WKHTML_PDF_BINARY', '/usr/bin/wkhtmltopdf') . '"',
         'timeout' => false,
-        'options' => [
-            'disable-smart-shrinking' => true,
-            'zoom' => 1,
-            'page-size' => 'A4',
-            'encoding' => 'UTF-8'
-        ],
-        'env' => [],
+        'options' => [],
+        'env'     => [],
     ],
 
     'image' => [
         'enabled' => true,
-        'binary'  => env('WKHTML_IMG_BINARY', '/usr/bin/wkhtmltoimage'),
+        'binary'  => '"' . env('WKHTML_IMG_BINARY', '/usr/bin/wkhtmltoimage') . '"',
         'timeout' => false,
         'options' => [],
         'env'     => [],

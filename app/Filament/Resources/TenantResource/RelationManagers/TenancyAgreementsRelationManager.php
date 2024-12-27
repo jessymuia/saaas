@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
+use Filament\Tables\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
@@ -250,7 +251,26 @@ class TenancyAgreementsRelationManager extends RelationManager
                                 ->send();
                         }
                     }),
-                Tables\Actions\DeleteAction::make()
+                        Tables\Actions\DeleteAction::make(),
+                        Tables\Actions\Action::make('generate-lease-schedule')
+                            ->label('Generate Lease Schedule')
+                            ->icon('heroicon-o-document-text')
+                            ->requiresConfirmation()
+                            ->modalHeading('Generate Lease Schedule Report')
+                            ->modalDescription('Please confirm generating the lease schedule report.')
+                            ->form([
+                                Forms\Components\DatePicker::make('custom_end_date')
+                                    ->label('End Date')
+                                    ->visible(fn ($record) => is_null($record->end_date))
+                                    ->required(fn ($record) => is_null($record->end_date))
+                                    ->after('start_date'),
+                            ])
+                            ->action(function (TenancyAgreement $record, array $data) {
+                                return $record->generateLeaseSchedule(
+                                    isset($data['custom_end_date']) ? $data['custom_end_date'] : null
+                                );
+                            })
+                           
                     ->mutateFormDataUsing(function ($data) {
                         $data['deleted_by'] = auth()->user()->id;
                         return $data;
