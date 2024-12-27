@@ -117,7 +117,7 @@ class PropertyResource extends Resource
                     ->icon('heroicon-m-document-arrow-down')
                     ->visible(fn () => auth()->user()->can(AppPermissions::GENERATE_PROPERTY_PDF))
                     ->action(function ($record) {
-                 
+
                         $property = $record->load([
                             'propertyType',
                             'units' => function ($query) {
@@ -126,27 +126,24 @@ class PropertyResource extends Resource
                             'utilities',
                             'propertyServices',
                             'propertyPaymentDetails' => function ($query) {
-                                $query->where('status', true); 
+                                $query->where('status', true);
                             },
                             'propertyOwners' => function ($query) {
-                                $query->where('status', true); 
+                                $query->where('status', true);
                             },
                         ]);
 
+                        $company = CompanyDetails::latest()->first();
 
-                    $company = CompanyDetails::latest()->first();
-                   
-                    
-                 
                         if (!$property->propertyPaymentDetails) {
                             $property->setRelation('propertyPaymentDetails', collect([]));
                         }
-                    
-                     
+
+
                         if (!$company) {
                             throw new \Exception('Company details not found. Please set up company details first.');
                         }
-                    
+
                         $data = [
                             'property' => $property,
                             'timestamp' => now()->format('Y-m-d H:i:s'),
@@ -157,10 +154,10 @@ class PropertyResource extends Resource
                             'companyPhoneNumber' => $company->phone_number,
                             'companyEmail' => $company->email,
                         ];
-                    
+
                         $pdf = Pdf::loadView('pdfs.property-details', $data);
                         $pdf->setPaper('A4', 'portrait');
-                    
+
                         return response()->streamDownload(function () use ($pdf) {
                             echo $pdf->output();
                         }, "{$property->name}-{$property->id}-details.pdf");
