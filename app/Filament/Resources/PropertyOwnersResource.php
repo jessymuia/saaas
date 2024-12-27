@@ -24,6 +24,7 @@ use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Actions\ExportBulkAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Storage;
 
 class PropertyOwnersResource extends Resource
 {
@@ -170,6 +171,8 @@ class PropertyOwnersResource extends Resource
                     ->visible(fn () => auth()->user()->can(AppPermissions::GENERATE_PROPERTY_OWNER_PDF))
                     ->action(function (PropertyOwners $record) {
                         try {
+
+
                             // Load the property owner with its relationships
                             $propertyOwner = $record->load([
                                 'property'
@@ -206,11 +209,12 @@ class PropertyOwnersResource extends Resource
                                 'balance' => $balance,
                                 'balanceCarriedForward' => $propertyOwner->balance_carried_forward,
                                 'timestamp' => now()->format('Y-m-d H:i:s'),
-                                'logoData' => $company->logo ? base64_encode(file_get_contents(storage_path('app/public/' . $company->logo))) : null,
-                                'logoExtension' => $company->logo ? pathinfo(storage_path('app/public/' . $company->logo), PATHINFO_EXTENSION) : null,
+                                'logoUrl' => 'file://'.storage_path('app/public/'.$company->logo), // Use asset helper
                             ];
 
-                            $pdf = Pdf::loadView('pdfs.property-owners-details', $data);
+                            // Configure PDF options
+                            $pdf = Pdf::loadView('pdfs.property-owners-details', $data, []);
+
                             $pdf->setPaper('A4', 'portrait');
 
                             // Set additional PDF options
@@ -222,7 +226,7 @@ class PropertyOwnersResource extends Resource
                                 function () use ($pdf) {
                                     echo $pdf->output();
                                 },
-                                "property-owners-{$propertyOwner->id}-details.pdf",
+                                "{$propertyOwner->name}-{$propertyOwner->id}-details.pdf",
                                 [
                                     'Content-Type' => 'application/pdf',
                                     'Content-Disposition' => 'attachment'
@@ -242,7 +246,7 @@ class PropertyOwnersResource extends Resource
                                 'stack_trace' => $e->getTraceAsString()
                             ]);
                         }
-                    }),
+                    })
             ])
             ->headerActions([
                 ExportAction::make()

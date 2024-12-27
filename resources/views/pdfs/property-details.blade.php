@@ -1,254 +1,311 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Property Details - {{ $property->name }}</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            font-size: 12px;
-            line-height: 1.6;
+            padding-top: 0 !important;
+            margin-top: 0 !important;
+            font-family: serif;
         }
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-            padding: 10px;
-            background: #f5f5f5;
-        }
-        .section {
-            margin-bottom: 20px;
-            padding: 10px;
-            border: 1px solid #ddd;
-        }
-        .section-title {
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            background: #eee;
-            padding: 5px;
-        }
-        .property-info {
-            display: table;
+
+        .waffle {
+            overflow: hidden;
+            table-layout: fixed;
             width: 100%;
         }
-        .property-info div {
-            display: table-row;
+
+        .s1 {
+            text-align: left;
+            color: #000;
+            font-family: serif;
+            font-size: 10pt;
+            vertical-align: middle;
+            direction: ltr;
+            padding: 2px 3px;
         }
-        .property-info span {
-            display: table-cell;
-            padding: 3px;
-        }
-        .label {
+
+        .s2 {
+            text-align: center;
             font-weight: bold;
-            width: 150px;
+            color: #000;
+            font-family: serif;
+            font-size: 11pt;
+            vertical-align: middle;
+            direction: ltr;
+            padding: 2px 3px;
+            letter-spacing: 0.5px;
         }
-        table {
+
+        .s3 {
+            text-align: right;
+            color: #000;
+            font-family: serif;
+            font-size: 9pt;
+            vertical-align: middle;
+            direction: ltr;
+            padding: 2px 3px;
+        }
+
+        .s11 {
+            border-bottom: 1px SOLID #000;
+            background-color: #f3f3f3;
+            text-align: center;
+            font-weight: bold;
+            color: #000;
+            font-family: serif;
+            font-size: 11pt;
+            vertical-align: middle;
+            padding: 2px 3px;
+            line-height: 180%;
+        }
+
+        .s12b {
+            border: 1px SOLID #000;
+            text-align: left;
+            font-weight: bold;
+            color: #000;
+            font-family: serif;
+            font-size: 8pt;
+            vertical-align: middle;
+            padding: 2px 3px;
+        }
+
+        .section-content {
+            border: 1px SOLID #000;
+            text-align: left;
+            color: #000;
+            font-family: serif;
+            font-size: 8pt;
+            vertical-align: middle;
+            padding: 8px;
+        }
+
+        .section-header {
+            background-color: #f3f3f3;
+            font-weight: bold;
+            padding: 8px;
+            border: 1px SOLID #000;
+            font-size: 9pt;
+        }
+
+        table.details-table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
         }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 5px;
+
+        .details-table th, .details-table td {
+            border: 1px solid #000;
+            padding: 6px;
             text-align: left;
+            font-size: 8pt;
         }
-        th {
-            background: #f5f5f5;
-        }
-        .letterhead-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .logo-container {
-            flex: 0 0 300px;
-        }
-        
-        .logo-container img {
-            max-width: 100%;
-            height: auto;
-        }
-        
-        .contact-details {
-            flex: 0 0 400px;
-            text-align: right;
-        }
-        
-        .contact-details p {
-            margin: 5px 0;
-            font-size: 14px;
-            line-height: 1.4;
-        }
-        
-        .detail-label {
+
+        .details-table th {
+            background-color: #f3f3f3;
             font-weight: bold;
         }
-        
-        .page-title {
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-            margin: 20px 0;
-        }
-        .empty-state {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-            font-style: italic;
-        }
-        .unit-number {
-            font-weight: bold;
-            color: #333;
-        }
-        .inactive-row {
-            background-color: #f9f9f9;
-            color: #666;
+
+        @media print {
+            td {
+                padding-bottom: 10px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Property Details </h1>
-        <!-- <p>Generated on: {{ $timestamp }}</p> -->
+    <div class="waffle">
+        <!-- TITLE -->
+        <table cellspacing="0" cellpadding="0" width="100%">
+            <tr style="height: 20px;">
+                <td class="s1" colspan="3"></td>
+                <td class="s2" colspan="1">
+                    <div style="text-align: center;">
+                        <p>PROPERTY DETAILS</p>
+                    </div>
+                </td>
+                <td class="s1" colspan="3"></td>
+            </tr>
 
-        <div class="letterhead-container">
-        <div class="logo-container">
-        <img src="{{ $company -> logoUrl }}" style="display: block; max-width: 100%;"  height="73"  alt="Hamud Realtor Logo"/>
-        </div>
-        <div class="contact-details">
-            <p><span class="detail-label">Location:</span>{{ $company->location }}</p>
-            <p><span class="detail-label">Address:</span>{{ $company->address }}</p>
-            <p><span class="detail-label">Phone:</span>{{ $company->phone_number }}</p>
-            <p><span class="detail-label">Email:</span> {{ $company->email }}</p>
-        </div>
-    </div>
-        <!-- {{ $company }}
-        <p>
-        <img src="url({{ URL::asset('images/hamud_top_doc_logo.png')}})" style="display: block; max-width: 100%;"  height="73"  alt="Hamud Realtor Logo"/>
-            {{ $company->name }}
-            {{ $company->location }}
-            {{ $company->address }}
-            {{ $company->email }}
-            {{ $company->phone_number }}
-        </p> -->
-    </div>
+            <!-- LOGO & ADDRESS -->
+            <tr>
+                <td class="s1" colspan="3" style="text-align: center;">
+                    <div style="height: 73px;">
+                        <img src="{{ storage_path('app/public/'.$company->logo) }}" style="display: block; margin: auto; max-height: 73px;" alt="Company Logo"/>
+                    </div>
+                </td>
+                <td class="s1"></td>
+                <td class="s3" colspan="3">
+                    <div>
+                        <p style="margin: 0"><span style="font-weight: bold">Location:</span> {{ $company->location }}</p>
+                        <p style="margin: 0"><span style="font-weight: bold">Address:</span> {{ $company->address }}</p>
+                        <p style="margin: 0"><span style="font-weight: bold">Phone:</span> {{ $company->phone_number }}</p>
+                        <p style="margin: 0"><span style="font-weight: bold">Email:</span> {{ $company->email }}</p>
+                    </div>
+                </td>
+            </tr>
 
-    <div class="section">
-        <div class="section-title"> Property Information</div>
-        <div class="property-info">
-            <div>
-                <span class="label">Property Name:</span>
-                <span>{{ $property->name }}</span>
-            </div>
-            <div>
-                <span class="label">Address:</span>
-                <span>{{ $property->address }}</span>
-            </div>
-            <div>
-                <span class="label">Property Type:</span>
-                <span>{{ $property->propertyType->type }}</span>
-            </div>
-            <div>
-                <span class="label">Number of Units:</span>
-                <span>{{ $property->number_of_units }}</span>
-            </div>
-            <div>
-                <span class="label">VAT Status:</span>
-                <span>{{ $property->is_vatable ? 'VATable' : 'Non-VATable' }}</span>
-            </div>
-        </div>
-    </div>
+            <!-- Separator -->
+            <tr style="height: 30px">
+                <td class="s11" colspan="7"></td>
+            </tr>
 
-    @if($property->units->count() > 0)
-    <div class="section">
-        <div class="section-title">Units ({{ $property->units->count() }})</div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Unit Name</th>
-                    <th>Status</th>
-                    <th>Description</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($property->units as $unit)
-                <tr class="{{ !$unit->status ? 'inactive-row' : '' }}">
-                    <td>
-                        Unit {{ $unit->name }}
-                    </td>
-                    <td>
-                        @if($unit->status)
-                            <strong>Active</strong>
-                        @else
-                            Inactive
-                        @endif
-                    </td>
-                    <td>
-                        @if(!empty($unit->description))
-                            {{ $unit->description }}
-                        @else
-                            <em>No description available</em>
-                        @endif
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
+            <!-- Property Information -->
+            <tr>
+                <td colspan="7" class="section-header">Property Information</td>
+            </tr>
+            <tr>
+                <td colspan="7" class="section-content">
+                    <p style="margin: 5px 0"><strong>Property Name:</strong> {{ $property->name }}</p>
+                    <p style="margin: 5px 0"><strong>Address:</strong> {{ $property->address }}</p>
+                    <p style="margin: 5px 0"><strong>Property Type:</strong> {{ $property->propertyType->type }}</p>
+                    <p style="margin: 5px 0"><strong>Number of Units:</strong> {{ $property->number_of_units }}</p>
+                    <p style="margin: 5px 0"><strong>VAT Status:</strong> {{ $property->is_vatable ? 'VATable' : 'Non-VATable' }}</p>
+                </td>
+            </tr>
+
+            <!-- Units Section -->
+            @if($property->units->count() > 0)
+            <tr>
+                <td colspan="7" class="section-header">Units ({{ $property->units->count() }})</td>
+            </tr>
+            <tr>
+                <td colspan="7" class="section-content">
+                    <table class="details-table">
+                        <thead>
+                            <tr>
+                                <th>Unit Name</th>
+                                <th>Status</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($property->units as $unit)
+                            <tr>
+                                <td>Unit {{ $unit->name }}</td>
+                                <td>{{ $unit->status ? 'Active' : 'Inactive' }}</td>
+                                <td>{{ $unit->description ?: 'No description available' }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            @endif
+
+            <!-- Utilities Section -->
+            @if($property->utilities->count() > 0)
+            <tr>
+                <td colspan="7" class="section-header">Utilities</td>
+            </tr>
+            <tr>
+                <td colspan="7" class="section-content">
+                    <table class="details-table">
+                        <thead>
+                            <tr>
+                                <th>Utility Type</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($property->utilities as $utility)
+                            <tr>
+                                <td>{{ $utility->utility->name }}</td>
+                                <td>{{ $utility->status ? 'Active' : 'Inactive' }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            @endif
+
+            <!-- Property Services Section -->
+            @if($property->propertyServices->count() > 0)
+            <tr>
+                <td colspan="7" class="section-header">Property Services</td>
+            </tr>
+            <tr>
+                <td colspan="7" class="section-content">
+                    <table class="details-table">
+                        <thead>
+                            <tr>
+                                <th>Service</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($property->propertyServices as $service)
+                            <tr>
+                                <td>{{ $service->service->name }}</td>
+                                <td>{{ $service->status ? 'Active' : 'Inactive' }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            @endif
+
+            <!-- Property Payment Details Section -->
+            @if($property->propertyPaymentDetails->count() > 0)
+            <tr>
+                <td colspan="7" class="section-header">Payment Details</td>
+            </tr>
+            <tr>
+                <td colspan="7" class="section-content">
+                    <table class="details-table">
+                        <thead>
+                            <tr>
+                                <th>Payment Type</th>
+                                <th>Account Details</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($property->propertyPaymentDetails as $payment)
+                            <tr>
+                                <td>M-Pesa Paybill: {{ $payment->mpesa_paybill_number }}</td>
+                                <td>{{ $payment->account_name .' '. $payment->account_number }}</td>
+                                <td>{{ $payment->status ? 'Active' : 'Inactive' }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            @endif
+
+            <!-- Property Owners Section -->
+            @if($property->propertyOwners->count() > 0)
+            <tr>
+                <td colspan="7" class="section-header">Property Owners</td>
+            </tr>
+            <tr>
+                <td colspan="7" class="section-content">
+                    <table class="details-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Contact</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($property->propertyOwners as $owner)
+                            <tr>
+                                <td>{{ $owner->name }}</td>
+                                <td>{{ $owner->phone_number }}</td>
+                                <td>{{ $owner->status ? 'Active' : 'Inactive' }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            @endif
+
         </table>
     </div>
-    @else
-    <div class="section">
-        <div class="section-title">Units</div>
-        <div class="empty-state">
-            No units have been added to this property yet.
-        </div>
-    </div>
-    @endif
-
-    @if($property->utilities->count() > 0)
-    <div class="section">
-        <div class="section-title">Utilities</div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Utility Type</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($property->utilities as $utility)
-                <tr>
-                    <td>{{ $utility->utility_type }}</td>
-                    <td>{{ $utility->status ? 'Active' : 'Inactive' }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-    @endif
-
-    @if($property->propertyServices->count() > 0)
-    <div class="section">
-        <div class="section-title">Property Services</div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Service</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($property->propertyServices as $service)
-                <tr>
-                    <td>{{ $service->service_name }}</td>
-                    <td>{{ $service->status ? 'Active' : 'Inactive' }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-    @endif
 </body>
 </html>
