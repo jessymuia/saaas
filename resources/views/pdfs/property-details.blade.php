@@ -131,7 +131,8 @@
             <tr>
                 <td class="s1" colspan="3" style="text-align: center;">
                     <div style="height: 73px;">
-                    <img src="{{ $logoUrl }}" style="display: block; margin: auto; max-height: 73px;" alt="Company Logo"/>                    </div>
+                        <img src="{{ storage_path('app/public/'.$company->logo) }}" style="display: block; margin: auto; max-height: 73px;" alt="Company Logo"/>
+                    </div>
                 </td>
                 <td class="s1"></td>
                 <td class="s3" colspan="3">
@@ -209,7 +210,7 @@
                         <tbody>
                             @foreach($property->utilities as $utility)
                             <tr>
-                                <td>{{ $utility->utility_type }}</td>
+                                <td>{{ $utility->utility->name }}</td>
                                 <td>{{ $utility->status ? 'Active' : 'Inactive' }}</td>
                             </tr>
                             @endforeach
@@ -236,7 +237,7 @@
                         <tbody>
                             @foreach($property->propertyServices as $service)
                             <tr>
-                                <td>{{ $service->service_name }}</td>
+                                <td>{{ $service->service->name }}</td>
                                 <td>{{ $service->status ? 'Active' : 'Inactive' }}</td>
                             </tr>
                             @endforeach
@@ -264,8 +265,8 @@
                         <tbody>
                             @foreach($property->propertyPaymentDetails as $payment)
                             <tr>
-                                <td>{{ $payment->payment_type }}</td>
-                                <td>{{ $payment->account_details }}</td>
+                                <td>M-Pesa Paybill: {{ $payment->mpesa_paybill_number }}</td>
+                                <td>{{ $payment->account_name .' '. $payment->account_number }}</td>
                                 <td>{{ $payment->status ? 'Active' : 'Inactive' }}</td>
                             </tr>
                             @endforeach
@@ -294,7 +295,7 @@
                             @foreach($property->propertyOwners as $owner)
                             <tr>
                                 <td>{{ $owner->name }}</td>
-                                <td>{{ $owner->contact }}</td>
+                                <td>{{ $owner->phone_number }}</td>
                                 <td>{{ $owner->status ? 'Active' : 'Inactive' }}</td>
                             </tr>
                             @endforeach
