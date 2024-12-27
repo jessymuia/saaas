@@ -130,8 +130,8 @@
             <tr>
                 <td class="s1" colspan="3" style="text-align: center;">
                     <div style="height: 73px;">
-                        <img src="" 
-                             style="display: block; margin: auto; max-height: 73px;" 
+                        <img src="{{storage_path('app/public/'.$company->logo)}}"
+                             style="display: block; margin: auto; max-height: 73px;"
                              alt="Company Logo"/>
                     </div>
                 </td>
@@ -161,7 +161,7 @@
                     <p style="margin: 5px 0"><strong>Email:</strong> {{ $tenant->email }}</p>
                     <p style="margin: 5px 0"><strong>Phone Number:</strong> {{ $tenant->phone_number }}</p>
                     <p style="margin: 5px 0">
-                        <strong>Status:</strong> 
+                        <strong>Status:</strong>
                         <span class="status-{{ strtolower($tenant->tenancy_status) }}">
                             {{ $tenant->tenancy_status }}
                         </span>
@@ -246,7 +246,7 @@
                 </td>
             </tr>
 
-          
+
         </table>
     </div>
 </body>
