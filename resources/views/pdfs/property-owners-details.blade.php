@@ -132,9 +132,9 @@
             <!-- LOGO & ADDRESS -->
             <tr>
                 <td class="s1" colspan="3" style="text-align: center;">
-                <div style="height: 73px;">
-                        <img src="" 
-                             style="display: block; margin: auto; max-height: 73px;" 
+                    <div style="height: 73px;">
+                        <img src="{{ storage_path('app/public/'.$company->logo) }}"
+                             style="display: block; margin: auto; max-height: 73px;"
                              alt="Company Logo"/>
                     </div>
                 </td>

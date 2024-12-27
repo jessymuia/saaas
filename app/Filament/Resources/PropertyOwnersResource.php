@@ -23,6 +23,7 @@ use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Actions\ExportBulkAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Storage;
 
 class PropertyOwnersResource extends Resource
 {
@@ -168,13 +169,13 @@ class PropertyOwnersResource extends Resource
                     ->icon('heroicon-m-document-arrow-down')
                     ->action(function (PropertyOwners $record) {
                         try {
-                        
-                            
+
+
                             // Load the property owner with its relationships
                             $propertyOwner = $record->load([
                                 'property'
                             ]);
-                    
+
                             $company = CompanyDetails::latest()->first();
                             if (!$company) {
                                 Notification::make()
@@ -184,19 +185,19 @@ class PropertyOwnersResource extends Resource
                                     ->send();
                                 return;
                             }
-                    
+
                             // Get all manual invoices for this property owner
                             $invoices = ManualInvoices::where('property_owner_id', $propertyOwner->id)
                                 ->where('is_confirmed', true)
                                 ->get();
-                    
+
                             // Calculate totals
                             $totalInvoiced = $invoices->sum('amount');
                             $totalPaid = InvoicePayment::where('property_owner_id', $propertyOwner->id)
                                 ->where('is_confirmed', true)
                                 ->sum('amount');
                             $balance = $totalInvoiced - $totalPaid + $propertyOwner->balance_carried_forward;
-                    
+
                             $data = [
                                 'propertyOwner' => $propertyOwner,
                                 'company' => $company,
@@ -206,19 +207,19 @@ class PropertyOwnersResource extends Resource
                                 'balance' => $balance,
                                 'balanceCarriedForward' => $propertyOwner->balance_carried_forward,
                                 'timestamp' => now()->format('Y-m-d H:i:s'),
-                                'logoUrl' => asset('images/hamud_top_doc_logo.png') // Use asset helper
+                                'logoUrl' => 'file://'.storage_path('app/public/'.$company->logo), // Use asset helper
                             ];
-                    
+
                             // Configure PDF options
                             $pdf = Pdf::loadView('pdfs.property-owners-details', $data, []);
-                            
+
                             $pdf->setPaper('A4', 'portrait');
-                    
+
                             // Set additional PDF options
                             $pdf->setOption('isPhpEnabled', true);
                             $pdf->setOption('isRemoteEnabled', true);
                             $pdf->setOption('isHtml5ParserEnabled', true);
-                    
+
                             return response()->streamDownload(
                                 function () use ($pdf) {
                                     echo $pdf->output();
@@ -229,14 +230,14 @@ class PropertyOwnersResource extends Resource
                                     'Content-Disposition' => 'attachment'
                                 ]
                             );
-                    
+
                         } catch (\Exception $e) {
                             Notification::make()
                                 ->title('Error generating PDF')
                                 ->body($e->getMessage())
                                 ->danger()
                                 ->send();
-                    
+
                             \Log::error('PDF Generation Error:', [
                                 'error' => $e->getMessage(),
                                 'property_owner_id' => $record->id,
