@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\TenantResource\RelationManagers;
 
 use App\Filament\Exports\TenancyAgreementExporter;
+use App\Models\CompanyDetails;
 use App\Models\CreditNote;
 use App\Models\Invoice;
 use App\Models\InvoicePayment;
@@ -66,8 +67,7 @@ class TenancyAgreementsRelationManager extends RelationManager
                     ->minValue(1),
                 Forms\Components\TextInput::make('balance_carried_forward')
                     ->nullable()
-                    ->numeric()
-                    ->minValue(0),
+                    ->numeric(),
                 Forms\Components\Checkbox::make('is_escalation')
                     ->label('Define Escalation')
                     ->reactive(),
@@ -597,9 +597,11 @@ class TenancyAgreementsRelationManager extends RelationManager
 //            return $a['transaction_date'] <=> $b['transaction_date'];
         });
 
+        // obtain the balance carried forward
+        $balanceCarriedForward = $tenancyAgreement->balance_carried_forward;
+
         // obtain the total due
-        // obtain the total due
-        $amountDue = 0;
+        $amountDue = $balanceCarriedForward;
         foreach ($transactions as $transaction) {
             if ($transaction['transaction_type'] == 'invoice') {
                 $amountDue += $transaction['amount'];
@@ -618,14 +620,13 @@ class TenancyAgreementsRelationManager extends RelationManager
                 <tr style="height: 30px;">
                     <td class="s_cell_with_right_left_border" dir="ltr" colspan="2" style="font-size: 8pt;border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; border-left-width: 1px; border-left-color: #000; text-align: center; color: #000; font-family: serif; font-size: 8pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">'.Carbon::createFromFormat('Y-m-d',$tenancyAgreement->start_date)->format('M j, Y').'</td>
                     <td class="s_cell_with_right_left_border" dir="ltr" colspan="3" style="text-align: left; border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000;  color: #000; font-family: serif; font-size: 9pt; vertical-align: middle; word-wrap: break-word; white-space: normal; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">Balance Forward</td>
-                    <td class="s_cell_with_right_left_border" dir="ltr" colspan="1" style="text-align:right; border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; color: #000; font-family: serif; font-size: 9pt; vertical-align: middle; word-wrap: break-word; white-space: nowrap; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;"></td>
+                    <td class="s_cell_with_right_left_border" dir="ltr" colspan="1" style="text-align:right; border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; color: #000; font-family: serif; font-size: 9pt; vertical-align: middle; word-wrap: break-word; white-space: nowrap; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 3px; padding-left: 3px;">'.number_format($balanceCarriedForward,2).'</td>
                     <td class="s_cell_with_right_left_border" dir="ltr" colspan="1" style="text-align:right; border-bottom-width: 1px; border-bottom-color: #000; border-right-width: 1px; border-right-color: #000; color: #000; font-family: serif; font-size: 9pt; vertical-align: middle; word-wrap: break-word; white-space: nowrap; direction: ltr; padding-top: 2px; padding-bottom: 2px; padding-right: 0px; padding-left: 3px;">'.number_format(0,2).'</td>
                 </tr>';
 
             $propertyName = $tenancyAgreement->property->name;
 
             $unitName = $tenancyAgreement->unit->name;
-            $balanceCarriedForward = 0;
             $runningBalance = $balanceCarriedForward;
             $runningAmountDue = 0;
 
@@ -690,11 +691,39 @@ class TenancyAgreementsRelationManager extends RelationManager
                 }
             }
 
+            // include balance carried forward in the days due calculation
+            if($balanceCarriedForward != 0){
+                $balForwardCreation = Carbon::createFromFormat('Y-m-d',$tenancyAgreement['created_at']->toDateString());
+                $balForwardDaysDiff = $balForwardCreation->diffInDays(Carbon::now());
+                
+                if ($balForwardDaysDiff > 90){
+                    $overNinetyPastDue += $balanceCarriedForward;
+                } elseif ($balForwardDaysDiff > 60){
+                    $sixtyOneToNinetyPastDue += $balanceCarriedForward;
+                } elseif ($balForwardDaysDiff > 30){
+                    $thirtyOneToSixtyPastDue += $balanceCarriedForward;
+                } elseif ($balForwardDaysDiff > 0 ){
+                    $oneToThirtyPastDue += $balanceCarriedForward;
+                } elseif ($balForwardDaysDiff == 0){
+                    $current += $balanceCarriedForward;
+                }
+            }
+
+            $company = CompanyDetails::latest()->first();
+            if (!$company) {
+                Notification::make()
+                    ->title('Error')
+                    ->body('Company details not found')
+                    ->danger()
+                    ->send();
+                return;
+            }
+
             $detailsArray = [
                 'customerName' => $unitName.' '.$tenancyAgreement->tenant->name,
                 'propertyName' => $propertyName,
                 'dateGenerated'=> Carbon::now()->format('M j, Y'),
-                'logoUrl'=>'file://'.getcwd().'/images/hamud_top_doc_logo.png',
+                'logoUrl'=>'file://'.storage_path('/app/public/'.$company->logo),
                 'amountDue' => number_format($amountDue,2),
                 'amountEnc' => number_format(0,2),
                 'statementOfAccountItemsHTML' => $statementOfAccountItems,
@@ -703,6 +732,10 @@ class TenancyAgreementsRelationManager extends RelationManager
                 'thirtyOneToSixtyPastDue'=> number_format($thirtyOneToSixtyPastDue,2),
                 'sixtyOneToNinetyPastDue'=> number_format($sixtyOneToNinetyPastDue,2),
                 'overNinetyPastDue'=> number_format($overNinetyPastDue,2),
+                'companyLocation' => $company->location,
+                'companyAddress' => $company->address,
+                'companyPhone' => $company->phone,
+                'companyEmail' => $company->email,
             ];
 
             $content = File::get(resource_path('documents/templates/statement-of-account-output-document-version-2.html'));
