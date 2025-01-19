@@ -18,6 +18,7 @@ use App\Models\CompanyDetails;
 
 class TenancyAgreement extends DefaultAppModel
 {
+    protected $appends = ['is_escalation'];
 
     protected $fillable = [
         'unit_id',
@@ -63,11 +64,15 @@ class TenancyAgreement extends DefaultAppModel
             $model->save();
         });
     }
-    
+
     protected $dispatchesEvents = [
         'created' => TenancyAgreementCreatedEvent::class, // dispatch this event once the tenancy agreement is created
     ];
 
+    public function getIsEscalationAttribute(): bool
+    {
+        return $this->escalation_rate > 0 || $this->escalation_period_in_months > 0 || $this->next_escalation_date;
+    }
     // foreign keys
     public function unit()
     {

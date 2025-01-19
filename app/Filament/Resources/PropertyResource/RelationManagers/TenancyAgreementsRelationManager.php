@@ -5,6 +5,7 @@ namespace App\Filament\Resources\PropertyResource\RelationManagers;
 use App\Filament\Exports\TenancyAgreementExporter;
 use App\Models\TenancyAgreement;
 use App\Rules\CheckOccupancyOfUnit;
+use Carbon\Carbon;
 use Faker\Provider\Text;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -87,17 +88,25 @@ class TenancyAgreementsRelationManager extends RelationManager
                     ->visible(function (Get $get){
                         return $get('is_escalation') == true;
                     })
-//                    ->disabledOn('edit')
                     ->afterStateUpdated(function (Get $get,Forms\Set $set){
-                        $set('next_escalation_date',today()->addMonths($get('escalation_period_in_months'))->format('Y-m-d'));
+                        $tenancyAgreementStartDate = \Carbon\Carbon::parse($get('start_date'));
+                        $escalationPeriodInMonths = $get('escalation_period_in_months');
+
+                        if ($escalationPeriodInMonths > 0) {
+                            $monthsSinceStart = Carbon::now()->diffInMonths($tenancyAgreementStartDate);
+                            $periodsElapsed = floor($monthsSinceStart / $escalationPeriodInMonths);
+
+                            $nextEscalationDate = $tenancyAgreementStartDate->addMonths(($periodsElapsed + 1) * $escalationPeriodInMonths);
+
+                            $set('next_escalation_date', $nextEscalationDate->format('Y-m-d'));
+                        }
                     })
                     ->requiredIf('is_escalation',true),
                 Forms\Components\DatePicker::make('next_escalation_date')
                     ->visible(function (Get $get) use ($form) {
-                        return ($get('is_escalation') == true && $form->getOperation() == 'create');
+                        return ($get('is_escalation') == true);
                     })
-                    ->reactive()
-                    ->readOnly(),
+                    ->reactive(),
             ]);
     }
 
