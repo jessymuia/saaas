@@ -13,7 +13,7 @@ return new class extends Migration
     {
         //
         Schema::table('escalation_rates_and_amounts_logs', function (Blueprint $table) {
-            $table->foreignId('property_id')->constrained();
+            $table->foreignId('property_id')->nullable()->constrained();
             $table->foreign('tenancy_agreement_id')->references('id')->on('tenancy_agreements');
         });
     }
