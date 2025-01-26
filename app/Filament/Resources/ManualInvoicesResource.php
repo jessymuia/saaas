@@ -9,6 +9,7 @@ use App\Models\Client;
 use App\Models\ManualInvoices;
 use App\Models\PropertyOwners;
 use App\Models\Tenant;
+use App\Utils\AppUtils;
 use Filament\Actions\ViewAction;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\CompanyDetails;
@@ -28,6 +29,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class ManualInvoicesResource extends Resource
 {
     protected static ?string $model = ManualInvoices::class;
+
+    protected static ?string $navigationGroup = AppUtils::ACCOUNTING_NAVIGATION_GROUP;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 

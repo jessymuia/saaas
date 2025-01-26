@@ -5,6 +5,7 @@ namespace App\Filament\Pages;
 use App\Models\RefBillingType;
 use App\Models\Unit;
 use App\Utils\AppPermissions;
+use App\Utils\AppUtils;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -27,6 +28,8 @@ class TenancyScheduleReport extends Page implements HasForms
     use InteractsWithForms;
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
+
+    protected static ?string $navigationGroup = AppUtils::TENANCY_MANAGEMENT_NAVIGATION_GROUP;
 
     protected static string $view = 'filament.pages.tenancy-schedule-report';
 

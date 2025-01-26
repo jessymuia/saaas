@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\EscalationRatesAndAmountsLogsResource\Pages;
 use App\Filament\Resources\EscalationRatesAndAmountsLogsResource\RelationManagers;
 use App\Models\EscalationRatesAndAmountsLogs;
+use App\Utils\AppUtils;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -16,6 +17,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class EscalationRatesAndAmountsLogsResource extends Resource
 {
     protected static ?string $model = EscalationRatesAndAmountsLogs::class;
+
+    protected static ?string $navigationGroup = AppUtils::ACCOUNTING_NAVIGATION_GROUP;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 

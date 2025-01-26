@@ -7,6 +7,7 @@ use App\Filament\Resources\ClientResource\Pages;
 use App\Filament\Resources\ClientResource\RelationManagers;
 use App\Models\Client;
 use App\Models\CompanyDetails;
+use App\Utils\AppUtils;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Actions\Exports\Enums\ExportFormat;
@@ -23,6 +24,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class ClientResource extends Resource
 {
     protected static ?string $model = Client::class;
+
+    protected static ?string $navigationGroup = AppUtils::ACCOUNTING_NAVIGATION_GROUP;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
