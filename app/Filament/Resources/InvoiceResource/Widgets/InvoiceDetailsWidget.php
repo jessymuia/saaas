@@ -15,18 +15,18 @@ class InvoiceDetailsWidget extends BaseWidget
         $invoiceID = end($urlParts);
 
         // get the invoice amount
-        $invoice = \App\Models\Invoice::find($invoiceID);
+//         $invoice = \App\Models\Invoice::find($invoiceID);
 
         return [
-            Stat::make('Total Due', $invoice->totalDue())
-                ->icon('heroicon-o-currency-dollar')
-                ->color('bg-blue-500', 'text-white'),
-            Stat::make('Invoice Amount', $invoice->amount)
-                ->icon('heroicon-o-currency-dollar')
-                ->color('bg-blue-500', 'text-white'),
-            Stat::make('Total Paid', $invoice->invoicePayments()->sum('amount'))
-                ->icon('heroicon-o-currency-dollar')
-                ->color('bg-blue-500', 'text-white'),
+//            Stat::make('Total Due', $invoice->totalDue())
+//                ->icon('heroicon-o-currency-dollar')
+//                ->color('bg-blue-500', 'text-white'),
+//            Stat::make('Invoice Amount', $invoice->amount)
+//                ->icon('heroicon-o-currency-dollar')
+//                ->color('bg-blue-500', 'text-white'),
+//            Stat::make('Total Paid', $invoice->invoicePayments()->sum('amount'))
+//                ->icon('heroicon-o-currency-dollar')
+//                ->color('bg-blue-500', 'text-white'),
         ];
     }
 }
