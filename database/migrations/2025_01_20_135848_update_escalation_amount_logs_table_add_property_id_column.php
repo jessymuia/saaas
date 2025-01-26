@@ -11,16 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('escalation_rates_and_amounts_logs', function (Blueprint $table) {
-            $table = \App\Utils\AppUtils::defaultTableColumns($table);
-
-            $table->unsignedBigInteger('tenancy_agreement_id');
+        //
+        Schema::table('escalation_rates_and_amounts_logs', function (Blueprint $table) {
             $table->foreignId('property_id')->constrained();
-            $table->decimal('escalation_rate', 5, 2);
-            $table->decimal('previous_amount',14,2);
-            $table->decimal('new_amount',14,2);
-            $table->date('escalation_date');
-
             $table->foreign('tenancy_agreement_id')->references('id')->on('tenancy_agreements');
         });
     }
@@ -30,6 +23,12 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('escalation_rates_and_amounts_logs');
+        //
+        Schema::table('escalation_rates_and_amounts_logs', function (Blueprint $table) {
+            $table->dropForeign(['property_id']);
+            $table->dropForeign(['tenancy_agreement_id']);
+            $table->dropColumn('property_id');
+            $table->dropColumn('tenancy_agreement_id');
+        });
     }
 };

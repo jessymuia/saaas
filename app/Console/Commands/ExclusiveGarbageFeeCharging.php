@@ -61,9 +61,10 @@ class ExclusiveGarbageFeeCharging extends Command
                 ->whereHas('tenancyBills',function ($query) use ($billDate){
                     $query->where('bill_date', $billDate->format('Y-m-01'));
                 })
+                ->whereYear('invoice_for_month', date_format($billDate,'Y')) // TODO: FLAG:MIGRATION
                 ->whereMonth('invoice_for_month', date_format($billDate,'m')) // TODO: FLAG:MIGRATION
-//                ->where('is_confirmed',0)
-//                ->where('is_generated',0)
+                ->where('is_confirmed',0)
+                ->where('is_generated',0)
                 ->orderBy('id','desc') // get the latest invoice
                 ->first();
 

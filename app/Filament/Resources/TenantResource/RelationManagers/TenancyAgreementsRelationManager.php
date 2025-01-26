@@ -141,8 +141,7 @@ class TenancyAgreementsRelationManager extends RelationManager
             ->recordTitleAttribute('id')
             ->columns([
                 Tables\Columns\TextColumn::make('id')
-                    ->sortable()
-                    ->searchable(),
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('unit.name')
                     ->sortable()
                     ->searchable(),
@@ -163,6 +162,10 @@ class TenancyAgreementsRelationManager extends RelationManager
                     ->searchable(),
                 Tables\Columns\TextColumn::make('escalation_period_in_months')
                     ->label('Escalation Period (months)')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('escalation_rate')
                     ->sortable()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -270,7 +273,7 @@ class TenancyAgreementsRelationManager extends RelationManager
                                     isset($data['custom_end_date']) ? $data['custom_end_date'] : null
                                 );
                             })
-                           
+
                     ->mutateFormDataUsing(function ($data) {
                         $data['deleted_by'] = auth()->user()->id;
                         return $data;
@@ -715,7 +718,7 @@ class TenancyAgreementsRelationManager extends RelationManager
             if($balanceCarriedForward != 0){
                 $balForwardCreation = Carbon::createFromFormat('Y-m-d',$tenancyAgreement['created_at']->toDateString());
                 $balForwardDaysDiff = $balForwardCreation->diffInDays(Carbon::now());
-                
+
                 if ($balForwardDaysDiff > 90){
                     $overNinetyPastDue += $balanceCarriedForward;
                 } elseif ($balForwardDaysDiff > 60){

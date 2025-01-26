@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Events\TenancyAgreementCreatedEvent;
+
 use App\Utils\AppUtils;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,9 +12,10 @@ use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\App;
-use App\Models\CompanyDetails;
+
 
 
 class TenancyAgreement extends DefaultAppModel
@@ -42,6 +44,10 @@ class TenancyAgreement extends DefaultAppModel
         'deleted_at',
         'status',
         'archive'
+    ];
+
+    protected $casts = [
+        'next_escalation_date' => 'date',
     ];
 
     protected static function boot()
@@ -415,7 +421,8 @@ class TenancyAgreement extends DefaultAppModel
     /**
      * @throws \Exception
      */
-    public function createRentBill($billDate, $invoice){
+    public function createRentBill($billDate, $invoice)
+    {
         $billDate = new \DateTime($billDate);
         // ensure there is no bill for this month
         $tenancyBillExists = TenancyBill::query()
@@ -427,9 +434,11 @@ class TenancyAgreement extends DefaultAppModel
                 EscalationRatesAndAmountsLogs::query()
                     ->where('tenancy_agreement_id',$this->id)
                     ->whereMonth('escalation_date',date_format($billDate,'m'))
+                    ->whereYear('escalation_date',date_format($billDate,'Y'))
                     ->exists()
                     ?
-                    : $query->whereMonth('bill_date',date_format($billDate,'m'));
+                    : $query->whereMonth('bill_date',date_format($billDate,'m'))
+                        ->whereYear('bill_date',date_format($billDate,'Y'));
             })
             ->where('service_id',null)
             ->where('utility_id',null)
@@ -437,6 +446,7 @@ class TenancyAgreement extends DefaultAppModel
             ->first();
 
         if ($tenancyBillExists){ // exit if the rent bill exists
+            Log::info("This bill exists: ".$tenancyBillExists->id);
             return $tenancyBillExists->id;
         }
 
@@ -447,10 +457,6 @@ class TenancyAgreement extends DefaultAppModel
         }
 
         // establish if unit is vatable
-//        $isVatable = $this->unit->property->property_type_id == 1;
-        if ($this->unit == null){
-            Log::error("The tenancy agreement causing error: ".$this->id);
-        }
         $isVatable = $this->unit->property->is_vatable;
 
         // define bill month name
@@ -458,27 +464,120 @@ class TenancyAgreement extends DefaultAppModel
 // TODO: Ensure bill date is not modified, look for way to ensure safe triggering for invoice generation and bills
         $nextMonth =  $billDate->format('F');
 
-        // create tenancy Bill
-        $tenancyBill = TenancyBill::create([
-            'tenancy_agreement_id' => $this->id,
-            'name' => $nextMonth. ' Rent Bill',
+        // check if the tenancy agreement has an escalation that is due on a date in the bill date month
+        $hasEscalation = $this->escalation_rate && $this->next_escalation_date &&
+            Carbon::parse($this->next_escalation_date)->format('Y-m') == $billDate->format('Y-m');
+
+        if ($hasEscalation) {
+            Log::info("Escalation exists for tenancy agreement: ".$this->id);
+//            $this->createInvoiceAndTenancyBill($tenancyAgreement);, check the escalation logs when invoicing normally
+
+            // evaluate number of days before escalation and days after as well
+            $daysBeforeEscalation = Carbon::parse($this->next_escalation_date)->diffInDays(Carbon::parse($this->next_escalation_date)->startOfMonth());
+            $daysAfterEscalation = (Carbon::parse($this->next_escalation_date)->endOfMonth()->diffInDays($this->next_escalation_date)) + 1;
+            $daysOfTheMonth = $this->next_escalation_date->daysInMonth;
+
+            // evaluate costing to client upto a given day
+            $rentAmountBeforeEscalationWithoutTax = ($daysBeforeEscalation / $daysOfTheMonth) * $this->amount;
+            $vatAmountBeforeEscalation = $rentAmountBeforeEscalationWithoutTax * AppUtils::VAT_RATE;
+            $totalRentAmountBeforeEscalation = $rentAmountBeforeEscalationWithoutTax + $vatAmountBeforeEscalation;
+
+            // calculate new amount
+            $newAmount = $this->amount + ($this->amount * ($this->escalation_rate / 100));
+            $nextEscalationDate = \Illuminate\Support\Carbon::parse($this->next_escalation_date)->addMonths($this->escalation_period_in_months);
+
+            $newAmount = number_format($newAmount, 2, '.', '');
+
+            // capture the past amount and log it in escalation rates and amounts logs
+            EscalationRatesAndAmountsLogs::create(
+                [
+                    'tenancy_agreement_id' => $this->id,
+                    'property_id' => $this->unit->property_id,
+                    'escalation_rate' => $this->escalation_rate,
+                    'previous_amount' => $this->amount,
+                    'new_amount' => $newAmount,
+                    'escalation_date' => $this->next_escalation_date,
+                    'status' => 1,
+                    'archive' => 0,
+                    'created_by' => 1,//TODO: Change value to SYSTEM USER
+                ]
+            );
+
+//            // capture the email data
+//            $emailData = [
+//                'tenantName' => $this->tenant->name,
+//                'escalationRate' => $this->escalation_rate,
+//                'newRentAmount' => $newAmount,
+//                'unitName' => $this->unit->name,
+//                'propertyName' => $this->unit->property->name,
+//                'oldRentAmount' => $this->amount,
+//                'escalationStartDate' => $this->next_escalation_date,
+//                'escalationEndDate' => $nextEscalationDate,
+//            ];
+
+            // evaluate costing to client from escalation day,
+            $rentAmountAfterEscalationWithoutTax = ($daysAfterEscalation / $daysOfTheMonth) * $newAmount;
+            $vatAmountAfterEscalation = $rentAmountAfterEscalationWithoutTax * AppUtils::VAT_RATE;
+            $totalRentAmountAfterEscalation = $rentAmountAfterEscalationWithoutTax + $vatAmountAfterEscalation;
+
+            // calculate the new amount and next escalation date
+            $this->amount = $newAmount;
+            $this->next_escalation_date = $nextEscalationDate;
+
+            // store the new amount in the tenancy agreement
+//            $this->save()
+            $this->update();
+
+//            // dispatch job to send out email to the tenant
+//            dispatch(function () use($emailData){
+////                            Mail::to($this->tenant->email)
+//                Mail::to('dundafuta@gmail.com')
+//                    ->send(new AmountEscalationNotificationEmail($emailData));
+//            });
+
+            // create tenancy Bill
+            $combinedTenancyBill = TenancyBill::create([
+                'tenancy_agreement_id' => $this->id,
+                'name' => $nextMonth. ' Rent Bill',
 //            'name' => $this->tenant->name.' '. $nextMonth. ' Rent Bill', TODO: FLAG:MIGRATION
 //            'bill_date' => now(),
-            'bill_date' => $billDate->format('Y-m-01'), // use the start of the month as the bill date
-            'due_date' => // this month 5th
-                date_format(
-                    date_create(date_format($billDate,'Y-m-d')),
-                    'Y-m-5'
-                ),
-            'amount' => $this->amount,
-            'vat' => $isVatable ? $this->amount * AppUtils::VAT_RATE : 0.0,
-            'total_amount' => $this->amount + ($isVatable ? $this->amount * AppUtils::VAT_RATE : 0.0),
-            'billing_type_id' => $this->billing_type_id,
-            'invoice_id' => $invoice->id,
-            'created_by' => auth()->user()->id,
-        ]);
+                'bill_date' => $billDate->format('Y-m-01'), // use the start of the month as the bill date
+                'due_date' => // this month 5th
+                    date_format(
+                        date_create(date_format($billDate,'Y-m-d')),
+                        'Y-m-5'
+                    ),
+                'amount' => $rentAmountAfterEscalationWithoutTax + $rentAmountBeforeEscalationWithoutTax,
+                'vat' => $vatAmountAfterEscalation + $vatAmountBeforeEscalation,
+                'total_amount' => $totalRentAmountAfterEscalation + $totalRentAmountBeforeEscalation,
+                'billing_type_id' => $this->billing_type_id,
+                'invoice_id' => $invoice->id,
+                'created_by' => auth()->user()->id,
+            ]);
 
-        return $tenancyBill->id;
+            return $combinedTenancyBill->id;
+        }else{
+            // create tenancy Bill
+            $tenancyBill = TenancyBill::create([
+                'tenancy_agreement_id' => $this->id,
+                'name' => $nextMonth. ' Rent Bill',
+//            'name' => $this->tenant->name.' '. $nextMonth. ' Rent Bill', TODO: FLAG:MIGRATION
+//            'bill_date' => now(),
+                'bill_date' => $billDate->format('Y-m-01'), // use the start of the month as the bill date
+                'due_date' => // this month 5th
+                    date_format(
+                        date_create(date_format($billDate,'Y-m-d')),
+                        'Y-m-5'
+                    ),
+                'amount' => $this->amount,
+                'vat' => $isVatable ? $this->amount * AppUtils::VAT_RATE : 0.0,
+                'total_amount' => $this->amount + ($isVatable ? $this->amount * AppUtils::VAT_RATE : 0.0),
+                'billing_type_id' => $this->billing_type_id,
+                'invoice_id' => $invoice->id,
+                'created_by' => auth()->user()->id,
+            ]);
+            return $tenancyBill->id;
+        }
     }
 
     public function createServiceBill($billDate,$invoice)

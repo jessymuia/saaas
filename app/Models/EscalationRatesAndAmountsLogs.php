@@ -9,6 +9,7 @@ class EscalationRatesAndAmountsLogs extends DefaultAppModel
 {
     protected $fillable = [
         'tenancy_agreement_id',
+        'property_id',
         'escalation_rate',
         'previous_amount',
         'new_amount',
@@ -27,6 +28,11 @@ class EscalationRatesAndAmountsLogs extends DefaultAppModel
     public function tenancyAgreement()
     {
         return $this->belongsTo(TenancyAgreement::class);
+    }
+
+    public function property()
+    {
+        return $this->belongsTo(Property::class);
     }
 
     protected static function boot()

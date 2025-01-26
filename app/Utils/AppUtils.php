@@ -69,7 +69,9 @@ class AppUtils
                 // and create tenancy bills for them for rent
                 // then proceed to create occupation logs for them
                 $tenancyAgreements = TenancyAgreement::query()
-                    ->select('id', 'unit_id', 'tenant_id', 'agreement_type_id','billing_type_id','start_date', 'end_date','amount','created_at')
+                    ->select('id', 'unit_id', 'tenant_id', 'agreement_type_id','billing_type_id','start_date',
+                        'end_date','amount','created_at','escalation_rate','next_escalation_date',
+                        'escalation_period_in_months')
                     ->orderBy('start_date', 'asc')
                     ->get();
 
@@ -103,14 +105,15 @@ class AppUtils
 
                     $currentDate = $startDate;
 
-                    // assumption: bill is generated beginning of the month TODO: FLAG:MIGRATION
+                    // assumption: bill is generated beginning of the month except if 'isBillForNextMonth' flag is set TODO: FLAG:MIGRATION
                     while ($currentDate <= $endDate) {
                         $currentDate = date('Y-m-d', strtotime($currentDate));
-                        if ($tenancyAgreement->unit?->property_id == 19){
-                            Log::info("Current date: ". $currentDate);
-                            Log::info("End date: ". $endDate);
-                        }
-                        if (!$tenancyAgreement->monthlyOccupationRecords()->whereMonth('from_date', date('m', strtotime($currentDate)))->exists()) {
+
+                        if (!$tenancyAgreement->monthlyOccupationRecords()
+                            ->whereYear('from_date',date('Y', strtotime($currentDate)))
+                            ->whereMonth('from_date', date('m', strtotime($currentDate)))
+                            ->exists())
+                        {
                             // check to ensure no backdating of invoices
                             if ($currentDate < '2024-03-01'){
                                 $currentDate = date('Y-m-d', strtotime($currentDate . ' +1 month'));
@@ -120,6 +123,7 @@ class AppUtils
                             // if there is, then don't create a new one
                             $invoice = Invoice::query()
                                 ->where('tenancy_agreement_id', $tenancyAgreement->id)
+                                ->whereYear('invoice_for_month', date_format(new \DateTime($currentDate),'Y')) // TODO: FLAG:MIGRATION
                                 ->whereMonth('invoice_for_month', date_format(new \DateTime($currentDate),'m')) // TODO: FLAG:MIGRATION
                                 ->where('is_confirmed',0)
                                 ->where('is_generated',0)
@@ -192,7 +196,7 @@ class AppUtils
 //                            }
                 }
 
-                Notification::make('generate-bills-notification')
+                Notification::make()
                     ->title('Success')
                     ->success()
                     ->send();
@@ -208,7 +212,7 @@ class AppUtils
             Log::error($exception->getLine());
             Log::error("-----------------------------------------------------------------------");
 
-            Notification::make('generate-bills-notification')
+            Notification::make()
                 ->title('Error')
                 ->body('An error occurred while generating bills. '
                     . $exception->getMessage())

@@ -141,4 +141,10 @@ class Property extends DefaultAppModel
         return $this->belongsToMany(User::class, 'property_management_users', 'property_id', 'user_id')
             ->withPivot('status', 'role_id');
     }
+
+
+    public function escalationRatesAndAmountsLogs()
+    {
+        return $this->hasMany(EscalationRatesAndAmountsLogs::class);
+    }
 }

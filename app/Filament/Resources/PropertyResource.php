@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Exports\PropertyExporter;
 use App\Filament\Resources\PropertyResource\Pages;
 use App\Filament\Resources\PropertyResource\RelationManagers;
+use App\Models\EscalationRatesAndAmountsLogs;
 use App\Models\Property;
 use App\Models\CompanyDetails;
 use App\Models\TenancyAgreement;
@@ -195,6 +196,7 @@ class PropertyResource extends Resource
             RelationManagers\VacationNoticesRelationManager::class,
             RelationManagers\UnitsOccupiedByRelationManager::class,
             RelationManagers\PaymentDetailsRelationManager::class,
+//            RelationManagers\EscalationRatesAndAmountsLogsRelationManager::class,
         ];
     }
 

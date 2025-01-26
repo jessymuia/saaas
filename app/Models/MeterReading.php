@@ -153,6 +153,7 @@ class MeterReading extends DefaultAppModel
         $invoiceForMonthDate = $this->reading_date->startOfMonth()->addMonth();
         $invoice = Invoice::query()
             ->where('tenancy_agreement_id', $tenancyAgreement)
+            ->whereYear('invoice_for_month', date_format($invoiceForMonthDate,'Y')) //
             ->whereMonth('invoice_for_month', date_format($invoiceForMonthDate,'m')) //
 //            ->whereMonth('invoice_for_month', date_format($invoiceForMonthDate,'m')) // TODO: FLAG:MIGRATION
             ->where('is_confirmed', '=', 0)
