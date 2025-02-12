@@ -678,6 +678,7 @@ class TenancyAgreementsRelationManager extends RelationManager
                     </tr>';
             }
 
+            Log::error("The number of transactions", $transactions);
             // check if the statement of account items can fit in one page,
             // if they are more than one page, then add a page break
             // if less than one page, padd the table with empty rows
