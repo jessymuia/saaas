@@ -690,7 +690,7 @@ class TenancyAgreementsRelationManager extends RelationManager
                             <td class="s_cell_with_right_left_border" colspan="1"></td>
                             <td class="s_cell_with_right_left_border" colspan="1"></td>
                         </tr>',
-                19 - count($transactions)
+                19 - sizeof($transactions)
             );
 
             $current = 0;
