@@ -70,4 +70,9 @@ class TenancyBill extends DefaultAppModel
     {
         return $this->belongsTo(RefUtility::class);
     }
+
+    public function invoice()
+    {
+        return $this->belongsTo(Invoice::class);
+    }
 }

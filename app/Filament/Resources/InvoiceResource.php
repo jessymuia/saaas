@@ -6,6 +6,8 @@ use App\Filament\Exports\InvoiceExporter;
 use App\Filament\Resources\InvoiceResource\Pages;
 use App\Filament\Resources\InvoiceResource\RelationManagers;
 use App\Models\Invoice;
+use App\Models\TenancyBill;
+use App\Utils\AppPermissions;
 use App\Utils\AppUtils;
 use Barryvdh\Snappy\Facades\SnappyPdf;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -135,8 +137,8 @@ class InvoiceResource extends Resource
                     ->mutateFormDataUsing(fn ($data) => [
                         'deleted_by' => auth()->user()->id,
                     ]),
-                                
-              
+
+
             ])
             ->headerActions([
                 ExportAction::make()
@@ -147,9 +149,9 @@ class InvoiceResource extends Resource
                     ->fileDisk('local')
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
-                ]),
+//                Tables\Actions\BulkActionGroup::make([
+//                    Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
+//                ]),
                 ExportBulkAction::make()
                     ->exporter(InvoiceExporter::class)
                     ->formats([

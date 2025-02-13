@@ -5,6 +5,7 @@ namespace App\Filament\Resources\InvoiceResource\RelationManagers;
 use App\Filament\Exports\TenancyBillsExporter;
 use App\Models\TenancyBill;
 use App\Models\RefBillingType;
+use App\Utils\AppPermissions;
 use App\Utils\AppUtils;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -172,8 +173,16 @@ class TenancyBillsRelationManager extends RelationManager
                     ->hidden(function () {
                         return $this->ownerRecord->is_confirmed;
                     }),
-//                Tables\Actions\DeleteAction:: make()
-//                    ->requiresConfirmation()
+                Tables\Actions\DeleteAction:: make()
+                    ->visible(function (TenancyBill $tenancyBill) {
+                        return !$tenancyBill->invoice->is_confirmed && auth()->user()->can(AppPermissions::DELETE_TENANCY_BILLS_PERMISSION);
+                    })
+                    ->requiresConfirmation("Are you sure you want to delete this tenancy bill?")
+                    ->mutateFormDataUsing(function ($data){
+                        $data['deleted_by'] = auth()->user()->id;
+
+                        return $data;
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
