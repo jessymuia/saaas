@@ -269,6 +269,14 @@ class ManualInvoicesResource extends Resource
                             );
 
                         } catch (\Exception $e) {
+                            \Log::error('PDF Generation Error:', [
+                                'error' => $e->getMessage(),
+                                'invoice_id' => $record->id,
+                                'stack_trace' => $e->getTraceAsString(),
+                                'file' => $e->getFile(),
+                                'line' => $e->getLine(),
+                            ]);
+
                             Notification::make()
                                 ->title('Error generating PDF')
                                 ->body($e->getMessage())
