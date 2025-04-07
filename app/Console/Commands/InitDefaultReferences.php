@@ -103,8 +103,14 @@ class InitDefaultReferences extends Command
 
         $paymentType->save();
 
+        $paymentType = new RefPaymentType();
+        $paymentType->type = 'Bank Deposit';
+        $paymentType->description = 'Bank Deposit';
+
+        $paymentType->save();
+
         // confirm that the number of payment types is 4
-        RefPaymentType::all()->count() != 4
+        RefPaymentType::all()->count() != 5
             ? $this->error('Error creating payment types')
             : $this->info('Payment types created successfully');
 
