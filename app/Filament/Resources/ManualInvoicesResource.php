@@ -191,7 +191,6 @@ class ManualInvoicesResource extends Resource
                     ->label('Generate PDF')
                     ->icon('heroicon-m-document-arrow-down')
                     ->visible(fn () => auth()->user()->can(AppPermissions::GENERATE_MANUAL_INVOICE_PDF))
-                    ->visible(false)
                     ->action(function (ManualInvoices $record) {
                         try {
                             // Load the invoice with its relationships
