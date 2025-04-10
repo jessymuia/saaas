@@ -102,7 +102,13 @@ class MeterReadingsRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable(true, function (Builder $query, string $search):Builder{
+                        if (is_numeric($search)){
+                            return $query->where('meter_readings.id',$search);
+                        }else{
+                            return $query;
+                        }
+                    }),
                 Tables\Columns\TextColumn::make('unit.name')
                     ->sortable()
                     ->searchable(),

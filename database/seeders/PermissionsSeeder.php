@@ -241,5 +241,10 @@ class PermissionsSeeder extends Seeder
         Permission::findOrCreate(AppPermissions::UPDATE_AUDITS_PERMISSION);
         Permission::findOrCreate(AppPermissions::DELETE_AUDITS_PERMISSION);
         Permission::findOrCreate(AppPermissions::RESTORE_AUDITS_PERMISSION);
+
+        // reset utility meters
+        Permission::findOrCreate(AppPermissions::RESET_GAS_METER_PERMISSION);
+        Permission::findOrCreate(AppPermissions::RESET_ELECTRICITY_METER_PERMISSION);
+        Permission::findOrCreate(AppPermissions::RESET_WATER_METER_PERMISSION);
     }
 }

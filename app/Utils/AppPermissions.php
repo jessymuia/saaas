@@ -231,4 +231,11 @@ class AppPermissions
     // property owner
     const GENERATE_PROPERTY_OWNER_PDF = 'generate_property_owner_pdf';
 
+    // permission to reset water meter
+    const RESET_WATER_METER_PERMISSION = 'reset-water-meter';
+    // permission to reset electricity meter
+    const RESET_ELECTRICITY_METER_PERMISSION = 'reset-electricity-meter';
+    // permission to reset gas meter
+    const RESET_GAS_METER_PERMISSION = 'reset-gas-meter';
+
 }
