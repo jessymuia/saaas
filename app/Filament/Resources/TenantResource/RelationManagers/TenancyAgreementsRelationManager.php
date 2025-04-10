@@ -624,16 +624,16 @@ class TenancyAgreementsRelationManager extends RelationManager
         $balanceCarriedForward = $tenancyAgreement->balance_carried_forward;
 
         // obtain the total due
-        $amountDue = $balanceCarriedForward;
-        foreach ($transactions as $transaction) {
-            if ($transaction['transaction_type'] == 'invoice') {
-                $amountDue += $transaction['amount'];
-            } elseif ($transaction['transaction_type'] == 'credit_note') {
-                $amountDue -= $transaction['amount'];
-            } elseif ($transaction['transaction_type'] == 'payment') {
-                $amountDue -= $transaction['amount'];
-            }
-        }
+//        $amountDue = $balanceCarriedForward;
+//        foreach ($transactions as $transaction) {
+//            if ($transaction['transaction_type'] == 'invoice') {
+//                $amountDue += $transaction['amount'];
+//            } elseif ($transaction['transaction_type'] == 'credit_note') {
+//                $amountDue -= $transaction['amount'];
+//            } elseif ($transaction['transaction_type'] == 'payment') {
+//                $amountDue -= $transaction['amount'];
+//            }
+//        }
 
         Log::error($transactions);
 //        dd("End of the function");
@@ -733,6 +733,8 @@ class TenancyAgreementsRelationManager extends RelationManager
                     $current += $balanceCarriedForward;
                 }
             }
+
+            $amountDue = $current + $oneToThirtyPastDue + $thirtyOneToSixtyPastDue + $sixtyOneToNinetyPastDue + $overNinetyPastDue;
 
             $company = CompanyDetails::latest()->first();
             if (!$company) {
