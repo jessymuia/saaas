@@ -717,7 +717,8 @@ class TenancyAgreementsRelationManager extends RelationManager
             }
 
             // include balance carried forward in the days due calculation
-            if($balanceCarriedForward != 0){
+//            if($balanceCarriedForward != 0){
+            if(0 != 0){ // commented this out to remove the balance carried forward from statement (invoice will handle it's visibility)
                 $balForwardCreation = Carbon::createFromFormat('Y-m-d',$tenancyAgreement['created_at']->toDateString());
                 $balForwardDaysDiff = $balForwardCreation->diffInDays(Carbon::now());
 
