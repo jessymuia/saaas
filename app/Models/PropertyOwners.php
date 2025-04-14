@@ -510,7 +510,7 @@ class PropertyOwners extends DefaultAppModel
                             <td class="s_cell_with_right_left_border" colspan="1"></td>
                             <td class="s_cell_with_right_left_border" colspan="1"></td>
                         </tr>',
-                19 - count($transactions)
+                (19 * ((sizeof($transactions) / 19) + 1)) - sizeof($transactions)
             );
 
             $current = 0;
