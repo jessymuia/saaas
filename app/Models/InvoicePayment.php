@@ -194,6 +194,11 @@ class InvoicePayment extends DefaultAppModel
                  $this->id. '_'.
                 Carbon::createFromFormat('Y-m-d H:i:s',$this->created_at)->format('F, Y');
 
+            // remove all spaces from the pdf name
+            $pdfName = str_replace(' ', '_', $pdfName);
+            // replace all special characters with underscore
+            $pdfName = preg_replace('/[^A-Za-z0-9_]/', '_', $pdfName);
+
             // get the path but without the clatter file system
             $pdfPath = Storage::path('invoice_payments') . '/' . $pdfName . '.pdf';
 

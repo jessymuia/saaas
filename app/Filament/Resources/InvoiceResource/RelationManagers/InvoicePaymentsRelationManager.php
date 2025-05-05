@@ -162,15 +162,6 @@ class InvoicePaymentsRelationManager extends RelationManager
                                 ->send();
                         }
                     }),
-                Tables\Actions\Action::make('generate-receipt')
-                    ->label("Generate Receipt")
-                    ->icon('heroicon-o-document-text')
-                    ->action(function(InvoicePayment $record){
-                        // get the invoice payment
-                        $invoicePayment = InvoicePayment::find($record->id);
-                        $invoicePayment->generateInvoicePaymentReceipt();
-                    })
-                    ->visible(fn (InvoicePayment $record) => strtotime($record->document_generated_at) === false),
                 // action to preview the receipt document
                 Tables\Actions\Action::make('preview-receipt')
                     ->label('Preview Receipt')
@@ -185,6 +176,21 @@ class InvoicePaymentsRelationManager extends RelationManager
                     ->disabled(function (InvoicePayment $record) { // only visible if receipt has been confirmed
                         return strtotime($record->document_generated_at) === false;
                     }),
+                // action to generate/re-generate the receipt document
+                Tables\Actions\Action::make('generate-receipt')
+//                    ->label("Generate Receipt")
+                    ->label(function (InvoicePayment $record) {
+                        return strtotime($record->document_generated_at) === false
+                            ? 'Generate Receipt'
+                            : 'Re-generate Receipt';
+                    })
+                    ->icon('heroicon-o-document-text')
+                    ->action(function(InvoicePayment $record){
+                        // get the invoice payment
+                        $invoicePayment = InvoicePayment::find($record->id);
+                        $invoicePayment->generateInvoicePaymentReceipt();
+                    }),
+//                    ->visible(fn (InvoicePayment $record) => strtotime($record->document_generated_at) === false),
 
                 // action to send the receipt document
                 Tables\Actions\Action::make('send-receipt')
