@@ -161,20 +161,55 @@ class UnitsRelationManager extends RelationManager
                 // reset-electricity-meter
                 Tables\Actions\Action::make('reset-electricity-meter')
                     ->label('Reset Electricity Meter')
-                    ->visible(false)
-//                    ->visible(function (Unit $record) {
-//                        // check if this unit has electricity as a utility
-//                        return $record?->property?->utilities()
-//                            ->whereHas('utility', function (Builder $query) {
-//                                $query->where('name', 'Electricity');
-//                            })
-//                            ->exists() && auth()->user()->can(AppPermissions::RESET_ELECTRICITY_METER_PERMISSION);
-//                    })
+//                    ->visible(false)
+                    ->visible(function (Unit $record) {
+                        // check if this unit has electricity as a utility
+                        return $record?->property?->utilities()
+                            ->whereHas('utility', function (Builder $query) {
+                                $query->where('name', 'Electricity');
+                            })
+                            ->exists() && auth()->user()->can(AppPermissions::RESET_ELECTRICITY_METER_PERMISSION);
+                    })
                     ->action(function (Unit $record) {
-                        Notification::make()
-                            ->title('Electricity meter reset to 0')
-                            ->success()
-                            ->send();
+                        try {
+                            // insert a new record in the meter_readings table with the current date and 0 as the reading
+                            $utility_id = $record?->property?->utilities()
+                                ->whereHas('utility', function (Builder $query) {
+                                    $query->where('name', 'Electricity');
+                                })->first(['utility_id'])->utility_id;
+
+                            // get latest reading for this utility for this unit
+                            $latestMeterReading = MeterReading::select(['current_reading'])
+                                ->where('utility_id',$utility_id)
+                                ->where('unit_id',$record->id)
+                                ->orderBy('reading_date','desc')
+                                ->limit(1)
+                                ->first('current_reading')['current_reading'];
+
+                            MeterReading::create([
+                                'unit_id' => $record->id,
+                                'utility_id' => $utility_id,
+                                'reading_date' => now(),
+                                'current_reading' => 0,
+                                'previous_reading' => $latestMeterReading,
+                                'consumption' => 0 - $latestMeterReading,
+                                'has_bill' => true,
+                                'created_by' => auth()->user()->id,
+                            ]);
+                            Notification::make()
+                                ->title('Electricity meter for unit: '. $record->name .' reset to 0')
+                                ->success()
+                                ->send();
+                        }catch (\Exception $exception){
+                            \Log::error("Failed creating meter reading ".
+                                $exception->getFile() . " " . $exception->getLine() . "\n".
+                                $exception->getMessage() . "\n" . $exception->getTraceAsString()
+                            );
+                            Notification::make()
+                                ->title('Error resetting water meter')
+                                ->danger()
+                                ->send();
+                        }
                     })
                     ->requiresConfirmation('Are you sure you want to reset the electricity meter for this unit to 0?'),
 
