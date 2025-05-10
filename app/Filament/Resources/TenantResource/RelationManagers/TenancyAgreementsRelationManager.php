@@ -229,6 +229,7 @@ class TenancyAgreementsRelationManager extends RelationManager
                 Tables\Actions\Action::make('generate-invoice-for-balance-carried-forward')
                     ->label('Bill Balance Carried Forward')
                     ->icon("heroicon-m-document-check")
+                    ->visible(fn($record) => !$record->has_invoice_for_balance_carried_forward)
                     ->requiresConfirmation(fn($record) => 'Are you sure you would like to create an invoice for the balance carried forward for this tenancy agreement?')
                     ->action(function (TenancyAgreement $record) {
                         $response = $record->createInvoiceForBalanceCarriedForward();
@@ -254,26 +255,25 @@ class TenancyAgreementsRelationManager extends RelationManager
                                 ->send();
                         }
                     }),
-                        Tables\Actions\DeleteAction::make(),
-                        Tables\Actions\Action::make('generate-lease-schedule')
-                            ->label('Generate Lease Schedule')
-                            ->icon('heroicon-o-document-text')
-                            ->requiresConfirmation()
-                            ->modalHeading('Generate Lease Schedule Report')
-                            ->modalDescription('Please confirm generating the lease schedule report.')
-                            ->form([
-                                Forms\Components\DatePicker::make('custom_end_date')
-                                    ->label('End Date')
-                                    ->visible(fn ($record) => is_null($record->end_date))
-                                    ->required(fn ($record) => is_null($record->end_date))
-                                    ->after('start_date'),
-                            ])
-                            ->action(function (TenancyAgreement $record, array $data) {
-                                return $record->generateLeaseSchedule(
-                                    isset($data['custom_end_date']) ? $data['custom_end_date'] : null
-                                );
-                            })
-
+                Tables\Actions\Action::make('generate-lease-schedule')
+                    ->label('Generate Lease Schedule')
+                    ->icon('heroicon-o-document-text')
+                    ->requiresConfirmation()
+                    ->modalHeading('Generate Lease Schedule Report')
+                    ->modalDescription('Please confirm generating the lease schedule report.')
+                    ->form([
+                        Forms\Components\DatePicker::make('custom_end_date')
+                            ->label('End Date')
+                            ->visible(fn ($record) => is_null($record->end_date))
+                            ->required(fn ($record) => is_null($record->end_date))
+                            ->after('start_date'),
+                    ])
+                    ->action(function (TenancyAgreement $record, array $data) {
+                        return $record->generateLeaseSchedule(
+                            isset($data['custom_end_date']) ? $data['custom_end_date'] : null
+                        );
+                    }),
+                Tables\Actions\DeleteAction::make()
                     ->mutateFormDataUsing(function ($data) {
                         $data['deleted_by'] = auth()->user()->id;
                         return $data;
