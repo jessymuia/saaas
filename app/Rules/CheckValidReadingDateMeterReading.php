@@ -44,7 +44,7 @@ class CheckValidReadingDateMeterReading implements ValidationRule
                 ->where('utility_id', $this->utilityId)
                 ->orderBy('reading_date', 'desc')
                 ->first();
-            if ($latestMeterReading->current_reading != 0) {
+            if ($latestMeterReading != null && $latestMeterReading->current_reading != 0) {
 
                 $meterReadingExists = \App\Models\MeterReading::query()
                     ->where('unit_id', $this->unitId)
