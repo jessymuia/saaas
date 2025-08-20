@@ -21,6 +21,7 @@ class PropertyOwners extends DefaultAppModel
         'email',
         'phone_number',
         'address',
+        'tax_pin',
         'balance_carried_forward',
         'has_invoice_for_balance_carried_forward',
         'created_by',
