@@ -171,6 +171,13 @@ class Invoice extends DefaultAppModel
 
             $propertyName = $sI->tenancyAgreement->property->name;
             $propertyId = $sI->tenancyAgreement->property->id;
+            $homeOwner = PropertyOwners::query()
+                ->where('property_id', $propertyId)
+                ->first();
+            $homeOwnerName = ucwords($homeOwner->name ?? '') . ' ' . 'PIN';
+            $homeOwnerName = mb_convert_case($homeOwner->name ?? '', MB_CASE_TITLE) . ' ' . 'PIN';
+//            $homeOwnerName = ($homeOwner->name ?? ''). ' ' . 'PIN';
+            $homeOwnerPIN = strtoupper($homeOwner->tax_pin ?? '........');
 
             $unitName = $sI->tenancyAgreement->unit->name;
 
@@ -235,6 +242,8 @@ class Invoice extends DefaultAppModel
                 'billsTotal'=> number_format($billsSum,2),
                 'vatTotal' => number_format($vatTotal,2),
                 'invoiceTotal' => number_format($invoice->amount,2),
+                'homeOwnerName' => $homeOwnerName,
+                'homeOwnerPIN' => $homeOwnerPIN,
                 'bankAccountName' => strtoupper(PropertyPaymentDetails::query()
                     ->where('property_id', $propertyId)
                     ->first()->account_name),

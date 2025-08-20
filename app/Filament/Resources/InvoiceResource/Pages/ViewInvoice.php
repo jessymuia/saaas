@@ -23,26 +23,36 @@ class ViewInvoice extends ViewRecord
                     return $record->is_generated ? 'Regenerate Document' : 'Generate Document';
                 })
                 ->action(function ($record) {
+                    $isDocGenerated = false;
                     try {
                         if ($record->is_generated){
                             $record->generateDocument($record,true);
                         }else{
                             $record->generateDocument($record);
                         }
+                        $isDocGenerated = true;
                     } catch (\Exception $e) {
                         Log::error($e->getMessage());
                         Log::error($e->getTraceAsString());
                         Log::error("Failed to generate document for invoice: {$record->id}");
                         Log::error("_____________________________________________________________________________");
-                        Notification::make()
-                            ->danger()
+//                        Notification::make()
+//                            ->danger()
+//                            ->title('Failed to generate document')
+//                            ->send();
+                        $isDocGenerated = false;
+                    }
+                    if ($isDocGenerated) {
+                        Notification::make('documentGenerated')
+                            ->title('Document generated successfully')
+                            ->success()
+                            ->send();
+                    } else {
+                        Notification::make('documentGenerationFailed')
                             ->title('Failed to generate document')
+                            ->danger()
                             ->send();
                     }
-                    Notification::make()
-                        ->success()
-                        ->title('Document generated successfully')
-                        ->send();
                 }),
             // custom action
             Actions\Action::make('view-docoument')

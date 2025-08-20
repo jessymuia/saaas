@@ -70,6 +70,10 @@ class PropertyOwnersResource extends Resource
                 Forms\Components\TextInput::make('address')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\TextInput::make('tax_pin')
+                    ->nullable()
+                    ->maxLength(50)
+                    ->label('Tax PIN'),
                 Forms\Components\TextInput::make('balance_carried_forward')
                     ->required()
                     ->numeric()
@@ -99,6 +103,10 @@ class PropertyOwnersResource extends Resource
                 Tables\Columns\TextColumn::make('address')
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('tax_pin')
+                    ->searchable()
+                    ->sortable()
+                    ->label('Tax PIN'),
                 Tables\Columns\TextColumn::make('balance_carried_forward')
                     ->searchable()
                     ->sortable(),

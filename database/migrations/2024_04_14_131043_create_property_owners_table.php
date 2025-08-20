@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('email')->nullable();
             $table->string('phone_number')->nullable();
             $table->string('address');
+            $table->string('tax_pin', 50)->nullable();
             $table->decimal('balance_carried_forward',14,2)->default(0);
             $table->boolean('has_invoice_for_balance_carried_forward')->default(false);
 
