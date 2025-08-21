@@ -174,8 +174,9 @@ class Invoice extends DefaultAppModel
             $homeOwner = PropertyOwners::query()
                 ->where('property_id', $propertyId)
                 ->first();
-            $homeOwnerName = ucwords($homeOwner->name ?? '') . ' ' . 'PIN';
-            $homeOwnerName = mb_convert_case($homeOwner->name ?? '', MB_CASE_TITLE) . ' ' . 'PIN';
+//            $homeOwnerName = ucwords($homeOwner->name ?? '') . ' ' . 'PIN';
+//            $homeOwnerName = mb_convert_case($homeOwner->name ?? '', MB_CASE_TITLE) . ' ' . 'PIN';
+            $homeOwnerName = 'KRA PIN';
 //            $homeOwnerName = ($homeOwner->name ?? ''). ' ' . 'PIN';
             $homeOwnerPIN = strtoupper($homeOwner->tax_pin ?? '........');
 
