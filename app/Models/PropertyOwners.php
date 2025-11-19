@@ -437,9 +437,9 @@ class PropertyOwners extends DefaultAppModel
 
         // merge the three arrays
         $transactions = array_merge($invoices, $creditNotes ?? [], $invoicePayments ?? []);
-        // sort the array by transaction date
+        // sort the array by transaction date in ascending order
         usort($transactions, function ($a, $b) {
-            return $a['transaction_date'] <=> $b['transaction_date'];
+            return $b['transaction_date'] <=> $a['transaction_date'];
         });
 
         // obtain the total due
