@@ -536,7 +536,7 @@ class TenancyAgreementsRelationManager extends RelationManager
         // get all the invoices for the tenancy agreement, with the credit notes, debit notes and payments for the given invoices
         $invoices = Invoice::query()
             ->where('tenancy_agreement_id', '=', $tenancyAgreement->id)
-            ->orderBy('created_at', 'desc')
+            ->orderBy('created_at', 'asc')
             ->select(['id as invoice_id', 'invoice_for_month as transaction_date','invoice_due_date'])
             ->selectRaw("concat('INV #', id,'. Due on ', TO_CHAR(invoice_for_month,'Mon DD, YYYY')) as transaction, concat('invoice') as transaction_type")
             ->where('is_confirmed', '=', true)
@@ -545,7 +545,7 @@ class TenancyAgreementsRelationManager extends RelationManager
 
         $manualInvoices = ManualInvoices::query()
             ->where('tenant_id', '=', $tenancyAgreement->tenant_id)
-            ->orderBy('created_at', 'desc')
+            ->orderBy('created_at', 'asc')
             ->select(['id as invoice_id', 'invoice_for_month as transaction_date','invoice_due_date'])
             ->selectRaw("concat('INV #', id,'. Due on ', TO_CHAR(invoice_for_month,'Mon DD, YYYY')) as transaction, concat('invoice') as transaction_type")
             ->where('is_confirmed','=', true)
@@ -572,7 +572,7 @@ class TenancyAgreementsRelationManager extends RelationManager
 
         // get all credit notes and convert to array
         $creditNotes = CreditNote::query()
-            ->orderBy('created_at', 'desc')
+            ->orderBy('created_at', 'asc')
             ->whereHas('invoice', function ($query) use ($tenancyAgreement) {
                 $query->where('tenancy_agreement_id', '=', $tenancyAgreement->id);
             })
@@ -595,7 +595,7 @@ class TenancyAgreementsRelationManager extends RelationManager
 
         // get all invoice payments
         $invoicePayments = InvoicePayment::query()
-            ->orderBy('payment_date', 'desc')
+            ->orderBy('payment_date', 'asc')
             ->where(function ($query) use ($tenancyAgreement) {
                 $query->where('tenant_id', '=', $tenancyAgreement->tenant_id);
             })

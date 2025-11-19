@@ -392,7 +392,7 @@ class PropertyOwners extends DefaultAppModel
 
         $invoices = ManualInvoices::query()
             ->where('property_owner_id', '=', $this->id)
-            ->orderBy('created_at', 'desc')
+            ->orderBy('created_at', 'asc')
             ->select(['id as invoice_id', 'invoice_for_month as transaction_date','invoice_due_date'])
             ->selectRaw("concat('INV #', id,'. Due on ', TO_CHAR(invoice_for_month,'Mon DD, YYYY')) as transaction, concat('invoice') as transaction_type")
             ->where('is_confirmed','=', true)
@@ -409,7 +409,7 @@ class PropertyOwners extends DefaultAppModel
         }
 
         usort($invoices, function ($a, $b) {
-            return $a['transaction_date'] <=> $b['transaction_date'];
+            return $b['transaction_date'] <=> $a['transaction_date'];
         });
 
 //        dd($invoices);
@@ -427,7 +427,7 @@ class PropertyOwners extends DefaultAppModel
 
         // get all invoice payments
         $invoicePayments = InvoicePayment::query()
-            ->orderBy('payment_date', 'desc')
+            ->orderBy('payment_date', 'asc')
             ->where('property_owner_id','=',$this->id)
             ->select(['id', 'invoice_id', 'payment_date as transaction_date','amount'])
             ->selectRaw("concat('PMT #', id,'. Paid on ') as transaction, concat('payment') as transaction_type")
