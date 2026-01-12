@@ -617,7 +617,7 @@ class TenancyAgreementsRelationManager extends RelationManager
         usort($transactions, function ($a, $b) {
             // sort by invoice id then transaction date
             // return $b['invoice_id'] <=> $a['invoice_id'] ?: $b['transaction_date'] <=> $a['transaction_date'];
-            return $b['invoice_id'] <=> $a['invoice_id'] ?: strtotime($b['transaction_date']) <=> strtotime($a['transaction_date']);
+            return $a['invoice_id'] <=> $b['invoice_id'] ?: strtotime($a['transaction_date']) <=> strtotime($b['transaction_date']);
 //            return $a['transaction_date'] <=> $b['transaction_date'];
         });
 
