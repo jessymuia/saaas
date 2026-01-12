@@ -439,7 +439,7 @@ class PropertyOwners extends DefaultAppModel
         $transactions = array_merge($invoices, $creditNotes ?? [], $invoicePayments ?? []);
         // sort the array by transaction date in ascending order
         usort($transactions, function ($a, $b) {
-            return strtotime($b['transaction_date']) <=> strtotime($a['transaction_date']);
+            return strtotime($a['transaction_date']) <=> strtotime($b['transaction_date']);
             // return $b['transaction_date'] <=> $a['transaction_date'];
         });
 
