@@ -13,6 +13,12 @@ use Illuminate\Support\Facades\Log;
 class ListInvoices extends ListRecords
 {
     protected static string $resource = InvoiceResource::class;
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            InvoiceResource\Widgets\InvoiceOverview::class,
+        ];
+    }
 
     protected function getHeaderActions(): array
     {
