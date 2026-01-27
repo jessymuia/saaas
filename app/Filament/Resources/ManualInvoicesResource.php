@@ -26,6 +26,7 @@ use Filament\Tables\Actions\ExportBulkAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
+
 class ManualInvoicesResource extends Resource
 {
     protected static ?string $model = ManualInvoices::class;
@@ -317,6 +318,12 @@ class ManualInvoicesResource extends Resource
             //
             RelationManagers\ManualInvoiceRelationManager::class,
             RelationManagers\InvoicePaymentsRelationManager::class,
+        ];
+    }
+    protected function getHeaderWidgets(): array
+    {
+        return [
+           Filament\Widgets\ManualInvoicesStatsOverview::class,
         ];
     }
 

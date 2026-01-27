@@ -8,10 +8,17 @@ use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Support\Facades\Log;
+use App\Filament\Widgets\ManualInvoicesStatsOverview;
 
 class ListManualInvoices extends ListRecords
 {
     protected static string $resource = ManualInvoicesResource::class;
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            ManualInvoicesStatsOverview::class,
+        ];
+    }
 
     protected function getHeaderActions(): array
     {
