@@ -13,6 +13,12 @@ use Illuminate\Support\Facades\Mail;
 class ViewInvoice extends ViewRecord
 {
     protected static string $resource = InvoiceResource::class;
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            InvoiceResource\Widgets\InvoiceDetailsWidget::class,
+        ];
+    }
 
     protected function getHeaderActions(): array
     {
@@ -115,12 +121,5 @@ class ViewInvoice extends ViewRecord
         ];
     }
 
-    protected function getHeaderWidgets(): array
-    {
-        return [
-            //
-//            InvoiceResource\Widgets\InvoiceViewStats::class,
-            InvoiceResource\Widgets\InvoiceDetailsWidget::class,
-        ];
-    }
+    
 }

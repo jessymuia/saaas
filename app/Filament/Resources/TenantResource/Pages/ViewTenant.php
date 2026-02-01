@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use App\Filament\Widgets\TenantStats;
 
 class ViewTenant extends ViewRecord
 {
@@ -30,8 +31,25 @@ class ViewTenant extends ViewRecord
     protected function getHeaderWidgets(): array
     {
         return [
-            //
+            TenantStats::class,
             TenantResource\Widgets\TenantPaymentsDueWidget::class,
+        ];
+    }
+
+    public function getHeaderWidgetsColumns(): int|array
+    {
+        return [
+            'default' => 1,
+            'sm' => 2,
+            'md' => 3,
+            'lg' => 4,
+        ];
+    }
+
+    protected function getHeaderWidgetsData(): array
+    {
+        return [
+            'record' => $this->record,
         ];
     }
 
