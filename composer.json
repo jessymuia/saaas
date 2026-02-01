@@ -12,6 +12,7 @@
         "ext-pdo": "*",
         "ext-pdo_pgsql": "*",
         "ext-pgsql": "*",
+        "afsakar/filament-otp-login": "^1.3",
         "barryvdh/laravel-dompdf": "^2.0",
         "barryvdh/laravel-snappy": "^1.0",
         "filament/actions": "3.3.45",
