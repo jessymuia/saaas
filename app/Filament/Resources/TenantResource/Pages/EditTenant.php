@@ -5,7 +5,7 @@ namespace App\Filament\Resources\TenantResource\Pages;
 use App\Filament\Resources\TenantResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
-use App\Filament\Resources\TenantResource\TenantStats;
+use App\Filament\Resources\TenantResource\Widgets\TenantStats;
 
 class EditTenant extends EditRecord
 {
