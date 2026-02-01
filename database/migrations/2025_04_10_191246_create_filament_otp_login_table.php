@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -11,7 +12,7 @@ return new class extends Migration
         $table_name = config('filament-otp-login.table_name');
 
         Schema::create($table_name, function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->default(DB::raw('gen_random_uuid()'))->primary();
             $table->string('code');
             $table->string('email');
             $table->dateTime('expires_at');
