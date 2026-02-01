@@ -5,7 +5,7 @@ namespace App\Filament\Resources\SentEmailsResource\Pages;
 use App\Filament\Resources\SentEmailsResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
-use App\Filament\Resources\SentEmailsResource\Widgets\SentEmailsStatsOverview;
+use App\Filament\Resources\SentEmailsResource\Pages\Widgets\SentEmailsStatsOverview;
 
 
 class ListSentEmails extends ListRecords
