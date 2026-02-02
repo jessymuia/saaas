@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\ManualInvoicesResource\Widgets;
+namespace App\Filament\Resources\ManualInvoicesResource\Widget;
 
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
