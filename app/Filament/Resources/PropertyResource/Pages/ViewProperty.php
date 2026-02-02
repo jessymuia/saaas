@@ -5,7 +5,7 @@ namespace App\Filament\Resources\PropertyResource\Pages;
 use App\Filament\Resources\PropertyResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ViewRecord;
-use App\Filament\Widgets\PropertyStats;
+use App\Filament\Resources\PropertyResource\Widgets\PropertyStats;
 
 class ViewProperty extends ViewRecord
 {
@@ -21,7 +21,7 @@ class ViewProperty extends ViewRecord
     protected function getHeaderWidgets(): array
     {
         return [
-            PropertyStats::class,
+            Widgets\PropertyStats::class,
         ];
     }
 

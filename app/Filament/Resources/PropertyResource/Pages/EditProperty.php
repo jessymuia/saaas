@@ -5,7 +5,7 @@ namespace App\Filament\Resources\PropertyResource\Pages;
 use App\Filament\Resources\PropertyResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
-use App\Filament\Widgets\PropertyStats;
+use  App\Filament\Resources\PropertyResource\Widgets\PropertyStats;
 
 class EditProperty extends EditRecord
 {

@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use App\Filament\Widgets\TenantStats;
+use App\Filament\Resources\TenantResource\Widgets\TenantStats;
 
 class ViewTenant extends ViewRecord
 {
