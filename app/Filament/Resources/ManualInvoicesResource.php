@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Exports\ManualInvoicesExporter;
 use App\Filament\Resources\ManualInvoicesResource\Pages;
 use App\Filament\Resources\ManualInvoicesResource\RelationManagers;
+use App\Filament\Resources\ManualInvoicesResource\Widget\ManualInvoicesStatsOverview;
 use App\Models\Client;
 use App\Models\ManualInvoices;
 use App\Models\PropertyOwners;
@@ -323,7 +324,7 @@ class ManualInvoicesResource extends Resource
     protected function getHeaderWidgets(): array
     {
         return [
-           Filament\Widgets\ManualInvoicesStatsOverview::class,
+           ManualInvoicesStatsOverview::class,
         ];
     }
 
