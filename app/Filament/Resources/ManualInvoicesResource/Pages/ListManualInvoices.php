@@ -8,7 +8,6 @@ use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Support\Facades\Log;
-use App\Filament\Resources\ManualInvoicesResource\Widgets\ManualInvoicesStatsOverview;
 
 class ListManualInvoices extends ListRecords
 {
@@ -16,7 +15,7 @@ class ListManualInvoices extends ListRecords
     protected function getHeaderWidgets(): array
     {
         return [
-            ManualInvoicesStatsOverview::class,
+            ManualInvoicesResource\Widget\ManualInvoicesStatsOverview::class,
         ];
     }
 
