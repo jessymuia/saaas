@@ -22,7 +22,7 @@ use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Actions\ExportBulkAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Widgets\PropertyStats;
+//use App\Filament\Widget\PropertyStats;
 
 class PropertyResource extends Resource
 {

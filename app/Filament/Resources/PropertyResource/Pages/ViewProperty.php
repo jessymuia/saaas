@@ -21,7 +21,7 @@ class ViewProperty extends ViewRecord
     protected function getHeaderWidgets(): array
     {
         return [
-            Widgets\PropertyStats::class,
+            PropertyStats::class,
         ];
     }
 
@@ -35,7 +35,7 @@ class ViewProperty extends ViewRecord
         ];
     }
 
-    
+
     protected function getHeaderWidgetsData(): array
     {
         return [
