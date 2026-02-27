@@ -16,7 +16,7 @@ class ListInvoices extends ListRecords
     protected function getHeaderWidgets(): array
     {
         return [
-            InvoiceResource\Widgets\InvoiceOverview::class,
+//            InvoiceResource\Widgets\InvoiceOverview::class,
         ];
     }
 
