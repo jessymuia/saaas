@@ -74,7 +74,7 @@ class InvoiceResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('tenancyAgreement.unit.name')
                     ->numeric()
-                    ->searchable()
+                    //->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('unpaid_amount')
                     ->numeric()
@@ -87,11 +87,11 @@ class InvoiceResource extends Resource
                     ->boolean()
                     ->label('Doc Generated'),
                 Tables\Columns\TextColumn::make('comments')
-                    ->searchable()
+                    //->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('issue_date')
                     ->date()
-                    ->searchable()
+                    //->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('invoice_for_month')
                     ->date('F, Y')
@@ -99,20 +99,20 @@ class InvoiceResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
-                    ->searchable()
+                    //->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
-                    ->searchable()
+                    //->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('createdBy.name')
-                    ->searchable()
+                    //->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updatedBy.name')
-                    ->searchable()
+                    //->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
