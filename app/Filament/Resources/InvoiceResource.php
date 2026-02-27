@@ -63,6 +63,7 @@ class InvoiceResource extends Resource
             ->query(Invoice::accessibleByUser(auth()->user()))
             ->columns([
                 Tables\Columns\TextColumn::make('id')
+                    ->numeric()
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('tenancyAgreement.tenant.name')

@@ -44,6 +44,20 @@ class Invoice extends DefaultAppModel
         'deleted_at'
     ];
 
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        // casts
+        $this->casts = array_merge($this->casts, [
+            'invoice_due_date' => 'date',
+            'invoice_for_month' => 'date',
+            'id'=>'integer',
+            'is_confirmed'=>'boolean',
+            'is_generated'=>'boolean',
+        ]);
+    }
+
     protected $appends = ['amount','unpaid_amount'];
 
     public function tenancyAgreement(){
