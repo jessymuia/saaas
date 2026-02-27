@@ -49,12 +49,12 @@ class ViewInvoice extends ViewRecord
                         $isDocGenerated = false;
                     }
                     if ($isDocGenerated) {
-                        Notification::make('documentGenerated')
+                        Notification::make()
                             ->title('Document generated successfully')
                             ->success()
                             ->send();
                     } else {
-                        Notification::make('documentGenerationFailed')
+                        Notification::make()
                             ->title('Failed to generate document')
                             ->danger()
                             ->send();
@@ -121,5 +121,5 @@ class ViewInvoice extends ViewRecord
         ];
     }
 
-    
+
 }
