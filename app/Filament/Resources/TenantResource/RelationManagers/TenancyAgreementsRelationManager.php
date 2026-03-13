@@ -703,7 +703,9 @@ class TenancyAgreementsRelationManager extends RelationManager
             $overNinetyPastDue = 0;
             // iterate over the invoices obtaining the current, 1-30, 31-60, 61-90, over 90
             foreach ($invoices as $invoice) {
-                $invoiceDueDate = Carbon::createFromFormat('Y-m-d',$invoice['invoice_due_date']);
+                $invoiceDueDate = $invoice['invoice_due_date']
+                    ? Carbon::createFromFormat('Y-m-d',$invoice['invoice_due_date'])
+                    : "";
                 $daysDifference = $invoiceDueDate->diffInDays(Carbon::now());
                 if ($daysDifference > 90){
                     $overNinetyPastDue += $invoice['unpaid_amount'];
