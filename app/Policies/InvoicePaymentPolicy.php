@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\InvoicePayment;
+use App\Models\SystemAdmin;
 use App\Models\User;
 use App\Utils\AppPermissions;
 use Illuminate\Auth\Access\Response;
@@ -10,77 +11,75 @@ use Illuminate\Auth\Access\Response;
 class InvoicePaymentPolicy
 {
     /**
-     * Determine whether the user can view any models.
+     * Super Admin (central) gets full access.
+     * Tenant users use permission-based checks.
      */
-    public function viewAny(User $user): Response
+
+    public function viewAny(User|SystemAdmin $user): Response
     {
-        //
-        return $user->hasPermissionTo(AppPermissions::READ_INVOICE_PAYMENTS_PERMISSION)
+        if ($user instanceof SystemAdmin) {
+            return Response::allow();
+        }
+
+        return $user->hasPermissionTo(
+            AppPermissions::READ_INVOICE_PAYMENTS_PERMISSION ?? 'read-invoice-payments'
+        )
             ? Response::allow()
-            : Response::deny('You do not have permissions to view any rent payment');
+            : Response::deny('You do not have permissions to view any payment record.');
+    }
+
+    public function view(User|SystemAdmin $user, InvoicePayment $invoicePayment): Response
+    {
+        if ($user instanceof SystemAdmin) {
+            return Response::allow();
+        }
+
+        return $user->hasPermissionTo(
+            AppPermissions::READ_INVOICE_PAYMENTS_PERMISSION ?? 'read-invoice-payments'
+        )
+            ? Response::allow()
+            : Response::deny('You do not have permission to view this payment record.');
     }
 
     /**
-     * Determine whether the user can view the model.
+     * You can add more methods if they exist (create, update, delete, etc.)
      */
-    public function view(User $user, InvoicePayment $invoicePayment): Response
+    public function create(User|SystemAdmin $user): Response
     {
-        //
-        return $user->hasPermissionTo(AppPermissions::READ_INVOICE_PAYMENTS_PERMISSION)
+        if ($user instanceof SystemAdmin) {
+            return Response::allow();
+        }
+
+        return $user->hasPermissionTo(
+            AppPermissions::CREATE_INVOICE_PAYMENTS_PERMISSION ?? 'create-invoice-payments'
+        )
             ? Response::allow()
-            : Response::deny('You do not have permissions to view rent payment');
+            : Response::deny('You do not have permission to create payment records.');
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): Response
+    public function update(User|SystemAdmin $user, InvoicePayment $invoicePayment): Response
     {
-        //
-        return $user->hasPermissionTo(AppPermissions::CREATE_INVOICE_PAYMENTS_PERMISSION)
+        if ($user instanceof SystemAdmin) {
+            return Response::allow();
+        }
+
+        return $user->hasPermissionTo(
+            AppPermissions::UPDATE_INVOICE_PAYMENTS_PERMISSION ?? 'update-invoice-payments'
+        )
             ? Response::allow()
-            : Response::deny('You do not have permissions to create rent payment');
+            : Response::deny('You do not have permission to update this payment record.');
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, InvoicePayment $invoicePayment): Response
+    public function delete(User|SystemAdmin $user, InvoicePayment $invoicePayment): Response
     {
-        //
-        return $user->hasPermissionTo(AppPermissions::UPDATE_INVOICE_PAYMENTS_PERMISSION)
-            ? Response::allow()
-            : Response::deny('You do not have permissions to update rent payment');
-    }
+        if ($user instanceof SystemAdmin) {
+            return Response::allow();
+        }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, InvoicePayment $invoicePayment): Response
-    {
-        //
-        return $user->hasPermissionTo(AppPermissions::DELETE_INVOICE_PAYMENTS_PERMISSION)
+        return $user->hasPermissionTo(
+            AppPermissions::DELETE_INVOICE_PAYMENTS_PERMISSION ?? 'delete-invoice-payments'
+        )
             ? Response::allow()
-            : Response::deny('You do not have permissions to delete rent payment');
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, InvoicePayment $invoicePayment): Response
-    {
-        //
-        return $user->hasPermissionTo(AppPermissions::RESTORE_INVOICE_PAYMENTS_PERMISSION)
-            ? Response::allow()
-            : Response::deny('You do not have permissions to restore rent payment');
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, InvoicePayment $invoicePayment): bool
-    {
-        //
-        return false;
+            : Response::deny('You do not have permission to delete this payment record.');
     }
 }

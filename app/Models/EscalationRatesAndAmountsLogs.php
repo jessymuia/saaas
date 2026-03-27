@@ -2,11 +2,15 @@
 
 namespace App\Models;
 
+use App\Scopes\TenantScope;
+use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class EscalationRatesAndAmountsLogs extends DefaultAppModel
 {
+    use BelongsToTenant;
+
     protected $fillable = [
         'tenancy_agreement_id',
         'property_id',
@@ -21,9 +25,9 @@ class EscalationRatesAndAmountsLogs extends DefaultAppModel
         'updated_by',
         'updated_at',
         'deleted_by',
-        'deleted_at'
+        'deleted_at',
+        'saas_client_id',           // ← Added this to satisfy the fillable test
     ];
-
 
     public function tenancyAgreement()
     {
@@ -38,6 +42,8 @@ class EscalationRatesAndAmountsLogs extends DefaultAppModel
     protected static function boot()
     {
         parent::boot();
+
+        static::addGlobalScope(new TenantScope);  // ← Added this to register TenantScope globally
 
         static::created(function ($model) {
             $model->created_by = auth()->id();

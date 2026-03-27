@@ -22,16 +22,18 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use UnitEnum;
+use BackedEnum;
 
 class TenancyScheduleReport extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-document-text';
 
-    protected static ?string $navigationGroup = AppUtils::TENANCY_MANAGEMENT_NAVIGATION_GROUP;
+    protected static UnitEnum|string|null $navigationGroup = 'Tenancy Management';
 
-    protected static string $view = 'filament.pages.tenancy-schedule-report';
+    protected string $view = 'filament.pages.tenancy-schedule-report';
 
     public ?array $generateReportForm = [];
 

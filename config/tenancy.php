@@ -1,0 +1,119 @@
+<?php
+
+declare(strict_types=1);
+
+use Stancl\Tenancy\Bootstrappers\CacheTenancyBootstrapper;
+use Stancl\Tenancy\Bootstrappers\FilesystemTenancyBootstrapper;
+use Stancl\Tenancy\Bootstrappers\QueueTenancyBootstrapper;
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Tenant Model
+    |--------------------------------------------------------------------------
+    */
+    'tenant_model' => \App\Models\SaasClient::class,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Home URL
+    |--------------------------------------------------------------------------
+    */
+    'home_url' => '/',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Central Domains
+    |--------------------------------------------------------------------------
+    | Requests on these domains will NOT be identified as tenant requests.
+    */
+    'central_domains' => [
+        '127.0.0.1',
+        'localhost',
+        'test.localhost',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Tenancy Bootstrappers
+    |--------------------------------------------------------------------------
+    | Single-database mode: no DatabaseTenancyBootstrapper.
+    */
+    'bootstrappers' => [
+        CacheTenancyBootstrapper::class,
+        FilesystemTenancyBootstrapper::class,
+        QueueTenancyBootstrapper::class,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Database
+    |--------------------------------------------------------------------------
+    */
+    'database' => [
+        'central_connection' => env('DB_CONNECTION', 'pgsql'),
+        'throw_if_not_found' => false,
+        'template_tenant_connection' => null,
+        'prefix' => '',
+        'suffix' => '',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cache
+    |--------------------------------------------------------------------------
+    */
+    'cache' => [
+        'tag_base' => 'tenant',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Filesystem
+    |--------------------------------------------------------------------------
+    */
+    'filesystem' => [
+        'suffix_base' => 'tenant',
+        'disks' => [
+            'local',
+            'public',
+        ],
+        'root_override' => [
+            'local'  => '%storage_path%/app/',
+            'public' => '%storage_path%/app/public/',
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Features
+    |--------------------------------------------------------------------------
+    */
+    'features' => [],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Routes
+    |--------------------------------------------------------------------------
+    */
+    'routes' => true,
+
+    'route_namespace' => 'App\\Http\\Controllers',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Migration Parameters
+    |--------------------------------------------------------------------------
+    */
+    'migration_parameters' => [
+        '--force'    => true,
+        '--path'     => database_path('migrations'),
+        '--realpath' => true,
+    ],
+
+    'seeder_parameters' => [
+        '--force' => true,
+    ],
+
+];

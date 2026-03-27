@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('ref_utilities', function (Blueprint $table) {
-            $table = \App\Utils\AppUtils::defaultTableColumns($table);
+            $table = \App\Utils\AppUtils::defaultTableColumns($table, addId: true, addAuditFk: false);
 
             $table->string('name');
             $table->string('description')->nullable();

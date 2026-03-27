@@ -12,9 +12,12 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use App\Scopes\TenantScope;
+use App\Traits\BelongsToTenant;
 
 class PropertyOwners extends DefaultAppModel
 {
+    use BelongsToTenant;
     protected $fillable = [
         'property_id',
         'name',
@@ -29,12 +32,14 @@ class PropertyOwners extends DefaultAppModel
         'updated_by',
         'updated_at',
         'deleted_by',
-        'deleted_at'
+        'deleted_at',
+        'saas_client_id',
     ];
 
     protected static function boot()
     {
         parent::boot();
+        static::addGlobalScope(new TenantScope);
 
         static::created(function ($model) {
             $model->created_by = auth()->id();

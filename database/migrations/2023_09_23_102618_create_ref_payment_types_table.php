@@ -9,16 +9,22 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::create('ref_payment_types', function (Blueprint $table) {
-            $table = \App\Utils\AppUtils::defaultTableColumns($table);
+public function up(): void
+{
+    Schema::create('ref_payment_types', function (Blueprint $table) {
+        $table->id();
+        $table->string('type');
+        $table->string('description')->nullable();
 
-            $table->string('type');
-            $table->string('description')->nullable();
-        });
-    }
+        $table->timestamps();
+        $table->softDeletes();
 
+       
+        $table->unsignedBigInteger('created_by')->nullable();
+        $table->unsignedBigInteger('updated_by')->nullable();
+        $table->unsignedBigInteger('deleted_by')->nullable();
+    });
+}
     /**
      * Reverse the migrations.
      */

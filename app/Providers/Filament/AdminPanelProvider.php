@@ -2,15 +2,13 @@
 
 namespace App\Providers\Filament;
 
-use Afsakar\FilamentOtpLogin\FilamentOtpLoginPlugin;
+use App\Models\SystemAdmin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -28,19 +26,33 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            /*
+            |------------------------------------------------------------------
+            | Phase 9.2 — Central platform uses SystemAdmin guard (local table)
+            | NOT the tenant User model. Super admins are isolated from tenants.
+            |------------------------------------------------------------------
+            */
+            ->authGuard('system_admin')
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Indigo,
             ])
-            ->databaseNotifications()
-            // ->databaseNotificationsPolling('15s')
-            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
-            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
-            ->pages([])
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
-            ->widgets([
-//                Widgets\AccountWidget::class,
-//                Widgets\FilamentInfoWidget::class,
-            ])
+            /*
+            |------------------------------------------------------------------
+            | Phase 10.1 — Discover only Central resources
+            |------------------------------------------------------------------
+            */
+            ->discoverResources(
+                in: app_path('Filament/Resources/Central'),
+                for: 'App\\Filament\\Resources\\Central'
+            )
+            ->discoverPages(
+                in: app_path('Filament/Pages/Central'),
+                for: 'App\\Filament\\Pages\\Central'
+            )
+            ->discoverWidgets(
+                in: app_path('Filament/Widgets/Central'),
+                for: 'App\\Filament\\Widgets\\Central'
+            )
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -54,9 +66,6 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ])
-            ->plugins([
-                FilamentOtpLoginPlugin::make()
             ]);
     }
 }

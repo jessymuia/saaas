@@ -4,9 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use App\Scopes\TenantScope;
+use App\Traits\BelongsToTenant;
 class SentEmails extends DefaultAppModel
 {
+    use BelongsToTenant;
     //
     protected $fillable = [
         'recipient_email',
@@ -23,12 +25,14 @@ class SentEmails extends DefaultAppModel
         'deleted_by',
         'deleted_at',
         'status',
-        'archive'
+        'archive',
+        'saas_client_id',
     ];
 
     protected static function boot()
     {
         parent::boot();
+        static::addGlobalScope(new TenantScope);
 
         static::created(function ($model) {
             $model->created_by = auth()->id();

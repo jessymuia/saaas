@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Scopes\TenantScope;
+use App\Traits\BelongsToTenant;
 
 /**
  * Provides a track record of the monthly occupation of a unit
@@ -13,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class UnitOccupationMonthlyRecords extends DefaultAppModel
 {
+    use BelongsToTenant;
     protected $fillable = [
         'unit_id',
         'tenancy_agreement_id',
@@ -26,12 +29,14 @@ class UnitOccupationMonthlyRecords extends DefaultAppModel
         'deleted_by',
         'deleted_at',
         'status',
-        'archive'
+        'archive',
+        'saas_client_id',
     ];
 
     protected static function boot()
     {
         parent::boot();
+        static::addGlobalScope(new TenantScope);
 
         static::created(function ($model) {
             $model->created_by = auth()->id();

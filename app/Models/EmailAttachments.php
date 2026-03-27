@@ -1,12 +1,14 @@
 <?php
 
 namespace App\Models;
-
+use App\Scopes\TenantScope;
+use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class EmailAttachments extends DefaultAppModel
 {
+    use BelongsToTenant;
     protected $fillable = [
         'id',
         'sent_email_id',
@@ -20,8 +22,8 @@ class EmailAttachments extends DefaultAppModel
         'updated_at',
         'deleted_by',
         'deleted_at',
-        'status',
-        'archive'
+        'archive',
+        'saas_client_id',
     ];
 
     public function sentEmail(){

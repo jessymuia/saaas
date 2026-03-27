@@ -2,23 +2,25 @@
 
 namespace App\Providers;
 
+use App\Auth\TenantUserProvider;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Horizon\Horizon;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
-    public function register(): void
-    {
-        //
-    }
+    public function register(): void {}
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-        //
+        // Register our custom provider that bypasses TenantScope during auth
+        Auth::provider('tenant_eloquent', function ($app, array $config) {
+            return new TenantUserProvider($app['hash'], $config['model']);
+        });
+
+        // Only super admins can access the Horizon dashboard
+        Horizon::auth(function ($request) {
+            return $request->user()?->is_super_admin === true;
+        });
     }
 }

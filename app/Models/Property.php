@@ -6,10 +6,14 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use App\Traits\BelongsToTenant;
 
 class Property extends DefaultAppModel
 {
+    use BelongsToTenant;
+
     protected $fillable = [
+        'saas_client_id',
         'name',
         'address',
         'description',

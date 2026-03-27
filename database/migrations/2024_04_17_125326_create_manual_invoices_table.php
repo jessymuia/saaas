@@ -1,36 +1,29 @@
-<?php
+﻿<?php
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('manual_invoices', function (Blueprint $table) {
-            $table->unsignedBigInteger('id')->primary();
-            $table->timestamps();
-            $table->softDeletes();
-            $table->tinyInteger('status')->default(1);
-            $table->tinyInteger('archive')->default(0);
-            $table->unsignedBigInteger('created_by')->nullable();
-            $table->unsignedBigInteger('updated_by')->nullable();
-            $table->unsignedBigInteger('deleted_by')->nullable();
+            
+            $table->unsignedBigInteger('id')->autoIncrement();
 
-            // foreign keys
-            $table->foreign('created_by')->references('id')->on('users');
-            $table->foreign('updated_by')->references('id')->on('users');
-            $table->foreign('deleted_by')->references('id')->on('users');
+            
+            $table = \App\Utils\AppUtils::defaultTableColumns($table, addId: false, addAuditFk: false);
+
+            
+            $table->uuid('saas_client_id');
 
             $table->unsignedBigInteger('property_owner_id')->nullable();
             $table->unsignedBigInteger('client_id')->nullable();
             $table->unsignedBigInteger('tenant_id')->nullable();
-            $table->string('comments',1000)->nullable();
-            $table->string('invoice_status',20)->nullable();
+            $table->string('comments', 1000)->nullable();
+            $table->string('invoice_status', 20)->nullable();
             $table->date('issue_date')->nullable();
             $table->date('invoice_for_month');
             $table->date('invoice_due_date')->nullable();
@@ -38,17 +31,45 @@ return new class extends Migration
             $table->tinyInteger('is_generated')->default(0);
             $table->string('document_url')->nullable();
 
-            // foreign keys
-            $table->foreign('property_owner_id')->references('id')->on('property_owners');
-            $table->foreign('client_id')->references('id')->on('clients');
-            $table->foreign('tenant_id')->references('id')->on('tenants');
+          
+            $table->primary(['id', 'saas_client_id']);
+
+           
+            $table->foreign(['property_owner_id', 'saas_client_id'])
+                  ->references(['id', 'saas_client_id'])
+                  ->on('property_owners')
+                  ->cascadeOnDelete();
+
+            $table->foreign(['client_id', 'saas_client_id'])
+                  ->references(['id', 'saas_client_id'])
+                  ->on('clients')
+                  ->cascadeOnDelete();
+
+            $table->foreign(['tenant_id', 'saas_client_id'])
+                  ->references(['id', 'saas_client_id'])
+                  ->on('tenants')
+                  ->cascadeOnDelete();
+
+            
+            $table->foreign(['created_by', 'saas_client_id'])
+                  ->references(['id', 'saas_client_id'])
+                  ->on('users')
+                  ->cascadeOnDelete();
+
+            $table->foreign(['updated_by', 'saas_client_id'])
+                  ->references(['id', 'saas_client_id'])
+                  ->on('users')
+                  ->cascadeOnDelete();
+
+            $table->foreign(['deleted_by', 'saas_client_id'])
+                  ->references(['id', 'saas_client_id'])
+                  ->on('users')
+                  ->cascadeOnDelete();
         });
-        \Illuminate\Support\Facades\DB::statement("ALTER TABLE manual_invoices ALTER COLUMN id SET DEFAULT nextval('invoices_id_seq');");
+
+        DB::statement("ALTER TABLE manual_invoices ALTER COLUMN id SET DEFAULT nextval('invoices_id_seq');");
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('manual_invoices');

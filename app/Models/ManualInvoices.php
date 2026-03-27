@@ -12,9 +12,13 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use App\Models\CompanyDetails;
+use App\Scopes\TenantScope;
+use App\Traits\BelongsToTenant;
 
 class ManualInvoices extends DefaultAppModel
 {
+    use BelongsToTenant;
+
     protected $fillable = [
         'property_owner_id',
         'client_id',
@@ -32,14 +36,17 @@ class ManualInvoices extends DefaultAppModel
         'updated_by',
         'updated_at',
         'deleted_by',
-        'deleted_at'
+        'deleted_at',           // ← fixed: added missing comma here
+        'saas_client_id',
     ];
 
-    protected $appends = ['amount','unpaid_amount'];
+    protected $appends = ['amount', 'unpaid_amount'];
 
     protected static function boot()
     {
         parent::boot();
+
+        static::addGlobalScope(new TenantScope);  // ← THIS WAS MISSING → add it here
 
         static::created(function ($model) {
             $model->created_by = auth()->id();

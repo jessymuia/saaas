@@ -22,35 +22,54 @@ class AppUtils
 
     const VAT_RATE = 0.16;
 
-    public static function defaultTableColumns(Blueprint $table) // applied to all tables except manual invoices and users
+    /**
+     * Add default columns to a table schema.
+     *
+     * @param Blueprint $table
+     * @param bool $addId Whether to add $table->id() (single-column PK). Set to false for Citus distributed tables.
+     * @param bool $addAuditFk Whether to add single-column FKs to users(id). Set to false for distributed tables (use composite FKs instead).
+     * @return Blueprint
+     */
+    public static function defaultTableColumns(
+        Blueprint $table,
+        bool $addId = true,
+        bool $addAuditFk = true
+    ): Blueprint
     {
-        $table->id();
+        if ($addId) {
+            $table->id(); // Adds bigIncrements('id') + primary key on 'id'
+        }
+
         $table->timestamps();
         $table->softDeletes();
+
         $table->tinyInteger('status')->default(1);
         $table->tinyInteger('archive')->default(0);
+
         $table->unsignedBigInteger('created_by')->nullable();
         $table->unsignedBigInteger('updated_by')->nullable();
         $table->unsignedBigInteger('deleted_by')->nullable();
 
-        // foreign keys
-        $table->foreign('created_by')->references('id')->on('users');
-        $table->foreign('updated_by')->references('id')->on('users');
-        $table->foreign('deleted_by')->references('id')->on('users');
+        // Only add single-column audit FKs when using single id PK
+        if ($addAuditFk && $addId) {
+            $table->foreign('created_by')->references('id')->on('users')->cascadeOnDelete();
+            $table->foreign('updated_by')->references('id')->on('users')->cascadeOnDelete();
+            $table->foreign('deleted_by')->references('id')->on('users')->cascadeOnDelete();
+        }
 
         return $table;
     }
 
-    public static function generateBills($isBillsForNextMonth=false)
+    public static function generateBills($isBillsForNextMonth = false)
     {
         try {
-            DB::transaction(function () use ($isBillsForNextMonth){
+            DB::transaction(function () use ($isBillsForNextMonth) {
                 // get all meter readings and create
                 MeterReading::query()
                     ->where('has_bill', false)
-                    ->select('id','unit_id', 'utility_id', 'consumption', 'reading_date')
+                    ->select('id', 'unit_id', 'utility_id', 'consumption', 'reading_date')
                     ->orderBy('reading_date', 'asc')
-                    ->whereHas('tenancyAgreement', function ($query){
+                    ->whereHas('tenancyAgreement', function ($query) {
                         // check for active tenancy agreements
                         $query->whereDate('start_date', '<=', DB::raw('meter_readings.reading_date'))
                             ->where(function ($query) {
@@ -59,19 +78,31 @@ class AppUtils
                             });
                     })
                     ->chunk(100, function ($meterReadings) {
-                        if ($meterReadings->isNotEmpty()){
+                        if ($meterReadings->isNotEmpty()) {
                             foreach ($meterReadings as $meterReading) {
                                 $meterReading->createBill();
                             }
                         }
                     });
+
                 // get all the tenancy agreements that don't have unit_occupation_monthly_logs
                 // and create tenancy bills for them for rent
                 // then proceed to create occupation logs for them
                 $tenancyAgreements = TenancyAgreement::query()
-                    ->select('id', 'unit_id', 'tenant_id', 'agreement_type_id','billing_type_id','start_date',
-                        'end_date','amount','created_at','escalation_rate','next_escalation_date',
-                        'escalation_period_in_months')
+                    ->select(
+                        'id',
+                        'unit_id',
+                        'tenant_id',
+                        'agreement_type_id',
+                        'billing_type_id',
+                        'start_date',
+                        'end_date',
+                        'amount',
+                        'created_at',
+                        'escalation_rate',
+                        'next_escalation_date',
+                        'escalation_period_in_months'
+                    )
                     ->orderBy('start_date', 'asc')
                     ->get();
 
@@ -85,52 +116,55 @@ class AppUtils
                     // added logic to avoid going back in time largely
                     $startOfLastMonth = now()->subMonth()->startOfMonth();
                     // check if the start date is before the start of last month, then set it to the start of last month
-                    if ($startDate < $startOfLastMonth){
+                    if ($startDate < $startOfLastMonth) {
                         $startDate = $startOfLastMonth;
                     }
 
-                    if ($isBillsForNextMonth){
-                        $endDate = $tenancyAgreement->end_date > now()->addMonth()->endOfMonth() ? now()->addMonth()->endOfMonth() : $tenancyAgreement->end_date;
+                    if ($isBillsForNextMonth) {
+                        $endDate = $tenancyAgreement->end_date > now()->addMonth()->endOfMonth()
+                            ? now()->addMonth()->endOfMonth()
+                            : $tenancyAgreement->end_date;
                         // check if end date is null, then set it to the end of the month
-                        if (!$endDate){
+                        if (!$endDate) {
                             $endDate = now()->addMonth()->endOfMonth();
                         }
-                    }else{
-                        $endDate = $tenancyAgreement->end_date > now()->endOfMonth() ? now()->endOfMonth() : $tenancyAgreement->end_date;
+                    } else {
+                        $endDate = $tenancyAgreement->end_date > now()->endOfMonth()
+                            ? now()->endOfMonth()
+                            : $tenancyAgreement->end_date;
                         // check if end date is null, then set it to the end of the month
-                        if (!$endDate){
+                        if (!$endDate) {
                             $endDate = now()->endOfMonth();
                         }
                     }
 
                     $currentDate = $startDate;
 
-                    // assumption: bill is generated beginning of the month except if 'isBillForNextMonth' flag is set TODO: FLAG:MIGRATION
+                    // assumption: bill is generated beginning of the month except if 'isBillForNextMonth' flag is set
                     while ($currentDate <= $endDate) {
                         $currentDate = date('Y-m-d', strtotime($currentDate));
 
                         if (!$tenancyAgreement->monthlyOccupationRecords()
-                            ->whereYear('from_date',date('Y', strtotime($currentDate)))
+                            ->whereYear('from_date', date('Y', strtotime($currentDate)))
                             ->whereMonth('from_date', date('m', strtotime($currentDate)))
-                            ->exists())
-                        {
+                            ->exists()) {
                             // check to ensure no backdating of invoices
-                            if ($currentDate < '2024-03-01'){
+                            if ($currentDate < '2024-03-01') {
                                 $currentDate = date('Y-m-d', strtotime($currentDate . ' +1 month'));
                                 continue;
                             }
+
                             // check if there is an invoice that is not confirmed for this month
                             // if there is, then don't create a new one
                             $invoice = Invoice::query()
                                 ->where('tenancy_agreement_id', $tenancyAgreement->id)
-                                ->whereYear('invoice_for_month', date_format(new \DateTime($currentDate),'Y')) // TODO: FLAG:MIGRATION
-                                ->whereMonth('invoice_for_month', date_format(new \DateTime($currentDate),'m')) // TODO: FLAG:MIGRATION
-                                ->where('is_confirmed',0)
-                                ->where('is_generated',0)
+                                ->whereYear('invoice_for_month', date_format(new \DateTime($currentDate), 'Y'))
+                                ->whereMonth('invoice_for_month', date_format(new \DateTime($currentDate), 'm'))
+                                ->where('is_confirmed', 0)
+                                ->where('is_generated', 0)
                                 ->first();
 
-
-                            if (!$invoice){
+                            if (!$invoice) {
                                 // create invoice if not exists
                                 $invoice = new Invoice();
                                 $invoice->tenancy_agreement_id = $tenancyAgreement->id;
@@ -140,7 +174,7 @@ class AppUtils
                                         date_add(
                                             date_create($currentDate),
                                             date_interval_create_from_date_string(
-                                                date_format(new \DateTime($currentDate),'d') < 5 ? '0 month' : '1 month'
+                                                date_format(new \DateTime($currentDate), 'd') < 5 ? '0 month' : '1 month'
                                             )
                                         ),
                                         'Y-m-5'
@@ -149,24 +183,26 @@ class AppUtils
 
                                 $invoice->save();
                             }
-                            $tenancyBillId = $tenancyAgreement->createRentBill($currentDate,$invoice); //TODO MIGRATION:FLAG review this process
-                            $tenancyAgreement->createServiceBill($currentDate,$invoice);
-                            if ($tenancyBillId != -1){
-                                $tenancyAgreement->createUnitOccupationMonthlyRecord($currentDate,$tenancyBillId);
+
+                            $tenancyBillId = $tenancyAgreement->createRentBill($currentDate, $invoice);
+                            $tenancyAgreement->createServiceBill($currentDate, $invoice);
+
+                            if ($tenancyBillId != -1) {
+                                $tenancyAgreement->createUnitOccupationMonthlyRecord($currentDate, $tenancyBillId);
                             }
                         }
-                        // check if given property id then generate the service bills // TODO: MIGRATION:FLAG remove later
-                        if ($tenancyAgreement->unit?->property_id == 1){ // check only for Avenue Mall
+
+                        // check if given property id then generate the service bills
+                        if ($tenancyAgreement->unit?->property_id == 1) { // check only for Avenue Mall
                             $invoice = Invoice::query()
                                 ->where('tenancy_agreement_id', $tenancyAgreement->id)
-                                ->whereMonth('invoice_for_month', date_format(new \DateTime($currentDate),'m')) // TODO: FLAG:MIGRATION
-                                ->whereYear('invoice_for_month', date_format(new \DateTime($currentDate),'Y'))
-                                ->where('is_confirmed',0)
-                                ->where('is_generated',0)
+                                ->whereMonth('invoice_for_month', date_format(new \DateTime($currentDate), 'm'))
+                                ->whereYear('invoice_for_month', date_format(new \DateTime($currentDate), 'Y'))
+                                ->where('is_confirmed', 0)
+                                ->where('is_generated', 0)
                                 ->first();
 
-
-                            if (!$invoice){
+                            if (!$invoice) {
                                 // create invoice if not exists
                                 $invoice = new Invoice();
                                 $invoice->tenancy_agreement_id = $tenancyAgreement->id;
@@ -176,7 +212,7 @@ class AppUtils
                                         date_add(
                                             date_create($currentDate),
                                             date_interval_create_from_date_string(
-                                                date_format(new \DateTime($currentDate),'d') < 5 ? '0 month' : '1 month'
+                                                date_format(new \DateTime($currentDate), 'd') < 5 ? '0 month' : '1 month'
                                             )
                                         ),
                                         'Y-m-5'
@@ -185,15 +221,12 @@ class AppUtils
 
                                 $invoice->save();
                             }
-                            $tenancyAgreement->createServiceBill($currentDate,$invoice);
+
+                            $tenancyAgreement->createServiceBill($currentDate, $invoice);
                         }
-                        // check if given property id then generate the service bills // TODO: MIGRATION:FLAG remove later
+
                         $currentDate = date('Y-m-d', strtotime($currentDate . ' +1 month'));
                     }
-//                            if (!$tenancyAgreement->unitOccupationMonthlyLogs()->whereMonth('month', now()->month)->exists()) {
-//                                $tenancyAgreement->createRentBill();
-//                                $tenancyAgreement->createServiceBill();
-//                            }
                 }
 
                 Notification::make()
@@ -201,12 +234,11 @@ class AppUtils
                     ->success()
                     ->send();
             });
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             Log::error("-----------------------------------------------------------------------");
-            // log the file causing the error
             Log::error('Error generating bills');
             Log::error($exception->getFile());
-            Log::error($exception->getLine() .' '. $exception->getCode());
+            Log::error($exception->getLine() . ' ' . $exception->getCode());
             Log::error($exception->getMessage());
             Log::error($exception->getTraceAsString());
             Log::error($exception->getLine());
@@ -214,39 +246,9 @@ class AppUtils
 
             Notification::make()
                 ->title('Error')
-                ->body('An error occurred while generating bills. '
-                    . $exception->getMessage())
+                ->body('An error occurred while generating bills. ' . $exception->getMessage())
                 ->danger()
                 ->send();
         }
-
-//                        TenancyAgreement::query()
-//                            ->whereDoesntHave('unitOccupationMonthlyLogs')
-//                            ->select('id', 'unit_id', 'tenant_id', 'agreement_type_id','billing_type_id','start_date', 'end_date','amount','created_at')
-//                            ->orderBy('start_date', 'asc')
-//                            ->chunk(100, function ($tenancyAgreements) {
-//                                Log::info('Generating bills for tenancy agreements'. $tenancyAgreements->count());
-//                                foreach ($tenancyAgreements as $tenancyAgreement) {
-//                                    $tenancyAgreement->createRentBill();
-//                                    $tenancyAgreement->createServiceBill();
-//                                }
-//                            });
-//
-//                        // get all tenancy agreements that started lasted last month and create bills
-//                        TenancyAgreement::query()
-//                            ->where(function($query){
-//                                $query->where('end_date', '>=', now()->subMonth()->endOfMonth())
-//                                    ->orWhereDate('end_date', '>=',now()->subMonth()->endOfMonth()->subDays(5))// from 25th to 31st
-//                                    ->orWhereDate('end_date', null);
-//                            })
-//                            ->select('id', 'unit_id', 'tenant_id', 'agreement_type_id','billing_type_id','start_date', 'end_date','amount','created_at')
-//                            ->orderBy('start_date', 'asc')
-//                            ->chunk(100, function ($tenancyAgreements) {
-//                                Log::info('Generating bills for tenancy agreements'. $tenancyAgreements->count());
-//                                foreach ($tenancyAgreements as $tenancyAgreement) {
-//                                    $tenancyAgreement->createRentBill();
-//                                    $tenancyAgreement->createServiceBill();
-//                                }
-//                            });
     }
 }

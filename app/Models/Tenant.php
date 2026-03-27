@@ -6,9 +6,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use App\Scopes\TenantScope;
+use App\Traits\BelongsToTenant;
 
 class Tenant extends DefaultAppModel
 {
+    use BelongsToTenant;
     protected $fillable = [
         'name',
         'email',
@@ -20,12 +23,14 @@ class Tenant extends DefaultAppModel
         'deleted_by',
         'deleted_at',
         'status',
-        'archive'
+        'archive',
+        'saas_client_id',
     ];
 
     protected static function boot()
     {
         parent::boot();
+        static::addGlobalScope(new TenantScope);
 
         static::created(function ($model) {
             $model->created_by = auth()->id();

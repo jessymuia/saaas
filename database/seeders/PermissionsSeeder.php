@@ -246,5 +246,7 @@ class PermissionsSeeder extends Seeder
         Permission::findOrCreate(AppPermissions::RESET_GAS_METER_PERMISSION);
         Permission::findOrCreate(AppPermissions::RESET_ELECTRICITY_METER_PERMISSION);
         Permission::findOrCreate(AppPermissions::RESET_WATER_METER_PERMISSION);
+        
     }
+
 }

@@ -1,26 +1,25 @@
-<?php
+﻿<?php
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
-class CreateAuditsTable extends Migration
+return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
+    public function up(): void
     {
         $connection = config('audit.drivers.database.connection', config('database.default'));
-        $table = config('audit.drivers.database.table', 'audits');
+        $tableName  = config('audit.drivers.database.table', 'audits');
+        $morphPrefix = config('audit.user.morph_prefix', 'user');
 
-        Schema::connection($connection)->create($table, function (Blueprint $table) {
+        Schema::connection($connection)->create($tableName, function (Blueprint $table) use ($morphPrefix) {
+           
+            $table->unsignedBigInteger('id')->autoIncrement();
 
-            $morphPrefix = config('audit.user.morph_prefix', 'user');
+            
+            $table->uuid('saas_client_id')->nullable();
 
-            $table->bigIncrements('id');
             $table->string($morphPrefix . '_type')->nullable();
             $table->unsignedBigInteger($morphPrefix . '_id')->nullable();
             $table->string('event');
@@ -33,20 +32,22 @@ class CreateAuditsTable extends Migration
             $table->string('tags')->nullable();
             $table->timestamps();
 
+            
+            $table->primary(['id', 'saas_client_id']);
+
             $table->index([$morphPrefix . '_id', $morphPrefix . '_type']);
         });
+
+        
+        DB::statement("SELECT create_distributed_table('$tableName', 'saas_client_id')");
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
+    public function down(): void
     {
         $connection = config('audit.drivers.database.connection', config('database.default'));
-        $table = config('audit.drivers.database.table', 'audits');
+        $tableName  = config('audit.drivers.database.table', 'audits');
 
-        Schema::connection($connection)->drop($table);
+        Schema::connection($connection)->drop($tableName);
     }
-}
+};
+

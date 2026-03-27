@@ -17,14 +17,17 @@ class EventServiceProvider extends ServiceProvider
      * @var array<class-string, array<int, class-string>>
      */
     protected $listen = [
-        Registered::class => [
-            SendEmailVerificationNotification::class,
-        ],
-        TenancyAgreementCreatedEvent::class => [
-            CreateDepositAmountInvoiceListener::class
-        ]
-    ];
-
+    Registered::class => [
+        SendEmailVerificationNotification::class,
+    ],
+    TenancyAgreementCreatedEvent::class => [
+        CreateDepositAmountInvoiceListener::class
+    ],
+    // New Onboarding Event
+    \App\Events\TenantRegistered::class => [
+        \App\Listeners\SendTenantWelcomeDetails::class,
+    ],
+];
     /**
      * Register any events for your application.
      */

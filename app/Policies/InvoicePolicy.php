@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Invoice;
+use App\Models\SystemAdmin;
 use App\Models\User;
 use App\Utils\AppPermissions;
 use Illuminate\Auth\Access\Response;
@@ -10,77 +11,62 @@ use Illuminate\Auth\Access\Response;
 class InvoicePolicy
 {
     /**
-     * Determine whether the user can view any models.
+     * Super Admin (central) gets full access to everything.
+     * Tenant users use permission-based access.
      */
-    public function viewAny(User $user): Response
+
+    public function viewAny(User|SystemAdmin $user): Response
     {
-        //
-        return $user->hasPermissionTo(AppPermissions::READ_INVOICES_PERMISSION)
+        if ($user instanceof SystemAdmin) {
+            return Response::allow();
+        }
+
+        return $user->hasPermissionTo(AppPermissions::READ_INVOICES_PERMISSION ?? 'read-invoices')
             ? Response::allow()
-            : Response::deny('You do not have permissions to view any invoice');
+            : Response::deny('You do not have permissions to view invoices.');
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Invoice $invoice): Response
+    public function view(User|SystemAdmin $user, Invoice $invoice): Response
     {
-        //
-        return $user->hasPermissionTo(AppPermissions::READ_INVOICES_PERMISSION)
+        if ($user instanceof SystemAdmin) {
+            return Response::allow();
+        }
+
+        return $user->hasPermissionTo(AppPermissions::READ_INVOICES_PERMISSION ?? 'read-invoices')
             ? Response::allow()
-            : Response::deny('You do not have permissions to view invoice');
+            : Response::deny('You do not have permission to view this invoice.');
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): Response
+    public function create(User|SystemAdmin $user): Response
     {
-        //
-        return $user->hasPermissionTo(AppPermissions::CREATE_INVOICES_PERMISSION)
+        if ($user instanceof SystemAdmin) {
+            return Response::allow();
+        }
+
+        return $user->hasPermissionTo(AppPermissions::CREATE_INVOICES_PERMISSION ?? 'create-invoices')
             ? Response::allow()
-            : Response::deny('You do not have permissions to create invoice');
+            : Response::deny('You do not have permission to create invoices.');
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, Invoice $invoice): Response
+    public function update(User|SystemAdmin $user, Invoice $invoice): Response
     {
-        //
-        return $user->hasPermissionTo(AppPermissions::UPDATE_INVOICES_PERMISSION)
+        if ($user instanceof SystemAdmin) {
+            return Response::allow();
+        }
+
+        return $user->hasPermissionTo(AppPermissions::UPDATE_INVOICES_PERMISSION ?? 'update-invoices')
             ? Response::allow()
-            : Response::deny('You do not have permissions to update invoice');
+            : Response::deny('You do not have permission to update this invoice.');
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, Invoice $invoice): Response
+    public function delete(User|SystemAdmin $user, Invoice $invoice): Response
     {
-        //
-        return $user->hasPermissionTo(AppPermissions::DELETE_INVOICES_PERMISSION)
-            ? Response::allow()
-            : Response::deny('You do not have permissions to delete invoice');
-    }
+        if ($user instanceof SystemAdmin) {
+            return Response::allow();
+        }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Invoice $invoice): Response
-    {
-        //
-        return $user->hasPermissionTo(AppPermissions::RESTORE_INVOICES_PERMISSION)
+        return $user->hasPermissionTo(AppPermissions::DELETE_INVOICES_PERMISSION ?? 'delete-invoices')
             ? Response::allow()
-            : Response::deny('You do not have permissions to restore invoice');
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Invoice $invoice): bool
-    {
-        //
-        return false;
+            : Response::deny('You do not have permission to delete this invoice.');
     }
 }

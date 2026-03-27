@@ -3,33 +3,23 @@
 namespace Database\Seeders;
 
 use App\Models\AppRole;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 use App\Utils\AppPermissions;
 
 class RolesSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        // create default roles
-        $roles = [
-            'admin',
-            'accountant',
-            'caretaker',
-        ];
+        $roles = ['admin', 'accountant', 'caretaker'];
 
         foreach ($roles as $role) {
             \App\Models\AppRole::findOrCreate($role);
         }
 
-        // define permissions for admin to be all
         $adminRole = AppRole::findOrCreate('admin');
-        $allPermissions = Permission::all();
-        $adminRole->syncPermissions($allPermissions);
+        $adminRole->syncPermissions(Permission::all());
 
         $accountantRole = AppRole::findOrCreate('accountant');
         $accountantRole->givePermissionTo([
@@ -45,11 +35,18 @@ class RolesSeeder extends Seeder
             AppPermissions::GENERATE_TENANT_PDF,
         ]);
 
-        // assign the admin role to the initial user
-        $user = \App\Models\User::query()
-            ->where('email','lancerbrian001@gmail.com')
+        // Fetch the real UUID for the saas_client seeded earlier
+        $saasClientId = DB::table('saas_clients')->where('slug', 'test-client')->value('id');
+
+        // Assign the admin role to the initial user
+        $user = \App\Models\User::where('email', 'lancerbrian001@gmail.com')
+            ->where('saas_client_id', $saasClientId)
             ->first();
 
-        $user->assignRole($adminRole);
+        if ($user) {
+            $user->assignRole($adminRole);
+        } else {
+            $this->command->warn("User lancerbrian001@gmail.com not found. Skipping role assignment.");
+        }
     }
 }

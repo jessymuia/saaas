@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -7,47 +7,41 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('units', function (Blueprint $table) {
-            $table = \App\Utils\AppUtils::defaultTableColumns($table);
+            $table->unsignedBigInteger('id')->autoIncrement(); 
+            $table = \App\Utils\AppUtils::defaultTableColumns($table, addId: false, addAuditFk: false);
 
+            $table->uuid('saas_client_id');
             $table->string('name');
             $table->unsignedBigInteger('property_id');
             $table->unsignedBigInteger('unit_type_id');
+            $table->decimal('area_in_square_feet', 14, 2)->default(0.0);
 
-            // square footage of the unit
-            $table->decimal('area_in_square_feet', 14, 2)
-                ->default(0.0)
-                ->comment('square footage of the unit');
+            
+            $table->index('created_by');
+            $table->index('updated_by');
+            $table->index('deleted_by');
 
-            if (getenv('DB_CONNECTION') === 'mysql'){
-                $table->boolean('is_deleted')
-                    ->virtualAs('IF(deleted_at IS NULL, 0, 1)');
-            }
+            $table->primary(['id', 'saas_client_id']);
 
-            // foreign keys
-            $table->foreign('property_id')->references('id')->on('properties');
-            $table->foreign('unit_type_id')->references('id')->on('ref_unit_types');
+            $table->foreign(['property_id', 'saas_client_id'])
+                  ->references(['id', 'saas_client_id'])
+                  ->on('properties')
+                  ->onDelete('cascade');
 
-            if (getenv('DB_CONNECTION') === 'mysql'){
-                // constraint to ensure uniqueness of name and property_id
-                $table->unique(['name', 'property_id', 'is_deleted'], 'units_unique_index');
-            }
+            $table->foreign('unit_type_id')
+                  ->references('id')
+                  ->on('ref_unit_types')
+                  ->onDelete('restrict');
         });
 
-        if (getenv('DB_CONNECTION') === 'pgsql'){
+        if (config('database.default') === 'pgsql') {
             DB::statement('ALTER TABLE units ADD is_deleted BOOLEAN GENERATED ALWAYS AS (CASE WHEN deleted_at IS NULL THEN FALSE ELSE TRUE END) STORED');
-            DB::statement('ALTER TABLE units ADD CONSTRAINT units_unique_index UNIQUE (name, property_id, is_deleted)');
         }
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('units');

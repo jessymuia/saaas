@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -6,13 +6,16 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('invoice_payments', function (Blueprint $table) {
-            $table = \App\Utils\AppUtils::defaultTableColumns($table);
+            
+            $table->unsignedBigInteger('id')->autoIncrement();
+
+            $table = \App\Utils\AppUtils::defaultTableColumns($table, addId: false, addAuditFk: false);
+
+           
+            $table->uuid('saas_client_id');
 
             $table->unsignedBigInteger('invoice_id');
             $table->unsignedBigInteger('tenant_id')->nullable();
@@ -31,21 +34,68 @@ return new class extends Migration
             $table->boolean('is_confirmed')->default(false);
             $table->dateTime('document_sent_at')->nullable();
 
-            // foreign keys
-            $table->foreign('payment_type_id')->references('id')->on('ref_payment_types');
-            $table->foreign('received_by')->references('id')->on('users');
-            $table->foreign('document_generated_by')->references('id')->on('users');
-            $table->foreign('tenant_id')->references('id')->on('tenants');
-            $table->foreign('client_id')->references('id')->on('clients');
-            $table->foreign('property_owner_id')->references('id')->on('property_owners');
+           
+            $table->primary(['id', 'saas_client_id']);
+
+            
+            $table->foreign(['invoice_id', 'saas_client_id'])
+                  ->references(['id', 'saas_client_id'])
+                  ->on('invoices')
+                  ->onDelete('cascade');
+
+            $table->foreign(['tenant_id', 'saas_client_id'])
+                  ->references(['id', 'saas_client_id'])
+                  ->on('tenants')
+                  ->cascadeOnDelete();
+
+            
+            $table->foreign(['client_id', 'saas_client_id'])
+                  ->references(['id', 'saas_client_id'])
+                  ->on('clients')
+                  ->cascadeOnDelete();
+
+            $table->foreign(['property_owner_id', 'saas_client_id'])
+                  ->references(['id', 'saas_client_id'])
+                  ->on('property_owners')
+                  ->cascadeOnDelete();
+
+           
+            $table->foreign('payment_type_id')
+                  ->references('id')
+                  ->on('ref_payment_types')
+                  ->onDelete('restrict');
+
+            
+            $table->foreign(['received_by', 'saas_client_id'])
+                  ->references(['id', 'saas_client_id'])
+                  ->on('users')
+                  ->onDelete('restrict');
+
+            $table->foreign(['document_generated_by', 'saas_client_id'])
+                  ->references(['id', 'saas_client_id'])
+                  ->on('users')
+                  ->cascadeOnDelete();
+
+           
+            $table->foreign(['created_by', 'saas_client_id'])
+                  ->references(['id', 'saas_client_id'])
+                  ->on('users')
+                  ->cascadeOnDelete();
+
+            $table->foreign(['updated_by', 'saas_client_id'])
+                  ->references(['id', 'saas_client_id'])
+                  ->on('users')
+                  ->cascadeOnDelete();
+
+            $table->foreign(['deleted_by', 'saas_client_id'])
+                  ->references(['id', 'saas_client_id'])
+                  ->on('users')
+                  ->cascadeOnDelete();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('rent_payments');
+        Schema::dropIfExists('invoice_payments');
     }
 };

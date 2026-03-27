@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Scopes\TenantScope;
+use App\Traits\BelongsToTenant;
 
 /**
  * Class MeterReading
@@ -34,6 +36,7 @@ use Illuminate\Support\Facades\Log;
  */
 class MeterReading extends DefaultAppModel
 {
+    use BelongsToTenant;
     protected $fillable = [
         'unit_id',
         'utility_id',
@@ -49,7 +52,8 @@ class MeterReading extends DefaultAppModel
         'deleted_by',
         'deleted_at',
         'status',
-        'archive'
+        'archive',
+        'saas_client_id',
     ];
 
     protected $casts = [
@@ -59,6 +63,7 @@ class MeterReading extends DefaultAppModel
     protected static function boot()
     {
         parent::boot();
+        static::addGlobalScope(new TenantScope);
 
         static::created(function ($model) {
             $model->created_by = auth()->id();

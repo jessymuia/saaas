@@ -5,10 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
+use App\Traits\BelongsToTenant;
 
 class Client extends DefaultAppModel
 {
+    use BelongsToTenant;
+
     protected $fillable = [
+        'saas_client_id',
         'name',
         'email',
         'phone_number',

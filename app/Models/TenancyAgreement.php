@@ -15,11 +15,13 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\App;
-
+use App\Scopes\TenantScope;
+use App\Traits\BelongsToTenant;
 
 
 class TenancyAgreement extends DefaultAppModel
 {
+    use BelongsToTenant;
     protected $appends = ['is_escalation'];
 
     protected $fillable = [
@@ -43,7 +45,8 @@ class TenancyAgreement extends DefaultAppModel
         'deleted_by',
         'deleted_at',
         'status',
-        'archive'
+        'archive',
+        'saas_client_id',
     ];
 
     protected $casts = [
@@ -53,6 +56,7 @@ class TenancyAgreement extends DefaultAppModel
     protected static function boot()
     {
         parent::boot();
+        static::addGlobalScope(new TenantScope);
 
         static::created(function ($model) {
             $model->created_by = auth()->id();

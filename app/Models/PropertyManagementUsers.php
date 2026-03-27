@@ -8,9 +8,12 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Property;
 use App\Models\User;
 use App\Models\AppRole;
+use App\Scopes\TenantScope;
+use App\Traits\BelongsToTenant;
 
 class PropertyManagementUsers extends DefaultAppModel
 {
+    use BelongsToTenant;
     protected $fillable = [
         'property_id',
         'user_id',
@@ -21,12 +24,14 @@ class PropertyManagementUsers extends DefaultAppModel
         'updated_at',
         'updated_by',
         'deleted_at',
-        'deleted_by'
+        'deleted_by',
+        'saas_client_id',
     ];
 
     protected static function boot()
     {
         parent::boot();
+         static::addGlobalScope(new TenantScope);
 
         static::created(function ($model) {
             $model->created_by = auth()->id();

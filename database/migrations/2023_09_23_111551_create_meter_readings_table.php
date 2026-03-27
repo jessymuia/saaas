@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -6,15 +6,18 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('meter_readings', function (Blueprint $table) {
-            $table = \App\Utils\AppUtils::defaultTableColumns($table);
+            
+            $table->unsignedBigInteger('id')->autoIncrement();
 
-            $table->unsignedBigInteger('unit_id'); // added
+            $table = \App\Utils\AppUtils::defaultTableColumns($table, addId: false, addAuditFk: false);
+
+            
+            $table->uuid('saas_client_id');
+
+            $table->unsignedBigInteger('unit_id');
             $table->unsignedBigInteger('utility_id');
             $table->dateTime('reading_date');
             $table->decimal('current_reading', 16, 5);
@@ -22,15 +25,39 @@ return new class extends Migration
             $table->decimal('consumption', 16, 5);
             $table->tinyInteger('has_bill')->default(0);
 
-            // foreign keys
-            $table->foreign('unit_id')->references('id')->on('units');
-            $table->foreign('utility_id')->references('id')->on('ref_utilities');
+            
+            $table->primary(['id', 'saas_client_id']);
+
+           
+            $table->foreign(['unit_id', 'saas_client_id'])
+                  ->references(['id', 'saas_client_id'])
+                  ->on('units')
+                  ->onDelete('cascade');
+
+            
+            $table->foreign('utility_id')
+                  ->references('id')
+                  ->on('ref_utilities')
+                  ->onDelete('restrict');
+
+            
+            $table->foreign(['created_by', 'saas_client_id'])
+                  ->references(['id', 'saas_client_id'])
+                  ->on('users')
+                  ->cascadeOnDelete();
+
+            $table->foreign(['updated_by', 'saas_client_id'])
+                  ->references(['id', 'saas_client_id'])
+                  ->on('users')
+                  ->cascadeOnDelete();
+
+            $table->foreign(['deleted_by', 'saas_client_id'])
+                  ->references(['id', 'saas_client_id'])
+                  ->on('users')
+                  ->cascadeOnDelete();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('meter_readings');

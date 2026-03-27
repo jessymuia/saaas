@@ -4,9 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use App\Scopes\TenantScope;
+use App\Traits\BelongsToTenant;
 class ManualInvoiceItem extends DefaultAppModel
 {
+    use BelongsToTenant;
     protected $fillable = [
         'manual_invoice_id',
         'name',
@@ -22,12 +24,14 @@ class ManualInvoiceItem extends DefaultAppModel
         'updated_by',
         'updated_at',
         'deleted_by',
-        'deleted_at'
+        'deleted_at',
+        'saas_client_id',
     ];
 
     protected static function boot()
     {
         parent::boot();
+        static::addGlobalScope(new TenantScope);
 
         static::created(function ($model) {
             $model->created_by = auth()->id();

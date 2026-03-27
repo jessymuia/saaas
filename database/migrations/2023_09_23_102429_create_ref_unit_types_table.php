@@ -6,24 +6,21 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
-    {
-        Schema::create('ref_unit_types', function (Blueprint $table) {
-            $table = \App\Utils\AppUtils::defaultTableColumns($table);
+   public function up(): void
+{
+    
+    Schema::create('ref_unit_types', function (Blueprint $table) {
+        $table = \App\Utils\AppUtils::defaultTableColumns($table, addId: true, addAuditFk: false);
 
-            $table->string('type');
-            $table->text('description')->nullable();
-        });
-    }
+        $table->string('name'); 
+        $table->string('code')->nullable(); 
 
-    /**
-     * Reverse the migrations.
-     */
+        $table->unique('name');
+    });
+}
+
     public function down(): void
     {
-        Schema::dropIfExists('ref_unit_types');
+        Schema::dropIfExists('ref_utilities');
     }
 };
