@@ -14,6 +14,7 @@ return [
     |--------------------------------------------------------------------------
     */
     'tenant_model' => \App\Models\SaasClient::class,
+     'domain_model' => \App\Models\Domain::class, 
 
     /*
     |--------------------------------------------------------------------------
@@ -32,6 +33,7 @@ return [
         '127.0.0.1',
         'localhost',
         'test.localhost',
+
     ],
 
     /*
@@ -115,5 +117,12 @@ return [
     'seeder_parameters' => [
         '--force' => true,
     ],
-
+'middleware' => [
+    'exempt_uris' => [
+        'css/filament',
+        'js/filament', 
+        'fonts/filament',
+        'livewire',
+    ],
+],
 ];

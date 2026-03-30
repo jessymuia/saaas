@@ -1,16 +1,10 @@
 <?php
-
 use Illuminate\Support\Facades\Route;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-*/
 
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
+
 Route::get('/tenancy-debug', function () {
     return response()->json([
         'is_central' => !tenancy()->initialized,

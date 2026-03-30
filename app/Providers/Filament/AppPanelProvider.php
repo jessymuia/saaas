@@ -16,7 +16,9 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Stancl\Tenancy\Middleware\InitializeTenancyBySubdomain;
+use App\Http\Middleware\InitializeTenancyBySubdomain;
+use App\Http\Middleware\CheckTenantSuspended;
+
 
 class AppPanelProvider extends PanelProvider
 {
@@ -30,7 +32,6 @@ class AppPanelProvider extends PanelProvider
             ->tenant(SaasClient::class, slugAttribute: 'slug')
             ->tenantRoutePrefix('app')
             ->colors(['primary' => Color::Emerald])
-           
             ->discoverResources(
                 in: app_path('Filament/Resources/App'),
                 for: 'App\\Filament\\Resources\\App'
@@ -54,7 +55,7 @@ class AppPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
                 InitializeTenancyBySubdomain::class,
-                // PreventAccessFromCentralDomains::class, // keep commented for now
+                CheckTenantSuspended::class,
             ])
             ->authMiddleware([
                 Authenticate::class,

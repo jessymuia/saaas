@@ -85,4 +85,8 @@ class User extends Authenticatable implements \OwenIt\Auditing\Contracts\Auditab
         // Tenant Panels
         return $this->saas_client_id !== null;
     }
+    public function saasClient(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+{
+    return $this->belongsTo(\App\Models\SaasClient::class, 'saas_client_id');
+}
 }

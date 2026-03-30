@@ -3,18 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-/**
- * Subscription — active contract between a SaasClient and a Plan.
- * Central / Local table — NOT distributed.
- */
 class Subscription extends Model
 {
-    use HasFactory;
-
-    protected $table = 'subscriptions';
-
     protected $fillable = [
         'saas_client_id',
         'plan_id',
@@ -23,67 +15,114 @@ class Subscription extends Model
         'starts_at',
         'ends_at',
         'trial_ends_at',
+        'grace_ends_at',
         'cancelled_at',
+        'last_reminded_at',
+        'reminder_count',
     ];
 
     protected $casts = [
-        'starts_at'     => 'datetime',
-        'ends_at'       => 'datetime',
-        'trial_ends_at' => 'datetime',
-        'cancelled_at'  => 'datetime',
+        'starts_at'        => 'datetime',
+        'ends_at'          => 'datetime',
+        'trial_ends_at'    => 'datetime',
+        'grace_ends_at'    => 'datetime',
+        'cancelled_at'     => 'datetime',
+        'last_reminded_at' => 'datetime',
     ];
 
-    // ── Relationships ──────────────────────────────────────────────────────
-
-    public function saasClient()
+    public function client(): BelongsTo
     {
         return $this->belongsTo(SaasClient::class, 'saas_client_id');
     }
 
-    public function plan()
+    public function plan(): BelongsTo
     {
         return $this->belongsTo(Plan::class);
     }
 
-    public function payments()
+    public function isTrialing(): bool
     {
-        return $this->hasMany(SubscriptionPayment::class, 'subscription_id');
+        return $this->status === 'trialing' && $this->trial_ends_at?->isFuture();
     }
-
-    // ── Helpers ────────────────────────────────────────────────────────────
 
     public function isActive(): bool
     {
-        return in_array($this->status, ['active', 'trialing']);
+        return $this->status === 'active' && $this->ends_at->isFuture();
     }
 
-    public function isTrialing(): bool
+    public function isInGracePeriod(): bool
     {
-        return $this->status === 'trialing'
-            && $this->trial_ends_at
-            && $this->trial_ends_at->isFuture();
-    }
-
-    public function isPastDue(): bool
-    {
-        return $this->status === 'past_due';
-    }
-
-    public function isCancelled(): bool
-    {
-        return $this->status === 'cancelled';
+        return $this->status === 'grace_period' && $this->grace_ends_at?->isFuture();
     }
 
     public function isExpired(): bool
     {
-        return $this->status === 'expired'
-            || ($this->ends_at && $this->ends_at->isPast());
+        return in_array($this->status, ['expired', 'suspended']);
     }
 
-    // ── Scopes ─────────────────────────────────────────────────────────────
-
-    public function scopeActive($query)
+    public function isSuspended(): bool
     {
-        return $query->whereIn('status', ['active', 'trialing']);
+        return $this->status === 'suspended';
+    }
+
+    public function daysUntilTrialEnds(): int
+    {
+        return (int) now()->diffInDays($this->trial_ends_at, false);
+    }
+
+    public function daysUntilGraceEnds(): int
+    {
+        return (int) now()->diffInDays($this->grace_ends_at, false);
+    }
+
+    public static function startTrial(string $saasClientId, int $planId): self
+    {
+        return self::withoutEvents(function () use ($saasClientId, $planId) {
+            return self::create([
+                'saas_client_id' => $saasClientId,
+                'plan_id'        => $planId,
+                'status'         => 'trialing',
+                'billing_cycle'  => 'monthly',
+                'starts_at'      => now(),
+                'ends_at'        => now()->addDays(60),
+                'trial_ends_at'  => now()->addDays(60),
+            ]);
+        });
+    }
+
+    public function startGracePeriod(): void
+    {
+        $this->update([
+            'status'        => 'grace_period',
+            'grace_ends_at' => now()->addDays(3),
+        ]);
+    }
+
+    public function suspend(): void
+    {
+        $this->update(['status' => 'suspended']);
+        $this->client->update([
+            'is_suspended'      => true,
+            'suspended_at'      => now(),
+            'suspension_reason' => 'Subscription expired',
+        ]);
+    }
+
+    public function renew(string $billingCycle = 'monthly'): void
+    {
+        $days = $billingCycle === 'yearly' ? 365 : 30;
+        $this->update([
+            'status'        => 'active',
+            'billing_cycle' => $billingCycle,
+            'starts_at'     => now(),
+            'ends_at'       => now()->addDays($days),
+            'grace_ends_at' => null,
+            'cancelled_at'  => null,
+        ]);
+        $this->client->update([
+            'is_suspended'      => false,
+            'suspended_at'      => null,
+            'suspension_reason' => null,
+        ]);
     }
 }

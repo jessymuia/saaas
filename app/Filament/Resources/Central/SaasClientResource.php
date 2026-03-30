@@ -6,13 +6,14 @@ use App\Models\SaasClient;
 use Illuminate\Support\Str;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Section;   
+use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Actions\EditAction;
+use Filament\Actions\Action;
 use App\Filament\Resources\Central\SaasClientResource\Pages;
 
 class SaasClientResource extends Resource
@@ -27,7 +28,7 @@ class SaasClientResource extends Resource
     {
         return $schema
             ->components([
-                Section::make('Client Details')
+                Section::make('Company Details')
                     ->schema([
                         TextInput::make('name')
                             ->required()
@@ -41,12 +42,27 @@ class SaasClientResource extends Resource
                         TextInput::make('domain')
                             ->required()
                             ->label('Subdomain / Domain')
-                            ->placeholder('client.localhost'),
+                            ->placeholder('christopher.localhost'),
+
+                        TextInput::make('email')
+                            ->email()
+                            ->required()
+                            ->label('Client Email')
+                            ->placeholder('admin@christopherproperty.com'),
+
+                        TextInput::make('contact_name')
+                            ->label('Contact Person Name')
+                            ->placeholder('Christopher Doe'),
+
+                        TextInput::make('phone')
+                            ->label('Phone Number')
+                            ->placeholder('+254700000000'),
 
                         Select::make('plan_id')
                             ->relationship('plan', 'name')
                             ->required()
-                            ->preload(),
+                            ->preload()
+                            ->live(),
 
                         Select::make('status')
                             ->options([
@@ -55,7 +71,8 @@ class SaasClientResource extends Resource
                                 'suspended' => 'Suspended',
                             ])
                             ->default('trial')
-                            ->required(),
+                            ->required()
+                            ->live(),
                     ])->columns(2),
             ]);
     }
@@ -67,14 +84,59 @@ class SaasClientResource extends Resource
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('email')
+                    ->searchable(),
                 TextColumn::make('domains.domain')
                     ->label('Domain')
                     ->badge(),
                 TextColumn::make('status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'active'    => 'success',
+                        'trial'     => 'warning',
+                        'suspended' => 'danger',
+                        default     => 'gray',
+                    }),
+                TextColumn::make('plan.name')
+                    ->label('Plan')
                     ->badge(),
+                TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable(),
             ])
             ->actions([
                 EditAction::make(),
+                Action::make('resetPassword')
+                    ->label('Reset Password')
+                    ->icon('heroicon-o-key')
+                    ->color('warning')
+                    ->requiresConfirmation()
+                    ->action(function (SaasClient $record) {
+                        $newPassword = \Illuminate\Support\Str::random(12);
+                        $user = \App\Models\User::where('saas_client_id', $record->id)->first();
+
+                        if ($user) {
+                            \Illuminate\Support\Facades\DB::statement("SET app.current_tenant_id = '{$record->id}'");
+                            $user->update(['password' => \Illuminate\Support\Facades\Hash::make($newPassword)]);
+
+                            // Send email with new password
+                            if ($record->email) {
+                                $record->notify(new \App\Notifications\TenantWelcomeNotification(
+                                    tenantName: $record->name,
+                                    loginUrl: 'http://' . ($record->domains->first()->domain ?? $record->slug . '.localhost:8000') . '/app/login',
+                                    email: $user->email,
+                                    password: $newPassword,
+                                ));
+                            }
+
+                            \Filament\Notifications\Notification::make()
+                                ->title('Password Reset')
+                                ->body("New password: {$newPassword}\nEmail: {$user->email}")
+                                ->success()
+                                ->persistent()
+                                ->send();
+                        }
+                    }),
             ]);
     }
 

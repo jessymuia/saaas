@@ -41,6 +41,22 @@ services:
     networks:
       - propman
 
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: php artisan schedule:work
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - php
+      - redis
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    networks:
+      - propman
+
   redis:
     image: redis:7-alpine
     ports:

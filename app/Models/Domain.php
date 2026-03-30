@@ -2,16 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Stancl\Tenancy\Database\Models\Domain as StanclDomain;
 
-/**
- * Domain – subdomain and custom domain routing per SaasClient.
- * Central / Local table – NOT distributed.
- *
- * Used by stancl/tenancy to identify which tenant a request belongs to.
- */
-class Domain extends Model
+class Domain extends StanclDomain
 {
     use HasFactory;
 
@@ -30,11 +24,14 @@ class Domain extends Model
         'is_verified' => 'boolean',
     ];
 
-    // ── Relationships ────────────────────────────────────────────────
     public function saasClient()
     {
         return $this->belongsTo(SaasClient::class, 'saas_client_id');
     }
+    public function tenant()
+{
+    return $this->belongsTo(config('tenancy.tenant_model'), 'saas_client_id');
+}
 
     // ── Helpers ──────────────────────────────────────────────────────
     public function isSubdomain(): bool

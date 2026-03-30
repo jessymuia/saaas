@@ -8,14 +8,15 @@ use Stancl\Tenancy\Database\Concerns\HasDatabase;
 use Stancl\Tenancy\Database\Concerns\HasDomains;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Notifications\Notifiable;
 
 class SaasClient extends Tenant implements TenantWithDatabase
 {
-    use HasDatabase, HasDomains;
+    use HasFactory, HasDatabase, HasDomains, Notifiable;
 
     protected $table = 'saas_clients';
 
-   
     public static function getCustomColumns(): array
     {
         return [
@@ -23,28 +24,43 @@ class SaasClient extends Tenant implements TenantWithDatabase
             'name',
             'slug',
             'plan_id',
-            'status'
+            'status',
+            'email',
+            'phone',
+            'contact_name',
+            'is_suspended',
+            'suspended_at',
+            'suspension_reason',
         ];
     }
 
     protected $casts = [
-        'data'    => 'array',
-        'plan_id' => 'integer',
+        'plan_id'       => 'integer',
+        'is_suspended'  => 'boolean',
+        'suspended_at'  => 'datetime',
     ];
-
 
     protected $attributes = [
         'data' => '{}',
     ];
 
-    
     public function domains(): HasMany
     {
-        return $this->hasMany(Domain::class, 'saas_client_id');
+        return $this->hasMany(\App\Models\Domain::class, 'saas_client_id', 'id');
     }
 
     public function plan(): BelongsTo
     {
         return $this->belongsTo(Plan::class);
+    }
+
+    public function subscription(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(\App\Models\Subscription::class, 'saas_client_id');
+    }
+
+    public function usageMetric(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(\App\Models\UsageMetric::class, 'saas_client_id');
     }
 }
