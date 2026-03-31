@@ -56,3 +56,14 @@ waitForPort = 5000
 
 [workflows.workflow.metadata]
 outputType = "webview"
+
+[userenv]
+
+[userenv.shared]
+MAIL_MAILER = "smtp"
+MAIL_HOST = "taylor.mxrouting.net"
+MAIL_PORT = "587"
+MAIL_USERNAME = "kfctesting@kakayetechlabs.com"
+MAIL_ENCRYPTION = "tls"
+MAIL_FROM_ADDRESS = "muiajessy@kakayetechlabs.com"
+MAIL_FROM_NAME = "PropManage SaaS"
