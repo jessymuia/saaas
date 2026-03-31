@@ -26,9 +26,11 @@ class InitializeTenancyBySlug
             return $next($request);
         }
 
-        // URL pattern: /app/{slug}/...
-        // segment(1) = 'app', segment(2) = slug
-        $slug = $request->segment(2);
+        // URL pattern: /app/app/{slug}/...
+        // (panel path = 'app', tenantRoutePrefix = 'app', then slug)
+        // segment(1) = 'app', segment(2) = 'app', segment(3) = slug
+        // Fall back to segment(2) in case the prefix is removed later.
+        $slug = $request->segment(3) ?? $request->segment(2);
 
         if ($slug) {
             $tenant = SaasClient::where('slug', $slug)->first();

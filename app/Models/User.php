@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasTenants;
 use Filament\Panel;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -13,7 +15,7 @@ use OwenIt\Auditing\Auditable;
 use Spatie\Permission\Traits\HasRoles;
 use App\Traits\BelongsToTenant;
 
-class User extends Authenticatable implements \OwenIt\Auditing\Contracts\Auditable, FilamentUser
+class User extends Authenticatable implements \OwenIt\Auditing\Contracts\Auditable, FilamentUser, HasTenants
 {
     use BelongsToTenant;
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes, Auditable, HasRoles;
@@ -80,6 +82,30 @@ class User extends Authenticatable implements \OwenIt\Auditing\Contracts\Auditab
             return true;
         }
         return $this->saas_client_id !== null;
+    }
+
+    /**
+     * Return the tenants (SaasClients) this user belongs to.
+     * Required by Filament's HasTenants interface.
+     */
+    public function getTenants(Panel $panel): Collection
+    {
+        if ($this->saas_client_id === null) {
+            return Collection::make();
+        }
+
+        return SaasClient::withoutGlobalScopes()
+            ->where('id', $this->saas_client_id)
+            ->get();
+    }
+
+    /**
+     * Whether this user can access the given tenant.
+     * Required by Filament's HasTenants interface.
+     */
+    public function canAccessTenant(\Illuminate\Database\Eloquent\Model $tenant): bool
+    {
+        return $this->saas_client_id === $tenant->id;
     }
 
     public function saasClient(): \Illuminate\Database\Eloquent\Relations\BelongsTo
