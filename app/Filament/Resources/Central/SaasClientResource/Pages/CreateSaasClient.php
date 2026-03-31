@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Central\SaasClientResource\Pages;
 
+use App\Events\TenantRegistered;
 use App\Filament\Resources\Central\SaasClientResource;
 use App\Models\Domain;
 use App\Models\User;
@@ -127,12 +128,15 @@ class CreateSaasClient extends CreateRecord
             $email = $record->email ?? 'admin@' . $host;
             $loginUrl = "http://{$host}:8000/app/login";
 
-            User::withoutGlobalScopes()->create([
+            $adminUser = User::withoutGlobalScopes()->create([
                 'name' => $record->contact_name ?? $record->name . ' Admin',
                 'email' => $email,
                 'password' => Hash::make($password),
                 'saas_client_id' => $record->id,
             ]);
+
+            // Dispatch welcome email event for new tenant admin
+            TenantRegistered::dispatch($adminUser);
 
             $defaultAdminEmail = $email;
             $defaultAdminPassword = $password;

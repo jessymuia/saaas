@@ -35,17 +35,15 @@ class MpesaService
 
     public function __construct()
     {
-        $env = config('services.mpesa.env', 'sandbox');
+        $env = config('mpesa.env', 'sandbox');
 
-        $this->baseUrl = $env === 'production'
-            ? 'https://api.safaricom.co.ke'
-            : 'https://sandbox.safaricom.co.ke';
+        $this->baseUrl = config("mpesa.base_url.{$env}", 'https://sandbox.safaricom.co.ke');
 
-        $this->consumerKey    = config('services.mpesa.consumer_key', '');
-        $this->consumerSecret = config('services.mpesa.consumer_secret', '');
-        $this->shortcode      = config('services.mpesa.shortcode', '');
-        $this->passkey        = config('services.mpesa.passkey', '');
-        $this->callbackUrl    = config('services.mpesa.callback_url', '');
+        $this->consumerKey    = config('mpesa.consumer_key', '');
+        $this->consumerSecret = config('mpesa.consumer_secret', '');
+        $this->shortcode      = config('mpesa.shortcode', '');
+        $this->passkey        = config('mpesa.passkey', '');
+        $this->callbackUrl    = config('mpesa.callback_url', '');
     }
 
     // ──────────────────────────────────────────────────────────────────────────
@@ -57,7 +55,7 @@ class MpesaService
      */
     public function getAccessToken(): string
     {
-        return Cache::remember('mpesa_access_token', 3500, function () {
+        return Cache::remember('mpesa_access_token', config('mpesa.token_cache_seconds', 3500), function () {
             $response = Http::withBasicAuth($this->consumerKey, $this->consumerSecret)
                 ->get("{$this->baseUrl}/oauth/v1/generate?grant_type=client_credentials");
 

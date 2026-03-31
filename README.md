@@ -428,7 +428,7 @@ docker compose exec horizon php artisan horizon:continue
 
 ## M-Pesa Integration
 
-Set in `.env`:
+Configuration is in `config/mpesa.php` (reads from `.env`):
 
 ```
 MPESA_ENV=sandbox
@@ -447,6 +447,13 @@ $result = $mpesa->stkPush('254712345678', 5000, 'INV-001', 'Rent Payment');
 ```
 
 Webhook: `POST /api/mpesa/callback` — handled by `MpesaWebhookController`.
+
+For local testing use [ngrok](https://ngrok.com/) or similar to expose the callback URL:
+
+```bash
+ngrok http 8000
+# then set MPESA_CALLBACK_URL=https://<ngrok-id>.ngrok.io/api/mpesa/callback
+```
 
 ---
 
@@ -533,7 +540,7 @@ See `docs/erd/schema.md` for the full Mermaid ER diagram with composite key anno
 ### Phase 9 — Authentication
 - [x] `User` model distributed (tenant-scoped)
 - [x] `SystemAdmin` central model for super admins
-- [ ] Welcome email templates (pending)
+- [x] Welcome email template (`resources/views/emails/tenants/welcome.blade.php`) + `TenantRegistered` event dispatched on tenant admin creation
 
 ### Phase 10 — Filament
 - [x] Central admin panel (SystemAdmin guard, RLS bypass)
@@ -546,7 +553,7 @@ See `docs/erd/schema.md` for the full Mermaid ER diagram with composite key anno
 
 ### Phase 12 — Citus Query Discipline
 - [x] Raw query audit: `php artisan citus:audit-raw-queries`
-- [ ] Slow query log (reminder: enable on coordinator)
+- [ ] Slow query log (reminder: enable `log_min_duration_statement=1000` on coordinator in production)
 - [x] `pg_stat_statements` enabled in `docker/citus-bootstrap.sh` (CREATE EXTENSION IF NOT EXISTS pg_stat_statements)
 
 ### Phase 13 — Security & Isolation
@@ -554,8 +561,8 @@ See `docs/erd/schema.md` for the full Mermaid ER diagram with composite key anno
 - [x] Super admin bypass policy
 - [x] `SetRlsSessionVariables` middleware
 - [x] `CheckTenantSuspended` middleware
-- [ ] HTTPS enforcement (configure in Nginx/load balancer)
-- [ ] Rate limiting (configure in RouteServiceProvider)
+- [ ] HTTPS enforcement (configure in Nginx/load balancer — production only)
+- [x] Rate limiting: `api` (60/min), `tenant` (120/min), `auth` (10/min) in `RouteServiceProvider`
 
 ### Phase 14 — Billing & Plans
 - [x] Trial period logic (`Subscription::startTrial()`)

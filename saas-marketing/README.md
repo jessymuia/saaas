@@ -1,36 +1,108 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PropManage SaaS — Marketing Site
 
-## Getting Started
+Public-facing marketing site for [PropManage SaaS](https://propertysasa.com) — Kenya's leading multi-tenant property management platform. Built with **Next.js 14**, **Tailwind CSS 4**, and **TypeScript**.
 
-First, run the development server:
+## Pages
+
+| Route | Description |
+|-------|-------------|
+| `/` | Landing home page (1,500+ words) |
+| `/features` | Full feature breakdown |
+| `/pricing` | Subscription plans (KES pricing) |
+| `/use-cases` | Use cases by landlord type |
+| `/about` | Company story, values, team, milestones (1,500+ words) |
+| `/testimonials` | Customer stories & ratings |
+| `/security` | Security & KDPA 2019 compliance |
+| `/blog` | Blog listing with categories |
+| `/blog/[slug]` | Individual blog post |
+| `/changelog` | Product release history |
+| `/contact` | Contact form |
+| `/demo` | Request a demo form |
+| `/terms` | Terms of Service (Kenya law) |
+| `/privacy` | Privacy Policy (KDPA 2019) |
+| `/cookies` | Cookie Policy |
+| `/faq` | Frequently Asked Questions |
+
+## Local Development
+
+### Prerequisites
+
+- Node.js 18+  
+- npm 9+ (or yarn/pnpm/bun)
+
+### Installation & Running
 
 ```bash
+# From the repo root
+cd saas-marketing
+
+# Install dependencies
+npm install
+
+# Start the dev server on http://localhost:3000
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The marketing site runs on **port 3000** (separate from the Laravel backend on port 8000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Run Alongside the Backend
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+You can run the backend and the marketing site simultaneously:
 
-## Learn More
+```bash
+# Terminal 1 — Laravel backend (Docker)
+docker compose up -d
 
-To learn more about Next.js, take a look at the following resources:
+# Terminal 2 — Next.js marketing site
+cd saas-marketing && npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Service | URL |
+|---------|-----|
+| Laravel backend | http://localhost:8000 |
+| Marketing site | http://localhost:3000 |
+| Central admin (Filament) | http://localhost:8000/sysadmin |
+| Tenant app | http://{slug}.localhost:8000/app |
+| Horizon dashboard | http://localhost:8000/horizon |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Build for Production
 
-## Deploy on Vercel
+```bash
+npm run build
+npm start
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Lint & Type-Check
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run lint
+npx tsc --noEmit
+```
+
+## Adding Blog Posts
+
+Blog posts are defined in two places:
+
+1. **Listing** — `app/blog/page.tsx`: Add your post metadata to the `posts` array.
+2. **Content** — `app/blog/[slug]/page.tsx`: Add the full post content to the `posts` record, keyed by slug.
+
+Both must be updated for a new post to render correctly.
+
+Optionally, save an accompanying Markdown file to `content/blog/<slug>.md` for source control and review purposes.
+
+## Deployment
+
+The marketing site can be deployed independently of the Laravel backend:
+
+- **Vercel** (recommended): Connect the repo and set the root directory to `saas-marketing/`.
+- **Static export**: Run `npm run build` then serve the `out/` directory from any CDN.
+- **Docker**: A minimal Dockerfile can be added to this directory for container-based deployment.
+
+The site does not call any backend APIs at build time, so no environment variables are required for a basic deployment.
+
+## Tech Stack
+
+- [Next.js 14](https://nextjs.org/) — App Router, SSG
+- [Tailwind CSS 4](https://tailwindcss.com/) — Utility-first CSS
+- [TypeScript](https://www.typescriptlang.org/) — Type safety
+- [React 19](https://react.dev/) — UI framework
