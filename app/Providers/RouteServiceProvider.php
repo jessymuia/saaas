@@ -24,8 +24,23 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Generic API rate limiter: 60 requests/min per authenticated user or IP
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+        });
+
+        // Tenant-scoped limiter: 120 requests/min keyed by tenant + user
+        // Prevents a single tenant from impacting others (noisy-neighbour protection)
+        RateLimiter::for('tenant', function (Request $request) {
+            $tenantId = tenancy()->initialized ? tenancy()->tenant->id : 'central';
+            $userId   = $request->user()?->id ?: $request->ip();
+
+            return Limit::perMinute(120)->by("{$tenantId}:{$userId}");
+        });
+
+        // Auth endpoints: stricter limit to slow brute-force attempts
+        RateLimiter::for('auth', function (Request $request) {
+            return Limit::perMinute(10)->by($request->ip());
         });
 
         $this->routes(function () {
