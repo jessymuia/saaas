@@ -17,6 +17,9 @@ class SaasClient extends Tenant implements TenantWithDatabase
 
     protected $table = 'saas_clients';
 
+    /**
+     * Columns that physically exist in DB
+     */
     public static function getCustomColumns(): array
     {
         return [
@@ -31,18 +34,25 @@ class SaasClient extends Tenant implements TenantWithDatabase
             'is_suspended',
             'suspended_at',
             'suspension_reason',
+            'created_at',
+            'updated_at',
         ];
     }
 
-    protected $casts = [
-        'plan_id'       => 'integer',
-        'is_suspended'  => 'boolean',
-        'suspended_at'  => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'plan_id'      => 'integer',
+            'is_suspended' => 'boolean',
+            'suspended_at' => 'datetime',
+            'data'         => 'array',
+        ];
+    }
 
-    protected $attributes = [
-        'data' => '{}',
-    ];
+    public static function getDataColumn(): string
+    {
+        return 'data';
+    }
 
     public function domains(): HasMany
     {
@@ -54,12 +64,12 @@ class SaasClient extends Tenant implements TenantWithDatabase
         return $this->belongsTo(Plan::class);
     }
 
-    public function subscription(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function subscription()
     {
         return $this->hasOne(\App\Models\Subscription::class, 'saas_client_id');
     }
 
-    public function usageMetric(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function usageMetric()
     {
         return $this->hasOne(\App\Models\UsageMetric::class, 'saas_client_id');
     }

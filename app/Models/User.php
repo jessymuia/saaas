@@ -19,8 +19,8 @@ class User extends Authenticatable implements \OwenIt\Auditing\Contracts\Auditab
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes, Auditable, HasRoles;
 
     protected $guarded = ['id'];
-    protected $primaryKey = 'id'; 
-    
+    protected $primaryKey = 'id';
+
     protected $fillable = [
         'saas_client_id',
         'name',
@@ -36,34 +36,31 @@ class User extends Authenticatable implements \OwenIt\Auditing\Contracts\Auditab
 
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-        'status' => 'boolean',
-        'archive' => 'boolean',
+        'password'          => 'hashed',
+        'status'            => 'boolean',
+        'archive'           => 'boolean',
     ];
 
     /**
-     * Requirement for Citus: Inject Tenant ID into Audit
-     * This ensures the 'audits' table gets the partition key it needs.
+     * Inject Tenant ID into Audit for Citus partition key.
      */
     public function transformAudit(array $data): array
     {
-        // If the user has no tenant (Central Admin), we use 0
         $data['saas_client_id'] = $this->saas_client_id ?? 0;
-        
         return $data;
     }
 
     /**
-     * Citus Logic: Only set tenant ID on creation, never update it.
+     * Only set saas_client_id on creation — Citus partition key cannot change.
      */
-    public function setSaasClientIdAttribute($value)
+    public function setSaasClientIdAttribute($value): void
     {
-        if (!$this->exists) {
+        if (! $this->exists) {
             $this->attributes['saas_client_id'] = $value;
         }
     }
 
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 
@@ -71,22 +68,22 @@ class User extends Authenticatable implements \OwenIt\Auditing\Contracts\Auditab
             if (auth()->check()) {
                 $model->updated_by = auth()->id();
             }
-            // Strip partition key from update strings to avoid Citus errors
-            unset($model->saas_client_id);
+            // Do NOT unset saas_client_id here — it breaks the Citus partition key
+            // on UPDATE queries. Instead, handle this at the DB level via your
+            // migration (the column should be immutable by design).
         });
     }
 
     public function canAccessPanel(Panel $panel): bool
     {
-        // Central Admin Panel
         if ($panel->getId() === 'admin') {
             return true;
         }
-        // Tenant Panels
         return $this->saas_client_id !== null;
     }
+
     public function saasClient(): \Illuminate\Database\Eloquent\Relations\BelongsTo
-{
-    return $this->belongsTo(\App\Models\SaasClient::class, 'saas_client_id');
-}
+    {
+        return $this->belongsTo(\App\Models\SaasClient::class, 'saas_client_id');
+    }
 }

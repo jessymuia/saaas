@@ -18,6 +18,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Http\Middleware\InitializeTenancyBySubdomain;
 use App\Http\Middleware\CheckTenantSuspended;
+use \App\Http\Middleware\SetRlsSessionVariables;
 
 
 class AppPanelProvider extends PanelProvider
@@ -56,6 +57,7 @@ class AppPanelProvider extends PanelProvider
                 DispatchServingFilamentEvent::class,
                 InitializeTenancyBySubdomain::class,
                 CheckTenantSuspended::class,
+                SetRlsSessionVariables::class,
             ])
             ->authMiddleware([
                 Authenticate::class,
