@@ -24,14 +24,7 @@ class AppServiceProvider extends ServiceProvider
         return $request->user()?->is_super_admin === true;
     });
 
-    // Dynamically set asset URL to current tenant's domain
-    if (app()->environment('local')) {
-        URL::forceRootUrl(request()->getSchemeAndHttpHost());
-    }
-
-    // Force HTTPS in production
-    if (app()->environment('production')) {
-        URL::forceScheme('https');
-    }
+    // Always force HTTPS — Replit (and production) terminate SSL at the proxy layer
+    URL::forceScheme('https');
 }
 }
