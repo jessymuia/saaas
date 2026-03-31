@@ -18,6 +18,7 @@ use Filament\Tables\Table;
 class PaymentTypeResource extends Resource
 {
     protected static ?string $model = RefPaymentType::class;
+    protected static bool $isScopedToTenant = false;
 
     protected static ?string $modelLabel = 'Payment Type';
 

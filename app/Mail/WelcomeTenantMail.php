@@ -14,7 +14,11 @@ class WelcomeTenantMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public User $user) {}
+    public function __construct(
+        public User   $user,
+        public string $plainPassword,
+        public string $loginUrl,
+    ) {}
 
     public function envelope(): Envelope
     {

@@ -18,6 +18,7 @@ use Filament\Tables\Table;
 class BillingTypeResource extends Resource
 {
     protected static ?string $model = RefBillingType::class;
+    protected static bool $isScopedToTenant = false;
 
     protected static ?string $modelLabel = 'Billing Type';
 

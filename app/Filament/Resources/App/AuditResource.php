@@ -17,6 +17,7 @@ use OwenIt\Auditing\Models\Audit;
 class AuditResource extends Resource
 {
     protected static ?string $model = Audit::class;
+    protected static bool $isScopedToTenant = false;
 
     protected static string|\UnitEnum|null $navigationGroup = AppUtils::ACCESS_MANAGEMENT_NAVIGATION_GROUP;
 

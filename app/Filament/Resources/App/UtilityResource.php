@@ -18,6 +18,7 @@ use Filament\Tables\Table;
 class UtilityResource extends Resource
 {
     protected static ?string $model = RefUtility::class;
+    protected static bool $isScopedToTenant = false;
 
     protected static string|\UnitEnum|null $navigationGroup = AppUtils::TENANCY_MANAGEMENT_NAVIGATION_GROUP;
 

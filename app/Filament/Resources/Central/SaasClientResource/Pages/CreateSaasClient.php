@@ -105,16 +105,16 @@ class CreateSaasClient extends CreateRecord
                 Log::warning('Role assignment failed: ' . $e->getMessage());
             }
 
-            // Send welcome email (logs to laravel.log when MAIL_MAILER=log)
-            try {
-                TenantRegistered::dispatch($adminUser);
-            } catch (\Throwable $e) {
-                Log::warning('TenantRegistered event failed: ' . $e->getMessage());
-            }
-
             $defaultAdminEmail    = $email;
             $defaultAdminPassword = $password;
             $defaultLoginUrl      = "https://{$_ENV['REPLIT_DEV_DOMAIN']}:8000/app/app/{$record->slug}";
+
+            // Send welcome email with credentials
+            try {
+                TenantRegistered::dispatch($adminUser, $password, $defaultLoginUrl);
+            } catch (\Throwable $e) {
+                Log::warning('TenantRegistered event failed: ' . $e->getMessage());
+            }
 
         } catch (\Throwable $e) {
             Log::error('Admin creation failed: ' . $e->getMessage());

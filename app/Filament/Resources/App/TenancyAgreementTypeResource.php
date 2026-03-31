@@ -18,6 +18,7 @@ use Filament\Tables\Table;
 class TenancyAgreementTypeResource extends Resource
 {
     protected static ?string $model = RefTenancyAgreementType::class;
+    protected static bool $isScopedToTenant = false;
 
     protected static ?string $modelLabel = 'Tenancy Agreement Type';
 

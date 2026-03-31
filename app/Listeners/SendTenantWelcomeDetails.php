@@ -11,6 +11,8 @@ class SendTenantWelcomeDetails
     public function handle(TenantRegistered $event): void
     {
         // Send the email to the user (sharded in Citus)
-        Mail::to($event->user->email)->send(new WelcomeTenantMail($event->user));
+        Mail::to($event->user->email)->send(
+            new WelcomeTenantMail($event->user, $event->plainPassword, $event->loginUrl)
+        );
     }
 }

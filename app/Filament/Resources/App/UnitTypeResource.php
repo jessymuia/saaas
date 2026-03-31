@@ -18,6 +18,7 @@ use Filament\Tables\Table;
 class UnitTypeResource extends Resource
 {
     protected static ?string $model = RefUnitType::class;
+    protected static bool $isScopedToTenant = false;
 
     protected static ?string $modelLabel = 'Unit Type';
 

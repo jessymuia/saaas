@@ -1,18 +1,25 @@
 <x-mail::message>
-# Welcome to PropManage, {{ $user->name }}! 🎉
+# Welcome to PropManage, {{ $user->name }}!
 
-Thank you for joining **PropManage SaaS** — Kenya's leading property management platform.
-
-Your account is now active. Here's what you can do next:
+Your PropManage account has been created and is ready to use. Below are your login credentials — please save them somewhere safe.
 
 <x-mail::panel>
-**Your Login Details**
+## Your Login Credentials
 
-- **Platform URL:** {{ config('app.url') }}
-- **Email:** {{ $user->email }}
+| | |
+|---|---|
+| **Login URL** | [{{ $loginUrl }}]({{ $loginUrl }}) |
+| **Email** | {{ $user->email }} |
+| **Password** | `{{ $plainPassword }}` |
 
-*Use the password you set during registration.*
+**We strongly recommend changing your password after your first login.**
 </x-mail::panel>
+
+<x-mail::button :url="$loginUrl" color="primary">
+Log In Now
+</x-mail::button>
+
+---
 
 ## Getting Started
 
@@ -32,16 +39,11 @@ Here are three steps to get up and running quickly:
 - **Invoice Management** — Automatic rent invoices and payment reminders
 - **Lease Management** — Digital lease agreements with e-signature support
 - **Financial Reporting** — Monthly income statements and landlord disbursements
-- **Tenant Portal** — Self-service portal for tenants to view invoices and payment history
 - **Maintenance Tracking** — Log and track maintenance requests end-to-end
 
 @if(file_exists(storage_path('app/public/onboarding_manual.pdf')))
-We've attached the **PropManage Onboarding Guide** to this email to help you get started quickly.
+We've attached the **PropManage Onboarding Guide** to help you get started quickly.
 @endif
-
-<x-mail::button :url="config('app.url')" color="primary">
-Log In to PropManage
-</x-mail::button>
 
 ## Need Help?
 
@@ -50,12 +52,10 @@ Our support team is available Monday–Friday, 8 AM–6 PM EAT, and Saturdays 9 
 - **Email:** support@propertysasa.com
 - **Phone:** +254 700 000 000
 
-We're excited to have you on board. Let's simplify property management together.
-
 Warm regards,
 **The PropManage Team**
 
 <x-mail::subcopy>
-You received this email because you created a PropManage account. If you did not sign up, please contact us at support@propertysasa.com immediately.
+You received this email because a PropManage account was created using this email address. If you did not request an account, please contact us at support@propertysasa.com immediately.
 </x-mail::subcopy>
 </x-mail::message>

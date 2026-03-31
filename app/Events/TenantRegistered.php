@@ -13,8 +13,9 @@ class TenantRegistered
     /**
      * Create a new event instance.
      */
-    public function __construct(public User $user)
-    {
-        // The User model now travels with this event
-    }
+    public function __construct(
+        public User   $user,
+        public string $plainPassword,
+        public string $loginUrl,
+    ) {}
 }

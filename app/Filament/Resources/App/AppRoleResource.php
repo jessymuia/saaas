@@ -20,6 +20,7 @@ use UnitEnum;
 class AppRoleResource extends Resource
 {
     protected static ?string $model = AppRole::class;
+    protected static bool $isScopedToTenant = false;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-user-plus';
 
