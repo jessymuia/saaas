@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MpesaWebhookController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,3 +18,13 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// ─── M-Pesa Webhook ──────────────────────────────────────────────────────────
+// This endpoint must be publicly accessible (no auth middleware).
+// Safaricom POSTs payment callbacks here after STK Push completion.
+Route::prefix('mpesa')->group(function () {
+    Route::post('/callback', [MpesaWebhookController::class, 'callback'])
+        ->name('mpesa.callback')
+        ->withoutMiddleware(['auth:sanctum']);
+});
+
