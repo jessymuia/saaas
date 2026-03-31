@@ -100,7 +100,7 @@ class VacationNoticeResource extends Resource
             ])
             ->filters([])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                \Filament\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->headerActions([

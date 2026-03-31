@@ -96,7 +96,7 @@ class InvoicePaymentResource extends Resource
             ])
             ->filters([])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                \Filament\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make()
                     ->visible(fn (InvoicePayment $record) => !$record->is_confirmed),
                 Tables\Actions\Action::make('preview-receipt')

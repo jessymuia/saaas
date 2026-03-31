@@ -48,7 +48,7 @@ class PaymentTypeResource extends Resource
                 Tables\Columns\TextColumn::make('updated_at')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([])
-            ->actions([Tables\Actions\ViewAction::make(), Tables\Actions\EditAction::make()])
+            ->actions([\Filament\Actions\ViewAction::make(), Tables\Actions\EditAction::make()])
             ->headerActions([
                 ExportAction::make()->exporter(RefPaymentTypeExporter::class)->formats([ExportFormat::Csv])->fileDisk('local'),
             ])

@@ -70,7 +70,7 @@ class InvoiceResource extends Resource
             ->defaultSort('created_at', 'desc')
             ->filters([])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                \Filament\Actions\ViewAction::make(),
                 Tables\Actions\Action::make('View Invoice')
                     ->icon('heroicon-o-document-text')
                     ->disabled(fn (Invoice $invoice) => !$invoice->is_generated)
