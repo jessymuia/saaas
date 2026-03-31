@@ -96,6 +96,15 @@ class CreateSaasClient extends CreateRecord
                 'saas_client_id' => $record->id,
             ]);
 
+            // Assign the 'admin' role so the user has all tenant permissions
+            try {
+                app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+                $adminRole = \App\Models\AppRole::findOrCreate('admin', 'web');
+                $adminUser->assignRole($adminRole);
+            } catch (\Throwable $e) {
+                Log::warning('Role assignment failed: ' . $e->getMessage());
+            }
+
             // Send welcome email (logs to laravel.log when MAIL_MAILER=log)
             try {
                 TenantRegistered::dispatch($adminUser);

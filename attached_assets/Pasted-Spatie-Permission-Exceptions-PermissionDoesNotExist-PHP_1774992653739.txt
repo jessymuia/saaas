@@ -1,0 +1,419 @@
+Spatie
+ \ 
+Permission
+ \ 
+Exceptions
+ \ 
+PermissionDoesNotExist
+PHP 8.2.23
+12.56.0
+There is no permission named `read-roles` for guard `web`.
+
+Expand vendor frames
+4 vendor frames
+App
+ \ 
+Policies
+ \ 
+AppRolePolicy
+ 
+: 18
+viewAny
+22 vendor frames
+App
+ \ 
+Http
+ \ 
+Middleware
+ \ 
+SetRlsSessionVariables
+ 
+: 50
+handle
+1 vendor frame
+App
+ \ 
+Http
+ \ 
+Middleware
+ \ 
+CheckTenantSuspended
+ 
+: 16
+handle
+1 vendor frame
+App
+ \ 
+Http
+ \ 
+Middleware
+ \ 
+InitializeTenancyBySlug
+ 
+: 48
+handle
+54 vendor frames
+public
+ / 
+index
+.php
+ 
+: 51
+require_once
+1 vendor frame
+app
+ / 
+Policies
+ / 
+AppRolePolicy
+.php
+ 
+: 18
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+namespace App\Policies;
+
+
+
+use App\Models\AppRole;
+
+use App\Models\User;
+
+use App\Utils\AppPermissions;
+
+use Illuminate\Auth\Access\Response;
+
+
+
+class AppRolePolicy
+
+{
+
+    /**
+
+     * Determine whether the user can view any models.
+
+     */
+
+    public function viewAny(User $user): Response
+
+    {
+
+        //
+
+        return $user->hasPermissionTo(AppPermissions::READ_ROLES_PERMISSION)
+
+            ? Response::allow()
+
+            : Response::deny('You do not have permissions to view any app role');
+
+    }
+
+
+
+    /**
+
+     * Determine whether the user can view the model.
+
+     */
+
+    public function view(User $user, AppRole $appRole): Response
+
+    {
+
+        //
+
+        return $user->hasPermissionTo(AppPermissions::READ_ROLES_PERMISSION)
+
+            ? Response::allow()
+
+            : Response::deny('You do not have permissions to view app role');
+
+    }
+arguments
+$permission:string
+"read-roles"
+
+$guardName:null
+null
+
+App
+Routing
+Request
+Browser
+Headers
+Body
+Context
+User
+Git
+Versions
+App
+Routing
+Controller
+Filament\Http\Controllers\RedirectToHomeController
+
+Route name
+filament.app.home
+
+Middleware
+panel:app
+
+Illuminate\Cookie\Middleware\EncryptCookies
+
+Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse
+
+Illuminate\Session\Middleware\StartSession
+
+Illuminate\Session\Middleware\AuthenticateSession
+
+Illuminate\View\Middleware\ShareErrorsFromSession
+
+Illuminate\Foundation\Http\Middleware\VerifyCsrfToken
+
+Illuminate\Routing\Middleware\SubstituteBindings
+
+Filament\Http\Middleware\DisableBladeIconComponents
+
+Filament\Http\Middleware\DispatchServingFilamentEvent
+
+App\Http\Middleware\InitializeTenancyBySlug
+
+App\Http\Middleware\CheckTenantSuspended
+
+App\Http\Middleware\SetRlsSessionVariables
+
+Filament\Http\Middleware\Authenticate
+
+Filament\Http\Middleware\IdentifyTenant
+
+Request
+https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev/app/app/jesphertech
+GET
+curl "https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev/app/app/jesphertech" \
+   -X GET \
+   -H 'host: 966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev' \
+   -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36' \
+   -H 'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7' \
+   -H 'accept-encoding: identity, gzip, deflate, br, zstd' \
+   -H 'accept-language: en-GB,en-US;q=0.9,en;q=0.8' \
+   -H 'cookie: <CENSORED>' \
+   -H 'referer: https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev:8000/__replco/workspace_iframe.html?initialPath=%2Fapp%2Flogin&id=default-start-application' \
+   -H 'sec-ch-ua: "Chromium";v="146", "Not-A.Brand";v="24", "Google Chrome";v="146"' \
+   -H 'sec-ch-ua-mobile: ?0' \
+   -H 'sec-ch-ua-platform: "Windows"' \
+   -H 'sec-fetch-dest: iframe' \
+   -H 'sec-fetch-mode: navigate' \
+   -H 'sec-fetch-site: same-origin' \
+   -H 'sec-fetch-storage-access: active' \
+   -H 'traceparent: 00-69cc3d000000000023eb8395febb5e2a-7df435ec67b2c833-00' \
+   -H 'tracestate: dd=s:0;p:7df435ec67b2c833;t.tid:69cc3d0000000000' \
+   -H 'upgrade-insecure-requests: 1' \
+   -H 'x-datadog-parent-id: 9075938438526715955' \
+   -H 'x-datadog-tags: _dd.p.tid=69cc3d0000000000' \
+   -H 'x-datadog-trace-id: 2588307091101539882' \
+   -H 'x-forwarded-for: 154.159.252.194, 10.81.10.4' \
+   -H 'x-forwarded-proto: https';
+
+
+Browser
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+
+Headers
+host
+966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev
+
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+
+accept
+text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+
+accept-encoding
+identity, gzip, deflate, br, zstd
+
+accept-language
+en-GB,en-US;q=0.9,en;q=0.8
+
+cookie
+<CENSORED>
+
+referer
+https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev:8000/__replco/workspace_iframe.html?initialPath=%2Fapp%2Flogin&id=default-start-application
+
+sec-ch-ua
+"Chromium";v="146", "Not-A.Brand";v="24", "Google Chrome";v="146"
+
+sec-ch-ua-mobile
+?0
+
+sec-ch-ua-platform
+"Windows"
+
+sec-fetch-dest
+iframe
+
+sec-fetch-mode
+navigate
+
+sec-fetch-site
+same-origin
+
+sec-fetch-storage-access
+active
+
+traceparent
+00-69cc3d000000000023eb8395febb5e2a-7df435ec67b2c833-00
+
+tracestate
+dd=s:0;p:7df435ec67b2c833;t.tid:69cc3d0000000000
+
+upgrade-insecure-requests
+1
+
+x-datadog-parent-id
+9075938438526715955
+
+x-datadog-tags
+_dd.p.tid=69cc3d0000000000
+
+x-datadog-trace-id
+2588307091101539882
+
+x-forwarded-for
+154.159.252.194, 10.81.10.4
+
+x-forwarded-proto
+https
+
+Body
+[]
+
+Context
+User
+jessymuiaa@gmail.com
+Jessy Christopher
+
+jessymuiaa@gmail.com
+
+{
+    "id": 3,
+    "saas_client_id": "5e974626-b884-4e0f-aa3d-5f8767d9d050",
+    "name": "Jessy Christopher",
+    "email": "jessymuiaa@gmail.com",
+    "phone_number": "0710318560",
+    "email_verified_at": null,
+    "created_at": "2026-03-31T21:21:25.000000Z",
+    "updated_at": "2026-03-31T21:21:25.000000Z",
+    "deleted_at": null,
+    "created_by": null,
+    "updated_by": 3,
+    "deleted_by": null
+}
+
+
+Git
+Fix tenant login redirect errors and access issues
+5f77d87ca3f5e77ab984a349f410636674eb05c4
+
+View commit 5f77d87
+Versions
+Php Version
+8.2.23
+
+Laravel Version
+12.56.0
+
+Laravel Locale
+en
+
+Laravel Config Cached
+false
+App Debug
+true
+App Env
+local
+
+
+7
+Queries
+00:30:40
+11.08ms
+pgsql
+select * from "users" where "users"."id" = 3 and "users"."deleted_at" is null limit 1
+
+
+1 query parameter
+00:30:40
+0.92ms
+pgsql
+select * from "saas_clients" where "slug" = jesphertech limit 1
+
+
+1 query parameter
+00:30:40
+0.63ms
+pgsql
+SET app.saas_client_id = '5e974626-b884-4e0f-aa3d-5f8767d9d050'
+
+
+00:30:40
+0.41ms
+pgsql
+SET app.saas_client_id = '5e974626-b884-4e0f-aa3d-5f8767d9d050'
+
+
+00:30:40
+0.41ms
+pgsql
+RESET app.bypass_rls
+
+
+00:30:40
+0.69ms
+pgsql
+select * from "saas_clients" where "slug" = jesphertech limit 1
+
+
+1 query parameter
+00:30:40
+0.82ms
+pgsql
+select * from "permissions"
+
+
+·
+Source
+·
+Docs
+·
+Laravel
+Ignition is built byFlare, the Laravel error reporting service.
