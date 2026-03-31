@@ -8,44 +8,66 @@ LOG_CHANNEL=stack
 LOG_DEPRECATIONS_CHANNEL=null
 LOG_LEVEL=debug
 
-# Database - We will change to PostgreSQL + Citus later
+# ─── Database — PostgreSQL + Citus ───────────────────────────────────────────
+# Docker: DB_HOST=citus-coordinator
+# Local bare-metal: DB_HOST=127.0.0.1
 DB_CONNECTION=pgsql
-DB_HOST=host.docker.internal
+DB_HOST=citus-coordinator
 DB_PORT=5432
-DB_DATABASE=propman_saas
+DB_DATABASE=propman
 DB_USERNAME=postgres
 DB_PASSWORD=
 
+# ─── Broadcasting / Cache / Queue / Session ───────────────────────────────────
 BROADCAST_DRIVER=log
-CACHE_DRIVER=file
+CACHE_DRIVER=redis
 FILESYSTEM_DISK=local
 QUEUE_CONNECTION=redis
-SESSION_DRIVER=file
+SESSION_DRIVER=redis
 SESSION_LIFETIME=120
 
-# Central domains (must match config/tenancy.php)
-CENTRAL_DOMAINS=localhost,127.0.0.1,propertysasa.com,www.propertysasa.com
-
-# For local testing with subdomains (add to your hosts file)
-TENANT_DOMAIN_SUFFIX=.propertysasa.test
-
-MAIL_MAILER=smtp
-MAIL_HOST=mailpit
-MAIL_PORT=1025
-MAIL_USERNAME=null
-MAIL_PASSWORD=null
-MAIL_ENCRYPTION=null
-MAIL_FROM_ADDRESS="hello@propman.test"
-MAIL_FROM_NAME="${APP_NAME}"
-
-# For future M-Pesa integration
-MPESA_CONSUMER_KEY=
-MPESA_CONSUMER_SECRET=
-MPESA_SHORTCODE=
-MPESA_PASSKEY=
+# ─── Redis ────────────────────────────────────────────────────────────────────
+# Docker: REDIS_HOST=redis
+# Local bare-metal: REDIS_HOST=127.0.0.1
 REDIS_CLIENT=predis
 REDIS_HOST=redis
 REDIS_PASSWORD=null
 REDIS_PORT=6379
 
+# ─── Mail (SMTP) ──────────────────────────────────────────────────────────────
+# Replace with your SMTP provider credentials.
+# Example below uses MXrouting — swap for any SMTP service.
+MAIL_MAILER=smtp
+MAIL_HOST=taylor.mxrouting.net
+MAIL_PORT=587
+MAIL_USERNAME=your-smtp-username@yourdomain.com
+MAIL_PASSWORD=
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=your-from-address@yourdomain.com
+MAIL_FROM_NAME="${APP_NAME}"
+
+# ─── Multi-tenancy ────────────────────────────────────────────────────────────
+# Comma-separated list of central (non-tenant) domains.
+# Add your production domain here in production.
+CENTRAL_DOMAINS=localhost,127.0.0.1
+
+# Tenant domain suffix — for subdomain-based tenancy in production.
+# Example: if set to .propertysasa.com, tenants get slug.propertysasa.com
+TENANT_DOMAIN_SUFFIX=.propertysasa.com
+
+# ─── M-Pesa Integration (Safaricom Daraja API) ───────────────────────────────
+# Register at https://developer.safaricom.co.ke/
+# Use sandbox values for local testing, production values for live.
+MPESA_ENV=sandbox
+MPESA_CONSUMER_KEY=
+MPESA_CONSUMER_SECRET=
+MPESA_SHORTCODE=
+MPESA_PASSKEY=
+MPESA_CALLBACK_URL=http://localhost:8000/api/mpesa/callback
+MPESA_STK_PUSH_URL=https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest
+
+# ─── Filament / Admin Panel ───────────────────────────────────────────────────
+FILAMENT_FILESYSTEM_DISK=public
+
+# ─── Vite (frontend asset bundling) ──────────────────────────────────────────
 VITE_APP_NAME="${APP_NAME}"
