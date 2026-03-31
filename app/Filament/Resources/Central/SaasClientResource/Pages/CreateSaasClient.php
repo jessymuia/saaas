@@ -130,7 +130,8 @@ class CreateSaasClient extends CreateRecord
             Notification::make()
                 ->title('SaaS Client Created Successfully')
                 ->body(
-                    "Tenant Login URL: {$defaultLoginUrl}\n" .
+                    "Login credentials and login URL have been sent to {$defaultAdminEmail}.\n\n" .
+                    "Login URL: {$defaultLoginUrl}\n" .
                     "Email: {$defaultAdminEmail}\n" .
                     "Password: {$defaultAdminPassword}\n\n" .
                     "Save these credentials — the password cannot be recovered."

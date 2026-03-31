@@ -3,7 +3,6 @@
 namespace App\Mail;
 
 use App\Models\User;
-use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
@@ -12,7 +11,7 @@ use Illuminate\Queue\SerializesModels;
 
 class WelcomeTenantMail extends Mailable
 {
-    use Queueable, SerializesModels;
+    use SerializesModels;
 
     public function __construct(
         public User   $user,
@@ -30,7 +29,7 @@ class WelcomeTenantMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.tenants.welcome', 
+            markdown: 'emails.tenants.welcome',
         );
     }
 
@@ -38,7 +37,6 @@ class WelcomeTenantMail extends Mailable
     {
         $path = storage_path('app/public/onboarding_manual.pdf');
 
-        
         if (file_exists($path)) {
             return [
                 Attachment::fromPath($path)
