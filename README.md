@@ -76,104 +76,145 @@
 
 ### Prerequisites
 
-- Docker Desktop 4.x+
-- Node.js 20+ (for marketing site)
-- PHP 8.3+ & Composer (for local artisan without Docker)
+- [Docker Desktop 4.x+](https://www.docker.com/products/docker-desktop/) — the only required dependency; everything else runs inside containers
 
-### 1. Clone & Configure
+### Step 1 — Clone the repository
 
 ```bash
 git clone https://github.com/jessymuia/saaas.git
 cd saaas
-
-# Copy environment file
-cp .env.example .env
 ```
 
-Edit `.env`:
-- `APP_KEY` — leave blank; run `php artisan key:generate` after
-- All DB credentials are pre-configured for Docker Compose (no changes needed for local dev)
-
-### 2. Start Docker Services
+### Step 2 — Set up your environment file
 
 ```bash
-docker compose up -d
+cp .sweenv.example .env
 ```
 
-This starts:
-- `citus-coordinator` — PostgreSQL 16 + Citus 12 (port 5432)
-- `citus-worker-1`, `citus-worker-2` — Citus worker nodes
-- `citus-bootstrap` — runs once to register workers + configure shards (idempotent)
-- `php` — Laravel PHP-FPM
-- `nginx` — web server (port 8000)
-- `redis` — cache & queue backend (port 6379)
-- `horizon` — Laravel Horizon queue worker
-- `scheduler` — Laravel task scheduler
+Then open `.env` and fill in:
 
-### 3. Install PHP Dependencies & Generate Key
+| Variable | What to set |
+|---|---|
+| `APP_KEY` | Leave blank for now — generated in Step 4 |
+| `DB_PASSWORD` | `postgres` (matches Docker Compose default) |
+| `MAIL_PASSWORD` | Your SMTP password |
+| `MPESA_CONSUMER_KEY` / `MPESA_CONSUMER_SECRET` / `MPESA_SHORTCODE` / `MPESA_PASSKEY` | Your Safaricom Daraja credentials (sandbox for local testing) |
+
+> All other DB and Redis settings are pre-configured to match Docker Compose — no changes needed.
+
+### Step 3 — Build and start all services
 
 ```bash
-docker compose exec php composer install
+docker compose up -d --build
+```
+
+This starts the following services:
+
+| Service | Description | Port |
+|---|---|---|
+| `nginx` | Web server — serves the Laravel app | 8000 |
+| `php` | Laravel PHP-FPM application | — |
+| `citus-coordinator` | PostgreSQL 16 + Citus 12 (main DB node) | 5432 |
+| `citus-worker-1` | Citus shard worker node 1 | — |
+| `citus-worker-2` | Citus shard worker node 2 | — |
+| `citus-bootstrap` | Runs once to register workers + configure shards | — |
+| `redis` | Cache and queue backend | 6379 |
+| `horizon` | Laravel Horizon queue worker | — |
+| `scheduler` | Laravel task scheduler (`schedule:work`) | — |
+| `marketing` | Next.js marketing site | 5000 |
+
+> The `citus-bootstrap` service is idempotent — safe to re-run any time.
+
+### Step 4 — Generate application key
+
+```bash
 docker compose exec php php artisan key:generate
 ```
 
-### 4. Run Citus Bootstrap (if not auto-run by Docker)
-
-```bash
-# From host — requires psql installed
-bash docker/citus-bootstrap.sh
-
-# Or via Docker:
-docker compose run --rm citus-bootstrap
-```
-
-### 5. Run Migrations
+### Step 5 — Run database migrations
 
 ```bash
 docker compose exec php php artisan migrate
 ```
 
-> The migration `2025_01_01_000010_distribute_tables_via_citus.php` runs
-> `create_distributed_table()` and `create_reference_table()` — this requires
-> Citus workers to be registered. Run bootstrap first.
+> **Important:** The Citus distribution migration (`2025_01_01_000010_distribute_tables_via_citus.php`) calls `create_distributed_table()` — this requires the Citus workers to already be registered. The `citus-bootstrap` service in Step 3 handles this automatically. If migrations fail with a Citus error, run the bootstrap manually first:
+> ```bash
+> docker compose run --rm citus-bootstrap
+> ```
 
-### 6. Seed Initial Data
+### Step 6 — Seed the database
 
 ```bash
+# Seed permissions and the default super admin account
+docker compose exec php php artisan db:seed --class=PermissionSeeder
+docker compose exec php php artisan db:seed --class=SystemAdminSeeder
+
+# Or run all seeders at once
 docker compose exec php php artisan db:seed
-# Or full one-command setup:
-docker compose exec php php artisan app:setup-application
 ```
 
-### 7. Access the Application
+### Step 7 — Link storage
 
-| Service | URL |
+```bash
+docker compose exec php php artisan storage:link
+```
+
+### Step 8 — Access the application
+
+| URL | Description |
 |---|---|
-| Main app | http://localhost:8000 |
-| Central admin (Filament) | http://localhost:8000/sysadmin |
-| Tenant app | http://{slug}.localhost:8000/app |
-| Horizon dashboard | http://localhost:8000/horizon |
-| Marketing site | http://localhost:3000 |
+| `http://localhost:8000/admin` | Central super-admin panel |
+| `http://localhost:8000/app/app/{slug}` | Tenant app panel (replace `{slug}` with tenant slug) |
+| `http://localhost:8000/horizon` | Laravel Horizon queue dashboard |
+| `http://localhost:5000` | Marketing site |
 
-### 8. Local Subdomain Setup
+**Default super-admin login:**
+- Email: `superadmin@gmail.com`
+- Password: `password`
 
-Add wildcard entries to `/etc/hosts` for subdomain tenant routing:
+### Step 9 — Set up local subdomains (for tenant subdomain routing)
+
+Tenant panels are also accessible via subdomain (e.g. `mycompany.localhost:8000`). To enable this, add entries to your `/etc/hosts` file for each tenant slug you want to test:
 
 ```
 # /etc/hosts
-127.0.0.1 localhost
-127.0.0.1 mycompany.localhost
-127.0.0.1 demo.localhost
+127.0.0.1  localhost
+127.0.0.1  mycompany.localhost
+127.0.0.1  demo.localhost
 ```
 
-Or use dnsmasq (macOS) for automatic wildcard resolution:
+**macOS — automatic wildcard via dnsmasq (recommended):**
 
 ```bash
 brew install dnsmasq
-echo "address=/.localhost/127.0.0.1" >> /usr/local/etc/dnsmasq.conf
+echo "address=/.localhost/127.0.0.1" >> $(brew --prefix)/etc/dnsmasq.conf
 sudo brew services start dnsmasq
 sudo mkdir -p /etc/resolver
 echo "nameserver 127.0.0.1" | sudo tee /etc/resolver/localhost
+```
+
+After this, any `*.localhost` subdomain resolves automatically — no manual hosts file edits needed.
+
+---
+
+### Useful commands
+
+```bash
+# View logs for a specific service
+docker compose logs -f php
+docker compose logs -f horizon
+
+# Restart a single service
+docker compose restart php
+
+# Run artisan commands
+docker compose exec php php artisan <command>
+
+# Stop all services
+docker compose down
+
+# Stop and delete all data (fresh start)
+docker compose down -v
 ```
 
 ---
@@ -507,7 +548,7 @@ See `docs/erd/schema.md` for the full Mermaid ER diagram with composite key anno
 - [x] Laravel 12
 - [x] `stancl/tenancy` single-database mode (`config/tenancy.php`)
 - [x] Bootstrappers: Cache, Filesystem, Queue (no DatabaseTenancyBootstrapper)
-- [x] `.env.example` published without credentials
+- [x] `.sweenv.example` published without credentials
 
 ### Phase 4 — Tenant (SaasClient) Model & Central Tables
 - [x] `SaasClient` model with `getCustomColumns()`
