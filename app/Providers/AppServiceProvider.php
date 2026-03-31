@@ -24,7 +24,13 @@ class AppServiceProvider extends ServiceProvider
         return $request->user()?->is_super_admin === true;
     });
 
-    // Always force HTTPS — Replit (and production) terminate SSL at the proxy layer
+    // Force the full root URL so all generated URLs (assets, routes, etc.)
+    // use the public domain instead of the internal localhost address.
+    // Replit terminates SSL at the proxy layer, so we also force HTTPS.
+    $appUrl = config('app.url');
+    if ($appUrl) {
+        URL::forceRootUrl($appUrl);
+    }
     URL::forceScheme('https');
 }
 }

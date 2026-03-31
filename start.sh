@@ -3,8 +3,12 @@ set -e
 
 # ── Keep APP_URL in sync with the current Replit dev domain ──────────────────
 if [ -n "$REPLIT_DEV_DOMAIN" ]; then
-    sed -i "s|APP_URL=.*|APP_URL=https://${REPLIT_DEV_DOMAIN}:8000|" .env
-    sed -i "s|MPESA_CALLBACK_URL=.*|MPESA_CALLBACK_URL=https://${REPLIT_DEV_DOMAIN}:8000/api/mpesa/callback|" .env
+    PUBLIC_URL="https://${REPLIT_DEV_DOMAIN}:8000"
+    sed -i "s|APP_URL=.*|APP_URL=${PUBLIC_URL}|" .env
+    grep -q "ASSET_URL=" .env \
+        && sed -i "s|ASSET_URL=.*|ASSET_URL=${PUBLIC_URL}|" .env \
+        || echo "ASSET_URL=${PUBLIC_URL}" >> .env
+    sed -i "s|MPESA_CALLBACK_URL=.*|MPESA_CALLBACK_URL=${PUBLIC_URL}/api/mpesa/callback|" .env
     sed -i "s|CENTRAL_DOMAINS=.*|CENTRAL_DOMAINS=${REPLIT_DEV_DOMAIN},localhost,127.0.0.1|" .env
 fi
 
