@@ -18,6 +18,15 @@ class SaasClient extends Tenant implements TenantWithDatabase
     protected $table = 'saas_clients';
 
     /**
+     * Ensure the JSON data column is always an array, never null, to prevent
+     * PHP 8.2 TypeError from array_key_exists() receiving null as second argument
+     * (triggered by VirtualColumn trait during Livewire form hydration on Create pages).
+     */
+    protected $attributes = [
+        'data' => '{}',
+    ];
+
+    /**
      * Columns that physically exist in DB
      */
     public static function getCustomColumns(): array
