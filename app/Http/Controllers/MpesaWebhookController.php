@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\SubscriptionPayment;
 use App\Services\BillingService;
+use App\Services\MpesaService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -37,7 +38,7 @@ class MpesaWebhookController extends Controller
         ]);
 
         try {
-            $mpesaService = new \App\Services\MpesaService();
+            $mpesaService = new MpesaService();
             $parsed = $mpesaService->parseCallback($payload);
 
             if (!$parsed['success']) {
@@ -56,11 +57,12 @@ class MpesaWebhookController extends Controller
 
                 if ($payment) {
                     // Update the payment with M-Pesa receipt details
-                    $payment->update([
-                        'mpesa_receipt' => $parsed['mpesa_receipt'] ?? null,
-                        'amount'        => $parsed['amount'] ?? $payment->amount,
-                        'phone'         => $parsed['phone'] ?? $payment->phone,
-                    ]);
+                    // Only update columns that exist in the subscription_payments schema
+                    $updateData = ['mpesa_ref' => $parsed['mpesa_receipt'] ?? $payment->mpesa_ref];
+                    if (!empty($parsed['amount'])) {
+                        $updateData['amount'] = $parsed['amount'];
+                    }
+                    $payment->update($updateData);
 
                     BillingService::confirmPayment($payment);
 

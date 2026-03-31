@@ -547,7 +547,7 @@ See `docs/erd/schema.md` for the full Mermaid ER diagram with composite key anno
 ### Phase 12 — Citus Query Discipline
 - [x] Raw query audit: `php artisan citus:audit-raw-queries`
 - [ ] Slow query log (reminder: enable on coordinator)
-- [ ] `pg_stat_statements` (reminder: enable on coordinator)
+- [x] `pg_stat_statements` enabled in `docker/citus-bootstrap.sh` (CREATE EXTENSION IF NOT EXISTS pg_stat_statements)
 
 ### Phase 13 — Security & Isolation
 - [x] RLS policies on 28+ distributed tables

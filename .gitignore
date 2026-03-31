@@ -25,3 +25,9 @@ vendor/
 node_modules/
 package-lock.json
 composer.lock
+
+# Next.js marketing site build artifacts
+saas-marketing/.next/
+saas-marketing/out/
+saas-marketing/*.tsbuildinfo
+saas-marketing/next-env.d.ts
