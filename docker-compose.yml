@@ -114,6 +114,19 @@ services:
     networks:
       - propman
 
+  marketing:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - ./saas-marketing:/app
+    command: sh -c "npm install && npm run build && npm start"
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+    networks:
+      - propman
+
   redis:
     image: redis:7-alpine
     ports:
