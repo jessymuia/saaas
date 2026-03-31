@@ -3,31 +3,36 @@
 namespace App\Models;
 
 use Stancl\Tenancy\Database\Models\Tenant;
-use Stancl\Tenancy\Contracts\TenantWithDatabase;
-use Stancl\Tenancy\Database\Concerns\HasDatabase;
 use Stancl\Tenancy\Database\Concerns\HasDomains;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 
-class SaasClient extends Tenant implements TenantWithDatabase
+/**
+ * SaasClient (Tenant)
+ *
+ * Single-database multi-tenancy: all tenant data lives in the central DB
+ * and is isolated by saas_client_id (row-level). We intentionally do NOT
+ * implement TenantWithDatabase / HasDatabase — those are for per-tenant
+ * database creation, which is not used in this architecture.
+ */
+class SaasClient extends Tenant
 {
-    use HasFactory, HasDatabase, HasDomains, Notifiable;
+    use HasFactory, HasDomains, Notifiable;
 
     protected $table = 'saas_clients';
 
     /**
      * Ensure the JSON data column is always an array, never null, to prevent
-     * PHP 8.2 TypeError from array_key_exists() receiving null as second argument
-     * (triggered by VirtualColumn trait during Livewire form hydration on Create pages).
+     * PHP 8.2 TypeError from array_key_exists() receiving null as second argument.
      */
     protected $attributes = [
         'data' => '{}',
     ];
 
     /**
-     * Columns that physically exist in DB
+     * Columns that physically exist in the DB (not stored in the JSON data column).
      */
     public static function getCustomColumns(): array
     {
