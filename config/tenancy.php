@@ -29,12 +29,10 @@ return [
     |--------------------------------------------------------------------------
     | Requests on these domains will NOT be identified as tenant requests.
     */
-    'central_domains' => [
-        '127.0.0.1',
-        'localhost',
-        'test.localhost',
-
-    ],
+    'central_domains' => array_filter(array_merge(
+        ['127.0.0.1', 'localhost', 'test.localhost'],
+        explode(',', env('CENTRAL_DOMAINS', ''))
+    )),
 
     /*
     |--------------------------------------------------------------------------

@@ -1,8 +1,7 @@
-﻿<?php
+<?php
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -17,9 +16,6 @@ return new class extends Migration
             $table->string('status')->default('open');
             $table->timestamps();
 
-            
-            $table->primary(['id', 'saas_client_id']);
-
             $table->foreign('saas_client_id')
                 ->references('id')
                 ->on('saas_clients')
@@ -27,9 +23,6 @@ return new class extends Migration
 
             $table->index('saas_client_id');
         });
-
-        
-        DB::statement("SELECT create_distributed_table('support_tickets', 'saas_client_id', colocate_with => 'users')");
     }
 
     public function down(): void

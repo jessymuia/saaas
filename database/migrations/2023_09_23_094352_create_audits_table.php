@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -14,10 +14,7 @@ return new class extends Migration
         $morphPrefix = config('audit.user.morph_prefix', 'user');
 
         Schema::connection($connection)->create($tableName, function (Blueprint $table) use ($morphPrefix) {
-           
-            $table->unsignedBigInteger('id')->autoIncrement();
-
-            
+            $table->bigIncrements('id');
             $table->uuid('saas_client_id')->nullable();
 
             $table->string($morphPrefix . '_type')->nullable();
@@ -32,14 +29,9 @@ return new class extends Migration
             $table->string('tags')->nullable();
             $table->timestamps();
 
-            
-            $table->primary(['id', 'saas_client_id']);
-
             $table->index([$morphPrefix . '_id', $morphPrefix . '_type']);
+            $table->index('saas_client_id');
         });
-
-        
-        DB::statement("SELECT create_distributed_table('$tableName', 'saas_client_id')");
     }
 
     public function down(): void
@@ -50,4 +42,3 @@ return new class extends Migration
         Schema::connection($connection)->drop($tableName);
     }
 };
-

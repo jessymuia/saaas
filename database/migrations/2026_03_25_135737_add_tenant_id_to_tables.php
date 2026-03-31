@@ -1,27 +1,17 @@
-﻿<?php
+<?php
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Adds saas_client_id to properties and units tables.
+     * Citus-specific distribution calls have been removed for standard PostgreSQL compatibility.
+     */
     public function up(): void
     {
-        DB::statement("SET LOCAL citus.multi_shard_modify_mode TO 'sequential'");
-
-        $isDistributed = DB::selectOne("
-            SELECT 1 FROM pg_dist_partition
-            WHERE logicalrelid = 'saas_clients'::regclass
-        ");
-
-        if ($isDistributed) {
-            DB::statement("SELECT undistribute_table('saas_clients')");
-        }
-
-        DB::statement("SELECT create_reference_table('saas_clients')");
-
         if (Schema::hasTable('properties')) {
             Schema::table('properties', function (Blueprint $table) {
                 if (!Schema::hasColumn('properties', 'saas_client_id')) {
@@ -49,7 +39,18 @@ return new class extends Migration
 
     public function down(): void
     {
-        // Cannot rollback Citus distributed table changes
-        // The partition column cannot be dropped from distributed tables
+        if (Schema::hasTable('units') && Schema::hasColumn('units', 'saas_client_id')) {
+            Schema::table('units', function (Blueprint $table) {
+                $table->dropForeign(['saas_client_id']);
+                $table->dropColumn('saas_client_id');
+            });
+        }
+
+        if (Schema::hasTable('properties') && Schema::hasColumn('properties', 'saas_client_id')) {
+            Schema::table('properties', function (Blueprint $table) {
+                $table->dropForeign(['saas_client_id']);
+                $table->dropColumn('saas_client_id');
+            });
+        }
     }
 };
