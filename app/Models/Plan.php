@@ -1,42 +1,38 @@
 <?php
-
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Plan extends Model
 {
     use HasFactory;
 
+    protected $table = 'plans';
+
     protected $fillable = [
-        'name',
-        'slug',
-        'price_monthly',   
-        'limits',
-    ];
+    'name',
+    'slug',
+    'description',
+    'price',
+    'currency',
+    'trial_days',
+    'billing_cycle',
+    'max_properties',
+    'max_tenants',
+    'max_users',
+    'features',
+    'is_active',
+];
 
-    protected function casts(): array
-    {
-        return [
-            'price_monthly' => 'decimal:2',
-            'limits'        => 'array',
-        ];
-    }
+protected $casts = [
+    'price' => 'decimal:2',
+    'features' => 'array',
+    'is_active' => 'boolean',
+];
 
-    public function saasClients(): HasMany
+    public function subscriptions()
     {
-        return $this->hasMany(SaasClient::class);
-    }
-
-    protected static function booted(): void
-    {
-        static::creating(function (Plan $plan) {
-            if (empty($plan->slug)) {
-                $plan->slug = Str::slug($plan->name);
-            }
-        });
+        return $this->hasMany(Subscription::class, 'plan_id');
     }
 }

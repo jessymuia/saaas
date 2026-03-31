@@ -15,11 +15,28 @@ class CreateSaasClient extends CreateRecord
 {
     protected static string $resource = SaasClientResource::class;
 
+    /**
+     * Ensure data field is properly structured before creating
+     */
     protected function mutateFormDataBeforeCreate(array $data): array
     {
+        // Initialize data as an array if not set
+        if (!isset($data['data']) || !is_array($data['data'])) {
+            $data['data'] = [];
+        }
+        
+        // Preserve domain from nested input
+        if (isset($data['data']['domain'])) {
+            $domainValue = $data['data']['domain'];
+            $data['data'] = ['domain' => $domainValue];
+        }
+        
         return $data;
     }
 
+    /**
+     * Handle post-creation setup: domains, subscriptions, users
+     */
     protected function afterCreate(): void
     {
         $record = $this->record;
@@ -29,22 +46,31 @@ class CreateSaasClient extends CreateRecord
             return;
         }
 
-        // Get domain from the record's data JSON field
-        $domainName = $record->data['domain'] ?? null;
+        // Safely get domain from data field
+        $domainName = null;
+        if (is_array($record->data) && isset($record->data['domain'])) {
+            $domainName = $record->data['domain'];
+        }
 
-        // Initialize variables for notification
+        // Initialize notification variables
         $defaultAdminEmail = '';
         $defaultAdminPassword = '';
         $defaultLoginUrl = '';
 
         /**
-         * Create domain
+         * ────────────────────────────────────────────────────────────
+         * 1. CREATE DOMAIN RECORD
+         * ────────────────────────────────────────────────────────────
          */
         if ($domainName) {
             try {
                 Domain::updateOrCreate(
                     ['saas_client_id' => $record->id],
-                    ['domain' => $domainName]
+                    [
+                        'domain' => $domainName,
+                        'type' => 'subdomain',
+                        'is_primary' => true,
+                    ]
                 );
             } catch (\Throwable $e) {
                 Log::error('Domain creation failed: ' . $e->getMessage());
@@ -57,7 +83,9 @@ class CreateSaasClient extends CreateRecord
         }
 
         /**
-         * Start trial
+         * ────────────────────────────────────────────────────────────
+         * 2. START TRIAL SUBSCRIPTION
+         * ────────────────────────────────────────────────────────────
          */
         try {
             if ($record->plan_id && class_exists('\App\Models\Subscription')) {
@@ -73,7 +101,9 @@ class CreateSaasClient extends CreateRecord
         }
 
         /**
-         * Create usage metric
+         * ────────────────────────────────────────────────────────────
+         * 3. CREATE USAGE METRIC
+         * ────────────────────────────────────────────────────────────
          */
         try {
             if (class_exists('\App\Models\UsageMetric')) {
@@ -87,7 +117,9 @@ class CreateSaasClient extends CreateRecord
         }
 
         /**
-         * Create admin user
+         * ────────────────────────────────────────────────────────────
+         * 4. CREATE ADMIN USER FOR TENANT
+         * ────────────────────────────────────────────────────────────
          */
         try {
             $password = Str::random(12);
@@ -116,24 +148,22 @@ class CreateSaasClient extends CreateRecord
         }
 
         /**
-         * Send success notification with credentials
+         * ────────────────────────────────────────────────────────────
+         * 5. SEND SUCCESS NOTIFICATION WITH CREDENTIALS
+         * ────────────────────────────────────────────────────────────
          */
         if ($defaultAdminEmail && $defaultAdminPassword) {
             Notification::make()
-                ->title('SaaS Client Created Successfully')
+                ->title('✅ SaaS Client Created Successfully!')
                 ->body(
-                    "Login URL: {$defaultLoginUrl}\n" .
-                    "Email: {$defaultAdminEmail}\n" .
-                    "Password: {$defaultAdminPassword}"
+                    "🔗 Login URL: {$defaultLoginUrl}\n" .
+                    "📧 Email: {$defaultAdminEmail}\n" .
+                    "🔐 Password: {$defaultAdminPassword}\n\n" .
+                    "Please save these credentials securely."
                 )
                 ->success()
                 ->persistent()
                 ->send();
         }
-    }
-
-    protected function getRedirectUrl(): string
-    {
-        return $this->getResource()::getUrl('index');
     }
 }

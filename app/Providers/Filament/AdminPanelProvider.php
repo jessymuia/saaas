@@ -64,10 +64,11 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
-                SetRlsSessionVariables::class,
+                
             ])
             ->authMiddleware([
                 Authenticate::class,
+                SetRlsSessionVariables::class,
             ]);
     }
 }

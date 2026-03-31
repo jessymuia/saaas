@@ -29,6 +29,18 @@ RUN apt-get update && apt-get install -y libicu-dev \
 
 RUN pecl install redis && docker-php-ext-enable redis
 
+# Add PHP configuration for timeouts and memory
+RUN echo 'max_execution_time = 300' >> /usr/local/etc/php/conf.d/timeout.ini && \
+    echo 'default_socket_timeout = 60' >> /usr/local/etc/php/conf.d/timeout.ini && \
+    echo 'memory_limit = 512M' >> /usr/local/etc/php/conf.d/timeout.ini
+
+# Add PHP-FPM configuration for process pool
+RUN echo 'request_terminate_timeout = 300' >> /usr/local/etc/php-fpm.d/www.conf && \
+    echo 'pm.max_children = 20' >> /usr/local/etc/php-fpm.d/www.conf && \
+    echo 'pm.start_servers = 5' >> /usr/local/etc/php-fpm.d/www.conf && \
+    echo 'pm.min_spare_servers = 5' >> /usr/local/etc/php-fpm.d/www.conf && \
+    echo 'pm.max_spare_servers = 15' >> /usr/local/etc/php-fpm.d/www.conf
+
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html

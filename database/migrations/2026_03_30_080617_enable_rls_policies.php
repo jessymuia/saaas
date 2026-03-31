@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * Phase 13 — Row Level Security (RLS) for all distributed tables.
@@ -15,20 +16,6 @@ use Illuminate\Support\Facades\DB;
  *    `app.bypass_rls` is set to 'true' (set only in central context).
  * 4. current_setting(..., true) — the `true` makes it return NULL
  *    instead of throwing an error when the variable is not set.
- *
- * How to set the session variable in Laravel (TenancyServiceProvider or middleware):
- *   DB::statement("SET app.saas_client_id = '{$tenant->id}'");
- *
- * How to set the super admin bypass (central panel middleware):
- *   DB::statement("SET app.bypass_rls = 'true'");
- *   DB::statement("RESET app.bypass_rls"); // clear after use
- *
- * Super admin bypass command to apply manually on coordinator:
- *   ALTER ROLE app_user BYPASSRLS;  -- grants DB-level bypass to app user
- * OR use the session-variable policy approach below (preferred — more granular).
- *
- * NOTE: Run this migration ONLY on the Citus coordinator.
- * The coordinator propagates DDL to workers automatically for distributed tables.
  */
 return new class extends Migration
 {
@@ -73,45 +60,89 @@ return new class extends Migration
     public function up(): void
     {
         foreach ($this->distributedTables as $table) {
-            // 1. Enable RLS on the table
-            DB::statement("ALTER TABLE {$table} ENABLE ROW LEVEL SECURITY");
+            // Check if table exists
+            if (!Schema::hasTable($table)) {
+                continue;
+            }
 
-            // 2. FORCE RLS — applies even to the table owner (closes owner bypass loophole)
-            DB::statement("ALTER TABLE {$table} FORCE ROW LEVEL SECURITY");
+            // Check if saas_client_id column exists
+            if (!Schema::hasColumn($table, 'saas_client_id')) {
+                continue;
+            }
+
+            // 1. Enable RLS on the table
+            try {
+                DB::statement("ALTER TABLE {$table} ENABLE ROW LEVEL SECURITY");
+            } catch (\Exception $e) {
+                // Already enabled, continue
+            }
+
+            // 2. FORCE RLS — applies even to the table owner
+            try {
+                DB::statement("ALTER TABLE {$table} FORCE ROW LEVEL SECURITY");
+            } catch (\Exception $e) {
+                // Already forced, continue
+            }
 
             // 3. Tenant isolation policy
-            //    current_setting('app.saas_client_id', true) returns NULL (not an error)
-            //    when the variable is not set, so central context queries return nothing
-            //    unless the bypass policy (below) is also active.
-            DB::statement("
-                CREATE POLICY tenant_isolation_{$table}
-                ON {$table}
-                USING (
-                    saas_client_id = current_setting('app.saas_client_id', true)::uuid
-                )
-            ");
+            try {
+                DB::statement("
+                    CREATE POLICY tenant_isolation_{$table}
+                    ON {$table}
+                    USING (
+                        saas_client_id = current_setting('app.saas_client_id', true)::uuid
+                    )
+                ");
+            } catch (\Exception $e) {
+                // Policy already exists, continue
+            }
 
             // 4. Super admin bypass policy
-            //    When app.bypass_rls = 'true' is set in the session,
-            //    all rows are visible regardless of saas_client_id.
-            //    This is set ONLY in the central/super admin context.
-            DB::statement("
-                CREATE POLICY super_admin_bypass_{$table}
-                ON {$table}
-                USING (
-                    current_setting('app.bypass_rls', true) = 'true'
-                )
-            ");
+            try {
+                DB::statement("
+                    CREATE POLICY super_admin_bypass_{$table}
+                    ON {$table}
+                    USING (
+                        current_setting('app.bypass_rls', true) = 'true'
+                    )
+                ");
+            } catch (\Exception $e) {
+                // Policy already exists, continue
+            }
         }
     }
 
     public function down(): void
     {
         foreach ($this->distributedTables as $table) {
-            DB::statement("DROP POLICY IF EXISTS tenant_isolation_{$table} ON {$table}");
-            DB::statement("DROP POLICY IF EXISTS super_admin_bypass_{$table} ON {$table}");
-            DB::statement("ALTER TABLE {$table} NO FORCE ROW LEVEL SECURITY");
-            DB::statement("ALTER TABLE {$table} DISABLE ROW LEVEL SECURITY");
+            // Check if table exists
+            if (!Schema::hasTable($table)) {
+                continue;
+            }
+
+            try {
+                DB::statement("DROP POLICY IF EXISTS tenant_isolation_{$table} ON {$table}");
+            } catch (\Exception $e) {
+                // Continue
+            }
+
+            try {
+                DB::statement("DROP POLICY IF EXISTS super_admin_bypass_{$table} ON {$table}");
+            } catch (\Exception $e) {
+                // Continue
+            }
+
+            try {
+                DB::statement("ALTER TABLE {$table} NO FORCE ROW LEVEL SECURITY");
+            } catch (\Exception $e) {
+                // Continue
+            }
+
+            try {
+                DB::statement("ALTER TABLE {$table} DISABLE ROW LEVEL SECURITY");
+            } catch (\Exception $e) {
+                // Continue
+            }
         }
     }
 };

@@ -18,6 +18,7 @@ use Filament\Actions\Action;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use App\Filament\Resources\Central\SaasClientResource\Pages;
+use Filament\Notifications\Notification;
 
 class SaasClientResource extends Resource
 {
@@ -42,7 +43,7 @@ class SaasClientResource extends Resource
                             ->required()
                             ->unique(ignoreRecord: true),
 
-                        TextInput::make('data.domain')
+                        TextInput::make('domain')
                             ->required()
                             ->label('Subdomain / Domain')
                             ->placeholder('client.localhost'),

@@ -16,6 +16,9 @@ class Kernel extends ConsoleKernel
         // TODO: Check on the necessity of this command
         $schedule->command('app:generate-monthly-rent-bills-command')->monthlyOn(27, '00:00')->withoutOverlapping();
         $schedule->command('app:escalate-amounts-command')->dailyAt('00:00')->withoutOverlapping();
+        $schedule->job(new \App\Jobs\ProcessSubscriptionRenewals())
+        ->dailyAt('00:00')
+        ->onOneServer();
     }
 
     /**
