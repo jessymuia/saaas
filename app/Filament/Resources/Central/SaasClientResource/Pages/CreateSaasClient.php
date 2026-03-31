@@ -17,59 +17,33 @@ class CreateSaasClient extends CreateRecord
     protected static string $resource = SaasClientResource::class;
 
     /**
-     * Ensure data field is properly structured before creating
-     */
-    protected function mutateFormDataBeforeCreate(array $data): array
-    {
-        // Initialize data as an array if not set
-        if (!isset($data['data']) || !is_array($data['data'])) {
-            $data['data'] = [];
-        }
-        
-        // Preserve domain from nested input
-        if (isset($data['data']['domain'])) {
-            $domainValue = $data['data']['domain'];
-            $data['data'] = ['domain' => $domainValue];
-        }
-        
-        return $data;
-    }
-
-    /**
-     * Handle post-creation setup: domains, subscriptions, users
+     * Handle post-creation setup: domain record, subscription, usage metric, admin user.
      */
     protected function afterCreate(): void
     {
         $record = $this->record;
 
         if (!$record) {
-            Log::error('Record not found after creation');
+            Log::error('SaasClient record not found after creation');
             return;
         }
 
-        // Safely get domain from data field
-        $domainName = null;
-        if (is_array($record->data) && isset($record->data['domain'])) {
-            $domainName = $record->data['domain'];
-        }
+        // The 'domain' field in the form is a virtual column stored in data['domain']
+        // by stancl/tenancy's VirtualColumn trait.
+        $domainName = $record->domain ?? null;
 
-        // Initialize notification variables
-        $defaultAdminEmail = '';
+        $defaultAdminEmail    = '';
         $defaultAdminPassword = '';
-        $defaultLoginUrl = '';
+        $defaultLoginUrl      = '';
 
-        /**
-         * ────────────────────────────────────────────────────────────
-         * 1. CREATE DOMAIN RECORD
-         * ────────────────────────────────────────────────────────────
-         */
+        // ── 1. Create domain record ──────────────────────────────────
         if ($domainName) {
             try {
                 Domain::updateOrCreate(
                     ['saas_client_id' => $record->id],
                     [
-                        'domain' => $domainName,
-                        'type' => 'subdomain',
+                        'domain'     => $domainName,
+                        'type'       => 'subdomain',
                         'is_primary' => true,
                     ]
                 );
@@ -83,13 +57,9 @@ class CreateSaasClient extends CreateRecord
             }
         }
 
-        /**
-         * ────────────────────────────────────────────────────────────
-         * 2. START TRIAL SUBSCRIPTION
-         * ────────────────────────────────────────────────────────────
-         */
+        // ── 2. Trial subscription ────────────────────────────────────
         try {
-            if ($record->plan_id && class_exists('\App\Models\Subscription')) {
+            if ($record->plan_id) {
                 \App\Models\Subscription::startTrial($record->id, $record->plan_id);
             }
         } catch (\Throwable $e) {
@@ -101,11 +71,7 @@ class CreateSaasClient extends CreateRecord
                 ->send();
         }
 
-        /**
-         * ────────────────────────────────────────────────────────────
-         * 3. CREATE USAGE METRIC
-         * ────────────────────────────────────────────────────────────
-         */
+        // ── 3. Usage metric ──────────────────────────────────────────
         try {
             if (class_exists('\App\Models\UsageMetric')) {
                 \App\Models\UsageMetric::firstOrCreate(
@@ -117,30 +83,29 @@ class CreateSaasClient extends CreateRecord
             Log::error('Usage metric creation failed: ' . $e->getMessage());
         }
 
-        /**
-         * ────────────────────────────────────────────────────────────
-         * 4. CREATE ADMIN USER FOR TENANT
-         * ────────────────────────────────────────────────────────────
-         */
+        // ── 4. Admin user ────────────────────────────────────────────
         try {
             $password = Str::random(12);
-            $host = $domainName ?? $record->slug . '.localhost';
-            $email = $record->email ?? 'admin@' . $host;
-            $loginUrl = "http://{$host}:8000/app/login";
+            $email    = $record->email ?? ('admin@' . ($domainName ?? $record->slug . '.localhost'));
 
             $adminUser = User::withoutGlobalScopes()->create([
-                'name' => $record->contact_name ?? $record->name . ' Admin',
-                'email' => $email,
-                'password' => Hash::make($password),
+                'name'           => $record->contact_name ?? ($record->name . ' Admin'),
+                'email'          => $email,
+                'password'       => Hash::make($password),
+                'phone_number'   => $record->phone ?? '',
                 'saas_client_id' => $record->id,
             ]);
 
-            // Dispatch welcome email event for new tenant admin
-            TenantRegistered::dispatch($adminUser);
+            // Send welcome email (logs to laravel.log when MAIL_MAILER=log)
+            try {
+                TenantRegistered::dispatch($adminUser);
+            } catch (\Throwable $e) {
+                Log::warning('TenantRegistered event failed: ' . $e->getMessage());
+            }
 
-            $defaultAdminEmail = $email;
+            $defaultAdminEmail    = $email;
             $defaultAdminPassword = $password;
-            $defaultLoginUrl = $loginUrl;
+            $defaultLoginUrl      = "https://{$_ENV['REPLIT_DEV_DOMAIN']}:8000/app/{$record->slug}";
 
         } catch (\Throwable $e) {
             Log::error('Admin creation failed: ' . $e->getMessage());
@@ -151,19 +116,15 @@ class CreateSaasClient extends CreateRecord
                 ->send();
         }
 
-        /**
-         * ────────────────────────────────────────────────────────────
-         * 5. SEND SUCCESS NOTIFICATION WITH CREDENTIALS
-         * ────────────────────────────────────────────────────────────
-         */
+        // ── 5. Success notification with credentials ─────────────────
         if ($defaultAdminEmail && $defaultAdminPassword) {
             Notification::make()
-                ->title('✅ SaaS Client Created Successfully!')
+                ->title('SaaS Client Created Successfully')
                 ->body(
-                    "🔗 Login URL: {$defaultLoginUrl}\n" .
-                    "📧 Email: {$defaultAdminEmail}\n" .
-                    "🔐 Password: {$defaultAdminPassword}\n\n" .
-                    "Please save these credentials securely."
+                    "Tenant Login URL: {$defaultLoginUrl}\n" .
+                    "Email: {$defaultAdminEmail}\n" .
+                    "Password: {$defaultAdminPassword}\n\n" .
+                    "Save these credentials — the password cannot be recovered."
                 )
                 ->success()
                 ->persistent()

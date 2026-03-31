@@ -17,6 +17,7 @@ use Filament\Actions\EditAction;
 use Filament\Actions\Action;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\URL;
 use App\Filament\Resources\Central\SaasClientResource\Pages;
 use Filament\Notifications\Notification;
 
@@ -30,51 +31,50 @@ class SaasClientResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema
-            ->components([
-                Section::make('Company Details')
-                    ->schema([
-                        TextInput::make('name')
-                            ->required()
-                            ->live(onBlur: true)
-                            ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state))),
+        return $schema->components([
+            Section::make('Company Details')
+                ->schema([
+                    TextInput::make('name')
+                        ->required()
+                        ->live(onBlur: true)
+                        ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state))),
 
-                        TextInput::make('slug')
-                            ->required()
-                            ->unique(ignoreRecord: true),
+                    TextInput::make('slug')
+                        ->required()
+                        ->unique(ignoreRecord: true),
 
-                        TextInput::make('domain')
-                            ->required()
-                            ->label('Subdomain / Domain')
-                            ->placeholder('client.localhost'),
+                    TextInput::make('domain')
+                        ->label('Domain / Subdomain')
+                        ->placeholder('clientname.example.com')
+                        ->helperText('Used to create a domain record for this tenant'),
 
-                        TextInput::make('email')
-                            ->email()
-                            ->required()
-                            ->label('Client Email'),
+                    TextInput::make('email')
+                        ->email()
+                        ->required()
+                        ->label('Client Email'),
 
-                        TextInput::make('contact_name')
-                            ->label('Contact Person Name'),
+                    TextInput::make('contact_name')
+                        ->label('Contact Person Name'),
 
-                        TextInput::make('phone')
-                            ->label('Phone Number'),
+                    TextInput::make('phone')
+                        ->label('Phone Number'),
 
-                        Select::make('plan_id')
-                            ->relationship('plan', 'name')
-                            ->required()
-                            ->preload(),
+                    Select::make('plan_id')
+                        ->relationship('plan', 'name')
+                        ->required()
+                        ->preload(),
 
-                        Select::make('status')
-                            ->options([
-                                'trial' => 'Trial',
-                                'active' => 'Active',
-                                'suspended' => 'Suspended',
-                            ])
-                            ->default('trial')
-                            ->required(),
-                    ])
-                    ->columns(2),
-            ]);
+                    Select::make('status')
+                        ->options([
+                            'trial'     => 'Trial',
+                            'active'    => 'Active',
+                            'suspended' => 'Suspended',
+                        ])
+                        ->default('trial')
+                        ->required(),
+                ])
+                ->columns(2),
+        ]);
     }
 
     public static function table(Table $table): Table
@@ -95,10 +95,10 @@ class SaasClientResource extends Resource
                 TextColumn::make('status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
-                        'active' => 'success',
-                        'trial' => 'warning',
+                        'active'    => 'success',
+                        'trial'     => 'warning',
                         'suspended' => 'danger',
-                        default => 'gray',
+                        default     => 'gray',
                     }),
 
                 TextColumn::make('plan.name')
@@ -111,6 +111,48 @@ class SaasClientResource extends Resource
             ])
             ->actions([
                 EditAction::make(),
+
+                Action::make('loginAsTenant')
+                    ->label('Login as Tenant')
+                    ->icon('heroicon-o-arrow-right-on-rectangle')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->modalHeading('Login as Tenant Admin')
+                    ->modalDescription('This will open the tenant panel logged in as the admin user for this account. You can return to the central admin panel at any time.')
+                    ->action(function (SaasClient $record) {
+                        try {
+                            $user = User::withoutGlobalScopes()
+                                ->where('saas_client_id', $record->id)
+                                ->orderBy('id')
+                                ->first();
+
+                            if (!$user) {
+                                Notification::make()
+                                    ->title('No admin user found for this tenant')
+                                    ->warning()
+                                    ->send();
+                                return;
+                            }
+
+                            // Generate a short-lived signed URL for impersonation
+                            $url = URL::temporarySignedRoute(
+                                'admin.impersonate',
+                                now()->addMinutes(5),
+                                ['userId' => $user->id, 'slug' => $record->slug]
+                            );
+
+                            Notification::make()
+                                ->title('Impersonation link ready')
+                                ->body("Open this link to access the tenant panel (valid 5 min):\n{$url}")
+                                ->success()
+                                ->persistent()
+                                ->send();
+
+                        } catch (\Throwable $e) {
+                            Log::error('Impersonation failed: ' . $e->getMessage());
+                            Notification::make()->title('Error: ' . $e->getMessage())->danger()->send();
+                        }
+                    }),
 
                 Action::make('resetPassword')
                     ->label('Reset Password')
@@ -126,33 +168,24 @@ class SaasClientResource extends Resource
                                 ->first();
 
                             if (!$user) {
-                                Notification::make()
-                                    ->title('No admin user found')
-                                    ->warning()
-                                    ->send();
+                                Notification::make()->title('No admin user found')->warning()->send();
                                 return;
                             }
 
                             User::withoutGlobalScopes()
                                 ->where('id', $user->id)
-                                ->update([
-                                    'password' => Hash::make($newPassword)
-                                ]);
+                                ->update(['password' => Hash::make($newPassword)]);
 
                             Notification::make()
                                 ->title('Password Reset')
-                                ->body("Email: {$user->email}\nPassword: {$newPassword}")
+                                ->body("Email: {$user->email}\nNew Password: {$newPassword}")
                                 ->success()
                                 ->persistent()
                                 ->send();
 
                         } catch (\Throwable $e) {
                             Log::error('Password reset failed: ' . $e->getMessage());
-
-                            Notification::make()
-                                ->title('Password reset failed')
-                                ->danger()
-                                ->send();
+                            Notification::make()->title('Password reset failed')->danger()->send();
                         }
                     }),
             ]);
@@ -161,9 +194,9 @@ class SaasClientResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListSaasClients::route('/'),
+            'index'  => Pages\ListSaasClients::route('/'),
             'create' => Pages\CreateSaasClient::route('/create'),
-            'edit' => Pages\EditSaasClient::route('/{record}/edit'),
+            'edit'   => Pages\EditSaasClient::route('/{record}/edit'),
         ];
     }
 }

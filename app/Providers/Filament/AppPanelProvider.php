@@ -16,7 +16,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use App\Http\Middleware\InitializeTenancyBySubdomain;
+use App\Http\Middleware\InitializeTenancyBySlug;
 use App\Http\Middleware\CheckTenantSuspended;
 use \App\Http\Middleware\SetRlsSessionVariables;
 
@@ -55,7 +55,7 @@ class AppPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
-                InitializeTenancyBySubdomain::class,
+                InitializeTenancyBySlug::class,
                 CheckTenantSuspended::class,
                 SetRlsSessionVariables::class,
             ])
