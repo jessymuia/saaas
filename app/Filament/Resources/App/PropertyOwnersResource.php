@@ -18,8 +18,8 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables;
-use Filament\Tables\Actions\ExportAction;
-use Filament\Tables\Actions\ExportBulkAction;
+use Filament\Actions\ExportAction;
+use Filament\Actions\ExportBulkAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -86,10 +86,10 @@ class PropertyOwnersResource extends Resource
             ])
             ->filters([])
             ->actions([
-                Tables\Actions\Action::make('generate-statement-of-account')
+                \Filament\Actions\Action::make('generate-statement-of-account')
                     ->label('Generate Statement of Account')
                     ->action(fn (PropertyOwners $record) => $record->generateStatementOfAccountVersionTwo()),
-                Tables\Actions\Action::make('generate-invoice-for-balance-carried-forward')
+                \Filament\Actions\Action::make('generate-invoice-for-balance-carried-forward')
                     ->label('Bill Balance Carried Forward')
                     ->icon('heroicon-m-document-check')
                     ->disabled(fn (PropertyOwners $record) => $record->has_invoice_for_balance_carried_forward)
@@ -100,12 +100,12 @@ class PropertyOwnersResource extends Resource
                         $title = $response['status'] == 1 ? 'Success' : 'Error';
                         Notification::make()->title($title)->{$type}()->body($response['message'])->duration(5000)->send();
                     }),
-                Tables\Actions\EditAction::make()
+                \Filament\Actions\EditAction::make()
                     ->mutateFormDataUsing(fn ($data) => array_merge($data, ['updated_by' => auth()->id()])),
-                Tables\Actions\DeleteAction::make()
+                \Filament\Actions\DeleteAction::make()
                     ->requiresConfirmation()
                     ->mutateFormDataUsing(fn ($data) => array_merge($data, ['deleted_by' => auth()->id()])),
-                Tables\Actions\Action::make('generatePdf')
+                \Filament\Actions\Action::make('generatePdf')
                     ->label('Generate PDF')
                     ->icon('heroicon-m-document-arrow-down')
                     ->visible(fn () => auth()->user()->can(AppPermissions::GENERATE_PROPERTY_OWNER_PDF))
@@ -151,7 +151,7 @@ class PropertyOwnersResource extends Resource
                 ExportAction::make()->exporter(PropertyOwnersExporter::class)->formats([ExportFormat::Csv])->fileDisk('local'),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([Tables\Actions\DeleteBulkAction::make()->requiresConfirmation()]),
+                \Filament\Actions\BulkActionGroup::make([\Filament\Actions\DeleteBulkAction::make()->requiresConfirmation()]),
                 ExportBulkAction::make()->exporter(PropertyOwnersExporter::class)->formats([ExportFormat::Csv])->fileDisk('local'),
             ]);
     }

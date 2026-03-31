@@ -16,8 +16,8 @@ use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Actions\Exports\Enums\ExportFormat;
-use Filament\Tables\Actions\ExportAction;
-use Filament\Tables\Actions\ExportBulkAction;
+use Filament\Actions\ExportAction;
+use Filament\Actions\ExportBulkAction;
 use Illuminate\Database\Eloquent\Builder;
 use UnitEnum;
 
@@ -71,7 +71,7 @@ class InvoiceResource extends Resource
             ->filters([])
             ->actions([
                 \Filament\Actions\ViewAction::make(),
-                Tables\Actions\Action::make('View Invoice')
+                \Filament\Actions\Action::make('View Invoice')
                     ->icon('heroicon-o-document-text')
                     ->disabled(fn (Invoice $invoice) => !$invoice->is_generated)
                     ->url(function (Invoice $invoice) {
@@ -81,7 +81,7 @@ class InvoiceResource extends Resource
                         $fileName = str_replace('invoices/', '', $invoice->document_url);
                         return route('preview.invoice', ['invoice' => $fileName]);
                     }),
-                Tables\Actions\DeleteAction::make()
+                \Filament\Actions\DeleteAction::make()
                     ->requiresConfirmation()
                     ->mutateFormDataUsing(fn ($data) => ['deleted_by' => auth()->user()->id]),
             ])

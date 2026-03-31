@@ -45,7 +45,7 @@ class EscalationRatesAndAmountsLogsResource extends Resource
                 Tables\Columns\TextColumn::make('escalation_date')->searchable()->sortable(),
             ])
             ->filters([])
-            ->actions([Tables\Actions\EditAction::make()])
+            ->actions([\Filament\Actions\EditAction::make()])
             ->bulkActions([]);
     }
 

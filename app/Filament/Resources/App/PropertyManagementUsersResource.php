@@ -59,8 +59,8 @@ class PropertyManagementUsersResource extends Resource
             ->filters([])
             ->defaultSort('property.name')
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make()->requiresConfirmation(),
+                \Filament\Actions\EditAction::make(),
+                \Filament\Actions\DeleteAction::make()->requiresConfirmation(),
             ])
             ->bulkActions([]);
     }

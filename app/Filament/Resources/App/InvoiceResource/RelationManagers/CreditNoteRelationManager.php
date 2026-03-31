@@ -34,7 +34,7 @@ class CreditNoteRelationManager extends RelationManager
                 TextColumn::make('created_at')->dateTime(),
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                \Filament\Actions\CreateAction::make(),
             ]);
     }
 }

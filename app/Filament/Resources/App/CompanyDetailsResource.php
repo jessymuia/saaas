@@ -76,16 +76,16 @@ class CompanyDetailsResource extends Resource
             ->filters([])
             ->actions([
                 \Filament\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\Action::make('View logo')
+                \Filament\Actions\EditAction::make(),
+                \Filament\Actions\Action::make('View logo')
                     ->url(function (CompanyDetails $company) {
                         $fileName = str_replace('logos/', '', $company->logo);
                         return route('preview.company-logo', ['companyLogo' => $fileName]);
                     }),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
+                \Filament\Actions\BulkActionGroup::make([
+                    \Filament\Actions\DeleteBulkAction::make()->requiresConfirmation(),
                 ]),
             ]);
     }

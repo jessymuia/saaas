@@ -14,8 +14,8 @@ use Filament\Forms;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables;
-use Filament\Tables\Actions\ExportAction;
-use Filament\Tables\Actions\ExportBulkAction;
+use Filament\Actions\ExportAction;
+use Filament\Actions\ExportBulkAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use UnitEnum;
@@ -74,8 +74,8 @@ class TenantResource extends Resource
             ->filters([])
             ->actions([
                 \Filament\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\Action::make('generatePdf')
+                \Filament\Actions\EditAction::make(),
+                \Filament\Actions\Action::make('generatePdf')
                     ->label('Generate PDF')
                     ->icon('heroicon-m-document-arrow-down')
                     ->visible(fn () => auth()->user()->can(AppPermissions::GENERATE_TENANT_PDF))
@@ -115,8 +115,8 @@ class TenantResource extends Resource
                 ExportAction::make()->exporter(TenantExporter::class)->formats([ExportFormat::Csv])->fileDisk('local'),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
+                \Filament\Actions\BulkActionGroup::make([
+                    \Filament\Actions\DeleteBulkAction::make()->requiresConfirmation(),
                 ]),
                 ExportBulkAction::make()->exporter(TenantExporter::class)->formats([ExportFormat::Csv])->fileDisk('local'),
             ]);

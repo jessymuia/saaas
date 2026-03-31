@@ -14,8 +14,8 @@ use Filament\Forms;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables;
-use Filament\Tables\Actions\ExportAction;
-use Filament\Tables\Actions\ExportBulkAction;
+use Filament\Actions\ExportAction;
+use Filament\Actions\ExportBulkAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use UnitEnum;
@@ -136,9 +136,9 @@ class PropertyResource extends Resource
             ])
             ->actions([
                 \Filament\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                \Filament\Actions\EditAction::make(),
 
-                Tables\Actions\Action::make('generatePdf')
+                \Filament\Actions\Action::make('generatePdf')
                     ->label('Generate PDF')
                     ->icon('heroicon-m-document-arrow-down')
                     ->visible(fn () => auth()->user()->can(AppPermissions::GENERATE_PROPERTY_PDF))
@@ -188,8 +188,8 @@ class PropertyResource extends Resource
                     ->fileDisk('local'),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
+                \Filament\Actions\BulkActionGroup::make([
+                    \Filament\Actions\DeleteBulkAction::make()->requiresConfirmation(),
                 ]),
                 ExportBulkAction::make()
                     ->exporter(PropertyExporter::class)

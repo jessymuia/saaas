@@ -73,11 +73,11 @@ class UnitResource extends Resource
             ->filters([])
             ->actions([
                 \Filament\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                \Filament\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()->requiresConfirmation(),
+                \Filament\Actions\BulkActionGroup::make([
+                    \Filament\Actions\DeleteBulkAction::make()->requiresConfirmation(),
                 ]),
             ]);
     }

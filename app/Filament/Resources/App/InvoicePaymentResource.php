@@ -97,9 +97,9 @@ class InvoicePaymentResource extends Resource
             ->filters([])
             ->actions([
                 \Filament\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make()
+                \Filament\Actions\EditAction::make()
                     ->visible(fn (InvoicePayment $record) => !$record->is_confirmed),
-                Tables\Actions\Action::make('preview-receipt')
+                \Filament\Actions\Action::make('preview-receipt')
                     ->label('Preview Receipt')
                     ->icon('heroicon-o-document-text')
                     ->disabled(fn (InvoicePayment $record) => !$record->document_generated_at)
@@ -107,7 +107,7 @@ class InvoicePaymentResource extends Resource
                         $filename = str_replace('invoice_payments/', '', $record->document_path);
                         return redirect()->route('preview.receipt', ['receipt' => $filename]);
                     }),
-                Tables\Actions\Action::make('send-receipt')
+                \Filament\Actions\Action::make('send-receipt')
                     ->label('Send Receipt')
                     ->icon('heroicon-o-envelope')
                     ->disabled(fn (InvoicePayment $record) => !$record->document_generated_at || $record->document_sent_at)

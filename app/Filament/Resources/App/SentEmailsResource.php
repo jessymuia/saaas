@@ -11,8 +11,8 @@ use Filament\Forms;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables;
-use Filament\Tables\Actions\ExportAction;
-use Filament\Tables\Actions\ExportBulkAction;
+use Filament\Actions\ExportAction;
+use Filament\Actions\ExportBulkAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -71,7 +71,7 @@ class SentEmailsResource extends Resource
                 ExportAction::make()->exporter(SentEmailsExporter::class)->formats([ExportFormat::Csv])->fileDisk('local'),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([Tables\Actions\DeleteBulkAction::make()->requiresConfirmation()]),
+                \Filament\Actions\BulkActionGroup::make([\Filament\Actions\DeleteBulkAction::make()->requiresConfirmation()]),
                 ExportBulkAction::make()->exporter(SentEmailsExporter::class)->formats([ExportFormat::Csv])->fileDisk('local'),
             ]);
     }
