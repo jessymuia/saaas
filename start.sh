@@ -3,14 +3,17 @@ set -e
 
 # ── Keep APP_URL in sync with the current Replit dev domain ──────────────────
 if [ -n "$REPLIT_DEV_DOMAIN" ]; then
-    PUBLIC_URL="https://${REPLIT_DEV_DOMAIN}:8000"
-    # Assets are served through the Next.js proxy on port 5000 to avoid CORS issues
+    # In Replit, all traffic goes through the Next.js proxy on port 5000.
+    # APP_URL and ASSET_URL must point to port 5000 so that login redirects
+    # and generated URLs stay within the proxy instead of jumping to port 8000.
+    # MPESA callbacks use port 8000 directly (server-to-server, no proxy needed).
     PROXY_URL="https://${REPLIT_DEV_DOMAIN}:5000"
-    sed -i "s|APP_URL=.*|APP_URL=${PUBLIC_URL}|" .env
+    BACKEND_URL="https://${REPLIT_DEV_DOMAIN}:8000"
+    sed -i "s|APP_URL=.*|APP_URL=${PROXY_URL}|" .env
     grep -q "ASSET_URL=" .env \
         && sed -i "s|ASSET_URL=.*|ASSET_URL=${PROXY_URL}|" .env \
         || echo "ASSET_URL=${PROXY_URL}" >> .env
-    sed -i "s|MPESA_CALLBACK_URL=.*|MPESA_CALLBACK_URL=${PUBLIC_URL}/api/mpesa/callback|" .env
+    sed -i "s|MPESA_CALLBACK_URL=.*|MPESA_CALLBACK_URL=${BACKEND_URL}/api/mpesa/callback|" .env
     sed -i "s|CENTRAL_DOMAINS=.*|CENTRAL_DOMAINS=${REPLIT_DEV_DOMAIN},localhost,127.0.0.1|" .env
 fi
 
