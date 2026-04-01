@@ -1,0 +1,278 @@
+
+Multi-Tenant Property Management Execution  Checklist [Single
+
+Database + Citus]
+
+
+Use the below checklist:
+
+
+Phase 1 - Infrastructure & Database
+
+1.   PostgreSQL 16+ installed on coordinator node
+
+2.   Citus extension installed and enabled on coordinator
+
+CREATE EXTENSION citus;
+
+3.   Setup necessary configurations to ensure citus is running smoothly, then design a bootstrap shell script for citus on PostgreSQL database
+
+Phase 2 — Citus Schema Design (Do This Before Any Tables)
+
+1.   Tenant distribution column decided  saas_client_id (bigint recommended)
+
+2.   Shard count decided (start with 10 shards)
+
+a.   default 32, scale to 64-128 for large deployments
+
+b.   SELECT alter_distributed_table('table', shard_count := 10); Define this in the bootstrap script
+3.   Table classification documented for every table:
+
+a.   Distributed tables  (tenant-scoped data) -  share list of the tables in the README.md of the document and tag me for visibility and review
+b.   Reference tables    (global lookups shared across shards) -  share list of the tables in the README.md of the document and tag me for visibility and review
+c.   Local tables        (Citus-internal, migrations, tenants table) -  share list of the tables in the README.md of the document and tag me for visibility and review
+4.  All distributed table PKs designed as COMPOSITE (id, saas_client_id) — never id alone - work on an ERD of all the tables, including details on which one is the primary key or composite keys if any. All FKs on distributed tables include saas_client_id
+
+Phase 3 — Laravel Base Setup
+
+1.   Upgrade current laravel to latest stable Laravel 12 project
+
+2.   Install composer package stancl/tenancy and set it up accordingly. Ensure the configuration is set to single database mode.
+a.   Tenancy config published
+
+b.   config/tenancy.php updated for single-DB mode 
+c.   bootstrappers set (NO DatabaseTenancyBootstrapper)
+
+3.   Update .env details accordingly, publish a .env.example without any credentials
+
+
+Phase 4 — Tenant (called SaasClient) Model & Central Tables
+
+1.   Tenant model created, call it SaasClient to avoid conflict with Tenant model
+
+2.   Some custom columns can include defined in getCustomColumns() a.   id, name, slug, plan_id, settings,trial_ends_at, suspended_at b.
+3.   Create central (local) tables that are not distributed; these are tables that will be used in managing the Saas client subscriptions, these need not to be exactly as defined below, but design these then share their ERD diagram and include it in the README.md. Do not share final designed schemas with AI. Some of the tables can include, (these should be marked as local when creating)
+a.   Plans
+
+b.   Subscriptions
+
+c.   Subscription Payments d.   Saas Client Users
+The shell script for provisioning the schemas should include these as well, the reference tables need to be created before distribution
+
+Phase 5 - Distributed Table Migrations
+
+1.   Update the migrations accordingly: migration convention established, i.e every tenant-scoped migration must:
+a.   add saas_client_id column
+
+b.   composite PK to include the saas_client_id
+
+2.   Upgrade the migration files accordingly to capture the new change, as you make the update, don’t delete the existing logic but comment out the old structure so that we can be able to review and validate these accordingly
+3.   In cases where the database configuration uses sequences update to use citus sequences since big increments won’t work across shards in Citus
+4.   All tenant-scoped tables distributed after creation, validated this later on using below
+
+a.   Co-location verified after all tables created SELECT logicalrelid, colocationid FROM
+
+pg_dist_partition ORDER BY colocationid;
+
+all tenant tables must share same colocationid 
+Phase 6 - stancl Bootstrappers for Single-DB Mode
+
+1.   Ensure single database
+
+2.   Bootstrapper registered in config/tenancy.php
+
+3.   CacheTenancyBootstrapper configured
+
+4.   FilesystemTenancyBootstrapper configured
+
+5.   QueueTenancyBootstrapper configured
+
+6.   All bootstrappers tested for correct revert() behaviour
+
+
+
+
+Phase 7 - Global Tenant Scope on All Models
+
+1.   Cross check all queries in all models to ensure no cross-tenant joins in planned query patterns
+
+2.   BelongsToTenant trait applied to EVERY distributed model
+
+3.   Global scope unit tests written per model
+
+4.   Scope verified to inject saas_client_id on all INSERT operations
+
+5.   Setup super admin user config for administering - withoutTenantScope() escape hatch created for super admin use
+
+Phase 8 - Domain & Routing
+
+1.   Tenancy identification strategy decided
+
+a.   subdomain: {tenant}.yoursaas.com
+
+b.   Ensure it is possible to handle a client who might request their own custom domain i.e custom domain: client.com, incase it is not possible to have both b and a, prioritize a
+2.   Central domains defined in config/tenancy.php
+
+3.   Nginx/Caddy wildcard subdomain config applied [Skip this]
+
+4.  [This can be done as the last bit] Design front facing pages for visiting clients so that we can hook them, these pages should be in NextJS, proper design and efficient load time.
+These may include:
+
+a.   Landing home page (ensure words are above 1500 b.   Features page
+c.   Pricing page (use placeholders)
+
+d.   Use cases page
+
+e.   About us page (ensure top notch standard, ensure content here is about 1500 words, distributed all over)
+f.    Testimonials
+
+g.   Security & Compliance page -> mention the existence of Data compliance in line with 2019 data compliance regulations 
+h.   Check if possible to setup a blog section which we can be populating with content accordingly
+i.    Setup a changelog page j.    Contact us page
+k.   Terms of service page (use generic, generate using AI, compliant with Kenya laws and cross read keenly)
+l.    Privacy policy m.  Cookie policy n.   FAQ page
+o.   Request a demo page
+
+5. Setup necessary middlewares, check on filament
+
+
+Phase 9 — Authentication & Users
+
+1.   Ensure user model is a DISTRIBUTED table (scoped to tenant)
+
+2.   Central platform user model separate (local table): for super admins only
+
+3.   Setup and review tenant registration flows (saas_client_id)
+
+a.   Include sending of welcome email in the onboarding journey b.   Include onboarding manual
+4.   Ensure all user related processes are scoped to the saas_client_id
+
+5.  Setup super_admin impersonation feature [Not urgent]
+
+
+Phase 10 — Filament Integration
+
+1.   Update to latest filament 4 version
+
+2.   Setup Central panel (super admin). This should be able to:
+
+a.   Manage saas clients b.   Billings
+c.   Support tickets d.   See all data
+3.   Setup SaasClient  Panel, scoped to current tenant via BelongsToTenant. Saas Client Panel middleware initializes tenancy
+4.   Ensure that all Filament Resources use tenant-scoped Eloquent queries. In addition cross check the following:
+a.   Validate all queries in each resource
+
+b.   getEloquentQuery() verified on each Resource
+
+c.   In line with SOLID principles, if there are any features that are not SOLID ready ensure they are addressed 
+5.   Setup Saas Client branding per panel (logo, colors) from tenant settings
+
+6.   To reiterate, ensure super admin can view/switch into any tenant context
+
+
+
+
+Phase 11 — Queues & Jobs
+
+1.   Ensure the following queue tables distributed by saas_client_id
+
+2.   Verify that Jobs verified to boot correct tenant context on worker
+
+3.   Test the running of the escalate command as a cron job and ensure it runs accordingly maintaining isolation of contexts
+4.   Add configurations and setup of Laravel horizon, ensure that failed job handling preserves tenant context
+
+
+
+Phase 12 — Citus Query Discipline
+
+1.   In existing codebase ensure all eloquent joins include saas_client_id on both sides
+
+2.   In the case of raw queries, ensure no raw queries without saas_client_id in WHERE clause. a.   All DB::select() raw queries should be audited, especially around the dashboards
+b.   Aggregations across tenants only done by super admin c.
+3.   Slow query log enabled and monitored [Remind me to check this]
+
+4.   pg_stat_statements, citus_stat_statements enabled on coordinator [Remind me to check this]
+
+
+Phase 13 — Security & Isolation
+
+1.   Remind me to setup Row Level Security to ensure isolation of Saas Clients and set up RLS
+
+policies created on all distributed tables [Remind me to check this]
+
+2.   Validate tests on tenant isolation
+
+3.   Super admin bypass policy created for RLS [Advise on which command to apply]
+
+4.   Setup appropriate rate limiting checks [Remind me to check this]
+
+5.   Setup appropriate configs/middleware to suspend a tenant
+
+6.   Proper setting to ensure Saas client specific keys are encrypted or stored securely [Remind me to check this]
+7.   HTTPS enforced on all domains [Remind me to check this]
+
+
+Phase 14 — Billing & Plans
+
+1.   Payment integration using MPesa or other appropriate platforms [MPesa is priority now]
+
+2.   Setup a trial period logic 
+3.   Setup grace period for failed payments
+
+4.   Setup tenant suspension/expiry or and removal
+
+5.   Ensure billing events can scale appropriately
+
+6.   Setup a meter to ensure we are able to monitor how much a user has used our system
+
+
+Phase 15 — Testing
+
+1.   Setup an automated test suite for all functions in the system. This will be executed whenever the system is to be deployed
+a.   Ensure tests include validating citus co-location b.   Isolation tests
+c.   RLS policy tests d.   Queue tests
+e.   Bootstrapper revert f.    Super admin access
+g.   Load test with concurrent users
+
+
+Phase 16 — DevOps & Deployment
+
+1.   Review migration scripts
+
+2.   Test column addition process
+
+3.   Citus shard rebalancing
+
+4.   Database backups
+
+5.   Logs enriched with saas_client_id
+
+6.   Share workbook to execute on-demand backups, shard rebalancing as well
+
+
+Key Architectural Reminders
+
+NEVER:
+
+●      Run create_distributed_table() on tenants/domains tables
+
+●      Use serial/bigIncrements as sole PK on distributed tables
+
+●      Join distributed tables without tenant_id on both sides
+
+●      Run PgBouncer in session mode with Citus
+
+●      Change the distribution column after table is populated
+
+
+
+ALWAYS:
+
+●      Composite PKs: (uuid, tenant_id) on all distributed tables
+
+●      saas_client_id in every FK on distributed tables
+
+●      Co-locate all distributed tables on tenant_id 
+●      RLS as a safety net on top of global scopes
+
+●      Include tenant_id in all raw WHERE clauses
