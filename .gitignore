@@ -22,7 +22,6 @@ yarn-error.log
 vendor/
 node_modules/
 package-lock.json
-composer.lock
 
 # Next.js marketing site build artifacts
 saas-marketing/.next/
