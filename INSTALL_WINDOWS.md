@@ -61,6 +61,12 @@ docker compose up --build -d
 This starts: nginx, PHP, PostgreSQL (Citus), Redis, queue worker, scheduler, and the marketing site.
 The first build takes **3–5 minutes** to download images and install dependencies.
 
+> **Note:** On first startup the PHP container automatically runs `composer install` (if vendor is missing) and publishes all CSS/JS/font assets. Wait until you see `ready to handle connections` in the logs before proceeding:
+> ```cmd
+> docker compose logs -f php
+> ```
+> Press `Ctrl+C` to stop following logs once you see that message.
+
 **4. Set up the application (run once)**
 
 ```cmd
