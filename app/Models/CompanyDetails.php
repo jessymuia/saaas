@@ -4,8 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class CompanyDetails extends DefaultAppModel
 {
@@ -30,7 +28,7 @@ class CompanyDetails extends DefaultAppModel
         'deleted_at'
     ];
 
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 
