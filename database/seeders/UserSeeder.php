@@ -13,7 +13,7 @@ class UserSeeder extends Seeder
         // Fetch the UUID of the saas_client seeded in DatabaseSeeder
         $saasClientId = DB::table('saas_clients')->where('slug', 'test-client')->value('id');
 
-        DB::table('users')->insert([
+        DB::table('users')->insertOrIgnore([
             'name'              => 'Test User',
             'email'             => 'lancerbrian001@gmail.com',
             'phone_number'      => '08123456789',
