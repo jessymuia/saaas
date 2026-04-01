@@ -53,30 +53,31 @@ class SaasClient extends Tenant
         ];
     }
 
-    // ── Branding helpers (stored in JSON data column) ─────────────────────────
+    // ── Branding helpers (stored in JSON data column via VirtualColumn) ──────────
+    //
+    // VirtualColumn decodes the `data` JSON column into individual model attributes
+    // on retrieval and re-encodes them back into `data` on save. We must work with
+    // the individual attribute key (not set $this->data directly) so that
+    // encodeAttributes() picks up the change and persists it correctly.
 
     public function getPrimaryColorAttribute(): ?string
     {
-        return $this->data['primary_color'] ?? null;
+        return $this->attributes['primary_color'] ?? null;
     }
 
     public function setPrimaryColorAttribute(string $value): void
     {
-        $data = $this->data ?? [];
-        $data['primary_color'] = $value;
-        $this->data = $data;
+        $this->attributes['primary_color'] = $value;
     }
 
     public function getLogoPathAttribute(): ?string
     {
-        return $this->data['logo_path'] ?? null;
+        return $this->attributes['logo_path'] ?? null;
     }
 
     public function setLogoPathAttribute(?string $value): void
     {
-        $data = $this->data ?? [];
-        $data['logo_path'] = $value;
-        $this->data = $data;
+        $this->attributes['logo_path'] = $value;
     }
 
     protected function casts(): array

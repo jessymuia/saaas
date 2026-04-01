@@ -75,6 +75,16 @@ return [
     */
     'filesystem' => [
         'suffix_base' => 'tenant',
+
+        /*
+         | Prevent the asset() helper from being rewritten to /tenantXXX/...
+         | URLs. Filament's JS/CSS live in public/ (not tenant storage), so
+         | they must always be served from the normal /js/, /css/ paths.
+         | Tenant-specific file uploads still use Storage::disk('public')
+         | which is correctly scoped by the root_override below.
+         */
+        'asset_helper_tenancy' => false,
+
         'disks' => [
             'local',
             'public',

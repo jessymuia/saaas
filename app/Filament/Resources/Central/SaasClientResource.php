@@ -78,13 +78,13 @@ class SaasClientResource extends Resource
                 ->columns(2),
 
             Section::make('Branding')
-                ->description('Customise the look of this tenant\'s panel. Stored in the tenant data column — no migration required.')
+                ->description('Customise the look of this tenant\'s panel. Values are stored via the tenant\'s virtual data column — no migration required.')
                 ->schema([
-                    ColorPicker::make('data.primary_color')
+                    ColorPicker::make('primary_color')
                         ->label('Primary Colour')
                         ->helperText('Hex colour used as the panel accent. Leave blank to use the default green.'),
 
-                    FileUpload::make('data.logo_path')
+                    FileUpload::make('logo_path')
                         ->label('Logo')
                         ->image()
                         ->imageResizeMode('cover')

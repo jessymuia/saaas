@@ -24,7 +24,7 @@ class TenantBrandingMiddleware
         $tenant = filament()->getTenant();
 
         if ($tenant) {
-            $this->applyColor($tenant->data['primary_color'] ?? null);
+            $this->applyColor($tenant->primary_color);
         }
 
         return $next($request);
