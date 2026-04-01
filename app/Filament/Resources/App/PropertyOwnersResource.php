@@ -87,6 +87,7 @@ class PropertyOwnersResource extends Resource
             ])
             ->filters([])
             ->actions([
+                \Filament\Actions\ViewAction::make(),
                 \Filament\Actions\Action::make('generate-statement-of-account')
                     ->label('Generate Statement of Account')
                     ->action(fn (PropertyOwners $record) => $record->generateStatementOfAccountVersionTwo()),

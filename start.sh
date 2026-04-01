@@ -23,6 +23,7 @@ fi
 php artisan config:clear
 php artisan cache:clear
 php artisan view:clear
+php artisan filament:clear-cached-components 2>/dev/null || true
 
 # ── Create storage symlink if missing ─────────────────────────────────────────
 if [ ! -L public/storage ]; then

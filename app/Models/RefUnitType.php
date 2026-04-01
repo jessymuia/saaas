@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class RefUnitType extends DefaultAppModel
 {
     protected $fillable = [
-        'type',
-        'description',
+        'name',
+        'code',
         'created_by',
         'created_at',
         'updated_by',

@@ -31,8 +31,8 @@ class UnitTypeResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->schema([
-            Forms\Components\TextInput::make('type')->required()->maxLength(255),
-            Forms\Components\Textarea::make('description')->maxLength(65535)->columnSpanFull(),
+            Forms\Components\TextInput::make('name')->required()->maxLength(255),
+            Forms\Components\TextInput::make('code')->label('Code / Abbreviation')->maxLength(50)->nullable(),
         ]);
     }
 
@@ -40,8 +40,8 @@ class UnitTypeResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('type')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('description')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('code')->sortable()->searchable(),
                 Tables\Columns\IconColumn::make('status')->boolean(),
                 Tables\Columns\TextColumn::make('createdBy.name')->numeric()->sortable()->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updatedBy.name')->numeric()->sortable()->toggleable(isToggledHiddenByDefault: true),
