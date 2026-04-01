@@ -8,4 +8,9 @@ use Filament\Resources\Pages\ListRecords;
 class ListTenancyAgreementTypes extends ListRecords
 {
     protected static string $resource = TenancyAgreementTypeResource::class;
+
+    protected function getHeaderActions(): array
+    {
+        return [\Filament\Actions\CreateAction::make()];
+    }
 }

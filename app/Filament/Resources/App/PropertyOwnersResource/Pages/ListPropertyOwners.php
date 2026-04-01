@@ -8,4 +8,9 @@ use Filament\Resources\Pages\ListRecords;
 class ListPropertyOwners extends ListRecords
 {
     protected static string $resource = PropertyOwnersResource::class;
+
+    protected function getHeaderActions(): array
+    {
+        return [\Filament\Actions\CreateAction::make()];
+    }
 }

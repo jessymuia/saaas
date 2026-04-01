@@ -8,4 +8,9 @@ use Filament\Resources\Pages\ListRecords;
 class ListVacationNotices extends ListRecords
 {
     protected static string $resource = VacationNoticeResource::class;
+
+    protected function getHeaderActions(): array
+    {
+        return [\Filament\Actions\CreateAction::make()];
+    }
 }
