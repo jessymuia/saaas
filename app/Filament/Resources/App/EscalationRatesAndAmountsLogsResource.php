@@ -37,15 +37,15 @@ class EscalationRatesAndAmountsLogsResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('id')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('tenancy_agreement_id')->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('tenancyAgreement.tenant.name')->searchable(),
-                Tables\Columns\TextColumn::make('property.name')->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('previous_amount')->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('new_amount')->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('escalation_rate')->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('escalation_date')->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('tenancyAgreement.tenant.name')->searchable()->label('Tenant'),
+                Tables\Columns\TextColumn::make('property.name')->searchable()->sortable()->label('Property'),
+                Tables\Columns\TextColumn::make('previous_amount')->searchable()->sortable()->money('KES'),
+                Tables\Columns\TextColumn::make('new_amount')->searchable()->sortable()->money('KES'),
+                Tables\Columns\TextColumn::make('escalation_rate')->searchable()->sortable()->suffix('%'),
+                Tables\Columns\TextColumn::make('escalation_date')->date()->searchable()->sortable(),
             ])
             ->filters([])
-            ->actions([\Filament\Actions\EditAction::make()])
+            ->actions([])
             ->bulkActions([]);
     }
 
@@ -57,9 +57,7 @@ class EscalationRatesAndAmountsLogsResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\ListEscalationRatesAndAmountsLogs::route('/'),
-            'create' => Pages\CreateEscalationRatesAndAmountsLogs::route('/create'),
-            'edit'   => Pages\EditEscalationRatesAndAmountsLogs::route('/{record}/edit'),
+            'index' => Pages\ListEscalationRatesAndAmountsLogs::route('/'),
         ];
     }
 }

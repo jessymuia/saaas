@@ -5,7 +5,7 @@ namespace App\Filament\Resources\App;
 use App\Filament\Exports\VacationNoticesExporter;
 use App\Filament\Resources\App\VacationNoticeResource\Pages;
 use App\Models\Property;
-use App\Models\Tenant;
+use App\Models\TenancyAgreement;
 use App\Models\VacationNotices;
 use App\Utils\AppUtils;
 use Filament\Actions\Exports\Enums\ExportFormat;
@@ -43,41 +43,32 @@ class VacationNoticeResource extends Resource
 
         return $schema->schema([
             Forms\Components\Select::make('property_id')
-                ->options(Property::where('saas_client_id', $tenantId)->pluck('name', 'id'))
                 ->label('Property')
                 ->required()
-                ->reactive(),
-            Forms\Components\Select::make('unit_id')
+                ->reactive()
+                ->options(Property::where('saas_client_id', $tenantId)->pluck('name', 'id'))
+                ->afterStateUpdated(fn (Forms\Set $set) => $set('tenancy_agreement_id', null)),
+
+            Forms\Components\Select::make('tenancy_agreement_id')
+                ->label('Tenant / Unit')
                 ->required()
+                ->reactive()
                 ->options(function (Forms\Get $get) use ($tenantId) {
-                    if ($get('property_id')) {
-                        return \App\Models\Unit::query()
-                            ->where('saas_client_id', $tenantId)
-                            ->where('property_id', $get('property_id'))
-                            ->pluck('name', 'id');
+                    if (!$get('property_id')) {
+                        return [];
                     }
-                    return [];
+                    return TenancyAgreement::query()
+                        ->where('saas_client_id', $tenantId)
+                        ->where('status', true)
+                        ->whereHas('unit', fn (Builder $q) => $q->where('property_id', $get('property_id')))
+                        ->with(['tenant', 'unit'])
+                        ->get()
+                        ->mapWithKeys(fn ($agreement) => [
+                            $agreement->id => "{$agreement->tenant->name} — {$agreement->unit->name}",
+                        ]);
                 })
-                ->label('Unit')
-                ->reactive(),
-            Forms\Components\Select::make('tenant_id')
-                ->options(function (Forms\Get $get) use ($tenantId) {
-                    if ($get('property_id')) {
-                        return Tenant::query()
-                            ->where('saas_client_id', $tenantId)
-                            ->whereHas('tenancyAgreements', function (Builder $query) use ($get) {
-                                $query->where('status', '=', '1')
-                                    ->where('unit_id', '=', $get('unit_id'))
-                                    ->whereHas('property', function (Builder $q) use ($get) {
-                                        $q->where('properties.id', '=', $get('property_id'));
-                                    });
-                            })
-                            ->pluck('name', 'id');
-                    }
-                    return [];
-                })
-                ->label('Tenant')
-                ->reactive(),
+                ->helperText('Select property first, then choose the active tenancy agreement'),
+
             Forms\Components\DatePicker::make('notice_start_date')->label('Notice Start Date')->required(),
             Forms\Components\DatePicker::make('notice_end_date')->label('Notice End Date')->required(),
             Forms\Components\Textarea::make('extra_information')->label('Extra Information')->columnSpanFull()->rows(3),
