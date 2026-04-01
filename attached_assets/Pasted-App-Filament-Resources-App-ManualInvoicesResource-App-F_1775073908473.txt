@@ -1,0 +1,450 @@
+App\Filament\Resources\App\ManualInvoicesResource::App\Filament\Resources\App\{closure}(): Argument #1 ($get) must be of type Filament\Forms\Get, Filament\Schemas\Components\Utilities\Get given, called in /home/runner/workspace/vendor/filament/support/src/Concerns/EvaluatesClosures.php on line 36
+
+Expand vendor frames
+App
+ \ 
+Filament
+ \ 
+Resources
+ \ 
+App
+ \ 
+ManualInvoicesResource
+ 
+: 72
+App\Filament\Resources\App\{closure}
+4 vendor frames
+.unknown
+0
+array_map
+44 vendor frames
+App
+ \ 
+Http
+ \ 
+Middleware
+ \ 
+CheckSubscriptionExpiry
+ 
+: 35
+handle
+1 vendor frame
+App
+ \ 
+Http
+ \ 
+Middleware
+ \ 
+TenantBrandingMiddleware
+ 
+: 30
+handle
+1 vendor frame
+App
+ \ 
+Http
+ \ 
+Middleware
+ \ 
+SetRlsSessionVariables
+ 
+: 50
+handle
+1 vendor frame
+App
+ \ 
+Http
+ \ 
+Middleware
+ \ 
+CheckTenantSuspended
+ 
+: 16
+handle
+1 vendor frame
+App
+ \ 
+Http
+ \ 
+Middleware
+ \ 
+InitializeTenancyBySlug
+ 
+: 53
+handle
+52 vendor frames
+public
+ / 
+index
+.php
+ 
+: 51
+require_once
+1 vendor frame
+app
+ / 
+Filament
+ / 
+Resources
+ / 
+App
+ / 
+ManualInvoicesResource
+.php
+ 
+: 72
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        $set('property_owner_id', null);
+
+                        $set('tenant_id', null);
+
+                    } else {
+
+                        $set('property_owner_id', null);
+
+                        $set('client_id', null);
+
+                    }
+
+                })
+
+                ->required()
+
+                ->columnSpan(2)
+
+                ->default('property_owner'),
+
+
+
+            Forms\Components\Select::make('property_owner_id')
+
+                ->label('Property Owner')
+
+                ->options(fn () => PropertyOwners::where('saas_client_id', filament()->getTenant()?->id)->pluck('name', 'id'))
+
+                ->live()
+
+                ->hidden(fn (Forms\Get $get) => in_array($get('recipient_type'), ['client', 'tenant']))
+
+                ->required(fn (Forms\Get $get) => $get('recipient_type') === 'property_owner'),
+
+
+
+            Forms\Components\Select::make('client_id')
+
+                ->label('Client')
+
+                ->options(fn () => Client::where('saas_client_id', filament()->getTenant()?->id)->pluck('name', 'id'))
+
+                ->live()
+
+                ->hidden(fn (Forms\Get $get) => in_array($get('recipient_type'), ['property_owner', 'tenant']))
+
+                ->required(fn (Forms\Get $get) => $get('recipient_type') === 'client'),
+
+
+
+            Forms\Components\Select::make('tenant_id')
+
+                ->label('Tenant')
+
+                ->options(fn () => Tenant::where('saas_client_id', filament()->getTenant()?->id)->pluck('name', 'id'))
+
+                ->live()
+
+                ->hidden(fn (Forms\Get $get) => in_array($get('recipient_type'), ['property_owner', 'client']))
+App
+Routing
+Views
+Request
+Browser
+Headers
+Body
+Context
+User
+Git
+Versions
+App
+Routing
+Controller
+App\Filament\Resources\App\ManualInvoicesResource\Pages\CreateManualInvoice
+
+Route name
+filament.app.resources.app.manual-invoices.create
+
+Middleware
+panel:app
+
+Illuminate\Cookie\Middleware\EncryptCookies
+
+Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse
+
+Illuminate\Session\Middleware\StartSession
+
+Illuminate\View\Middleware\ShareErrorsFromSession
+
+Illuminate\Foundation\Http\Middleware\VerifyCsrfToken
+
+Illuminate\Routing\Middleware\SubstituteBindings
+
+Filament\Http\Middleware\DisableBladeIconComponents
+
+Filament\Http\Middleware\DispatchServingFilamentEvent
+
+App\Http\Middleware\InitializeTenancyBySlug
+
+App\Http\Middleware\CheckTenantSuspended
+
+App\Http\Middleware\SetRlsSessionVariables
+
+App\Http\Middleware\TenantBrandingMiddleware
+
+App\Http\Middleware\CheckSubscriptionExpiry
+
+Filament\Http\Middleware\Authenticate
+
+Filament\Http\Middleware\IdentifyTenant
+
+Views
+View
+vendor
+ / 
+filament
+ / 
+schemas
+ / 
+resources
+ / 
+views
+ / 
+components
+ / 
+form.blade
+.php
+Data
+Request
+https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev/app/app/test-client/app/manual-invoices/create
+GET
+curl "https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev/app/app/test-client/app/manual-invoices/create" \
+   -X GET \
+   -H 'host: 966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev' \
+   -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36' \
+   -H 'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7' \
+   -H 'accept-encoding: gzip, deflate, br, zstd' \
+   -H 'accept-language: en-GB,en-US;q=0.9,en;q=0.8' \
+   -H 'cookie: <CENSORED>' \
+   -H 'referer: https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev:8000/app/app/test-client/app/manual-invoices' \
+   -H 'sec-ch-ua: "Chromium";v="146", "Not-A.Brand";v="24", "Google Chrome";v="146"' \
+   -H 'sec-ch-ua-mobile: ?0' \
+   -H 'sec-ch-ua-platform: "Windows"' \
+   -H 'sec-fetch-dest: document' \
+   -H 'sec-fetch-mode: navigate' \
+   -H 'sec-fetch-site: same-origin' \
+   -H 'sec-fetch-user: ?1' \
+   -H 'traceparent: 00-69cd7a67000000005cf2fbf057fabbc8-11fe00056be5910f-00' \
+   -H 'tracestate: dd=s:0;p:11fe00056be5910f;t.tid:69cd7a6700000000' \
+   -H 'upgrade-insecure-requests: 1' \
+   -H 'x-datadog-parent-id: 1296473766014325007' \
+   -H 'x-datadog-tags: _dd.p.tid=69cd7a6700000000' \
+   -H 'x-datadog-trace-id: 6697692605540121544' \
+   -H 'x-forwarded-for: 154.159.252.194, 10.81.16.12' \
+   -H 'x-forwarded-proto: https';
+
+
+Browser
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+
+Headers
+host
+966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev
+
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+
+accept
+text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+
+accept-encoding
+gzip, deflate, br, zstd
+
+accept-language
+en-GB,en-US;q=0.9,en;q=0.8
+
+cookie
+<CENSORED>
+
+referer
+https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev:8000/app/app/test-client/app/manual-invoices
+
+sec-ch-ua
+"Chromium";v="146", "Not-A.Brand";v="24", "Google Chrome";v="146"
+
+sec-ch-ua-mobile
+?0
+
+sec-ch-ua-platform
+"Windows"
+
+sec-fetch-dest
+document
+
+sec-fetch-mode
+navigate
+
+sec-fetch-site
+same-origin
+
+sec-fetch-user
+?1
+
+traceparent
+00-69cd7a67000000005cf2fbf057fabbc8-11fe00056be5910f-00
+
+tracestate
+dd=s:0;p:11fe00056be5910f;t.tid:69cd7a6700000000
+
+upgrade-insecure-requests
+1
+
+x-datadog-parent-id
+1296473766014325007
+
+x-datadog-tags
+_dd.p.tid=69cd7a6700000000
+
+x-datadog-trace-id
+6697692605540121544
+
+x-forwarded-for
+154.159.252.194, 10.81.16.12
+
+x-forwarded-proto
+https
+
+Body
+[]
+
+Context
+User
+lancerbrian001@gmail.com
+Test User
+
+lancerbrian001@gmail.com
+
+{
+    "id": 2,
+    "saas_client_id": "06064518-c885-49cb-9f55-6796700cf35e",
+    "name": "Test User",
+    "email": "lancerbrian001@gmail.com",
+    "phone_number": "08123456789",
+    "email_verified_at": "2026-04-01T19:44:46.000000Z",
+    "created_at": "2026-04-01T19:44:46.000000Z",
+    "updated_at": "2026-04-01T19:44:46.000000Z",
+    "deleted_at": null,
+    "created_by": null,
+    "updated_by": 2,
+    "deleted_by": null
+}
+
+
+Git
+Add options to generate and send invoice documents
+2489ac9947f95bfac871c68a3ff6438c190f768e
+
+View commit 2489ac9
+Versions
+Php Version
+8.2.23
+
+Laravel Version
+12.56.0
+
+Laravel Locale
+en
+
+Laravel Config Cached
+false
+App Debug
+true
+App Env
+local
+
+
+6
+Queries
+23:04:55
+11.62ms
+pgsql
+select * from "users" where "users"."id" = 2 and "users"."deleted_at" is null limit 1
+
+
+1 query parameter
+23:04:55
+0.93ms
+pgsql
+select * from "saas_clients" where "slug" = test-client limit 1
+
+
+1 query parameter
+23:04:55
+0.39ms
+pgsql
+SET app.saas_client_id = '06064518-c885-49cb-9f55-6796700cf35e'
+
+
+23:04:55
+0.32ms
+pgsql
+SET app.saas_client_id = '06064518-c885-49cb-9f55-6796700cf35e'
+
+
+23:04:55
+0.29ms
+pgsql
+RESET app.bypass_rls
+
+
+23:04:55
+0.47ms
+pgsql
+select * from "saas_clients" where "slug" = test-client limit 1
+
+
+1 query parameter
+·
+Source
+·
+Docs
+·
+Laravel
+Ignition is built byFlare, the Laravel error reporting service.

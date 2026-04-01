@@ -48,13 +48,13 @@ class VacationNoticeResource extends Resource
                 ->required()
                 ->reactive()
                 ->options(Property::where('saas_client_id', $tenantId)->pluck('name', 'id'))
-                ->afterStateUpdated(fn (Forms\Set $set) => $set('tenancy_agreement_id', null)),
+                ->afterStateUpdated(fn ($set) => $set('tenancy_agreement_id', null)),
 
             Forms\Components\Select::make('tenancy_agreement_id')
                 ->label('Tenant / Unit')
                 ->required()
                 ->reactive()
-                ->options(function (Forms\Get $get) use ($tenantId) {
+                ->options(function ($get) use ($tenantId) {
                     if (!$get('property_id')) {
                         return [];
                     }

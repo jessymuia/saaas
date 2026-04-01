@@ -28,7 +28,7 @@ class ManualInvoiceItemsRelationManager extends RelationManager
                 ->required()
                 ->numeric()
                 ->live()
-                ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set) {
+                ->afterStateUpdated(function ($get, $set) {
                     $amount = (float) ($get('amount') ?? 0);
                     $isVatable = $get('is_vatable');
                     $vat = $isVatable ? round(AppUtils::VAT_RATE * $amount, 2) : 0;
@@ -38,7 +38,7 @@ class ManualInvoiceItemsRelationManager extends RelationManager
             Forms\Components\Checkbox::make('is_vatable')
                 ->live()
                 ->default(false)
-                ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set) {
+                ->afterStateUpdated(function ($get, $set) {
                     $amount = (float) ($get('amount') ?? 0);
                     $isVatable = $get('is_vatable');
                     $vat = $isVatable ? round(AppUtils::VAT_RATE * $amount, 2) : 0;

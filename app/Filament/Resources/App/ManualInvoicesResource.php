@@ -48,7 +48,7 @@ class ManualInvoicesResource extends Resource
                     'tenant'         => 'Tenant',
                 ])
                 ->live()
-                ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set) {
+                ->afterStateUpdated(function ($get, $set) {
                     $type = $get('recipient_type');
                     if ($type === 'property_owner') {
                         $set('client_id', null);
@@ -69,22 +69,22 @@ class ManualInvoicesResource extends Resource
                 ->label('Property Owner')
                 ->options(fn () => PropertyOwners::where('saas_client_id', filament()->getTenant()?->id)->pluck('name', 'id'))
                 ->live()
-                ->hidden(fn (Forms\Get $get) => in_array($get('recipient_type'), ['client', 'tenant']))
-                ->required(fn (Forms\Get $get) => $get('recipient_type') === 'property_owner'),
+                ->hidden(fn ($get) => in_array($get('recipient_type'), ['client', 'tenant']))
+                ->required(fn ($get) => $get('recipient_type') === 'property_owner'),
 
             Forms\Components\Select::make('client_id')
                 ->label('Client')
                 ->options(fn () => Client::where('saas_client_id', filament()->getTenant()?->id)->pluck('name', 'id'))
                 ->live()
-                ->hidden(fn (Forms\Get $get) => in_array($get('recipient_type'), ['property_owner', 'tenant']))
-                ->required(fn (Forms\Get $get) => $get('recipient_type') === 'client'),
+                ->hidden(fn ($get) => in_array($get('recipient_type'), ['property_owner', 'tenant']))
+                ->required(fn ($get) => $get('recipient_type') === 'client'),
 
             Forms\Components\Select::make('tenant_id')
                 ->label('Tenant')
                 ->options(fn () => Tenant::where('saas_client_id', filament()->getTenant()?->id)->pluck('name', 'id'))
                 ->live()
-                ->hidden(fn (Forms\Get $get) => in_array($get('recipient_type'), ['property_owner', 'client']))
-                ->required(fn (Forms\Get $get) => $get('recipient_type') === 'tenant'),
+                ->hidden(fn ($get) => in_array($get('recipient_type'), ['property_owner', 'client']))
+                ->required(fn ($get) => $get('recipient_type') === 'tenant'),
 
             Forms\Components\DatePicker::make('invoice_for_month')
                 ->label('Invoice For Month')

@@ -40,7 +40,7 @@ class TenancyBillsRelationManager extends RelationManager
                 ->required()
                 ->minValue(0)
                 ->live()
-                ->afterStateUpdated(function (\Filament\Forms\Get $get, \Filament\Forms\Set $set) {
+                ->afterStateUpdated(function ($get, $set) {
                     $set('total_amount', round((float) $get('amount') + (float) $get('vat'), 2));
                 }),
 
@@ -50,7 +50,7 @@ class TenancyBillsRelationManager extends RelationManager
                 ->default(0)
                 ->minValue(0)
                 ->live()
-                ->afterStateUpdated(function (\Filament\Forms\Get $get, \Filament\Forms\Set $set) {
+                ->afterStateUpdated(function ($get, $set) {
                     $set('total_amount', round((float) $get('amount') + (float) $get('vat'), 2));
                 }),
 

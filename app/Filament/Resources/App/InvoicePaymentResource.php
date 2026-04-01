@@ -8,8 +8,6 @@ use App\Models\InvoicePayment;
 use App\Rules\CheckPaidAmountDoesNotExceedAmountDue;
 use App\Utils\AppUtils;
 use Filament\Forms;
-use Filament\Forms\Get;
-use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables;
@@ -38,7 +36,7 @@ class InvoicePaymentResource extends Resource
             Forms\Components\TextInput::make('invoice_id')
                 ->label('Invoice ID')
                 ->reactive()
-                ->afterStateUpdated(function (Get $get, Set $set) {
+                ->afterStateUpdated(function ($get, $set) {
                     $invoice = Invoice::find($get('invoice_id'));
                     $set('property_name', $invoice->tenancyAgreement->unit->property->name ?? '');
                     $set('tenant_name', $invoice->tenancyAgreement->tenant->name ?? '');
@@ -48,14 +46,14 @@ class InvoicePaymentResource extends Resource
             Forms\Components\TextInput::make('total_due')->label('Total Due')->reactive()->hiddenOn(['edit', 'view'])->disabled(),
             Forms\Components\TextInput::make('property_name')
                 ->label('Property Name')
-                ->afterStateHydrated(function (Get $get, Set $set) {
+                ->afterStateHydrated(function ($get, $set) {
                     $invoice = Invoice::find($get('invoice_id'));
                     $set('property_name', $invoice->tenancyAgreement->unit->property->name ?? '');
                 })
                 ->reactive()->disabled(),
             Forms\Components\TextInput::make('tenant_name')
                 ->label('Tenant Name')
-                ->afterStateHydrated(function (Get $get, Set $set) {
+                ->afterStateHydrated(function ($get, $set) {
                     $invoice = Invoice::find($get('invoice_id'));
                     $set('tenant_name', $invoice->tenancyAgreement->tenant->name ?? '');
                 })
@@ -65,7 +63,7 @@ class InvoicePaymentResource extends Resource
             Forms\Components\TextInput::make('amount')
                 ->required()
                 ->numeric()
-                ->rule(fn (Get $get) => new CheckPaidAmountDoesNotExceedAmountDue($get('invoice_id'))),
+                ->rule(fn ($get) => new CheckPaidAmountDoesNotExceedAmountDue($get('invoice_id'))),
             Forms\Components\TextInput::make('paid_by')->required()->maxLength(255),
             Forms\Components\TextInput::make('payment_reference')->maxLength(255),
             Forms\Components\Textarea::make('description')->label('Additional Information')->maxLength(65535)->columnSpanFull(),

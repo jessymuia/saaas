@@ -61,7 +61,7 @@ class PropertyResource extends Resource
                 ->label('Property Type')
                 ->required()
                 ->reactive()
-                ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set) {
+                ->afterStateUpdated(function ($get, $set) {
                     $propertyTypeId = $get('property_type_id');
                     \Log::info("property_type_id: $propertyTypeId");
                     $isVatable = $propertyTypeId == 1;
