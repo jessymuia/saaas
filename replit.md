@@ -57,7 +57,7 @@ From `.env.example`, these optional integrations need secrets:
 1. `InitializeTenancyBySlug` or `InitializeTenancyBySubdomain` (selected by `APP_TENANT_MODE`)
 2. `CheckTenantSuspended` — 403 if tenant is suspended
 3. `SetRlsSessionVariables` — sets PostgreSQL RLS session variables
-4. `TenantBrandingMiddleware` — applies per-tenant colour from `data.primary_color`
+4. `TenantBrandingMiddleware` — applies per-tenant colour from `$tenant->primary_color`
 5. `CheckSubscriptionExpiry` — redirects to billing if subscription expired + grace period over
 
 **Bootstrappers** (`config/tenancy.php`):
@@ -65,9 +65,18 @@ From `.env.example`, these optional integrations need secrets:
 - `FilesystemTenancyBootstrapper` — scopes storage paths per tenant
 - `QueueTenancyBootstrapper` — carries tenant context into queued jobs
 
-**Per-tenant branding** stored in `saas_clients.data` JSON column:
-- `data.primary_color` — hex colour for Filament panel accent
-- `data.logo_path` — storage path to tenant logo
+**Per-tenant branding** stored in `saas_clients.data` JSON column via stancl/tenancy VirtualColumn:
+- `$tenant->primary_color` — hex colour for Filament panel accent (VirtualColumn attribute)
+- `$tenant->logo_path` — storage path to tenant logo (VirtualColumn attribute)
+- Access via accessors `getPrimaryColorAttribute()`/`getLogoPathAttribute()` which read `$this->attributes[key]` directly
+- VirtualColumn decodes `data` JSON → individual attributes on model retrieval, re-encodes on save
+- Filament form uses `ColorPicker::make('primary_color')` / `FileUpload::make('logo_path')` (not `data.primary_color`)
+
+**CRITICAL — FilesystemTenancyBootstrapper note**:
+- `asset_helper_tenancy = false` MUST remain in `config/tenancy.php`
+- Without this, the `asset()` helper gets `/tenantXXX/` prepended to all URLs when tenant context is active
+- Filament JS/CSS served from `/tenantXXX/js/filament/...` paths return 404, breaking Alpine.js entirely
+- Symptoms: `$store.sidebar` undefined, `filamentDropdown` not defined, sidebar/dropdowns/modals broken
 
 ## Key Features Implemented
 
