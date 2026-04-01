@@ -44,9 +44,12 @@ class CompanyDetailsResource extends Resource
             Forms\Components\TextInput::make('mpesa_paybill_number')->numeric()->required()->maxLength(20),
             Forms\Components\FileUpload::make('logo')
                 ->label('Company logo')
+                ->disk('public')
                 ->directory('logos')
                 ->preserveFilenames()
                 ->acceptedFileTypes(['image/jpeg', 'image/jpg', 'image/png'])
+                ->image()
+                ->imagePreviewHeight('120')
                 ->required(),
         ]);
     }
