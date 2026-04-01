@@ -58,7 +58,19 @@ for WORKER_HOST in "${WORKER1_HOST}" "${WORKER2_HOST}"; do
 done
 
 # -----------------------------------------------------------------------------
-# 4. Show cluster node status
+# 4. Store worker credentials so coordinator can authenticate for DDL propagation
+# -----------------------------------------------------------------------------
+echo "--> Configuring inter-node authentication (pg_dist_authinfo)..."
+$PSQL -c "
+  INSERT INTO pg_dist_authinfo (nodeid, rolename, authinfo)
+  SELECT nodeid, 'postgres', 'password=${DB_PASSWORD}'
+  FROM pg_dist_node
+  WHERE isactive = true
+  ON CONFLICT (nodeid, rolename) DO UPDATE SET authinfo = EXCLUDED.authinfo;
+" 2>/dev/null || echo "    (pg_dist_authinfo not available — skipping)"
+
+# -----------------------------------------------------------------------------
+# 5. Show cluster node status
 # -----------------------------------------------------------------------------
 echo "--> Citus node status:"
 $PSQL -c "SELECT nodeid, nodename, nodeport, isactive FROM pg_dist_node;" 2>/dev/null || echo "    (pg_dist_node not available yet)"

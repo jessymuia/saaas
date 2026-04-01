@@ -165,6 +165,7 @@ services:
       POSTGRES_DB: propman
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
       - citus_worker1_data:/var/lib/postgresql/data
     depends_on:
@@ -186,6 +187,7 @@ services:
       POSTGRES_DB: propman
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
       - citus_worker2_data:/var/lib/postgresql/data
     depends_on:
