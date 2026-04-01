@@ -14,7 +14,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Contracts\View\View;
@@ -62,9 +62,9 @@ class AgeingSummaryReport extends Page implements HasForms
         return parent::render();
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        $form->schema([
+        return $schema->schema([
             Select::make('property')
                 ->label('Property')
                 ->options(Property::query()->select(['id', 'name'])->get()->pluck('name', 'id')),
@@ -78,8 +78,6 @@ class AgeingSummaryReport extends Page implements HasForms
                     Checkbox::make('over_ninety_days')->label('Over 90 days'),
                 ]),
         ])->statePath('generateReportForm');
-
-        return $form;
     }
 
     public function submitGenerateReportForm()

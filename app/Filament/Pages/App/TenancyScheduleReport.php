@@ -11,7 +11,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Pages\Page;
@@ -63,9 +63,9 @@ class TenancyScheduleReport extends Page implements HasForms
         return parent::render();
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        $form->schema([
+        return $schema->schema([
             Select::make('unit_id')
                 ->label('Unit')
                 ->options(Unit::all()->pluck('name', 'id'))
@@ -113,8 +113,6 @@ class TenancyScheduleReport extends Page implements HasForms
                 })
                 ->afterOrEqual(today()),
         ]);
-
-        return $form;
     }
 
     public function submitGenerateReportForm()
