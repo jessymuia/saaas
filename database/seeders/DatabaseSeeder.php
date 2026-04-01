@@ -51,7 +51,7 @@ class DatabaseSeeder extends Seeder
 
         // 3. Sequential Seeders
         $this->call([
-            Systemadminaccountseeder::class,
+            SystemAdminAccountSeeder::class,
             SystemAdminSeeder::class,
             PermissionsSeeder::class,
             UserSeeder::class,
