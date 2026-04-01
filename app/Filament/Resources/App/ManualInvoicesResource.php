@@ -11,6 +11,7 @@ use App\Models\PropertyOwners;
 use App\Models\Tenant;
 use App\Utils\AppUtils;
 use App\Utils\AppPermissions;
+use Filament\Notifications\Notification;
 use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Forms;
 use Filament\Resources\Resource;
@@ -129,6 +130,28 @@ class ManualInvoicesResource extends Resource
             ->actions([
                 \Filament\Actions\ViewAction::make(),
                 \Filament\Actions\EditAction::make(),
+                \Filament\Actions\Action::make('generateDocument')
+                    ->label('Generate Document')
+                    ->icon('heroicon-m-document-arrow-down')
+                    ->requiresConfirmation()
+                    ->visible(fn () => auth()->user()->can(AppPermissions::GENERATE_MANUAL_INVOICE_PDF))
+                    ->action(function (ManualInvoices $record) {
+                        $result = $record->generateDocument($record);
+                        if ($result) {
+                            Notification::make()->title('Invoice document generated successfully')->success()->send();
+                        } else {
+                            Notification::make()->title('Failed to generate invoice document. Ensure the invoice has items and a valid recipient.')->danger()->send();
+                        }
+                    }),
+                \Filament\Actions\Action::make('sendInvoice')
+                    ->label('Send Invoice')
+                    ->icon('heroicon-m-envelope')
+                    ->requiresConfirmation()
+                    ->disabled(fn (ManualInvoices $record) => !$record->is_generated)
+                    ->action(function (ManualInvoices $record) {
+                        $record->sendInvoiceMail();
+                        Notification::make()->title('Invoice queued for sending')->success()->send();
+                    }),
                 \Filament\Actions\Action::make('view_document')
                     ->label('View Invoice')
                     ->icon('heroicon-o-document-text')

@@ -9,6 +9,7 @@ use App\Models\Invoice;
 use App\Utils\AppPermissions;
 use App\Utils\AppUtils;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Filament\Notifications\Notification;
 use App\Models\CompanyDetails;
 use Filament\Forms;
 use Filament\Resources\Resource;
@@ -73,6 +74,28 @@ class InvoiceResource extends Resource
             ->actions([
                 \Filament\Actions\ViewAction::make(),
                 \Filament\Actions\EditAction::make(),
+                \Filament\Actions\Action::make('generateDocument')
+                    ->label('Generate Document')
+                    ->icon('heroicon-m-document-arrow-down')
+                    ->requiresConfirmation()
+                    ->visible(fn () => auth()->user()->can(AppPermissions::GENERATE_INVOICE_PDF))
+                    ->action(function (Invoice $invoice) {
+                        $result = $invoice->generateDocument($invoice);
+                        if ($result) {
+                            Notification::make()->title('Invoice document generated successfully')->success()->send();
+                        } else {
+                            Notification::make()->title('Failed to generate invoice document. Ensure the invoice has tenancy bills and property payment details.')->danger()->send();
+                        }
+                    }),
+                \Filament\Actions\Action::make('sendInvoice')
+                    ->label('Send Invoice')
+                    ->icon('heroicon-m-envelope')
+                    ->requiresConfirmation()
+                    ->disabled(fn (Invoice $invoice) => !$invoice->is_generated)
+                    ->action(function (Invoice $invoice) {
+                        $invoice->sendInvoiceMail();
+                        Notification::make()->title('Invoice queued for sending')->success()->send();
+                    }),
                 \Filament\Actions\Action::make('View Invoice')
                     ->icon('heroicon-o-document-text')
                     ->disabled(fn (Invoice $invoice) => !$invoice->is_generated)

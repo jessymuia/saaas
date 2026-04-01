@@ -5,7 +5,9 @@ namespace App\Filament\Resources\App;
 use App\Filament\Exports\CreditNoteExporter;
 use App\Filament\Resources\App\CreditNoteResource\Pages;
 use App\Models\CreditNote;
+use App\Utils\AppPermissions;
 use App\Utils\AppUtils;
+use Filament\Notifications\Notification;
 use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Forms;
 use Filament\Resources\Resource;
@@ -78,6 +80,32 @@ class CreditNoteResource extends Resource
             ->actions([
                 \Filament\Actions\ViewAction::make(),
                 \Filament\Actions\EditAction::make(),
+                \Filament\Actions\Action::make('generateDocument')
+                    ->label('Generate Document')
+                    ->icon('heroicon-m-document-arrow-down')
+                    ->requiresConfirmation()
+                    ->visible(fn () => auth()->user()->can(AppPermissions::GENERATE_PDF_FILE_PERMISSION))
+                    ->action(function (CreditNote $record) {
+                        $result = $record->generateCreditNoteDocument();
+                        if ($result) {
+                            Notification::make()->title('Credit note document generated successfully')->success()->send();
+                        } else {
+                            Notification::make()->title('Failed to generate document. Ensure the credit note is linked to an invoice with a tenancy agreement.')->danger()->send();
+                        }
+                    }),
+                \Filament\Actions\Action::make('mailCreditNote')
+                    ->label('Mail Credit Note')
+                    ->icon('heroicon-m-envelope')
+                    ->requiresConfirmation()
+                    ->disabled(fn (CreditNote $record) => !$record->is_document_generated)
+                    ->action(function (CreditNote $record) {
+                        $result = $record->sendCreditNoteEmail();
+                        if ($result) {
+                            Notification::make()->title('Credit note emailed successfully')->success()->send();
+                        } else {
+                            Notification::make()->title('Failed to email credit note. Check logs for details.')->danger()->send();
+                        }
+                    }),
                 \Filament\Actions\Action::make('view_document')
                     ->label('View Document')
                     ->icon('heroicon-o-document-text')

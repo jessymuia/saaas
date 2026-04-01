@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Pages;
+namespace App\Filament\Pages\App;
 
 use App\Models\CreditNote;
 use App\Models\Invoice;
@@ -67,7 +67,6 @@ class AgeingSummaryReport extends Page implements HasForms
         $form->schema([
             Select::make('property')
                 ->label('Property')
-                // BelongsToTenant scope is active — only current tenant's properties
                 ->options(Property::query()->select(['id', 'name'])->get()->pluck('name', 'id')),
             Section::make('ranges-section')
                 ->heading('Ranges *')
@@ -139,7 +138,6 @@ class AgeingSummaryReport extends Page implements HasForms
             $property = Property::find($this->property);
             $outputText .= $this->generatePropertyHeader($property->name);
 
-            // Phase 12: tenancyAgreements() is scoped via BelongsToTenant on related models
             foreach ($property->tenancyAgreements()->get() as $tenancyAgreement) {
                 $row = $this->generateSingleStatementOfAccount($tenancyAgreement);
                 $outputText .= $row['rowContentHtml'];
@@ -164,7 +162,6 @@ class AgeingSummaryReport extends Page implements HasForms
                 = $allPropertySixtyOneToNinetyPastDueTotal
                 = $allPropertyOverNinetyPastDueTotal = 0;
 
-            // BelongsToTenant scope ensures only current tenant's properties are returned
             foreach (Property::all() as $property) {
                 $propertyTotalDue = $propertyOneToThirtyPastDue = $propertyThirtyOneToSixtyPastDue
                     = $propertySixtyOneToNinetyPastDue = $propertyOverNinetyPastDue = 0;
@@ -293,12 +290,10 @@ class AgeingSummaryReport extends Page implements HasForms
 
     private function generateSingleStatementOfAccount($tenancyAgreement): array
     {
-        // Phase 12: Invoice query — BelongsToTenant scope provides saas_client_id filter.
-        // Additional explicit saas_client_id guard added for Citus safety.
         $saasClientId = tenant()?->id;
 
         $invoices = Invoice::query()
-            ->where('saas_client_id', $saasClientId)          // Phase 12: explicit guard
+            ->where('saas_client_id', $saasClientId)
             ->where('tenancy_agreement_id', $tenancyAgreement->id)
             ->orderBy('created_at', 'desc')
             ->select(['id', 'invoice_for_month as transaction_date', 'invoice_due_date'])
@@ -306,11 +301,8 @@ class AgeingSummaryReport extends Page implements HasForms
             ->get(['amount', 'unpaid_amount'])
             ->toArray();
 
-        // Phase 12: ManualInvoices — was using tenant_id (the property tenant/lessee),
-        // which is unrelated to saas_client_id. BelongsToTenant scope handles isolation.
-        // Added explicit saas_client_id guard for Citus co-location safety.
         $manualInvoices = ManualInvoices::query()
-            ->where('saas_client_id', $saasClientId)          // Phase 12: explicit guard
+            ->where('saas_client_id', $saasClientId)
             ->where('tenant_id', $tenancyAgreement->tenant_id)
             ->orderBy('created_at', 'desc')
             ->select(['id', 'invoice_for_month as transaction_date', 'invoice_due_date'])
@@ -321,9 +313,8 @@ class AgeingSummaryReport extends Page implements HasForms
         $invoices = array_merge($invoices, $manualInvoices);
         usort($invoices, fn($a, $b) => $a['transaction_date'] <=> $b['transaction_date']);
 
-        // Phase 12: CreditNote — scoped via whereHas which traverses BelongsToTenant-scoped Invoice
         $creditNotes = CreditNote::query()
-            ->where('saas_client_id', $saasClientId)          // Phase 12: explicit guard
+            ->where('saas_client_id', $saasClientId)
             ->orderBy('created_at', 'desc')
             ->whereHas('invoice', function ($query) use ($tenancyAgreement) {
                 $query->where('tenancy_agreement_id', $tenancyAgreement->id);
@@ -333,10 +324,8 @@ class AgeingSummaryReport extends Page implements HasForms
             ->get()
             ->toArray();
 
-        // Phase 12: InvoicePayment — was only filtering by tenant_id (lessee), no saas_client_id.
-        // Added explicit saas_client_id guard to prevent cross-tenant data leakage.
         $invoicePayments = InvoicePayment::query()
-            ->where('saas_client_id', $saasClientId)          // Phase 12: explicit guard
+            ->where('saas_client_id', $saasClientId)
             ->where('tenant_id', $tenancyAgreement->tenant_id)
             ->orderBy('payment_date', 'desc')
             ->select(['id', 'payment_date as transaction_date', 'amount'])
@@ -369,7 +358,7 @@ class AgeingSummaryReport extends Page implements HasForms
             }
         }
 
-        $totalDue       = 0;
+        $totalDue        = 0;
         $pendingPayments = [];
 
         $rowContentHtml = '<tr style="height: 30px;">
