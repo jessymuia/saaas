@@ -26,6 +26,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->passwordReset()
             /*
             |------------------------------------------------------------------
             | Phase 9.2 — Central platform uses SystemAdmin guard (local table)
@@ -33,6 +34,7 @@ class AdminPanelProvider extends PanelProvider
             |------------------------------------------------------------------
             */
             ->authGuard('system_admin')
+            ->authPasswordBroker('system_admins')
             ->colors([
                 'primary' => Color::Indigo,
             ])

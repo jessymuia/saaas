@@ -31,6 +31,8 @@ class AppPanelProvider extends PanelProvider
             ->id('app')
             ->path('app')
             ->login()
+            ->passwordReset()
+            ->authPasswordBroker('users')
             ->authGuard('web')
             ->tenant(SaasClient::class, slugAttribute: 'slug')
             ->tenantRoutePrefix('app')
