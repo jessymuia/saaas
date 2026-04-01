@@ -9,6 +9,7 @@ use App\Utils\AppUtils;
 use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Forms;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Actions\ExportAction;
@@ -32,7 +33,7 @@ class AppRoleResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->schema([
-            Forms\Components\Section::make('User Permissions')
+            Section::make('User Permissions')
                 ->columns(1)
                 ->schema([
                     Forms\Components\TextInput::make('name')->label('Name')->required()->maxLength(255),

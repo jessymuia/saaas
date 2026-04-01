@@ -10,7 +10,7 @@ use App\Models\Property;
 use App\Utils\AppPermissions;
 use Carbon\Carbon;
 use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Components\Section;
+use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;

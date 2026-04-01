@@ -1,0 +1,474 @@
+Stack
+Context
+Debug
+Flare
+Share
+Share with Flare
+Docs
+
+Stack
+
+Context
+
+Debug
+Create Share
+Docs
+
+Ignition Settings
+Docs
+Editor
+
+PhpStorm
+Theme
+auto
+Save settings
+Settings will be saved locally in ~/.ignition.json.
+
+Class "Filament\Forms\Components\Section" not found
+Error
+PHP 8.2.23
+12.56.0
+Class "Filament\Forms\Components\Section" not found
+
+Expand vendor frames
+App
+ \ 
+Filament
+ \ 
+Resources
+ \ 
+App
+ \ 
+AppRoleResource
+ 
+: 35
+form
+30 vendor frames
+App
+ \ 
+Http
+ \ 
+Middleware
+ \ 
+SetRlsSessionVariables
+ 
+: 50
+handle
+1 vendor frame
+App
+ \ 
+Http
+ \ 
+Middleware
+ \ 
+CheckTenantSuspended
+ 
+: 16
+handle
+1 vendor frame
+App
+ \ 
+Http
+ \ 
+Middleware
+ \ 
+InitializeTenancyBySlug
+ 
+: 53
+handle
+54 vendor frames
+public
+ / 
+index
+.php
+ 
+: 51
+require_once
+1 vendor frame
+app
+ / 
+Filament
+ / 
+Resources
+ / 
+App
+ / 
+AppRoleResource
+.php
+ 
+: 35
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class AppRoleResource extends Resource
+
+{
+
+    protected static ?string $model = AppRole::class;
+
+    protected static bool $isScopedToTenant = false;
+
+
+
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-user-plus';
+
+
+
+    protected static UnitEnum|string|null $navigationGroup = 'Access Management';
+
+
+
+    // Roles are not distributed with saas_client_id in current schema.
+
+    // If AppRole is scoped per tenant in future, add getEloquentQuery() here.
+
+
+
+    public static function form(Schema $schema): Schema
+
+    {
+
+        return $schema->schema([
+
+            Forms\Components\Section::make('User Permissions')
+
+                ->columns(1)
+
+                ->schema([
+
+                    Forms\Components\TextInput::make('name')->label('Name')->required()->maxLength(255),
+
+                    Forms\Components\CheckboxList::make('permissions')
+
+                        ->label('Permissions')
+
+                        ->columns(4)
+
+                        ->relationship('permissions', 'name')
+
+                        ->options(\Spatie\Permission\Models\Permission::all()->pluck('name', 'id')),
+
+                ]),
+
+        ]);
+
+    }
+
+
+
+    public static function table(Table $table): Table
+
+    {
+App
+Routing
+Request
+Browser
+Headers
+Body
+Context
+User
+Git
+Versions
+App
+Routing
+Controller
+App\Filament\Resources\App\AppRoleResource\Pages\ViewAppRole
+
+Route name
+filament.app.resources.app.app-roles.view
+
+Middleware
+panel:app
+
+Illuminate\Cookie\Middleware\EncryptCookies
+
+Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse
+
+Illuminate\Session\Middleware\StartSession
+
+Illuminate\Session\Middleware\AuthenticateSession
+
+Illuminate\View\Middleware\ShareErrorsFromSession
+
+Illuminate\Foundation\Http\Middleware\VerifyCsrfToken
+
+Illuminate\Routing\Middleware\SubstituteBindings
+
+Filament\Http\Middleware\DisableBladeIconComponents
+
+Filament\Http\Middleware\DispatchServingFilamentEvent
+
+App\Http\Middleware\InitializeTenancyBySlug
+
+App\Http\Middleware\CheckTenantSuspended
+
+App\Http\Middleware\SetRlsSessionVariables
+
+Filament\Http\Middleware\Authenticate
+
+Filament\Http\Middleware\IdentifyTenant
+
+Request
+https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev/app/app/jesphertech/app/app-roles/1
+GET
+curl "https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev/app/app/jesphertech/app/app-roles/1" \
+   -X GET \
+   -H 'host: 966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev' \
+   -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36' \
+   -H 'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7' \
+   -H 'accept-encoding: identity, gzip, deflate, br, zstd' \
+   -H 'accept-language: en-GB,en-US;q=0.9,en;q=0.8' \
+   -H 'cookie: <CENSORED>' \
+   -H 'referer: https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev:8000/app/app/jesphertech/app/app-roles' \
+   -H 'sec-ch-ua: "Chromium";v="146", "Not-A.Brand";v="24", "Google Chrome";v="146"' \
+   -H 'sec-ch-ua-mobile: ?0' \
+   -H 'sec-ch-ua-platform: "Windows"' \
+   -H 'sec-fetch-dest: iframe' \
+   -H 'sec-fetch-mode: navigate' \
+   -H 'sec-fetch-site: same-origin' \
+   -H 'sec-fetch-storage-access: active' \
+   -H 'sec-fetch-user: ?1' \
+   -H 'traceparent: 00-69cd3e7e000000006f4a5269f912becd-7e9467cf9fc780ca-00' \
+   -H 'tracestate: dd=s:0;p:7e9467cf9fc780ca;t.tid:69cd3e7e00000000' \
+   -H 'upgrade-insecure-requests: 1' \
+   -H 'x-datadog-parent-id: 9121029286768640202' \
+   -H 'x-datadog-tags: _dd.p.tid=69cd3e7e00000000' \
+   -H 'x-datadog-trace-id: 8019312701590388429' \
+   -H 'x-forwarded-for: 154.159.252.194, 10.81.8.102' \
+   -H 'x-forwarded-proto: https';
+
+
+Browser
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+
+Headers
+host
+966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev
+
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+
+accept
+text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+
+accept-encoding
+identity, gzip, deflate, br, zstd
+
+accept-language
+en-GB,en-US;q=0.9,en;q=0.8
+
+cookie
+<CENSORED>
+
+referer
+https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev:8000/app/app/jesphertech/app/app-roles
+
+sec-ch-ua
+"Chromium";v="146", "Not-A.Brand";v="24", "Google Chrome";v="146"
+
+sec-ch-ua-mobile
+?0
+
+sec-ch-ua-platform
+"Windows"
+
+sec-fetch-dest
+iframe
+
+sec-fetch-mode
+navigate
+
+sec-fetch-site
+same-origin
+
+sec-fetch-storage-access
+active
+
+sec-fetch-user
+?1
+
+traceparent
+00-69cd3e7e000000006f4a5269f912becd-7e9467cf9fc780ca-00
+
+tracestate
+dd=s:0;p:7e9467cf9fc780ca;t.tid:69cd3e7e00000000
+
+upgrade-insecure-requests
+1
+
+x-datadog-parent-id
+9121029286768640202
+
+x-datadog-tags
+_dd.p.tid=69cd3e7e00000000
+
+x-datadog-trace-id
+8019312701590388429
+
+x-forwarded-for
+154.159.252.194, 10.81.8.102
+
+x-forwarded-proto
+https
+
+Body
+[]
+
+Context
+User
+jessymuiaa@gmail.com
+Jessy Muia Christopher
+
+jessymuiaa@gmail.com
+
+{
+    "id": 6,
+    "saas_client_id": "c9abd4c0-2db0-457c-a041-a0519f78818b",
+    "name": "Jessy Muia Christopher",
+    "email": "jessymuiaa@gmail.com",
+    "phone_number": "0710318560",
+    "email_verified_at": null,
+    "created_at": "2026-03-31T21:57:04.000000Z",
+    "updated_at": "2026-04-01T15:38:14.000000Z",
+    "deleted_at": null,
+    "created_by": null,
+    "updated_by": 6,
+    "deleted_by": null,
+    "permissions": [],
+    "roles": [
+        {
+            "id": 1,
+            "name": "admin",
+            "guard_name": "web",
+            "created_at": "2026-03-31T21:31:47.000000Z",
+            "updated_at": "2026-03-31T21:31:47.000000Z",
+            "pivot": {
+                "model_type": "App\\Models\\User",
+                "model_id": 6,
+                "role_id": 1
+            }
+        }
+    ]
+}
+
+
+Git
+Fix asset loading errors by removing unnecessary file system bootstrapping
+b7a505dcbd1206b0bf58a937e35f28c7cfb61d11
+
+View commit b7a505d
+Versions
+Php Version
+8.2.23
+
+Laravel Version
+12.56.0
+
+Laravel Locale
+en
+
+Laravel Config Cached
+false
+App Debug
+true
+App Env
+local
+
+
+9
+Queries
+18:49:18
+10.3ms
+pgsql
+select * from "users" where "users"."id" = 6 and "users"."deleted_at" is null limit 1
+
+
+1 query parameter
+18:49:18
+0.88ms
+pgsql
+select * from "saas_clients" where "slug" = jesphertech limit 1
+
+
+1 query parameter
+18:49:18
+0.33ms
+pgsql
+SET app.saas_client_id = 'c9abd4c0-2db0-457c-a041-a0519f78818b'
+
+
+18:49:18
+0.33ms
+pgsql
+SET app.saas_client_id = 'c9abd4c0-2db0-457c-a041-a0519f78818b'
+
+
+18:49:18
+0.34ms
+pgsql
+RESET app.bypass_rls
+
+
+18:49:18
+0.53ms
+pgsql
+select * from "saas_clients" where "slug" = jesphertech limit 1
+
+
+1 query parameter
+18:49:18
+0.75ms
+pgsql
+select * from "roles" where "id" = 1 limit 1
+
+
+1 query parameter
+18:49:18
+1.28ms
+pgsql
+select "permissions".*, "model_has_permissions"."model_id" as "pivot_model_id", "model_has_permissions"."permission_id" as "pivot_permission_id", "model_has_permissions"."model_type" as "pivot_model_type" from "permissions" inner join "model_has_permissions" on "permissions"."id" = "model_has_permissions"."permission_id" where "model_has_permissions"."model_id" in (6) and "model_has_permissions"."model_type" = App\Models\User
+
+
+1 query parameter
+18:49:18
+0.93ms
+pgsql
+select "roles".*, "model_has_roles"."model_id" as "pivot_model_id", "model_has_roles"."role_id" as "pivot_role_id", "model_has_roles"."model_type" as "pivot_model_type" from "roles" inner join "model_has_roles" on "roles"."id" = "model_has_roles"."role_id" where "model_has_roles"."model_id" in (6) and "model_has_roles"."model_type" = App\Models\User
+
+
+1 query parameter
+·
+Source
+·
+Docs
+·
+Laravel
+Ignition is built byFlare, the Laravel error reporting service.
