@@ -16,6 +16,7 @@ use UnitEnum;
 class UnitResource extends Resource
 {
     protected static ?string $model = Unit::class;
+    protected static bool $isScopedToTenant = false;
 
     protected static UnitEnum|string|null $navigationGroup = 'Tenancy Management';
 

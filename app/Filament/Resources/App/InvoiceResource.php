@@ -24,6 +24,7 @@ use UnitEnum;
 class InvoiceResource extends Resource
 {
     protected static ?string $model = Invoice::class;
+    protected static bool $isScopedToTenant = false;
 
     protected static UnitEnum|string|null $navigationGroup = 'Accounting';
 

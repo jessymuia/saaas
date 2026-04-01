@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Builder;
 class CompanyDetailsResource extends Resource
 {
     protected static ?string $model = CompanyDetails::class;
+    protected static bool $isScopedToTenant = false;
 
     protected static string|\UnitEnum|null $navigationGroup = AppUtils::ACCESS_MANAGEMENT_NAVIGATION_GROUP;
 

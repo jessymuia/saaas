@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Builder;
 class SentEmailsResource extends Resource
 {
     protected static ?string $model = SentEmails::class;
+    protected static bool $isScopedToTenant = false;
 
     protected static string|\UnitEnum|null $navigationGroup = AppUtils::TENANCY_MANAGEMENT_NAVIGATION_GROUP;
 

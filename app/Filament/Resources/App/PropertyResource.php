@@ -23,6 +23,7 @@ use UnitEnum;
 class PropertyResource extends Resource
 {
     protected static ?string $model = Property::class;
+    protected static bool $isScopedToTenant = false;
 
     protected static UnitEnum|string|null $navigationGroup = 'Tenancy Management';
 

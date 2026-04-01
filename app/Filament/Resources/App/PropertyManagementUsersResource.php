@@ -16,6 +16,7 @@ use UnitEnum;
 class PropertyManagementUsersResource extends Resource
 {
     protected static ?string $model = PropertyManagementUsers::class;
+    protected static bool $isScopedToTenant = false;
 
     protected static string|\UnitEnum|null $navigationGroup = AppUtils::ACCESS_MANAGEMENT_NAVIGATION_GROUP;
 

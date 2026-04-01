@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Builder;
 class VacationNoticeResource extends Resource
 {
     protected static ?string $model = VacationNotices::class;
+    protected static bool $isScopedToTenant = false;
 
     protected static string|\UnitEnum|null $navigationGroup = AppUtils::TENANCY_MANAGEMENT_NAVIGATION_GROUP;
 

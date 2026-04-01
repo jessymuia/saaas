@@ -1,0 +1,439 @@
+The model [App\Models\CompanyDetails] does not have a relationship named [saasClient]. You can change the relationship being used by passing it to the [ownershipRelationship] argument of the [tenant()] method in configuration. You can change the relationship being used per-resource by setting it as the [$tenantOwnershipRelationshipName] static property on the [App\Filament\Resources\App\CompanyDetailsResource] resource class.
+
+Expand vendor frames
+46 vendor frames
+App
+ \ 
+Http
+ \ 
+Middleware
+ \ 
+SetRlsSessionVariables
+ 
+: 50
+handle
+1 vendor frame
+App
+ \ 
+Http
+ \ 
+Middleware
+ \ 
+CheckTenantSuspended
+ 
+: 16
+handle
+1 vendor frame
+App
+ \ 
+Http
+ \ 
+Middleware
+ \ 
+InitializeTenancyBySlug
+ 
+: 53
+handle
+54 vendor frames
+public
+ / 
+index
+.php
+ 
+: 51
+require_once
+1 vendor frame
+app
+ / 
+Http
+ / 
+Middleware
+ / 
+SetRlsSessionVariables
+.php
+ 
+: 50
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        if (tenancy()->initialized) {
+
+            // ── Tenant context ────────────────────────────────────────
+
+            // Set the saas_client_id so RLS tenant_isolation policies pass.
+
+            $saasClientId = tenant()?->id;
+
+
+
+            if ($saasClientId) {
+
+                DB::statement("SET app.saas_client_id = '{$saasClientId}'");
+
+                // Ensure bypass is not accidentally set in tenant context
+
+                DB::statement("RESET app.bypass_rls");
+
+            }
+
+        } else {
+
+            // ── Central / super admin context ─────────────────────────
+
+            // No tenant initialized = central panel = super admin.
+
+            // Set bypass_rls so super_admin_bypass policies pass.
+
+            DB::statement("SET app.bypass_rls = 'true'");
+
+            // Ensure no stale tenant id leaks into central context
+
+            DB::statement("RESET app.saas_client_id");
+
+        }
+
+
+
+        $response = $next($request);
+
+
+
+        // ── Cleanup after request ─────────────────────────────────────
+
+        // Reset session variables so they don't bleed into pooled connections
+
+        // (important when using PgBouncer in transaction mode).
+
+        DB::statement("RESET app.saas_client_id");
+
+        DB::statement("RESET app.bypass_rls");
+
+
+
+        return $response;
+
+    }
+
+}
+arguments
+$arg0:Illuminate\Http\Request
+GET https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev/app/app/jesphertech/app/company-details
+
+App
+Routing
+Views
+Request
+Browser
+Headers
+Body
+Context
+User
+Git
+Versions
+App
+Routing
+Controller
+App\Filament\Resources\App\CompanyDetailsResource\Pages\ListCompanies
+
+Route name
+filament.app.resources.app.company-details.index
+
+Middleware
+panel:app
+
+Illuminate\Cookie\Middleware\EncryptCookies
+
+Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse
+
+Illuminate\Session\Middleware\StartSession
+
+Illuminate\Session\Middleware\AuthenticateSession
+
+Illuminate\View\Middleware\ShareErrorsFromSession
+
+Illuminate\Foundation\Http\Middleware\VerifyCsrfToken
+
+Illuminate\Routing\Middleware\SubstituteBindings
+
+Filament\Http\Middleware\DisableBladeIconComponents
+
+Filament\Http\Middleware\DispatchServingFilamentEvent
+
+App\Http\Middleware\InitializeTenancyBySlug
+
+App\Http\Middleware\CheckTenantSuspended
+
+App\Http\Middleware\SetRlsSessionVariables
+
+Filament\Http\Middleware\Authenticate
+
+Filament\Http\Middleware\IdentifyTenant
+
+Views
+View
+vendor
+ / 
+filament
+ / 
+tables
+ / 
+resources
+ / 
+views
+ / 
+index.blade
+.php
+Data
+Request
+https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev/app/app/jesphertech/app/company-details
+GET
+curl "https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev/app/app/jesphertech/app/company-details" \
+   -X GET \
+   -H 'host: 966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev' \
+   -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36' \
+   -H 'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7' \
+   -H 'accept-encoding: gzip, deflate, br, zstd' \
+   -H 'accept-language: en-GB,en-US;q=0.9,en;q=0.8' \
+   -H 'cookie: <CENSORED>' \
+   -H 'referer: https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev:8000/app/app/jesphertech/app/audits' \
+   -H 'sec-ch-ua: "Chromium";v="146", "Not-A.Brand";v="24", "Google Chrome";v="146"' \
+   -H 'sec-ch-ua-mobile: ?0' \
+   -H 'sec-ch-ua-platform: "Windows"' \
+   -H 'sec-fetch-dest: document' \
+   -H 'sec-fetch-mode: navigate' \
+   -H 'sec-fetch-site: same-origin' \
+   -H 'sec-fetch-user: ?1' \
+   -H 'traceparent: 00-69cd4111000000001a4097131f90692e-5340f79ed5226302-00' \
+   -H 'tracestate: dd=s:0;p:5340f79ed5226302;t.tid:69cd411100000000' \
+   -H 'upgrade-insecure-requests: 1' \
+   -H 'x-datadog-parent-id: 5999066965210194690' \
+   -H 'x-datadog-tags: _dd.p.tid=69cd411100000000' \
+   -H 'x-datadog-trace-id: 1891677951885338926' \
+   -H 'x-forwarded-for: 154.159.252.194, 10.81.14.113' \
+   -H 'x-forwarded-proto: https';
+
+
+Browser
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+
+Headers
+host
+966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev
+
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+
+accept
+text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+
+accept-encoding
+gzip, deflate, br, zstd
+
+accept-language
+en-GB,en-US;q=0.9,en;q=0.8
+
+cookie
+<CENSORED>
+
+referer
+https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev:8000/app/app/jesphertech/app/audits
+
+sec-ch-ua
+"Chromium";v="146", "Not-A.Brand";v="24", "Google Chrome";v="146"
+
+sec-ch-ua-mobile
+?0
+
+sec-ch-ua-platform
+"Windows"
+
+sec-fetch-dest
+document
+
+sec-fetch-mode
+navigate
+
+sec-fetch-site
+same-origin
+
+sec-fetch-user
+?1
+
+traceparent
+00-69cd4111000000001a4097131f90692e-5340f79ed5226302-00
+
+tracestate
+dd=s:0;p:5340f79ed5226302;t.tid:69cd411100000000
+
+upgrade-insecure-requests
+1
+
+x-datadog-parent-id
+5999066965210194690
+
+x-datadog-tags
+_dd.p.tid=69cd411100000000
+
+x-datadog-trace-id
+1891677951885338926
+
+x-forwarded-for
+154.159.252.194, 10.81.14.113
+
+x-forwarded-proto
+https
+
+Body
+[]
+
+Context
+User
+jessymuiaa@gmail.com
+Jessy Muia Christopher
+
+jessymuiaa@gmail.com
+
+{
+    "id": 6,
+    "saas_client_id": "c9abd4c0-2db0-457c-a041-a0519f78818b",
+    "name": "Jessy Muia Christopher",
+    "email": "jessymuiaa@gmail.com",
+    "phone_number": "0710318560",
+    "email_verified_at": null,
+    "created_at": "2026-03-31T21:57:04.000000Z",
+    "updated_at": "2026-04-01T15:38:14.000000Z",
+    "deleted_at": null,
+    "created_by": null,
+    "updated_by": 6,
+    "deleted_by": null,
+    "permissions": [],
+    "roles": [
+        {
+            "id": 1,
+            "name": "admin",
+            "guard_name": "web",
+            "created_at": "2026-03-31T21:31:47.000000Z",
+            "updated_at": "2026-03-31T21:31:47.000000Z",
+            "pivot": {
+                "model_type": "App\\Models\\User",
+                "model_id": 6,
+                "role_id": 1
+            }
+        }
+    ]
+}
+
+
+Git
+Make audit logs more readable in the table view
+dd53abae71bcc002bd9628a12cc1eb56e6c081d5
+
+View commit dd53aba
+Versions
+Php Version
+8.2.23
+
+Laravel Version
+12.56.0
+
+Laravel Locale
+en
+
+Laravel Config Cached
+false
+App Debug
+true
+App Env
+local
+
+
+8
+Queries
+19:00:17
+10.14ms
+pgsql
+select * from "users" where "users"."id" = 6 and "users"."deleted_at" is null limit 1
+
+
+1 query parameter
+19:00:17
+0.84ms
+pgsql
+select * from "saas_clients" where "slug" = jesphertech limit 1
+
+
+1 query parameter
+19:00:17
+0.47ms
+pgsql
+SET app.saas_client_id = 'c9abd4c0-2db0-457c-a041-a0519f78818b'
+
+
+19:00:17
+0.3ms
+pgsql
+SET app.saas_client_id = 'c9abd4c0-2db0-457c-a041-a0519f78818b'
+
+
+19:00:17
+0.3ms
+pgsql
+RESET app.bypass_rls
+
+
+19:00:17
+0.43ms
+pgsql
+select * from "saas_clients" where "slug" = jesphertech limit 1
+
+
+1 query parameter
+19:00:17
+0.99ms
+pgsql
+select "permissions".*, "model_has_permissions"."model_id" as "pivot_model_id", "model_has_permissions"."permission_id" as "pivot_permission_id", "model_has_permissions"."model_type" as "pivot_model_type" from "permissions" inner join "model_has_permissions" on "permissions"."id" = "model_has_permissions"."permission_id" where "model_has_permissions"."model_id" in (6) and "model_has_permissions"."model_type" = App\Models\User
+
+
+1 query parameter
+19:00:17
+0.75ms
+pgsql
+select "roles".*, "model_has_roles"."model_id" as "pivot_model_id", "model_has_roles"."role_id" as "pivot_role_id", "model_has_roles"."model_type" as "pivot_model_type" from "roles" inner join "model_has_roles" on "roles"."id" = "model_has_roles"."role_id" where "model_has_roles"."model_id" in (6) and "model_has_roles"."model_type" = App\Models\User
+
+
+1 query parameter
+·
+Source
+·
+Docs
+·
+Laravel
+Ignition is built byFlare, the Laravel error reporting service.

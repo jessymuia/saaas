@@ -21,6 +21,7 @@ use UnitEnum;
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
+    protected static bool $isScopedToTenant = false;
 
     protected static UnitEnum|string|null $navigationGroup = 'Access Management';
 

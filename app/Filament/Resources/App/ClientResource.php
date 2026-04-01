@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Builder;
 class ClientResource extends Resource
 {
     protected static ?string $model = Client::class;
+    protected static bool $isScopedToTenant = false;
 
     protected static string|\UnitEnum|null $navigationGroup = AppUtils::ACCOUNTING_NAVIGATION_GROUP;
 

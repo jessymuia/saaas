@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Builder;
 class InvoicePaymentResource extends Resource
 {
     protected static ?string $model = InvoicePayment::class;
+    protected static bool $isScopedToTenant = false;
 
     protected static string|\UnitEnum|null $navigationGroup = AppUtils::ACCOUNTING_NAVIGATION_GROUP;
 

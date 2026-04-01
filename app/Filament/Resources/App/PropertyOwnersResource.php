@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Builder;
 class PropertyOwnersResource extends Resource
 {
     protected static ?string $model = PropertyOwners::class;
+    protected static bool $isScopedToTenant = false;
 
     protected static string|\UnitEnum|null $navigationGroup = AppUtils::ACCOUNTING_NAVIGATION_GROUP;
 
