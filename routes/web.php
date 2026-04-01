@@ -25,6 +25,18 @@ Route::get('/tenancy-debug', function () {
 Route::get('/preview/company-logo/{companyLogo}', [App\Http\Controllers\DocumentsController::class, 'previewCompanyLogo'])
     ->name('preview.company-logo');
 
+Route::get('/preview/invoice/{invoice}', [App\Http\Controllers\DocumentsController::class, 'previewInvoice'])
+    ->name('preview.invoice');
+
+Route::get('/preview/manual-invoice/{manualInvoice}', [App\Http\Controllers\DocumentsController::class, 'previewManualInvoice'])
+    ->name('preview.manual-invoice');
+
+Route::get('/preview/credit-note/{creditNote}', [App\Http\Controllers\DocumentsController::class, 'previewCreditNote'])
+    ->name('preview.credit-note');
+
+Route::get('/preview/receipt/{receipt}', [App\Http\Controllers\DocumentsController::class, 'previewReceipt'])
+    ->name('preview.receipt');
+
 Route::get('/admin/impersonate/{userId}/{slug}', function (Request $request, string $userId, string $slug) {
     abort_unless($request->hasValidSignature(), 403);
 
