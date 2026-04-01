@@ -1,0 +1,310 @@
+Symfony
+ \ 
+Component
+ \ 
+Routing
+ \ 
+Exception
+ \ 
+RouteNotFoundException
+PHP 8.2.23
+12.56.0
+Route [login] not defined.
+
+Expand vendor frames
+3 vendor frames
+.unknown
+0
+call_user_func
+47 vendor frames
+public
+ / 
+index
+.php
+ 
+: 51
+require_once
+1 vendor frame
+public
+ / 
+index
+.php
+ 
+: 51
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|
+
+| Composer provides a convenient, automatically generated class loader for
+
+| this application. We just need to utilize it! We'll simply require it
+
+| into the script here so we don't need to manually load our classes.
+
+|
+
+*/
+
+
+
+require __DIR__.'/../vendor/autoload.php';
+
+
+
+/*
+
+|--------------------------------------------------------------------------
+
+| Run The Application
+
+|--------------------------------------------------------------------------
+
+|
+
+| Once we have the application, we can handle the incoming request using
+
+| the application's HTTP kernel. Then, we will send the response back
+
+| to this client's browser, allowing them to enjoy our application.
+
+|
+
+*/
+
+
+
+$app = require_once __DIR__.'/../bootstrap/app.php';
+
+
+
+$kernel = $app->make(Kernel::class);
+
+
+
+$response = $kernel->handle(
+
+    $request = Request::capture()
+
+)->send();
+
+
+
+$kernel->terminate($request, $response);
+
+arguments
+$request:Illuminate\Http\Request
+GET https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev/admin
+
+App
+Routing
+Request
+Browser
+Headers
+Body
+Context
+Git
+Versions
+App
+Routing
+Controller
+Filament\Http\Controllers\RedirectToHomeController
+
+Route name
+filament.admin.home
+
+Middleware
+panel:admin
+
+Illuminate\Cookie\Middleware\EncryptCookies
+
+Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse
+
+Illuminate\Session\Middleware\StartSession
+
+Illuminate\Session\Middleware\AuthenticateSession
+
+Illuminate\View\Middleware\ShareErrorsFromSession
+
+Illuminate\Foundation\Http\Middleware\VerifyCsrfToken
+
+Illuminate\Routing\Middleware\SubstituteBindings
+
+Filament\Http\Middleware\DisableBladeIconComponents
+
+Filament\Http\Middleware\DispatchServingFilamentEvent
+
+Filament\Http\Middleware\Authenticate
+
+App\Http\Middleware\SetRlsSessionVariables
+
+Request
+https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev/admin
+GET
+curl "https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev/admin" \
+   -X GET \
+   -H 'host: 966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev' \
+   -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36' \
+   -H 'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7' \
+   -H 'accept-encoding: identity, gzip, deflate, br, zstd' \
+   -H 'accept-language: en-GB,en-US;q=0.9,en;q=0.8' \
+   -H 'cookie: <CENSORED>' \
+   -H 'referer: https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev:8000/__replco/workspace_iframe.html?initialPath=%2Fadmin%2Flogin&id=default-start-application' \
+   -H 'sec-ch-ua: "Chromium";v="146", "Not-A.Brand";v="24", "Google Chrome";v="146"' \
+   -H 'sec-ch-ua-mobile: ?0' \
+   -H 'sec-ch-ua-platform: "Windows"' \
+   -H 'sec-fetch-dest: iframe' \
+   -H 'sec-fetch-mode: navigate' \
+   -H 'sec-fetch-site: same-origin' \
+   -H 'sec-fetch-storage-access: active' \
+   -H 'traceparent: 00-69cd6ed4000000002eb897aeeab5908a-1767632e4f1a67e5-00' \
+   -H 'tracestate: dd=s:0;p:1767632e4f1a67e5;t.tid:69cd6ed400000000' \
+   -H 'upgrade-insecure-requests: 1' \
+   -H 'x-datadog-parent-id: 1686425636020316133' \
+   -H 'x-datadog-tags: _dd.p.tid=69cd6ed400000000' \
+   -H 'x-datadog-trace-id: 3366607498977317002' \
+   -H 'x-forwarded-for: 154.159.252.194, 10.81.6.25' \
+   -H 'x-forwarded-proto: https';
+
+
+Browser
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+
+Headers
+host
+966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev
+
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+
+accept
+text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+
+accept-encoding
+identity, gzip, deflate, br, zstd
+
+accept-language
+en-GB,en-US;q=0.9,en;q=0.8
+
+cookie
+<CENSORED>
+
+referer
+https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev:8000/__replco/workspace_iframe.html?initialPath=%2Fadmin%2Flogin&id=default-start-application
+
+sec-ch-ua
+"Chromium";v="146", "Not-A.Brand";v="24", "Google Chrome";v="146"
+
+sec-ch-ua-mobile
+?0
+
+sec-ch-ua-platform
+"Windows"
+
+sec-fetch-dest
+iframe
+
+sec-fetch-mode
+navigate
+
+sec-fetch-site
+same-origin
+
+sec-fetch-storage-access
+active
+
+traceparent
+00-69cd6ed4000000002eb897aeeab5908a-1767632e4f1a67e5-00
+
+tracestate
+dd=s:0;p:1767632e4f1a67e5;t.tid:69cd6ed400000000
+
+upgrade-insecure-requests
+1
+
+x-datadog-parent-id
+1686425636020316133
+
+x-datadog-tags
+_dd.p.tid=69cd6ed400000000
+
+x-datadog-trace-id
+3366607498977317002
+
+x-forwarded-for
+154.159.252.194, 10.81.6.25
+
+x-forwarded-proto
+https
+
+Body
+[]
+
+Context
+Git
+Fix typo in database seeder to allow admin account creation
+39802387c52f7c7acbca959e80ce22135c3abdae
+
+View commit 3980238
+Versions
+Php Version
+8.2.23
+
+Laravel Version
+12.56.0
+
+Laravel Locale
+en
+
+Laravel Config Cached
+false
+App Debug
+true
+App Env
+local
+
+
+1
+Queries
+22:15:32
+9.31ms
+pgsql
+select * from "system_admins" where "id" = 1 limit 1
+
+
+1 query parameter
+·
+Source
+·
+Docs
+·
+Laravel
+Ignition is built byFlare, the Laravel error reporting service.
