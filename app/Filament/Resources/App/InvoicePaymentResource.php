@@ -113,8 +113,15 @@ class InvoicePaymentResource extends Resource
                     ->icon('heroicon-o-envelope')
                     ->disabled(fn (InvoicePayment $record) => !$record->document_generated_at || $record->document_sent_at)
                     ->action(fn (InvoicePayment $record) => $record->sendInvoicePaymentEmail()),
+                \Filament\Actions\DeleteAction::make()
+                    ->requiresConfirmation()
+                    ->visible(fn (InvoicePayment $record) => !$record->is_confirmed),
             ])
-            ->bulkActions([]);
+            ->bulkActions([
+                \Filament\Actions\BulkActionGroup::make([
+                    \Filament\Actions\DeleteBulkAction::make()->requiresConfirmation(),
+                ]),
+            ]);
     }
 
     public static function getRelations(): array

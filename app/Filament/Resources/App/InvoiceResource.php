@@ -72,6 +72,7 @@ class InvoiceResource extends Resource
             ->filters([])
             ->actions([
                 \Filament\Actions\ViewAction::make(),
+                \Filament\Actions\EditAction::make(),
                 \Filament\Actions\Action::make('View Invoice')
                     ->icon('heroicon-o-document-text')
                     ->disabled(fn (Invoice $invoice) => !$invoice->is_generated)
@@ -90,7 +91,10 @@ class InvoiceResource extends Resource
                 ExportAction::make()->exporter(InvoiceExporter::class)->formats([ExportFormat::Csv])->fileDisk('local'),
             ])
             ->bulkActions([
-                ExportBulkAction::make()->exporter(InvoiceExporter::class)->formats([ExportFormat::Csv])->fileDisk('local'),
+                \Filament\Actions\BulkActionGroup::make([
+                    \Filament\Actions\DeleteBulkAction::make()->requiresConfirmation(),
+                    ExportBulkAction::make()->exporter(InvoiceExporter::class)->formats([ExportFormat::Csv])->fileDisk('local'),
+                ]),
             ]);
     }
 

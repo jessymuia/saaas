@@ -75,6 +75,7 @@ class UnitResource extends Resource
             ->actions([
                 \Filament\Actions\ViewAction::make(),
                 \Filament\Actions\EditAction::make(),
+                \Filament\Actions\DeleteAction::make()->requiresConfirmation(),
             ])
             ->bulkActions([
                 \Filament\Actions\BulkActionGroup::make([

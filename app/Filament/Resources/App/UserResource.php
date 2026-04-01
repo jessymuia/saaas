@@ -81,6 +81,7 @@ class UserResource extends Resource
             ->actions([
                 \Filament\Actions\ViewAction::make(),
                 \Filament\Actions\EditAction::make(),
+                \Filament\Actions\DeleteAction::make()->requiresConfirmation(),
             ])
             ->headerActions([
                 ExportAction::make()->exporter(UserExporter::class)->formats([ExportFormat::Csv])->fileDisk('local'),

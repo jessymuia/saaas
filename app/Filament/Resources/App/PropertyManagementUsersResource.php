@@ -60,6 +60,7 @@ class PropertyManagementUsersResource extends Resource
             ->filters([])
             ->defaultSort('property.name')
             ->actions([
+                \Filament\Actions\ViewAction::make(),
                 \Filament\Actions\EditAction::make(),
                 \Filament\Actions\DeleteAction::make()->requiresConfirmation(),
             ])

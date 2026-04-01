@@ -138,6 +138,7 @@ class PropertyResource extends Resource
             ->actions([
                 \Filament\Actions\ViewAction::make(),
                 \Filament\Actions\EditAction::make(),
+                \Filament\Actions\DeleteAction::make()->requiresConfirmation(),
 
                 \Filament\Actions\Action::make('generatePdf')
                     ->label('Generate PDF')

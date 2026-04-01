@@ -63,7 +63,9 @@ class ClientResource extends Resource
             ])
             ->filters([])
             ->actions([
+                \Filament\Actions\ViewAction::make(),
                 \Filament\Actions\EditAction::make(),
+                \Filament\Actions\DeleteAction::make()->requiresConfirmation(),
                 \Filament\Actions\Action::make('pdf')
                     ->label('Generate PDF')
                     ->icon('heroicon-m-document-arrow-down')

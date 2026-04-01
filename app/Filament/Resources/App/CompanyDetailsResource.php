@@ -81,6 +81,7 @@ class CompanyDetailsResource extends Resource
             ->actions([
                 \Filament\Actions\ViewAction::make(),
                 \Filament\Actions\EditAction::make(),
+                \Filament\Actions\DeleteAction::make()->requiresConfirmation(),
                 \Filament\Actions\Action::make('View logo')
                     ->url(function (CompanyDetails $company) {
                         $fileName = str_replace('logos/', '', $company->logo);
