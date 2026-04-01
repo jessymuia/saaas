@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Stancl\Tenancy\Bootstrappers\CacheTenancyBootstrapper;
+use Stancl\Tenancy\Bootstrappers\FilesystemTenancyBootstrapper;
 use Stancl\Tenancy\Bootstrappers\QueueTenancyBootstrapper;
 
 return [
@@ -41,6 +42,7 @@ return [
     */
     'bootstrappers' => [
         CacheTenancyBootstrapper::class,
+        FilesystemTenancyBootstrapper::class,
         QueueTenancyBootstrapper::class,
     ],
 

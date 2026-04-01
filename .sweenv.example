@@ -54,6 +54,11 @@ CENTRAL_DOMAINS=localhost,127.0.0.1
 # Example: if set to .yourdomain.com, tenants get slug.yourdomain.com
 TENANT_DOMAIN_SUFFIX=.yourdomain.com
 
+# Tenant identification mode:
+#   slug      — path-based:      /app/app/{slug}         ← default (Replit / dev)
+#   subdomain — subdomain-based: {slug}.yoursaas.com     ← production (needs wildcard DNS)
+APP_TENANT_MODE=slug
+
 # ─── M-Pesa Integration (Safaricom Daraja API) ───────────────────────────────
 # Register at https://developer.safaricom.co.ke/
 # Use sandbox values for local testing, production values for live.

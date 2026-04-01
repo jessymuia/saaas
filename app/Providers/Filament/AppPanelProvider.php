@@ -16,9 +16,12 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use App\Http\Middleware\InitializeTenancyBySlug;
+use App\Http\Middleware\CheckSubscriptionExpiry;
 use App\Http\Middleware\CheckTenantSuspended;
-use \App\Http\Middleware\SetRlsSessionVariables;
+use App\Http\Middleware\InitializeTenancyBySlug;
+use App\Http\Middleware\InitializeTenancyBySubdomain;
+use App\Http\Middleware\SetRlsSessionVariables;
+use App\Http\Middleware\TenantBrandingMiddleware;
 
 
 class AppPanelProvider extends PanelProvider
@@ -55,9 +58,15 @@ class AppPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
-                InitializeTenancyBySlug::class,
+                // Switch between subdomain (production) and slug (dev/Replit) identification
+                // via APP_TENANT_MODE=subdomain|slug in .env
+                ...(config('app.tenant_mode', 'slug') === 'subdomain'
+                    ? [InitializeTenancyBySubdomain::class]
+                    : [InitializeTenancyBySlug::class]),
                 CheckTenantSuspended::class,
                 SetRlsSessionVariables::class,
+                TenantBrandingMiddleware::class,
+                CheckSubscriptionExpiry::class,
             ])
             ->authMiddleware([
                 Authenticate::class,

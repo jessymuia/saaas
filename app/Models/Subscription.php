@@ -215,6 +215,28 @@ class Subscription extends Model
     }
 
     // ────────────────────────────────────────────────────────────
+    // AMOUNT HELPERS
+    // ────────────────────────────────────────────────────────────
+
+    /**
+     * Return the billable amount for this subscription based on billing_cycle.
+     */
+    public function getAmount(): float
+    {
+        $plan = $this->plan;
+
+        if (!$plan) {
+            return 0.0;
+        }
+
+        return match ($this->billing_cycle) {
+            'annual'    => (float) $plan->price_yearly,
+            'quarterly' => (float) ($plan->price_yearly / 4),
+            default     => (float) $plan->price_monthly,
+        };
+    }
+
+    // ────────────────────────────────────────────────────────────
     // SCOPES
     // ────────────────────────────────────────────────────────────
 

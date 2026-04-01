@@ -53,6 +53,32 @@ class SaasClient extends Tenant
         ];
     }
 
+    // ── Branding helpers (stored in JSON data column) ─────────────────────────
+
+    public function getPrimaryColorAttribute(): ?string
+    {
+        return $this->data['primary_color'] ?? null;
+    }
+
+    public function setPrimaryColorAttribute(string $value): void
+    {
+        $data = $this->data ?? [];
+        $data['primary_color'] = $value;
+        $this->data = $data;
+    }
+
+    public function getLogoPathAttribute(): ?string
+    {
+        return $this->data['logo_path'] ?? null;
+    }
+
+    public function setLogoPathAttribute(?string $value): void
+    {
+        $data = $this->data ?? [];
+        $data['logo_path'] = $value;
+        $this->data = $data;
+    }
+
     protected function casts(): array
     {
         return [

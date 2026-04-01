@@ -8,6 +8,8 @@ use Illuminate\Support\Str;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\ColorPicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Utilities\Set;
@@ -74,6 +76,28 @@ class SaasClientResource extends Resource
                         ->required(),
                 ])
                 ->columns(2),
+
+            Section::make('Branding')
+                ->description('Customise the look of this tenant\'s panel. Stored in the tenant data column — no migration required.')
+                ->schema([
+                    ColorPicker::make('data.primary_color')
+                        ->label('Primary Colour')
+                        ->helperText('Hex colour used as the panel accent. Leave blank to use the default green.'),
+
+                    FileUpload::make('data.logo_path')
+                        ->label('Logo')
+                        ->image()
+                        ->imageResizeMode('cover')
+                        ->imageCropAspectRatio('3:1')
+                        ->imageResizeTargetWidth('600')
+                        ->imageResizeTargetHeight('200')
+                        ->disk('public')
+                        ->directory('tenant-logos')
+                        ->visibility('public')
+                        ->helperText('Recommended: 600×200 px PNG with transparent background.'),
+                ])
+                ->columns(2)
+                ->collapsed(),
         ]);
     }
 

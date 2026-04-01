@@ -45,6 +45,36 @@ The original project used **Citus PostgreSQL** (distributed database) with Docke
 From `.env.example`, these optional integrations need secrets:
 - `MPESA_CONSUMER_KEY`, `MPESA_CONSUMER_SECRET`, `MPESA_SHORTCODE`, `MPESA_PASSKEY` — M-Pesa payments
 - `MAIL_*` — SMTP mail configuration (currently uses log driver)
+- `APP_TENANT_MODE=slug` (default) or `subdomain` — switches tenant identification mode
+
+## Multi-Tenancy Architecture
+
+**Tenant identification modes** (set in `.env`):
+- `APP_TENANT_MODE=slug` — path-based `/app/app/{slug}` (Replit / dev default)
+- `APP_TENANT_MODE=subdomain` — subdomain-based `{slug}.yoursaas.com` (production, needs wildcard DNS)
+
+**Middleware stack per-request** (AppPanelProvider):
+1. `InitializeTenancyBySlug` or `InitializeTenancyBySubdomain` (selected by `APP_TENANT_MODE`)
+2. `CheckTenantSuspended` — 403 if tenant is suspended
+3. `SetRlsSessionVariables` — sets PostgreSQL RLS session variables
+4. `TenantBrandingMiddleware` — applies per-tenant colour from `data.primary_color`
+5. `CheckSubscriptionExpiry` — redirects to billing if subscription expired + grace period over
+
+**Bootstrappers** (`config/tenancy.php`):
+- `CacheTenancyBootstrapper` — prefixes cache keys per tenant
+- `FilesystemTenancyBootstrapper` — scopes storage paths per tenant
+- `QueueTenancyBootstrapper` — carries tenant context into queued jobs
+
+**Per-tenant branding** stored in `saas_clients.data` JSON column:
+- `data.primary_color` — hex colour for Filament panel accent
+- `data.logo_path` — storage path to tenant logo
+
+## Key Features Implemented
+
+- **Billing page** (`/app/app/{slug}/billing-page`) — shows subscription status, plan limits, usage metrics, and M-Pesa STK-push payment button
+- **Welcome email queue** — `SendTenantWelcomeDetails` implements `ShouldQueue` on the `emails` queue with 3 retries
+- **`Subscription::getAmount()`** — returns monthly / quarterly / annual price from the plan
+- **Branding section** in admin `SaasClientResource` form — colour picker + logo upload (collapsed by default)
 
 ## Development Commands
 

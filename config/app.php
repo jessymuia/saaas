@@ -61,6 +61,15 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Tenant Identification Mode
+    |--------------------------------------------------------------------------
+    | slug      (default) — path-based:      /app/app/{slug}        (Replit/dev)
+    | subdomain           — subdomain-based: {slug}.yoursaas.com    (production)
+    */
+    'tenant_mode' => env('APP_TENANT_MODE', 'slug'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |
