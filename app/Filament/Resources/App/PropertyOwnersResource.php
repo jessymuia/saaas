@@ -168,6 +168,7 @@ class PropertyOwnersResource extends Resource
         return [
             'index'  => Pages\ListPropertyOwners::route('/'),
             'create' => Pages\CreatePropertyOwners::route('/create'),
+            'view'   => Pages\ViewPropertyOwners::route('/{record}'),
             'edit'   => Pages\EditPropertyOwners::route('/{record}/edit'),
         ];
     }

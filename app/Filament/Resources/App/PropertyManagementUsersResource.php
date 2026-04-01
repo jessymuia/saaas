@@ -74,6 +74,7 @@ class PropertyManagementUsersResource extends Resource
         return [
             'index'  => Pages\ListPropertyManagementUsers::route('/'),
             'create' => Pages\CreatePropertyManagementUsers::route('/create'),
+            'view'   => Pages\ViewPropertyManagementUsers::route('/{record}'),
             'edit'   => Pages\EditPropertyManagementUsers::route('/{record}/edit'),
         ];
     }
