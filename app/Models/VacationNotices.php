@@ -28,7 +28,7 @@ class VacationNotices extends DefaultAppModel
         'saas_client_id',
     ];
 
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
         static::addGlobalScope(new TenantScope);

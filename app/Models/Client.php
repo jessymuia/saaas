@@ -33,7 +33,7 @@ class Client extends DefaultAppModel
         return $this->hasMany(ManualInvoices::class);
     }
 
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 

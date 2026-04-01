@@ -46,7 +46,7 @@ class InvoicePayment extends DefaultAppModel
         'saas_client_id',           // ← Added (required by the fillable test)
     ];
 
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 

@@ -30,7 +30,7 @@ class Property extends DefaultAppModel
         'deleted_by'
     ];
 
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 

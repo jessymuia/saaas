@@ -28,7 +28,7 @@ class PropertyPaymentDetails extends DefaultAppModel
         
     ];
 
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
         static::addGlobalScope(new TenantScope);

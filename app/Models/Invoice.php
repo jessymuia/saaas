@@ -69,7 +69,7 @@ class Invoice extends DefaultAppModel
         return $this->hasMany(TenancyBill::class, 'invoice_id', 'id');
     }
 
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 

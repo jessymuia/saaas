@@ -39,7 +39,7 @@ class EscalationRatesAndAmountsLogs extends DefaultAppModel
         return $this->belongsTo(Property::class);
     }
 
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 

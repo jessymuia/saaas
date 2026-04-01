@@ -18,7 +18,7 @@ class RefPropertyType extends DefaultAppModel
         'deleted_at'
     ];
 
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 

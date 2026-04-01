@@ -42,7 +42,7 @@ class ManualInvoices extends DefaultAppModel
 
     protected $appends = ['amount', 'unpaid_amount'];
 
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 

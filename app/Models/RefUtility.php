@@ -21,7 +21,7 @@ class RefUtility extends DefaultAppModel
         'archive'
     ];
 
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 

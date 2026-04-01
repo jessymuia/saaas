@@ -60,7 +60,7 @@ class MeterReading extends DefaultAppModel
         'reading_date' => 'date'
     ];
 
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
         static::addGlobalScope(new TenantScope);

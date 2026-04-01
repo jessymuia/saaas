@@ -30,7 +30,7 @@ class EmailAttachments extends DefaultAppModel
         return $this->belongsTo(SentEmails::class);
     }
 
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 
