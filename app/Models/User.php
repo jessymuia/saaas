@@ -62,7 +62,7 @@ class User extends Authenticatable implements \OwenIt\Auditing\Contracts\Auditab
         }
     }
 
-    protected static function boot(): void: void
+    protected static function boot(): void
     {
         parent::boot();
 

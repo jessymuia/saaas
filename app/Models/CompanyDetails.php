@@ -28,7 +28,7 @@ class CompanyDetails extends DefaultAppModel
         'deleted_at'
     ];
 
-    protected static function boot(): void: void
+    protected static function boot(): void
     {
         parent::boot();
 

@@ -1,0 +1,342 @@
+Stack
+Context
+Flare
+Share
+Share with Flare
+Docs
+
+Stack
+
+Context
+
+Debug
+Create Share
+Docs
+
+Ignition Settings
+Docs
+Editor
+
+PhpStorm
+Theme
+auto
+Save settings
+Settings will be saved locally in ~/.ignition.json.
+
+syntax error, unexpected token ":", expecting ";" or "{"
+ParseError
+PHP 8.2.23
+12.56.0
+syntax error, unexpected token ":", expecting ";" or "{"
+
+Expand vendor frames
+app
+ / 
+Models
+ / 
+User
+.php
+ 
+: 65
+Composer\Autoload\{closure}
+1 vendor frame
+App
+ \ 
+Auth
+ \ 
+TenantUserProvider
+ 
+: 26
+retrieveById
+46 vendor frames
+public
+ / 
+index
+.php
+ 
+: 51
+require_once
+1 vendor frame
+app
+ / 
+Models
+ / 
+User
+.php
+ 
+: 65
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    {
+
+        $data['saas_client_id'] = $this->saas_client_id ?? 0;
+
+        return $data;
+
+    }
+
+
+
+    /**
+
+     * Only set saas_client_id on creation — Citus partition key cannot change.
+
+     */
+
+    public function setSaasClientIdAttribute($value): void
+
+    {
+
+        if (! $this->exists) {
+
+            $this->attributes['saas_client_id'] = $value;
+
+        }
+
+    }
+
+
+
+    protected static function boot(): void: void
+
+    {
+
+        parent::boot();
+
+
+
+        static::updating(function ($model) {
+
+            if (auth()->check()) {
+
+                $model->updated_by = auth()->id();
+
+            }
+
+            // Do NOT unset saas_client_id here — it breaks the Citus partition key
+
+            // on UPDATE queries. Instead, handle this at the DB level via your
+
+            // migration (the column should be immutable by design).
+
+        });
+
+    }
+
+
+
+    public function canAccessPanel(Panel $panel): bool
+App
+Routing
+Request
+Browser
+Headers
+Body
+Context
+Git
+Versions
+App
+Routing
+Controller
+App\Filament\Resources\App\CompanyDetailsResource\Pages\ListCompanies
+
+Route name
+filament.app.resources.app.company-details.index
+
+Middleware
+panel:app
+
+Illuminate\Cookie\Middleware\EncryptCookies
+
+Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse
+
+Illuminate\Session\Middleware\StartSession
+
+Illuminate\Session\Middleware\AuthenticateSession
+
+Illuminate\View\Middleware\ShareErrorsFromSession
+
+Illuminate\Foundation\Http\Middleware\VerifyCsrfToken
+
+Illuminate\Routing\Middleware\SubstituteBindings
+
+Filament\Http\Middleware\DisableBladeIconComponents
+
+Filament\Http\Middleware\DispatchServingFilamentEvent
+
+App\Http\Middleware\InitializeTenancyBySlug
+
+App\Http\Middleware\CheckTenantSuspended
+
+App\Http\Middleware\SetRlsSessionVariables
+
+Filament\Http\Middleware\Authenticate
+
+Filament\Http\Middleware\IdentifyTenant
+
+Request
+https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev/app/app/jesphertech/app/company-details
+GET
+curl "https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev/app/app/jesphertech/app/company-details" \
+   -X GET \
+   -H 'host: 966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev' \
+   -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36' \
+   -H 'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7' \
+   -H 'accept-encoding: gzip, deflate, br, zstd' \
+   -H 'accept-language: en-GB,en-US;q=0.9,en;q=0.8' \
+   -H 'cache-control: max-age=0' \
+   -H 'cookie: <CENSORED>' \
+   -H 'referer: https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev:8000/app/app/jesphertech/app/audits' \
+   -H 'sec-ch-ua: "Chromium";v="146", "Not-A.Brand";v="24", "Google Chrome";v="146"' \
+   -H 'sec-ch-ua-mobile: ?0' \
+   -H 'sec-ch-ua-platform: "Windows"' \
+   -H 'sec-fetch-dest: document' \
+   -H 'sec-fetch-mode: navigate' \
+   -H 'sec-fetch-site: same-origin' \
+   -H 'sec-fetch-user: ?1' \
+   -H 'traceparent: 00-69cd4c430000000008ce1f40c721a965-7a2e5d19ed8d48c1-00' \
+   -H 'tracestate: dd=s:0;p:7a2e5d19ed8d48c1;t.tid:69cd4c4300000000' \
+   -H 'upgrade-insecure-requests: 1' \
+   -H 'x-datadog-parent-id: 8804076687496923329' \
+   -H 'x-datadog-tags: _dd.p.tid=69cd4c4300000000' \
+   -H 'x-datadog-trace-id: 634478960585058661' \
+   -H 'x-forwarded-for: 154.159.252.194, 10.81.12.188' \
+   -H 'x-forwarded-proto: https';
+
+
+Browser
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+
+Headers
+host
+966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev
+
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+
+accept
+text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+
+accept-encoding
+gzip, deflate, br, zstd
+
+accept-language
+en-GB,en-US;q=0.9,en;q=0.8
+
+cache-control
+max-age=0
+
+cookie
+<CENSORED>
+
+referer
+https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev:8000/app/app/jesphertech/app/audits
+
+sec-ch-ua
+"Chromium";v="146", "Not-A.Brand";v="24", "Google Chrome";v="146"
+
+sec-ch-ua-mobile
+?0
+
+sec-ch-ua-platform
+"Windows"
+
+sec-fetch-dest
+document
+
+sec-fetch-mode
+navigate
+
+sec-fetch-site
+same-origin
+
+sec-fetch-user
+?1
+
+traceparent
+00-69cd4c430000000008ce1f40c721a965-7a2e5d19ed8d48c1-00
+
+tracestate
+dd=s:0;p:7a2e5d19ed8d48c1;t.tid:69cd4c4300000000
+
+upgrade-insecure-requests
+1
+
+x-datadog-parent-id
+8804076687496923329
+
+x-datadog-tags
+_dd.p.tid=69cd4c4300000000
+
+x-datadog-trace-id
+634478960585058661
+
+x-forwarded-for
+154.159.252.194, 10.81.12.188
+
+x-forwarded-proto
+https
+
+Body
+[]
+
+Context
+Git
+Ensure all model boot methods correctly declare void return type
+d033bc192102047df673a25e01a0213a85d19442
+
+View commit d033bc1
+Versions
+Php Version
+8.2.23
+
+Laravel Version
+12.56.0
+
+Laravel Locale
+en
+
+Laravel Config Cached
+false
+App Debug
+true
+App Env
+local
+
+·
+Source
+·
+Docs
+·
+Laravel
+Ignition is built byFlare, the Laravel error reporting service.
+
