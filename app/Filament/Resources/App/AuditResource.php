@@ -63,8 +63,14 @@ class AuditResource extends Resource
                 Tables\Columns\TextColumn::make('event')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('auditable_type')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('auditable_id')->sortable()->searchable(),
-                Tables\Columns\JsonColumn::make('old_values'),
-                Tables\Columns\JsonColumn::make('new_values'),
+                Tables\Columns\TextColumn::make('old_values')
+                    ->formatStateUsing(fn ($state) => $state ? json_encode($state) : '—')
+                    ->limit(60)
+                    ->tooltip(fn ($state) => $state ? json_encode($state, JSON_PRETTY_PRINT) : null),
+                Tables\Columns\TextColumn::make('new_values')
+                    ->formatStateUsing(fn ($state) => $state ? json_encode($state) : '—')
+                    ->limit(60)
+                    ->tooltip(fn ($state) => $state ? json_encode($state, JSON_PRETTY_PRINT) : null),
                 Tables\Columns\TextColumn::make('url')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('ip_address')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('user_agent')->sortable()->searchable(),
