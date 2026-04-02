@@ -5,7 +5,7 @@ cd /var/www/html
 
 if [ ! -f vendor/autoload.php ]; then
     echo "[entrypoint] vendor/ not found — running composer install..."
-    composer install --no-interaction --prefer-dist --optimize-autoloader
+    COMPOSER_PROCESS_TIMEOUT=0 composer install --no-interaction --prefer-dist --optimize-autoloader
 fi
 
 echo "[entrypoint] Publishing Filament assets..."
