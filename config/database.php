@@ -78,6 +78,23 @@ return [
             'sslmode' => 'prefer',
         ],
 
+        'pgsql_testing' => (function () {
+            $parsed = parse_url((string) env('DATABASE_URL', ''));
+            return [
+                'driver'         => 'pgsql',
+                'host'           => $parsed['host'] ?? env('DB_HOST', '127.0.0.1'),
+                'port'           => $parsed['port'] ?? env('DB_PORT', 5432),
+                'database'       => 'propmanage_test',
+                'username'       => isset($parsed['user']) ? urldecode($parsed['user']) : env('DB_USERNAME', 'runner'),
+                'password'       => isset($parsed['pass']) ? urldecode($parsed['pass']) : env('DB_PASSWORD', ''),
+                'charset'        => 'utf8',
+                'prefix'         => '',
+                'prefix_indexes' => true,
+                'search_path'    => 'public',
+                'sslmode'        => 'prefer',
+            ];
+        })(),
+
         'sqlsrv' => [
             'driver' => 'sqlsrv',
             'url' => env('DATABASE_URL'),

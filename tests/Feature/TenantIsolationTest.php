@@ -46,8 +46,9 @@ class TenantIsolationTest extends TestCase
         ]);
 
         // Force fresh DB connection for tenant2 context
-        DB::purge('pgsql');
-        DB::reconnect('pgsql');
+        $conn = config('database.default');
+        DB::purge($conn);
+        DB::reconnect($conn);
         DB::statement("SET app.current_tenant_id = '{$tenant2->id}'");
 
         $this->assertEquals(0, Property::count());
