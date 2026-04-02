@@ -1,0 +1,99 @@
+C:\Users\jessy\Desktop\kakaye\saaas>docker compose logs -f php
+php-1  | [entrypoint] Publishing Filament assets...
+php-1  | [entrypoint] Starting php-fpm...
+php-1  | [02-Apr-2026 07:00:21] NOTICE: fpm is running, pid 1
+php-1  | [02-Apr-2026 07:00:21] NOTICE: ready to handle connections
+php-1  | 172.18.0.11 -  02/Apr/2026:07:07:17 +0000 "GET /index.php" 200
+php-1  | 172.18.0.11 -  02/Apr/2026:07:10:02 +0000 "GET /index.php" 200
+php-1  | 172.18.0.2 -  02/Apr/2026:07:11:40 +0000 "GET /index.php" 200
+php-1  | 172.18.0.2 -  02/Apr/2026:07:12:25 +0000 "GET /index.php" 200
+php-1  | 172.18.0.2 -  02/Apr/2026:07:12:29 +0000 "GET /index.php" 200
+php-1  | [02-Apr-2026 07:18:40] NOTICE: Finishing ...
+php-1  | [02-Apr-2026 07:18:40] NOTICE: exiting, bye-bye!
+php-1  | [entrypoint] Publishing Filament assets...
+php-1  | [entrypoint] Starting php-fpm...
+php-1  | [02-Apr-2026 07:19:19] NOTICE: fpm is running, pid 1
+php-1  | [02-Apr-2026 07:19:19] NOTICE: ready to handle connections
+php-1  | 172.18.0.2 -  02/Apr/2026:07:20:25 +0000 "GET /index.php" 200
+php-1  | 172.18.0.2 -  02/Apr/2026:07:21:17 +0000 "GET /index.php" 200
+php-1  | 172.18.0.2 -  02/Apr/2026:07:21:58 +0000 "POST /index.php" 200
+php-1  | 172.18.0.2 -  02/Apr/2026:07:22:37 +0000 "POST /index.php" 419
+php-1  | 172.18.0.2 -  02/Apr/2026:07:22:50 +0000 "GET /index.php" 302
+php-1  | 172.18.0.2 -  02/Apr/2026:07:23:36 +0000 "GET /index.php" 200
+php-1  | 172.18.0.2 -  02/Apr/2026:07:24:02 +0000 "GET /index.php" 200
+php-1  | 172.18.0.2 -  02/Apr/2026:07:24:17 +0000 "GET /index.php" 200
+php-1  | 172.18.0.2 -  02/Apr/2026:07:25:02 +0000 "GET /index.php" 200
+php-1  | 172.18.0.2 -  02/Apr/2026:07:23:43 +0000 "GET /index.php" 200
+php-1  | 172.18.0.2 -  02/Apr/2026:07:26:57 +0000 "POST /index.php" 200
+php-1  | 172.18.0.2 -  02/Apr/2026:07:27:45 +0000 "GET /index.php" 302
+php-1  | 172.18.0.2 -  02/Apr/2026:07:28:21 +0000 "GET /index.php" 200
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
