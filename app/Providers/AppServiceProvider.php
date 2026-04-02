@@ -25,12 +25,12 @@ class AppServiceProvider extends ServiceProvider
     });
 
     // Force the full root URL so all generated URLs (assets, routes, etc.)
-    // use the public domain instead of the internal localhost address.
-    // Replit terminates SSL at the proxy layer, so we also force HTTPS.
+    // use the configured domain. Derive the scheme from APP_URL so that
+    // http://localhost works locally and https://yourdomain.com works in production.
     $appUrl = config('app.url');
     if ($appUrl) {
         URL::forceRootUrl($appUrl);
+        URL::forceScheme(parse_url($appUrl, PHP_URL_SCHEME) ?: 'http');
     }
-    URL::forceScheme('https');
 }
 }
