@@ -1,0 +1,182 @@
+Microsoft Windows [Version 10.0.19045.6466]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\jessy\Desktop\kakaye\saaas>docker compose up -d
+[+] up 11/11
+ ✔ Network saaas_propman               Created                                                                     0.1ss
+ ✔ Container saaas-marketing-1         Started                                                                     6.3ss
+ ✔ Container propman-citus-coordinator Healthy                                                                     17.5s
+ ✔ Container saaas-redis-1             Started                                                                     6.2ss
+ ✔ Container propman-citus-worker-2    Healthy                                                                     17.5s
+ ✔ Container saaas-php-1               Started                                                                     18.4s
+ ✔ Container propman-citus-worker-1    Healthy                                                                     17.5s
+ ✔ Container propman-citus-bootstrap   Started                                                                     17.4s
+ ✔ Container saaas-scheduler-1         Started                                                                     18.5s
+ ✔ Container saaas-horizon-1           Started                                                                     18.7s
+ ✔ Container saaas-nginx-1             Started                                                                     19.1s
+
+C:\Users\jessy\Desktop\kakaye\saaas>copy .sweenv.example .env
+        1 file(s) copied.
+
+C:\Users\jessy\Desktop\kakaye\saaas>composer install --ignore-platform-reqs
+Installing dependencies from lock file (including require-dev)
+Verifying lock file contents can be installed on current platform.
+Package operations: 143 installs, 0 updates, 0 removals
+  - Installing symfony/service-contracts (v3.6.1): Extracting archive
+  - Installing psr/event-dispatcher (1.0.0): Extracting archive
+  - Installing symfony/event-dispatcher-contracts (v3.6.0): Extracting archive
+  - Installing symfony/event-dispatcher (v7.4.4): Extracting archive
+  - Installing psr/log (3.0.2): Extracting archive
+  - Installing doctrine/lexer (3.0.1): Extracting archive
+  - Installing egulias/email-validator (4.0.4): Extracting archive
+  - Installing symfony/mailer (v7.4.6): Extracting archive
+  - Installing symfony/http-foundation (v7.4.7): Extracting archive
+  - Installing symfony/error-handler (v7.4.4): Extracting archive
+  - Installing symfony/http-kernel (v7.4.7): Extracting archive
+  - Installing symfony/finder (v7.4.6): Extracting archive
+  - Installing symfony/polyfill-intl-grapheme (v1.33.0): Extracting archive
+  - Installing symfony/string (v7.4.6): Extracting archive
+  - Installing symfony/console (v7.4.7): Extracting archive
+  - Installing ramsey/collection (2.1.1): Extracting archive
+  - Installing brick/math (0.14.8): Extracting archive
+  - Installing ramsey/uuid (4.9.2): Extracting archive
+  - Installing psr/simple-cache (3.0.0): Extracting archive
+  - Installing nunomaduro/termwind (v2.4.0): Extracting archive
+  - Installing symfony/translation-contracts (v3.6.1): Extracting archive
+  - Installing symfony/translation (v7.4.6): Extracting archive
+  - Installing psr/clock (1.0.0): Extracting archive
+  - Installing symfony/clock (v7.4.0): Extracting archive
+  - Installing carbonphp/carbon-doctrine-types (3.2.0): Extracting archive
+  - Installing nesbot/carbon (3.11.3): Extracting archive
+  - Installing monolog/monolog (3.10.0): Extracting archive
+  - Installing psr/http-message (2.0): Extracting archive
+  - Installing psr/http-factory (1.1.0): Extracting archive
+  - Installing league/uri-interfaces (7.8.1): Extracting archive
+  - Installing league/uri (7.8.1): Extracting archive
+  - Installing league/mime-type-detection (1.16.0): Extracting archive
+  - Installing league/flysystem-local (3.31.0): Extracting archive
+  - Installing league/flysystem (3.33.0): Extracting archive
+  - Installing nette/utils (v4.1.3): Extracting archive
+  - Installing nette/schema (v1.3.5): Extracting archive
+  - Installing dflydev/dot-access-data (v3.0.3): Extracting archive
+  - Installing league/config (v1.2.0): Extracting archive
+  - Installing league/commonmark (2.8.2): Extracting archive
+  - Installing laravel/serializable-closure (v2.0.10): Extracting archive
+  - Installing laravel/prompts (v0.3.16): Extracting archive
+  - Installing guzzlehttp/uri-template (v1.0.5): Extracting archive
+  - Installing psr/http-client (1.0.3): Extracting archive
+  - Installing ralouphie/getallheaders (3.0.3): Extracting archive
+  - Installing guzzlehttp/psr7 (2.9.0): Extracting archive
+  - Installing guzzlehttp/promises (2.3.0): Extracting archive
+  - Installing guzzlehttp/guzzle (7.10.0): Extracting archive
+  - Installing fruitcake/php-cors (v1.4.0): Extracting archive
+  - Installing dragonmantank/cron-expression (v3.6.0): Extracting archive
+  - Installing doctrine/inflector (2.1.0): Extracting archive
+  - Installing laravel/framework (v12.56.0): Extracting archive
+  - Installing masterminds/html5 (2.10.0): Extracting archive
+  - Installing thecodingmachine/safe (v3.4.0): Extracting archive
+  - Installing sabberworm/php-css-parser (v9.3.0): Extracting archive
+  - Installing dompdf/php-svg-lib (1.0.2): Extracting archive
+  - Installing dompdf/php-font-lib (1.0.2): Extracting archive
+  - Installing dompdf/dompdf (v3.1.5): Extracting archive
+  - Installing barryvdh/laravel-dompdf (v3.1.2): Extracting archive
+  - Installing knplabs/knp-snappy (v1.6.0): Extracting archive
+  - Installing barryvdh/laravel-snappy (v1.0.5): Extracting archive
+  - Installing blade-ui-kit/blade-icons (1.9.0): Extracting archive
+  - Installing blade-ui-kit/blade-heroicons (2.7.0): Extracting archive
+  - Installing chillerlan/php-settings-container (3.3.0): Extracting archive
+  - Installing danharrin/date-format-converter (v0.3.1): Extracting archive
+  - Installing danharrin/livewire-rate-limiting (v2.2.0): Extracting archive
+  - Installing fakerphp/faker (v1.24.1): Extracting archive
+  - Installing paragonie/constant_time_encoding (v3.1.3): Extracting archive
+  - Installing pragmarx/google2fa (v9.0.0): Extracting archive
+  - Installing pragmarx/google2fa-qrcode (v3.0.0): Extracting archive
+  - Installing symfony/html-sanitizer (v7.4.7): Extracting archive
+  - Installing spatie/laravel-package-tools (1.93.0): Extracting archive
+  - Installing spatie/invade (2.1.0): Extracting archive
+  - Installing nette/php-generator (v4.2.2): Extracting archive
+  - Installing livewire/livewire (v3.7.13): Extracting archive
+  - Installing league/uri-components (7.8.1): Extracting archive
+  - Installing kirschbaum-development/eloquent-power-joins (4.3.1): Extracting archive
+  - Installing filament/support (v4.9.3): Extracting archive
+  - Installing openspout/openspout (v4.28.5): Extracting archive
+  - Installing league/csv (9.28.0): Extracting archive
+  - Installing filament/actions (v4.9.3): Extracting archive
+  - Installing filament/notifications (v4.9.3): Extracting archive
+  - Installing filament/schemas (v4.9.3): Extracting archive
+  - Installing filament/infolists (v4.9.3): Extracting archive
+  - Installing spatie/shiki-php (2.3.3): Extracting archive
+  - Installing scrivo/highlight.php (v9.18.1.10): Extracting archive
+  - Installing ueberdosis/tiptap-php (2.1.0): Extracting archive
+  - Installing filament/forms (v4.9.3): Extracting archive
+  - Installing filament/widgets (v4.9.3): Extracting archive
+  - Installing filament/query-builder (v4.9.3): Extracting archive
+  - Installing filament/tables (v4.9.3): Extracting archive
+  - Installing chillerlan/php-qrcode (5.0.5): Extracting archive
+  - Installing filament/filament (v4.9.3): Extracting archive
+  - Installing laravel/sentinel (v1.1.0): Extracting archive
+  - Installing laravel/horizon (v5.45.4): Extracting archive
+  - Installing laravel/pint (v1.29.0): Extracting archive
+  - Installing symfony/yaml (v7.4.6): Extracting archive
+  - Installing laravel/sail (v1.55.0): Extracting archive
+  - Installing laravel/sanctum (v4.3.1): Extracting archive
+  - Installing nikic/php-parser (v5.7.0): Extracting archive
+  - Installing psy/psysh (v0.12.22): Extracting archive
+  - Installing laravel/tinker (v2.11.1): Extracting archive
+  - Installing hamcrest/hamcrest-php (v2.1.1): Extracting archive
+  - Installing mockery/mockery (1.6.12): Extracting archive
+  - Installing filp/whoops (2.18.4): Extracting archive
+  - Installing nunomaduro/collision (v8.9.1): Extracting archive
+  - Installing owen-it/laravel-auditing (v14.0.3): Extracting archive
+  - Installing staabm/side-effects-detector (1.0.5): Extracting archive
+  - Installing sebastian/version (5.0.2): Extracting archive
+  - Installing sebastian/type (5.1.3): Extracting archive
+  - Installing sebastian/recursion-context (6.0.3): Extracting archive
+  - Installing sebastian/object-reflector (4.0.1): Extracting archive
+  - Installing sebastian/object-enumerator (6.0.1): Extracting archive
+  - Installing sebastian/global-state (7.0.2): Extracting archive
+  - Installing sebastian/exporter (6.3.2): Extracting archive
+  - Installing sebastian/environment (7.2.1): Extracting archive
+  - Installing sebastian/diff (6.0.2): Extracting archive
+  - Installing sebastian/comparator (6.3.3): Extracting archive
+  - Installing sebastian/code-unit (3.0.3): Extracting archive
+  - Installing sebastian/cli-parser (3.0.2): Extracting archive
+  - Installing phpunit/php-timer (7.0.1): Extracting archive
+  - Installing phpunit/php-text-template (4.0.1): Extracting archive
+  - Installing phpunit/php-invoker (5.0.1): Extracting archive
+  - Installing phpunit/php-file-iterator (5.1.1): Extracting archive
+  - Installing theseer/tokenizer (1.3.1): Extracting archive
+  - Installing sebastian/lines-of-code (3.0.1): Extracting archive
+  - Installing sebastian/complexity (4.0.1): Extracting archive
+  - Installing sebastian/code-unit-reverse-lookup (4.0.1): Extracting archive
+  - Installing phpunit/php-code-coverage (11.0.12): Extracting archive
+  - Installing phar-io/version (3.2.1): Extracting archive
+  - Installing phar-io/manifest (2.0.4): Extracting archive
+  - Installing myclabs/deep-copy (1.13.4): Extracting archive
+  - Installing phpunit/phpunit (11.5.55): Extracting archive
+  - Installing predis/predis (v3.4.2): Extracting archive
+  - Installing spatie/error-solutions (1.1.3): Extracting archive
+  - Installing spatie/backtrace (1.8.2): Extracting archive
+  - Installing spatie/flare-client-php (1.11.0): Extracting archive
+  - Installing spatie/ignition (1.16.0): Extracting archive
+  - Installing spatie/laravel-ignition (2.12.0): Extracting archive
+  - Installing spatie/laravel-permission (6.25.0): Extracting archive
+  - Installing stancl/virtualcolumn (v1.5.0): Extracting archive
+  - Installing stancl/jobpipeline (v1.9.0): Extracting archive
+  - Installing facade/ignition-contracts (1.0.2): Extracting archive
+  - Installing stancl/tenancy (v3.10.0): Extracting archive
+Generating optimized autoload files
+> Illuminate\Foundation\ComposerScripts::postAutoloadDump
+> @php artisan package:discover --ansi
+
+   INFO  Discovering packages.
+
+  nunomaduro/termwind ........................................................................................... DONE
+
+> @php artisan filament:upgrade
+
+   ERROR  There are no commands defined in the "filament" namespace.
+
+Script @php artisan filament:upgrade handling the post-autoload-dump event returned with error code 1
+
+C:\Users\jessy\Desktop\kakaye\saaas>
