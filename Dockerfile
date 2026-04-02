@@ -29,10 +29,18 @@ RUN apt-get update && apt-get install -y libicu-dev \
 
 RUN pecl install redis && docker-php-ext-enable redis
 
-# Add PHP configuration for timeouts and memory
+RUN docker-php-ext-enable opcache
+
+# Add PHP configuration for timeouts, memory and OPcache
 RUN echo 'max_execution_time = 300' >> /usr/local/etc/php/conf.d/timeout.ini && \
     echo 'default_socket_timeout = 60' >> /usr/local/etc/php/conf.d/timeout.ini && \
-    echo 'memory_limit = 512M' >> /usr/local/etc/php/conf.d/timeout.ini
+    echo 'memory_limit = 512M' >> /usr/local/etc/php/conf.d/timeout.ini && \
+    echo 'opcache.enable=1' >> /usr/local/etc/php/conf.d/opcache.ini && \
+    echo 'opcache.memory_consumption=256' >> /usr/local/etc/php/conf.d/opcache.ini && \
+    echo 'opcache.max_accelerated_files=20000' >> /usr/local/etc/php/conf.d/opcache.ini && \
+    echo 'opcache.validate_timestamps=1' >> /usr/local/etc/php/conf.d/opcache.ini && \
+    echo 'opcache.revalidate_freq=2' >> /usr/local/etc/php/conf.d/opcache.ini && \
+    echo 'opcache.fast_shutdown=1' >> /usr/local/etc/php/conf.d/opcache.ini
 
 # Add PHP-FPM configuration for process pool
 RUN echo 'request_terminate_timeout = 300' >> /usr/local/etc/php-fpm.d/www.conf && \
