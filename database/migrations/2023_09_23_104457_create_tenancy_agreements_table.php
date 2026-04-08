@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -9,18 +9,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tenancy_agreements', function (Blueprint $table) {
-            
-            $table->unsignedBigInteger('id')->autoIncrement();
+            $table = \App\Utils\AppUtils::defaultTableColumns($table, addId: true, addAuditFk: false);
 
-            $table = \App\Utils\AppUtils::defaultTableColumns($table, addId: false, addAuditFk: false);
-
-            
-            $table->uuid('saas_client_id');
-
-            $table->unsignedBigInteger('unit_id');
-            $table->unsignedBigInteger('tenant_id');
-            $table->unsignedBigInteger('agreement_type_id');
-            $table->unsignedBigInteger('billing_type_id');
+            $table->uuid('saas_client_id')->nullable()->index();
+            $table->foreignUuid('unit_id')->constrained('units')->cascadeOnDelete();
+            $table->foreignUuid('tenant_id')->constrained('tenants')->restrictOnDelete();
+            $table->foreignUuid('agreement_type_id')->constrained('ref_tenancy_agreement_types')->restrictOnDelete();
+            $table->foreignUuid('billing_type_id')->constrained('ref_billing_types')->restrictOnDelete();
             $table->date('start_date');
             $table->date('end_date')->nullable();
             $table->decimal('amount', 14, 2);
@@ -31,46 +26,6 @@ return new class extends Migration
             $table->decimal('balance_carried_forward', 14, 2)->default(0);
             $table->boolean('has_invoice_for_balance_carried_forward')->default(false);
 
-            
-            $table->primary(['id', 'saas_client_id']);
-
-            
-            $table->foreign(['unit_id', 'saas_client_id'])
-                  ->references(['id', 'saas_client_id'])
-                  ->on('units')
-                  ->onDelete('cascade');
-
-            $table->foreign(['tenant_id', 'saas_client_id'])
-                  ->references(['id', 'saas_client_id'])
-                  ->on('tenants')
-                  ->onDelete('restrict');
-
-           
-            $table->foreign('agreement_type_id')
-                  ->references('id')
-                  ->on('ref_tenancy_agreement_types')
-                  ->onDelete('restrict');
-
-            $table->foreign('billing_type_id')
-                  ->references('id')
-                  ->on('ref_billing_types')
-                  ->onDelete('restrict');
-
-            
-            $table->foreign(['created_by', 'saas_client_id'])
-                  ->references(['id', 'saas_client_id'])
-                  ->on('users')
-                  ->cascadeOnDelete();
-
-            $table->foreign(['updated_by', 'saas_client_id'])
-                  ->references(['id', 'saas_client_id'])
-                  ->on('users')
-                  ->cascadeOnDelete();
-
-            $table->foreign(['deleted_by', 'saas_client_id'])
-                  ->references(['id', 'saas_client_id'])
-                  ->on('users')
-                  ->cascadeOnDelete();
         });
     }
 

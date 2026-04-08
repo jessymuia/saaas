@@ -6,29 +6,16 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-public function up(): void
-{
-    Schema::create('ref_property_types', function (Blueprint $table) {
-        $table->id();
-        $table->string('type');
-        $table->string('description')->nullable();
-        
-        $table->timestamps();
-        $table->softDeletes();
+    public function up(): void
+    {
+        Schema::create('ref_property_types', function (Blueprint $table) {
+            $table = \App\Utils\AppUtils::defaultTableColumns($table, addId: true, addAuditFk: false);
 
-        
-        $table->unsignedBigInteger('created_by')->nullable();
-        $table->unsignedBigInteger('updated_by')->nullable();
-        $table->unsignedBigInteger('deleted_by')->nullable();
-    });
-}
+            $table->string('type');
+            $table->string('description')->nullable();
+        });
+    }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('ref_property_types');

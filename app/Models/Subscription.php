@@ -9,16 +9,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Subscription — tracks all SaaS client subscriptions
- *
- * Actual DB columns: id, saas_client_id, plan_id, status, billing_cycle,
- * starts_at, ends_at, trial_ends_at, cancelled_at, grace_ends_at,
- * last_reminded_at, reminder_count, created_at, updated_at
  */
 class Subscription extends Model
 {
     use HasFactory;
 
-    protected $table = 'subscriptions';
+    public $incrementing  = false;
+    protected $keyType    = 'string';
+    protected $table      = 'subscriptions';
 
     protected $fillable = [
         'saas_client_id',
@@ -44,10 +42,6 @@ class Subscription extends Model
         'reminder_count'   => 'integer',
     ];
 
-    // ────────────────────────────────────────────────────────────
-    // RELATIONSHIPS
-    // ────────────────────────────────────────────────────────────
-
     public function saasClient(): BelongsTo
     {
         return $this->belongsTo(SaasClient::class, 'saas_client_id');
@@ -58,11 +52,7 @@ class Subscription extends Model
         return $this->belongsTo(Plan::class, 'plan_id');
     }
 
-    // ────────────────────────────────────────────────────────────
-    // STATIC FACTORY METHODS
-    // ────────────────────────────────────────────────────────────
-
-    public static function startTrial(string $saasClientId, int $planId): self
+    public static function startTrial(string $saasClientId, string $planId): self
     {
         $plan = Plan::findOrFail($planId);
 
@@ -80,10 +70,6 @@ class Subscription extends Model
             'reminder_count' => 0,
         ]);
     }
-
-    // ────────────────────────────────────────────────────────────
-    // STATUS CHECKS
-    // ────────────────────────────────────────────────────────────
 
     public function isTrialing(): bool
     {
@@ -122,17 +108,13 @@ class Subscription extends Model
                $this->ends_at?->lessThanOrEqualTo(now()->addDays(7));
     }
 
-    // ────────────────────────────────────────────────────────────
-    // LIFECYCLE METHODS
-    // ────────────────────────────────────────────────────────────
-
     public function activateFromTrial(): void
     {
         $this->update([
-            'status'         => 'active',
-            'starts_at'      => now(),
-            'ends_at'        => now()->addMonth(),
-            'trial_ends_at'  => null,
+            'status'        => 'active',
+            'starts_at'     => now(),
+            'ends_at'       => now()->addMonth(),
+            'trial_ends_at' => null,
         ]);
     }
 
@@ -186,8 +168,8 @@ class Subscription extends Model
     public function cancel(string $reason = null): void
     {
         $this->update([
-            'status'       => 'canceled',
-            'cancelled_at' => now(),
+            'status'        => 'canceled',
+            'cancelled_at'  => now(),
             'grace_ends_at' => null,
         ]);
     }
@@ -214,13 +196,6 @@ class Subscription extends Model
         ]);
     }
 
-    // ────────────────────────────────────────────────────────────
-    // AMOUNT HELPERS
-    // ────────────────────────────────────────────────────────────
-
-    /**
-     * Return the billable amount for this subscription based on billing_cycle.
-     */
     public function getAmount(): float
     {
         $plan = $this->plan;
@@ -235,10 +210,6 @@ class Subscription extends Model
             default     => (float) $plan->price_monthly,
         };
     }
-
-    // ────────────────────────────────────────────────────────────
-    // SCOPES
-    // ────────────────────────────────────────────────────────────
 
     public function scopeActive($query)
     {

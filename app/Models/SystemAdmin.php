@@ -11,7 +11,9 @@ class SystemAdmin extends Authenticatable
 {
     use HasFactory, HasRoles, Notifiable;
 
-    protected $guard = 'system_admin';
+    public $incrementing  = false;
+    protected $keyType    = 'string';
+    protected $guard      = 'system_admin';
 
     protected $fillable = [
         'name',
@@ -26,6 +28,6 @@ class SystemAdmin extends Authenticatable
 
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
+        'password'          => 'hashed',
     ];
 }

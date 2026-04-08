@@ -20,8 +20,10 @@ class User extends Authenticatable implements \OwenIt\Auditing\Contracts\Auditab
     use BelongsToTenant;
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes, Auditable, HasRoles;
 
-    protected $guarded = ['id'];
+    public $incrementing  = false;
+    protected $keyType    = 'string';
     protected $primaryKey = 'id';
+    protected $guarded    = ['id'];
 
     protected $fillable = [
         'saas_client_id',
@@ -43,18 +45,12 @@ class User extends Authenticatable implements \OwenIt\Auditing\Contracts\Auditab
         'archive'           => 'boolean',
     ];
 
-    /**
-     * Inject Tenant ID into Audit for Citus partition key.
-     */
     public function transformAudit(array $data): array
     {
-        $data['saas_client_id'] = $this->saas_client_id ?? 0;
+        $data['saas_client_id'] = $this->saas_client_id ?? null;
         return $data;
     }
 
-    /**
-     * Only set saas_client_id on creation — Citus partition key cannot change.
-     */
     public function setSaasClientIdAttribute($value): void
     {
         if (! $this->exists) {
@@ -70,9 +66,6 @@ class User extends Authenticatable implements \OwenIt\Auditing\Contracts\Auditab
             if (auth()->check()) {
                 $model->updated_by = auth()->id();
             }
-            // Do NOT unset saas_client_id here — it breaks the Citus partition key
-            // on UPDATE queries. Instead, handle this at the DB level via your
-            // migration (the column should be immutable by design).
         });
     }
 
@@ -84,10 +77,6 @@ class User extends Authenticatable implements \OwenIt\Auditing\Contracts\Auditab
         return $this->saas_client_id !== null;
     }
 
-    /**
-     * Return the tenants (SaasClients) this user belongs to.
-     * Required by Filament's HasTenants interface.
-     */
     public function getTenants(Panel $panel): Collection
     {
         if ($this->saas_client_id === null) {
@@ -99,10 +88,6 @@ class User extends Authenticatable implements \OwenIt\Auditing\Contracts\Auditab
             ->get();
     }
 
-    /**
-     * Whether this user can access the given tenant.
-     * Required by Filament's HasTenants interface.
-     */
     public function canAccessTenant(\Illuminate\Database\Eloquent\Model $tenant): bool
     {
         return $this->saas_client_id === $tenant->id;

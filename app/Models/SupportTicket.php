@@ -7,12 +7,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SupportTicket extends Model
 {
+    public $incrementing = false;
+    protected $keyType = 'string';
+
     protected $fillable = [
         'saas_client_id',
         'subject',
         'message',
-        'status', 
-        'priority', 
+        'status',
+        'priority',
     ];
 
     public function saasClient(): BelongsTo

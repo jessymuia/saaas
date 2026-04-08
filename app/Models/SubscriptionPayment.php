@@ -5,14 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-/**
- * SubscriptionPayment — every payment made against a subscription.
- * Central / Local table — NOT distributed.
- */
 class SubscriptionPayment extends Model
 {
     use HasFactory;
 
+    public $incrementing = false;
+    protected $keyType = 'string';
     protected $table = 'subscription_payments';
 
     protected $fillable = [
@@ -34,8 +32,6 @@ class SubscriptionPayment extends Model
         'failed_at' => 'datetime',
     ];
 
-    // ── Relationships ──────────────────────────────────────────────────────
-
     public function subscription()
     {
         return $this->belongsTo(Subscription::class, 'subscription_id');
@@ -45,8 +41,6 @@ class SubscriptionPayment extends Model
     {
         return $this->belongsTo(SaasClient::class, 'saas_client_id');
     }
-
-    // ── Helpers ────────────────────────────────────────────────────────────
 
     public function isSuccessful(): bool
     {
@@ -62,8 +56,6 @@ class SubscriptionPayment extends Model
     {
         return $this->status === 'failed';
     }
-
-    // ── Scopes ─────────────────────────────────────────────────────────────
 
     public function scopeSuccessful($query)
     {

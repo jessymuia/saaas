@@ -1,18 +1,18 @@
-﻿<?php
+<?php
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-   
     public function up(): void
     {
         Schema::create('subscriptions', function (Blueprint $table) {
-            $table->id();
-            $table->foreignUuid('saas_client_id')->constrained('saas_clients')->onDelete('cascade');
-            $table->foreignId('plan_id')->constrained('plans')->onDelete('restrict');
+            $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
+            $table->foreignUuid('saas_client_id')->constrained('saas_clients')->cascadeOnDelete();
+            $table->foreignUuid('plan_id')->constrained('plans')->restrictOnDelete();
             $table->string('status', 20)->default('trialing')
                 ->comment('trialing | active | past_due | cancelled | expired');
             $table->string('billing_cycle', 10)->default('monthly')

@@ -40,6 +40,17 @@ The original project used **Citus PostgreSQL** (distributed database) with Docke
 - Composite primary keys that required Citus have been converted to standard single-column PKs
 - File `2025_01_01_000010_distribute_tables_via_citus.php` is a no-op
 
+### UUID Migration (Complete — April 2026)
+All 60+ tables have been migrated from `bigInteger` auto-increment IDs to UUIDs:
+- `AppUtils::defaultTableColumns()` now sets `uuid('id')->primary()->default(DB::raw('gen_random_uuid()'))`, `timestampsTz()`, decimal version, boolean status/archive, and `uuid` audit FK columns (created_by, updated_by, deleted_by)
+- All models extending `DefaultAppModel` automatically have `$incrementing = false` and `$keyType = 'string'`
+- Standalone models (Plan, Domain, SaasClient, SupportTicket, SubscriptionPayment, UsageMetric, SaasClientUser, SystemAdmin) updated individually with UUID settings
+- Composite PKs (`['id', 'saas_client_id']`) replaced by simple UUID PKs; composite FKs replaced with `foreignUuid()->constrained()`
+- `saas_client_id` on pre-2025 migrations is a plain indexed UUID (no FK constraint, since those tables are created before `saas_clients`); FK integrity maintained by application logic
+- Spatie role/permission IDs kept as `bigIncrements`; morph columns use `uuidMorphs`
+- `SaasClient::plan_id` cast changed from `'integer'` to `'string'`
+- `Subscription::startTrial()` signature changed from `int $planId` to `string $planId`
+
 ## Environment Variables Needed
 
 From `.env.example`, these optional integrations need secrets:

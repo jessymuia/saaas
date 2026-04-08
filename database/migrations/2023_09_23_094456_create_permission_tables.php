@@ -8,15 +8,14 @@ return new class extends Migration
 {
     public function up(): void
     {
-        $tableNames = config('permission.table_names');
+        $tableNames  = config('permission.table_names');
         $columnNames = config('permission.column_names');
-        $teams = config('permission.teams') ?? false;
+        $teams       = config('permission.teams') ?? false;
 
         if (empty($tableNames)) {
             throw new \Exception('Error: config/permission.php not loaded. Run [php artisan config:clear]');
         }
 
-        // Permissions Table
         Schema::create($tableNames['permissions'], function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
@@ -25,7 +24,6 @@ return new class extends Migration
             $table->unique(['name', 'guard_name']);
         });
 
-        // Roles Table
         Schema::create($tableNames['roles'], function (Blueprint $table) use ($teams, $columnNames) {
             $table->bigIncrements('id');
             if ($teams) {
@@ -42,12 +40,11 @@ return new class extends Migration
             }
         });
 
-        // Model Has Permissions
         Schema::create($tableNames['model_has_permissions'], function (Blueprint $table) use ($tableNames, $columnNames, $teams) {
             $table->unsignedBigInteger('permission_id');
 
             $table->string('model_type');
-            $table->unsignedBigInteger($columnNames['model_morph_key']);
+            $table->uuid($columnNames['model_morph_key']);
             $table->index([$columnNames['model_morph_key'], 'model_type'], 'model_has_permissions_model_id_model_type_index');
 
             $table->foreign('permission_id')
@@ -63,12 +60,11 @@ return new class extends Migration
             $table->primary(['permission_id', $columnNames['model_morph_key'], 'model_type']);
         });
 
-        // Model Has Roles
         Schema::create($tableNames['model_has_roles'], function (Blueprint $table) use ($tableNames, $columnNames, $teams) {
             $table->unsignedBigInteger('role_id');
 
             $table->string('model_type');
-            $table->unsignedBigInteger($columnNames['model_morph_key']);
+            $table->uuid($columnNames['model_morph_key']);
             $table->index([$columnNames['model_morph_key'], 'model_type'], 'model_has_roles_model_id_model_type_index');
 
             $table->foreign('role_id')
@@ -84,7 +80,6 @@ return new class extends Migration
             $table->primary(['role_id', $columnNames['model_morph_key'], 'model_type']);
         });
 
-        // Role Has Permissions
         Schema::create($tableNames['role_has_permissions'], function (Blueprint $table) use ($tableNames) {
             $table->unsignedBigInteger('permission_id');
             $table->unsignedBigInteger('role_id');
@@ -102,7 +97,6 @@ return new class extends Migration
             $table->primary(['permission_id', 'role_id']);
         });
 
-        // Clear cache
         app('cache')
             ->store(config('permission.cache.store') != 'default' ? config('permission.cache.store') : null)
             ->forget(config('permission.cache.key'));

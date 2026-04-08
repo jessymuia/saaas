@@ -1,18 +1,18 @@
-﻿<?php
+<?php
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    
     public function up(): void
     {
         Schema::create('subscription_payments', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('subscription_id')->constrained('subscriptions')->onDelete('cascade');
-            $table->foreignUuid('saas_client_id')->constrained('saas_clients')->onDelete('cascade');
+            $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
+            $table->foreignUuid('subscription_id')->constrained('subscriptions')->cascadeOnDelete();
+            $table->foreignUuid('saas_client_id')->constrained('saas_clients')->cascadeOnDelete();
             $table->decimal('amount', 10, 2);
             $table->string('currency', 5)->default('KES');
             $table->string('payment_method', 20)->default('mpesa')
@@ -32,4 +32,3 @@ return new class extends Migration
         Schema::dropIfExists('subscription_payments');
     }
 };
-

@@ -83,7 +83,7 @@ class SaasClient extends Tenant
     protected function casts(): array
     {
         return [
-            'plan_id'      => 'integer',
+            'plan_id'      => 'string',
             'is_suspended' => 'boolean',
             'suspended_at' => 'datetime',
             'data'         => 'array',

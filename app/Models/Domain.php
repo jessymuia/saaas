@@ -9,6 +9,8 @@ class Domain extends StanclDomain
 {
     use HasFactory;
 
+    public $incrementing = false;
+    protected $keyType = 'string';
     protected $table = 'domains';
 
     protected $fillable = [
