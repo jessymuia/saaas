@@ -1,0 +1,433 @@
+Class "Filament\Tables\Actions\ViewAction" not found
+
+Expand vendor frames
+App
+ \ 
+Filament
+ \ 
+Resources
+ \ 
+App
+ \ 
+AppRoleResource
+ 
+: 57
+table
+26 vendor frames
+App
+ \ 
+Http
+ \ 
+Middleware
+ \ 
+SetRlsSessionVariables
+ 
+: 50
+handle
+1 vendor frame
+App
+ \ 
+Http
+ \ 
+Middleware
+ \ 
+CheckTenantSuspended
+ 
+: 16
+handle
+1 vendor frame
+App
+ \ 
+Http
+ \ 
+Middleware
+ \ 
+InitializeTenancyBySlug
+ 
+: 48
+handle
+54 vendor frames
+public
+ / 
+index
+.php
+ 
+: 51
+require_once
+1 vendor frame
+app
+ / 
+Filament
+ / 
+Resources
+ / 
+App
+ / 
+AppRoleResource
+.php
+ 
+: 57
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        ->options(\Spatie\Permission\Models\Permission::all()->pluck('name', 'id')),
+
+                ]),
+
+        ]);
+
+    }
+
+
+
+    public static function table(Table $table): Table
+
+    {
+
+        return $table
+
+            ->columns([
+
+                Tables\Columns\TextColumn::make('name')->searchable()->sortable(),
+
+                Tables\Columns\TextColumn::make('created_at')->searchable()->sortable(),
+
+                Tables\Columns\TextColumn::make('updated_at')->searchable()->sortable(),
+
+            ])
+
+            ->filters([])
+
+            ->actions([
+
+                Tables\Actions\ViewAction::make(),
+
+                Tables\Actions\EditAction::make(),
+
+            ])
+
+            ->headerActions([
+
+                ExportAction::make()->exporter(AppRoleExporter::class)->formats([ExportFormat::Csv])->fileDisk('local'),
+
+            ])
+
+            ->bulkActions([
+
+                Tables\Actions\BulkActionGroup::make([Tables\Actions\DeleteBulkAction::make()->requiresConfirmation()]),
+
+                ExportBulkAction::make()->exporter(AppRoleExporter::class)->formats([ExportFormat::Csv])->fileDisk('local'),
+
+            ]);
+
+    }
+
+
+
+    public static function getRelations(): array { return []; }
+
+
+
+    public static function getPages(): array
+App
+Routing
+Request
+Browser
+Headers
+Body
+Context
+User
+Git
+Versions
+App
+Routing
+Controller
+App\Filament\Resources\App\AppRoleResource\Pages\ListAppRoles
+
+Route name
+filament.app.resources.app.app-roles.index
+
+Middleware
+panel:app
+
+Illuminate\Cookie\Middleware\EncryptCookies
+
+Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse
+
+Illuminate\Session\Middleware\StartSession
+
+Illuminate\Session\Middleware\AuthenticateSession
+
+Illuminate\View\Middleware\ShareErrorsFromSession
+
+Illuminate\Foundation\Http\Middleware\VerifyCsrfToken
+
+Illuminate\Routing\Middleware\SubstituteBindings
+
+Filament\Http\Middleware\DisableBladeIconComponents
+
+Filament\Http\Middleware\DispatchServingFilamentEvent
+
+App\Http\Middleware\InitializeTenancyBySlug
+
+App\Http\Middleware\CheckTenantSuspended
+
+App\Http\Middleware\SetRlsSessionVariables
+
+Filament\Http\Middleware\Authenticate
+
+Filament\Http\Middleware\IdentifyTenant
+
+Request
+https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev/app/app/jesphertech/app/app-roles
+GET
+curl "https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev/app/app/jesphertech/app/app-roles" \
+   -X GET \
+   -H 'host: 966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev' \
+   -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36' \
+   -H 'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7' \
+   -H 'accept-encoding: identity, gzip, deflate, br, zstd' \
+   -H 'accept-language: en-GB,en-US;q=0.9,en;q=0.8' \
+   -H 'cookie: <CENSORED>' \
+   -H 'referer: https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev:8000/__replco/workspace_iframe.html?initialPath=%2Fapp%2Fapp%2Fjesphertech&id=default-start-application' \
+   -H 'sec-ch-ua: "Chromium";v="146", "Not-A.Brand";v="24", "Google Chrome";v="146"' \
+   -H 'sec-ch-ua-mobile: ?0' \
+   -H 'sec-ch-ua-platform: "Windows"' \
+   -H 'sec-fetch-dest: iframe' \
+   -H 'sec-fetch-mode: navigate' \
+   -H 'sec-fetch-site: same-origin' \
+   -H 'sec-fetch-storage-access: active' \
+   -H 'traceparent: 00-69cc3d910000000067f9cd78dd6c724a-75ac42ed1c9e9dfc-00' \
+   -H 'tracestate: dd=s:0;p:75ac42ed1c9e9dfc;t.tid:69cc3d9100000000' \
+   -H 'upgrade-insecure-requests: 1' \
+   -H 'x-datadog-parent-id: 8479225784586640892' \
+   -H 'x-datadog-tags: _dd.p.tid=69cc3d9100000000' \
+   -H 'x-datadog-trace-id: 7492245374102172234' \
+   -H 'x-forwarded-for: 154.159.252.194, 10.81.10.4' \
+   -H 'x-forwarded-proto: https';
+
+
+Browser
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+
+Headers
+host
+966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev
+
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+
+accept
+text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+
+accept-encoding
+identity, gzip, deflate, br, zstd
+
+accept-language
+en-GB,en-US;q=0.9,en;q=0.8
+
+cookie
+<CENSORED>
+
+referer
+https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev:8000/__replco/workspace_iframe.html?initialPath=%2Fapp%2Fapp%2Fjesphertech&id=default-start-application
+
+sec-ch-ua
+"Chromium";v="146", "Not-A.Brand";v="24", "Google Chrome";v="146"
+
+sec-ch-ua-mobile
+?0
+
+sec-ch-ua-platform
+"Windows"
+
+sec-fetch-dest
+iframe
+
+sec-fetch-mode
+navigate
+
+sec-fetch-site
+same-origin
+
+sec-fetch-storage-access
+active
+
+traceparent
+00-69cc3d910000000067f9cd78dd6c724a-75ac42ed1c9e9dfc-00
+
+tracestate
+dd=s:0;p:75ac42ed1c9e9dfc;t.tid:69cc3d9100000000
+
+upgrade-insecure-requests
+1
+
+x-datadog-parent-id
+8479225784586640892
+
+x-datadog-tags
+_dd.p.tid=69cc3d9100000000
+
+x-datadog-trace-id
+7492245374102172234
+
+x-forwarded-for
+154.159.252.194, 10.81.10.4
+
+x-forwarded-proto
+https
+
+Body
+[]
+
+Context
+User
+jessymuiaa@gmail.com
+Jessy Christopher
+
+jessymuiaa@gmail.com
+
+{
+    "id": 3,
+    "saas_client_id": "5e974626-b884-4e0f-aa3d-5f8767d9d050",
+    "name": "Jessy Christopher",
+    "email": "jessymuiaa@gmail.com",
+    "phone_number": "0710318560",
+    "email_verified_at": null,
+    "created_at": "2026-03-31T21:21:25.000000Z",
+    "updated_at": "2026-03-31T21:21:25.000000Z",
+    "deleted_at": null,
+    "created_by": null,
+    "updated_by": 3,
+    "deleted_by": null,
+    "permissions": [],
+    "roles": [
+        {
+            "id": 1,
+            "name": "admin",
+            "guard_name": "web",
+            "created_at": "2026-03-31T21:31:47.000000Z",
+            "updated_at": "2026-03-31T21:31:47.000000Z",
+            "pivot": {
+                "model_type": "App\\Models\\User",
+                "model_id": 3,
+                "role_id": 1
+            }
+        }
+    ]
+}
+
+
+Git
+Grant admin role to new and existing tenant users
+81b1bd295d9567b9f90aa3871119c003a0422cb1
+
+View commit 81b1bd2
+Versions
+Php Version
+8.2.23
+
+Laravel Version
+12.56.0
+
+Laravel Locale
+en
+
+Laravel Config Cached
+false
+App Debug
+true
+App Env
+local
+
+
+8
+Queries
+00:33:05
+10.51ms
+pgsql
+select * from "users" where "users"."id" = 3 and "users"."deleted_at" is null limit 1
+
+
+1 query parameter
+00:33:05
+0.84ms
+pgsql
+select * from "saas_clients" where "slug" = jesphertech limit 1
+
+
+1 query parameter
+00:33:05
+0.31ms
+pgsql
+SET app.saas_client_id = '5e974626-b884-4e0f-aa3d-5f8767d9d050'
+
+
+00:33:05
+0.33ms
+pgsql
+SET app.saas_client_id = '5e974626-b884-4e0f-aa3d-5f8767d9d050'
+
+
+00:33:05
+0.37ms
+pgsql
+RESET app.bypass_rls
+
+
+00:33:05
+0.45ms
+pgsql
+select * from "saas_clients" where "slug" = jesphertech limit 1
+
+
+1 query parameter
+00:33:05
+1.01ms
+pgsql
+select "permissions".*, "model_has_permissions"."model_id" as "pivot_model_id", "model_has_permissions"."permission_id" as "pivot_permission_id", "model_has_permissions"."model_type" as "pivot_model_type" from "permissions" inner join "model_has_permissions" on "permissions"."id" = "model_has_permissions"."permission_id" where "model_has_permissions"."model_id" in (3) and "model_has_permissions"."model_type" = App\Models\User
+
+
+1 query parameter
+00:33:05
+1.11ms
+pgsql
+select "roles".*, "model_has_roles"."model_id" as "pivot_model_id", "model_has_roles"."role_id" as "pivot_role_id", "model_has_roles"."model_type" as "pivot_model_type" from "roles" inner join "model_has_roles" on "roles"."id" = "model_has_roles"."role_id" where "model_has_roles"."model_id" in (3) and "model_has_roles"."model_type" = App\Models\User
+
+
+1 query parameter
+·
+Source
+·
+Docs
+·
+Laravel
+Ignition is built byFlare, the Laravel error reporting service.

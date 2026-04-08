@@ -1,0 +1,116 @@
+##############################################################################
+# PropManage SaaS — Nginx Configuration
+#
+# Two identification modes (set APP_TENANT_MODE in .env):
+#   slug      (default) — path-based:      /app/app/{slug}
+#   subdomain           — subdomain-based: {slug}.yoursaas.com
+#
+# For subdomain mode, wildcard DNS must point to this server:
+#   *.yoursaas.com → server IP
+#
+# NOTE: fastcgi_param HTTP_X_FORWARDED_PROTO $scheme is set in every PHP
+# location block. This overrides any X-Forwarded-Proto header the browser
+# may send, ensuring Laravel generates http:// asset URLs locally even
+# though TrustProxies is configured with at: '*' for Replit compatibility.
+##############################################################################
+
+# ── Tenant subdomain server block (wildcard) ───────────────────────────────
+server {
+    listen 80;
+    server_name ~^(?<tenant_slug>[^.]+)\.yoursaas\.com$;
+
+    root /var/www/html/public;
+
+    proxy_connect_timeout 600s;
+    proxy_send_timeout    600s;
+    proxy_read_timeout    600s;
+    fastcgi_connect_timeout 600s;
+    fastcgi_send_timeout    600s;
+    fastcgi_read_timeout    600s;
+
+    fastcgi_buffer_size       128k;
+    fastcgi_buffers           4 256k;
+    fastcgi_busy_buffers_size 256k;
+
+    add_header X-Frame-Options        "SAMEORIGIN"   always;
+    add_header X-Content-Type-Options "nosniff"      always;
+    add_header X-XSS-Protection       "1; mode=block" always;
+
+    charset utf-8;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location = /robots.txt  { access_log off; log_not_found off; }
+    error_page 404 /index.php;
+
+    location ~ \.php$ {
+        fastcgi_pass  php:9000;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        fastcgi_param HTTP_X_FORWARDED_PROTO $scheme;
+        include fastcgi_params;
+        fastcgi_connect_timeout 600;
+        fastcgi_send_timeout    600;
+        fastcgi_read_timeout    600;
+    }
+
+    location ~ /\.(?!well-known).* { deny all; }
+}
+
+# ── Central / catch-all server block ──────────────────────────────────────
+server {
+    listen 80;
+    server_name yoursaas.com www.yoursaas.com localhost _;
+    root /var/www/html/public;
+
+    proxy_connect_timeout 600s;
+    proxy_send_timeout 600s;
+    proxy_read_timeout 600s;
+    fastcgi_connect_timeout 600s;
+    fastcgi_send_timeout 600s;
+    fastcgi_read_timeout 600s;
+
+    fastcgi_buffer_size 128k;
+    fastcgi_buffers 4 256k;
+    fastcgi_busy_buffers_size 256k;
+
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+
+    charset utf-8;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location = /favicon.ico {
+        access_log off;
+        log_not_found off;
+    }
+
+    location = /robots.txt {
+        access_log off;
+        log_not_found off;
+    }
+
+    error_page 404 /index.php;
+
+    location ~ \.php$ {
+        fastcgi_pass php:9000;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        fastcgi_param HTTP_X_FORWARDED_PROTO $scheme;
+        include fastcgi_params;
+        fastcgi_connect_timeout 600;
+        fastcgi_send_timeout 600;
+        fastcgi_read_timeout 600;
+    }
+
+    location ~ /\.(?!well-known).* {
+        deny all;
+    }
+}

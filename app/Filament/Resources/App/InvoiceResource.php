@@ -1,0 +1,142 @@
+<?php
+
+namespace App\Filament\Resources\App;
+
+use App\Filament\Exports\InvoiceExporter;
+use App\Filament\Resources\App\InvoiceResource\Pages;
+use App\Filament\Resources\App\InvoiceResource\RelationManagers;
+use App\Models\Invoice;
+use App\Utils\AppPermissions;
+use App\Utils\AppUtils;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Filament\Notifications\Notification;
+use App\Models\CompanyDetails;
+use Filament\Forms;
+use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Filament\Actions\Exports\Enums\ExportFormat;
+use Filament\Actions\ExportAction;
+use Filament\Actions\ExportBulkAction;
+use Illuminate\Database\Eloquent\Builder;
+use UnitEnum;
+
+class InvoiceResource extends Resource
+{
+    protected static ?string $model = Invoice::class;
+    protected static bool $isScopedToTenant = false;
+
+    protected static UnitEnum|string|null $navigationGroup = 'Accounting';
+
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-check';
+
+    protected static ?string $recordTitleAttribute = 'Invoice';
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->where('saas_client_id', filament()->getTenant()?->id);
+    }
+
+    public static function form(Schema $schema): Schema
+    {
+        return $schema->schema([
+            Forms\Components\TextInput::make('comments')->maxLength(1000),
+            Forms\Components\DatePicker::make('issue_date')->disabled()->readOnly(),
+            Forms\Components\DatePicker::make('created_at')->disabled()->readOnly()->required(),
+            Forms\Components\Toggle::make('is_confirmed')->label('Confirmed')->required(),
+            Forms\Components\Toggle::make('is_generated')->label('Doc Generated')->disabled()->required(),
+        ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                Tables\Columns\TextColumn::make('id')->numeric()->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('tenancyAgreement.tenant.name')->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('tenancyAgreement.unit.property.name')->numeric()->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('tenancyAgreement.unit.name')->numeric()->sortable(),
+                Tables\Columns\TextColumn::make('unpaid_amount')->numeric()->sortable(),
+                Tables\Columns\IconColumn::make('is_confirmed')->boolean()->sortable()->label('Confirmed'),
+                Tables\Columns\IconColumn::make('is_generated')->boolean()->label('Doc Generated'),
+                Tables\Columns\TextColumn::make('comments')->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('issue_date')->date()->sortable(),
+                Tables\Columns\TextColumn::make('invoice_for_month')->date('F, Y')->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('createdBy.name')->sortable()->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updatedBy.name')->sortable()->toggleable(isToggledHiddenByDefault: true),
+            ])
+            ->defaultSort('created_at', 'desc')
+            ->filters([])
+            ->actions([
+                \Filament\Actions\ViewAction::make(),
+                \Filament\Actions\EditAction::make(),
+                \Filament\Actions\Action::make('generateDocument')
+                    ->label('Generate Document')
+                    ->icon('heroicon-m-document-arrow-down')
+                    ->requiresConfirmation()
+                    ->visible(fn () => auth()->user()->can(AppPermissions::GENERATE_INVOICE_PDF))
+                    ->action(function (Invoice $invoice) {
+                        $result = $invoice->generateDocument($invoice);
+                        if ($result) {
+                            Notification::make()->title('Invoice document generated successfully')->success()->send();
+                        } else {
+                            Notification::make()->title('Failed to generate invoice document. Ensure the invoice has tenancy bills and property payment details.')->danger()->send();
+                        }
+                    }),
+                \Filament\Actions\Action::make('sendInvoice')
+                    ->label('Send Invoice')
+                    ->icon('heroicon-m-envelope')
+                    ->requiresConfirmation()
+                    ->disabled(fn (Invoice $invoice) => !$invoice->is_generated)
+                    ->action(function (Invoice $invoice) {
+                        $invoice->sendInvoiceMail();
+                        Notification::make()->title('Invoice queued for sending')->success()->send();
+                    }),
+                \Filament\Actions\Action::make('View Invoice')
+                    ->icon('heroicon-o-document-text')
+                    ->disabled(fn (Invoice $invoice) => !$invoice->is_generated)
+                    ->url(function (Invoice $invoice) {
+                        if (!$invoice->is_generated) {
+                            return route('preview.invoice', ['invoice' => null]);
+                        }
+                        $fileName = str_replace('invoices/', '', $invoice->document_url);
+                        return route('preview.invoice', ['invoice' => $fileName]);
+                    }),
+                \Filament\Actions\DeleteAction::make()
+                    ->requiresConfirmation()
+                    ->mutateFormDataUsing(fn ($data) => ['deleted_by' => auth()->user()->id]),
+            ])
+            ->headerActions([
+                ExportAction::make()->exporter(InvoiceExporter::class)->formats([ExportFormat::Csv])->fileDisk('local'),
+            ])
+            ->bulkActions([
+                \Filament\Actions\BulkActionGroup::make([
+                    \Filament\Actions\DeleteBulkAction::make()->requiresConfirmation(),
+                    ExportBulkAction::make()->exporter(InvoiceExporter::class)->formats([ExportFormat::Csv])->fileDisk('local'),
+                ]),
+            ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            RelationManagers\TenancyBillsRelationManager::class,
+            RelationManagers\CreditNoteRelationManager::class,
+            RelationManagers\InvoicePaymentsRelationManager::class,
+        ];
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index'  => Pages\ListInvoices::route('/'),
+            'create' => Pages\CreateInvoice::route('/create'),
+            'view'   => Pages\ViewInvoice::route('/{record}'),
+            'edit'   => Pages\EditInvoice::route('/{record}/edit'),
+        ];
+    }
+}

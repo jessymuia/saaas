@@ -1,0 +1,397 @@
+Stack
+Context
+Debug
+Flare
+Share
+Share with Flare
+Docs
+
+Stack
+
+Context
+
+Debug
+Create Share
+Docs
+
+Ignition Settings
+Docs
+Editor
+
+PhpStorm
+Theme
+auto
+Save settings
+Settings will be saved locally in ~/.ignition.json.
+
+Declaration of App\Models\CompanyDetails::boot() must be compatible with App\Models\DefaultAppModel::boot(): void
+Symfony
+ \ 
+Component
+ \ 
+ErrorHandler
+ \ 
+Error
+ \ 
+FatalError
+PHP 8.2.23
+12.56.0
+Declaration of App\Models\CompanyDetails::boot() must be compatible with App\Models\DefaultAppModel::boot(): void
+
+Collapse vendor frames
+app
+ / 
+Models
+ / 
+CompanyDetails
+.php
+ 
+: 33
+[top]
+app
+ / 
+Models
+ / 
+CompanyDetails
+.php
+ 
+: 33
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        'phone_number',
+
+        'account_name',
+
+        'account_number',
+
+        'bank_branch',
+
+        'bank_name',
+
+        'branch_swift_code',
+
+        'mpesa_paybill_number',
+
+        'status',
+
+        'archive',
+
+        'created_by',
+
+        'updated_by',
+
+        'deleted_by',
+
+        'deleted_at'
+
+    ];
+
+
+
+    protected static function boot()
+
+    {
+
+        parent::boot();
+
+
+
+        static::created(function ($model) {
+
+            \Log::info('New record created with ID: ' . $model->id);
+
+            // updated the deleted_by field of all other records and delete them
+
+            static::query()
+
+                ->where('id', '!=', $model->id)
+
+                ->update(['deleted_by' => $model->created_by, 'deleted_at' => now()]);
+
+
+
+            $model->created_by = auth()->id();
+
+            $model->saveQuietly();
+
+        });
+
+App
+Routing
+Request
+Browser
+Headers
+Body
+Context
+User
+Git
+Versions
+App
+Routing
+Controller
+App\Filament\Resources\App\CompanyDetailsResource\Pages\ListCompanies
+
+Route name
+filament.app.resources.app.company-details.index
+
+Middleware
+panel:app
+
+Illuminate\Cookie\Middleware\EncryptCookies
+
+Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse
+
+Illuminate\Session\Middleware\StartSession
+
+Illuminate\Session\Middleware\AuthenticateSession
+
+Illuminate\View\Middleware\ShareErrorsFromSession
+
+Illuminate\Foundation\Http\Middleware\VerifyCsrfToken
+
+Illuminate\Routing\Middleware\SubstituteBindings
+
+Filament\Http\Middleware\DisableBladeIconComponents
+
+Filament\Http\Middleware\DispatchServingFilamentEvent
+
+App\Http\Middleware\InitializeTenancyBySlug
+
+App\Http\Middleware\CheckTenantSuspended
+
+App\Http\Middleware\SetRlsSessionVariables
+
+Filament\Http\Middleware\Authenticate
+
+Filament\Http\Middleware\IdentifyTenant
+
+Request
+https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev/app/app/jesphertech/app/company-details
+GET
+curl "https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev/app/app/jesphertech/app/company-details" \
+   -X GET \
+   -H 'host: 966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev' \
+   -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36' \
+   -H 'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7' \
+   -H 'accept-encoding: gzip, deflate, br, zstd' \
+   -H 'accept-language: en-GB,en-US;q=0.9,en;q=0.8' \
+   -H 'cache-control: max-age=0' \
+   -H 'cookie: <CENSORED>' \
+   -H 'referer: https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev:8000/app/app/jesphertech/app/audits' \
+   -H 'sec-ch-ua: "Chromium";v="146", "Not-A.Brand";v="24", "Google Chrome";v="146"' \
+   -H 'sec-ch-ua-mobile: ?0' \
+   -H 'sec-ch-ua-platform: "Windows"' \
+   -H 'sec-fetch-dest: document' \
+   -H 'sec-fetch-mode: navigate' \
+   -H 'sec-fetch-site: same-origin' \
+   -H 'sec-fetch-user: ?1' \
+   -H 'traceparent: 00-69cd4bb0000000004fafadad3abb9890-1d7c395586f049a8-00' \
+   -H 'tracestate: dd=s:0;p:1d7c395586f049a8;t.tid:69cd4bb000000000' \
+   -H 'upgrade-insecure-requests: 1' \
+   -H 'x-datadog-parent-id: 2124636163710929320' \
+   -H 'x-datadog-tags: _dd.p.tid=69cd4bb000000000' \
+   -H 'x-datadog-trace-id: 5741999009446992016' \
+   -H 'x-forwarded-for: 154.159.252.194, 10.81.12.188' \
+   -H 'x-forwarded-proto: https';
+
+
+Browser
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+
+Headers
+host
+966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev
+
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+
+accept
+text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+
+accept-encoding
+gzip, deflate, br, zstd
+
+accept-language
+en-GB,en-US;q=0.9,en;q=0.8
+
+cache-control
+max-age=0
+
+cookie
+<CENSORED>
+
+referer
+https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev:8000/app/app/jesphertech/app/audits
+
+sec-ch-ua
+"Chromium";v="146", "Not-A.Brand";v="24", "Google Chrome";v="146"
+
+sec-ch-ua-mobile
+?0
+
+sec-ch-ua-platform
+"Windows"
+
+sec-fetch-dest
+document
+
+sec-fetch-mode
+navigate
+
+sec-fetch-site
+same-origin
+
+sec-fetch-user
+?1
+
+traceparent
+00-69cd4bb0000000004fafadad3abb9890-1d7c395586f049a8-00
+
+tracestate
+dd=s:0;p:1d7c395586f049a8;t.tid:69cd4bb000000000
+
+upgrade-insecure-requests
+1
+
+x-datadog-parent-id
+2124636163710929320
+
+x-datadog-tags
+_dd.p.tid=69cd4bb000000000
+
+x-datadog-trace-id
+5741999009446992016
+
+x-forwarded-for
+154.159.252.194, 10.81.12.188
+
+x-forwarded-proto
+https
+
+Body
+[]
+
+Context
+User
+jessymuiaa@gmail.com
+Jessy Muia Christopher
+
+jessymuiaa@gmail.com
+
+{
+    "id": 6,
+    "saas_client_id": "c9abd4c0-2db0-457c-a041-a0519f78818b",
+    "name": "Jessy Muia Christopher",
+    "email": "jessymuiaa@gmail.com",
+    "phone_number": "0710318560",
+    "email_verified_at": null,
+    "created_at": "2026-03-31T21:57:04.000000Z",
+    "updated_at": "2026-04-01T15:38:14.000000Z",
+    "deleted_at": null,
+    "created_by": null,
+    "updated_by": 6,
+    "deleted_by": null
+}
+
+
+Git
+Add ability to create and save company details with logos
+cdfcee522db0995c654419aaa5ad5d74ce071016
+
+View commit cdfcee5
+Versions
+Php Version
+8.2.23
+
+Laravel Version
+12.56.0
+
+Laravel Locale
+en
+
+Laravel Config Cached
+false
+App Debug
+true
+App Env
+local
+
+
+6
+Queries
+19:45:36
+10.96ms
+pgsql
+select * from "users" where "users"."id" = 6 and "users"."deleted_at" is null limit 1
+
+
+1 query parameter
+19:45:36
+0.84ms
+pgsql
+select * from "saas_clients" where "slug" = jesphertech limit 1
+
+
+1 query parameter
+19:45:36
+0.38ms
+pgsql
+SET app.saas_client_id = 'c9abd4c0-2db0-457c-a041-a0519f78818b'
+
+
+19:45:36
+0.29ms
+pgsql
+SET app.saas_client_id = 'c9abd4c0-2db0-457c-a041-a0519f78818b'
+
+
+19:45:36
+0.31ms
+pgsql
+RESET app.bypass_rls
+
+
+19:45:36
+0.43ms
+pgsql
+select * from "saas_clients" where "slug" = jesphertech limit 1
+
+
+1 query parameter
+·
+Source
+·
+Docs
+·
+Laravel
+Ignition is built byFlare, the Laravel error reporting service.
+

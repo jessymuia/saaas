@@ -1,0 +1,452 @@
+TypeError
+PHP 8.2.30
+12.56.0
+App\Models\SaasClient::setPrimaryColorAttribute(): Argument #1 ($value) must be of type string, null given, called in /var/www/html/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Concerns/HasAttributes.php on line 1168
+
+Expand vendor frames
+App
+ \ 
+Models
+ \ 
+SaasClient
+ 
+: 68
+setPrimaryColorAttribute
+61 vendor frames
+public
+ / 
+index
+.php
+ 
+: 51
+[top]
+app
+ / 
+Models
+ / 
+SaasClient
+.php
+ 
+: 68
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        ];
+
+    }
+
+
+
+    // ── Branding helpers (stored in JSON data column via VirtualColumn) ──────────
+
+    //
+
+    // VirtualColumn decodes the `data` JSON column into individual model attributes
+
+    // on retrieval and re-encodes them back into `data` on save. We must work with
+
+    // the individual attribute key (not set $this->data directly) so that
+
+    // encodeAttributes() picks up the change and persists it correctly.
+
+
+
+    public function getPrimaryColorAttribute(): ?string
+
+    {
+
+        return $this->attributes['primary_color'] ?? null;
+
+    }
+
+
+
+    public function setPrimaryColorAttribute(string $value): void
+
+    {
+
+        $this->attributes['primary_color'] = $value;
+
+    }
+
+
+
+    public function getLogoPathAttribute(): ?string
+
+    {
+
+        return $this->attributes['logo_path'] ?? null;
+
+    }
+
+
+
+    public function setLogoPathAttribute(?string $value): void
+
+    {
+
+        $this->attributes['logo_path'] = $value;
+
+    }
+
+App
+Routing
+Request
+Browser
+Headers
+Body
+Livewire
+app.filament.resources.central.saas-client-resource.pages.create-saas-client
+Context
+User
+Versions
+App
+Routing
+Controller
+Livewire\Mechanisms\HandleRequests\HandleRequests@handleUpdate
+
+Route name
+default.livewire.update
+
+Middleware
+web
+
+Request
+http://localhost:8000/admin/central/saas-clients/create
+GET
+curl "http://localhost:8000/admin/central/saas-clients/create" \
+   -X GET \
+   -H 'cookie: <CENSORED>' \
+   -H 'accept-language: en-GB,en-US;q=0.9,en;q=0.8' \
+   -H 'accept-encoding: gzip, deflate, br, zstd' \
+   -H 'referer: http://localhost:8000/admin/central/saas-clients/create' \
+   -H 'sec-fetch-dest: empty' \
+   -H 'sec-fetch-mode: cors' \
+   -H 'sec-fetch-site: same-origin' \
+   -H 'origin: http://localhost:8000' \
+   -H 'accept: */*' \
+   -H 'sec-ch-ua-mobile: ?0' \
+   -H 'content-type: application/json' \
+   -H 'sec-ch-ua: "Chromium";v="146", "Not-A.Brand";v="24", "Google Chrome";v="146"' \
+   -H 'user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36' \
+   -H 'sec-ch-ua-platform: "Linux"' \
+   -H 'content-length: 1535' \
+   -H 'connection: keep-alive' \
+   -H 'host: localhost:8000' \
+   -H 'x-forwarded-proto: http' \
+   -F '_token=Z392TwrXJDKCVZdYlIzePiN2PebFUivTsatcyPXz' -F 'components=[object Object]'
+
+
+Browser
+Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+
+Headers
+cookie
+<CENSORED>
+
+accept-language
+en-GB,en-US;q=0.9,en;q=0.8
+
+accept-encoding
+gzip, deflate, br, zstd
+
+referer
+http://localhost:8000/admin/central/saas-clients/create
+
+sec-fetch-dest
+empty
+
+sec-fetch-mode
+cors
+
+sec-fetch-site
+same-origin
+
+origin
+http://localhost:8000
+
+accept
+*/*
+
+sec-ch-ua-mobile
+?0
+
+content-type
+application/json
+
+sec-ch-ua
+"Chromium";v="146", "Not-A.Brand";v="24", "Google Chrome";v="146"
+
+user-agent
+Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+
+sec-ch-ua-platform
+"Linux"
+
+content-length
+1535
+
+connection
+keep-alive
+
+host
+localhost:8000
+
+x-forwarded-proto
+http
+
+Body
+{
+    "_token": "Z392TwrXJDKCVZdYlIzePiN2PebFUivTsatcyPXz",
+    "components": [
+        {
+            "snapshot": "{\"data\":{\"record\":null,\"data\":[{\"name\":\"muia jessy\",\"slug\":\"muia-jessy\",\"domain\":null,\"email\":\"jessymuiaa@gmail.com\",\"contact_name\":null,\"phone\":null,\"plan_id\":null,\"status\":\"trial\",\"primary_color\":null,\"logo_path\":[[],{\"s\":\"arr\"}]},{\"s\":\"arr\"}],\"previousUrl\":\"http:\\/\\/localhost:8000\\/admin\\/central\\/saas-clients\",\"isCreating\":false,\"mountedActions\":[[],{\"s\":\"arr\"}],\"defaultAction\":null,\"defaultActionArguments\":null,\"defaultActionContext\":null,\"defaultTableAction\":null,\"defaultTableActionRecord\":null,\"defaultTableActionArguments\":null,\"componentFileAttachments\":[[],{\"s\":\"arr\"}],\"areSchemaStateUpdateHooksDisabledForTesting\":false,\"discoveredSchemaNames\":[[\"form\",\"content\",\"headerWidgets\",\"footerWidgets\"],{\"s\":\"arr\"}],\"parentRecord\":null,\"savedDataHash\":null},\"memo\":{\"id\":\"n7ahLH1Q61ACKWozwBIV\",\"name\":\"app.filament.resources.central.saas-client-resource.pages.create-saas-client\",\"path\":\"admin\\/central\\/saas-clients\\/create\",\"method\":\"GET\",\"release\":\"a-a-a\",\"children\":[],\"scripts\":[],\"assets\":[],\"errors\":[],\"locale\":\"en\"},\"checksum\":\"190ce5d05f226b94615f15be64ef6f4025358913cbe8ae34dfc637093b817b74\"}",
+            "updates": {
+                "data.domain": "winnie.localhost",
+                "data.contact_name": "jessy C muia",
+                "data.phone": "0710318560",
+                "data.plan_id": "3",
+                "data.status": "active"
+            },
+            "calls": [
+                {
+                    "path": "",
+                    "method": "create",
+                    "params": []
+                }
+            ]
+        }
+    ]
+}
+
+
+Livewire
+app.filament.resources.central.saas-client-resource.pages.create-saas-client
+Component
+Component
+App\Filament\Resources\Central\SaasClientResource\Pages\CreateSaasClient
+
+Calls
+Method
+create
+
+Params
+[]
+
+Path
+
+Data
+record
+null
+
+data
+[
+    {
+        "name": "muia jessy",
+        "slug": "muia-jessy",
+        "domain": null,
+        "email": "jessymuiaa@gmail.com",
+        "contact_name": null,
+        "phone": null,
+        "plan_id": null,
+        "status": "trial",
+        "primary_color": null,
+        "logo_path": [
+            [],
+            {
+                "s": "arr"
+            }
+        ]
+    },
+    {
+        "s": "arr"
+    }
+]
+
+
+previousUrl
+http://localhost:8000/admin/central/saas-clients
+
+isCreating
+false
+mountedActions
+[
+    [],
+    {
+        "s": "arr"
+    }
+]
+
+
+defaultAction
+null
+
+defaultActionArguments
+null
+
+defaultActionContext
+null
+
+defaultTableAction
+null
+
+defaultTableActionRecord
+null
+
+defaultTableActionArguments
+null
+
+componentFileAttachments
+[
+    [],
+    {
+        "s": "arr"
+    }
+]
+
+
+areSchemaStateUpdateHooksDisabledForTesting
+false
+discoveredSchemaNames
+[
+    [
+        "form",
+        "content",
+        "headerWidgets",
+        "footerWidgets"
+    ],
+    {
+        "s": "arr"
+    }
+]
+
+
+parentRecord
+null
+
+savedDataHash
+null
+
+Memo
+id
+n7ahLH1Q61ACKWozwBIV
+
+name
+app.filament.resources.central.saas-client-resource.pages.create-saas-client
+
+path
+admin/central/saas-clients/create
+
+method
+GET
+
+release
+a-a-a
+
+children
+[]
+
+scripts
+[]
+
+assets
+[]
+
+errors
+[]
+
+locale
+en
+
+Context
+User
+superadmin@gmail.com
+Super Admin
+
+superadmin@gmail.com
+
+{
+    "id": 1,
+    "name": "Super Admin",
+    "email": "superadmin@gmail.com",
+    "created_at": "2026-04-08T03:30:07.000000Z",
+    "updated_at": "2026-04-08T03:41:14.000000Z"
+}
+
+
+Versions
+Php Version
+8.2.30
+
+Laravel Version
+12.56.0
+
+Laravel Locale
+en
+
+Laravel Config Cached
+false
+App Debug
+true
+App Env
+local
+
+
+3
+Queries
+8:05:00 AM
+59.51ms
+pgsql
+select * from "system_admins" where "id" = 1 limit 1
+
+
+1 query parameter
+8:05:00 AM
+5.58ms
+pgsql
+select * from "plans" where "plans"."id" = 3 limit 1
+
+
+1 query parameter
+8:05:00 AM
+12.96ms
+pgsql
+select count(*) as aggregate from "saas_clients" where "slug" = muia-jessy
+
+
+1 query parameter
+·
+Source
+·
+Docs
+·
+Laravel
+Ignition is built byFlare, the Laravel error reporting service.

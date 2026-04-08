@@ -1,0 +1,1204 @@
+Microsoft Windows [Version 10.0.19045.6466]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\jessy\Desktop\saaas\saaas>docker compose up -d
+[+] up 10/10
+ ✔ Container saaas-redis-1             Running                                                                      0.0s ✔ Container propman-citus-coordinator Healthy                                                                      1.2s ✔ Container propman-citus-worker-1    Healthy                                                                      1.2s ✔ Container propman-citus-worker-2    Healthy                                                                      1.2s ✔ Container saaas-php-1               Running                                                                      0.0s ✔ Container saaas-nginx-1             Running                                                                      0.0s ✔ Container saaas-marketing-1         Running                                                                      0.0s ✔ Container saaas-scheduler-1         Started                                                                      0.2s ✔ Container saaas-horizon-1           Started                                                                      0.2s ✔ Container propman-citus-bootstrap   Started                                                                      1.3s
+C:\Users\jessy\Desktop\saaas\saaas>docker ps
+CONTAINER ID   IMAGE                  COMMAND                  CREATED          STATUS                            PORTS                                         NAMES
+3641425cd86f   nginx:alpine           "/docker-entrypoint.…"   17 minutes ago   Up 6 minutes                      0.0.0.0:8000->80/tcp, [::]:8000->80/tcp       saaas-nginx-1
+ea9ee048de9d   saaas-horizon          "docker-php-entrypoi…"   17 minutes ago   Restarting (255) 32 seconds ago                                                 saaas-horizon-1
+3c2811a22e7d   saaas-scheduler        "docker-php-entrypoi…"   17 minutes ago   Restarting (255) 32 seconds ago                                                 saaas-scheduler-1
+3e066be82570   saaas-php              "docker-php-entrypoi…"   17 minutes ago   Up 6 minutes (healthy)            9000/tcp                                      saaas-php-1
+47e180b06f40   citusdata/citus:12.1   "docker-entrypoint.s…"   17 minutes ago   Up 7 minutes (healthy)            5432/tcp                                      propman-citus-worker-1
+823f7726c84e   citusdata/citus:12.1   "docker-entrypoint.s…"   17 minutes ago   Up 7 minutes (healthy)            5432/tcp                                      propman-citus-worker-2
+b1b227a6fb81   redis:7-alpine         "docker-entrypoint.s…"   17 minutes ago   Up 7 minutes                      0.0.0.0:6379->6379/tcp, [::]:6379->6379/tcp   saaas-redis-1
+ca1d602c0483   node:20-alpine         "docker-entrypoint.s…"   17 minutes ago   Up 7 minutes                      0.0.0.0:5000->5000/tcp, [::]:5000->5000/tcp   saaas-marketing-1
+88802db7e7a8   citusdata/citus:12.1   "docker-entrypoint.s…"   17 minutes ago   Up 7 minutes (healthy)            0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp   propman-citus-coordinator
+
+C:\Users\jessy\Desktop\saaas\saaas>docker exec -it saaas-php-1 composer install
+No composer.lock file present. Updating dependencies to latest instead of installing from lock file. See https://getcomposer.org/install for more information.
+Loading composer repositories with package information
+Updating dependencies
+Lock file operations: 165 installs, 0 updates, 0 removals
+  - Locking barryvdh/laravel-dompdf (v3.1.2)
+  - Locking barryvdh/laravel-snappy (v1.0.5)
+  - Locking blade-ui-kit/blade-heroicons (2.7.0)
+  - Locking blade-ui-kit/blade-icons (1.9.0)
+  - Locking brick/math (0.14.8)
+  - Locking carbonphp/carbon-doctrine-types (3.2.0)
+  - Locking chillerlan/php-qrcode (5.0.5)
+  - Locking chillerlan/php-settings-container (3.3.0)
+  - Locking danharrin/date-format-converter (v0.3.1)
+  - Locking danharrin/livewire-rate-limiting (v2.2.0)
+  - Locking dflydev/dot-access-data (v3.0.3)
+  - Locking doctrine/inflector (2.1.0)
+  - Locking doctrine/lexer (3.0.1)
+  - Locking dompdf/dompdf (v3.1.5)
+  - Locking dompdf/php-font-lib (1.0.2)
+  - Locking dompdf/php-svg-lib (1.0.2)
+  - Locking dragonmantank/cron-expression (v3.6.0)
+  - Locking egulias/email-validator (4.0.4)
+  - Locking facade/ignition-contracts (1.0.2)
+  - Locking fakerphp/faker (v1.24.1)
+  - Locking filament/actions (v4.9.3)
+  - Locking filament/filament (v4.9.3)
+  - Locking filament/forms (v4.9.3)
+  - Locking filament/infolists (v4.9.3)
+  - Locking filament/notifications (v4.9.3)
+  - Locking filament/query-builder (v4.9.3)
+  - Locking filament/schemas (v4.9.3)
+  - Locking filament/support (v4.9.3)
+  - Locking filament/tables (v4.9.3)
+  - Locking filament/widgets (v4.9.3)
+  - Locking filp/whoops (2.18.4)
+  - Locking fruitcake/php-cors (v1.4.0)
+  - Locking graham-campbell/result-type (v1.1.4)
+  - Locking guzzlehttp/guzzle (7.10.0)
+  - Locking guzzlehttp/promises (2.3.0)
+  - Locking guzzlehttp/psr7 (2.9.0)
+  - Locking guzzlehttp/uri-template (v1.0.5)
+  - Locking hamcrest/hamcrest-php (v2.1.1)
+  - Locking kirschbaum-development/eloquent-power-joins (4.3.1)
+  - Locking knplabs/knp-snappy (v1.6.0)
+  - Locking laravel/framework (v12.56.0)
+  - Locking laravel/horizon (v5.45.5)
+  - Locking laravel/pint (v1.29.0)
+  - Locking laravel/prompts (v0.3.16)
+  - Locking laravel/sail (v1.56.0)
+  - Locking laravel/sanctum (v4.3.1)
+  - Locking laravel/sentinel (v1.1.0)
+  - Locking laravel/serializable-closure (v2.0.10)
+  - Locking laravel/tinker (v2.11.1)
+  - Locking league/commonmark (2.8.2)
+  - Locking league/config (v1.2.0)
+  - Locking league/csv (9.28.0)
+  - Locking league/flysystem (3.33.0)
+  - Locking league/flysystem-local (3.31.0)
+  - Locking league/mime-type-detection (1.16.0)
+  - Locking league/uri (7.8.1)
+  - Locking league/uri-components (7.8.1)
+  - Locking league/uri-interfaces (7.8.1)
+  - Locking livewire/livewire (v3.7.13)
+  - Locking masterminds/html5 (2.10.0)
+  - Locking mockery/mockery (1.6.12)
+  - Locking monolog/monolog (3.10.0)
+  - Locking myclabs/deep-copy (1.13.4)
+  - Locking nesbot/carbon (3.11.3)
+  - Locking nette/php-generator (v4.2.2)
+  - Locking nette/schema (v1.3.5)
+  - Locking nette/utils (v4.1.3)
+  - Locking nikic/php-parser (v5.7.0)
+  - Locking nunomaduro/collision (v8.9.2)
+  - Locking nunomaduro/termwind (v2.4.0)
+  - Locking openspout/openspout (v4.28.5)
+  - Locking owen-it/laravel-auditing (v14.0.3)
+  - Locking paragonie/constant_time_encoding (v3.1.3)
+  - Locking phar-io/manifest (2.0.4)
+  - Locking phar-io/version (3.2.1)
+  - Locking phpoption/phpoption (1.9.5)
+  - Locking phpunit/php-code-coverage (11.0.12)
+  - Locking phpunit/php-file-iterator (5.1.1)
+  - Locking phpunit/php-invoker (5.0.1)
+  - Locking phpunit/php-text-template (4.0.1)
+  - Locking phpunit/php-timer (7.0.1)
+  - Locking phpunit/phpunit (11.5.55)
+  - Locking pragmarx/google2fa (v9.0.0)
+  - Locking pragmarx/google2fa-qrcode (v3.0.0)
+  - Locking predis/predis (v3.4.2)
+  - Locking psr/clock (1.0.0)
+  - Locking psr/container (2.0.2)
+  - Locking psr/event-dispatcher (1.0.0)
+  - Locking psr/http-client (1.0.3)
+  - Locking psr/http-factory (1.1.0)
+  - Locking psr/http-message (2.0)
+  - Locking psr/log (3.0.2)
+  - Locking psr/simple-cache (3.0.0)
+  - Locking psy/psysh (v0.12.22)
+  - Locking ralouphie/getallheaders (3.0.3)
+  - Locking ramsey/collection (2.1.1)
+  - Locking ramsey/uuid (4.9.2)
+  - Locking sabberworm/php-css-parser (v9.3.0)
+  - Locking scrivo/highlight.php (v9.18.1.10)
+  - Locking sebastian/cli-parser (3.0.2)
+  - Locking sebastian/code-unit (3.0.3)
+  - Locking sebastian/code-unit-reverse-lookup (4.0.1)
+  - Locking sebastian/comparator (6.3.3)
+  - Locking sebastian/complexity (4.0.1)
+  - Locking sebastian/diff (6.0.2)
+  - Locking sebastian/environment (7.2.1)
+  - Locking sebastian/exporter (6.3.2)
+  - Locking sebastian/global-state (7.0.2)
+  - Locking sebastian/lines-of-code (3.0.1)
+  - Locking sebastian/object-enumerator (6.0.1)
+  - Locking sebastian/object-reflector (4.0.1)
+  - Locking sebastian/recursion-context (6.0.3)
+  - Locking sebastian/type (5.1.3)
+  - Locking sebastian/version (5.0.2)
+  - Locking spatie/backtrace (1.8.2)
+  - Locking spatie/error-solutions (1.1.3)
+  - Locking spatie/flare-client-php (1.11.0)
+  - Locking spatie/ignition (1.16.0)
+  - Locking spatie/invade (2.1.0)
+  - Locking spatie/laravel-ignition (2.12.0)
+  - Locking spatie/laravel-package-tools (1.93.0)
+  - Locking spatie/laravel-permission (6.25.0)
+  - Locking spatie/shiki-php (2.3.3)
+  - Locking staabm/side-effects-detector (1.0.5)
+  - Locking stancl/jobpipeline (v1.9.0)
+  - Locking stancl/tenancy (v3.10.0)
+  - Locking stancl/virtualcolumn (v1.5.0)
+  - Locking symfony/clock (v7.4.8)
+  - Locking symfony/console (v7.4.8)
+  - Locking symfony/css-selector (v7.4.8)
+  - Locking symfony/deprecation-contracts (v3.6.0)
+  - Locking symfony/error-handler (v7.4.8)
+  - Locking symfony/event-dispatcher (v7.4.8)
+  - Locking symfony/event-dispatcher-contracts (v3.6.0)
+  - Locking symfony/finder (v7.4.8)
+  - Locking symfony/html-sanitizer (v7.4.8)
+  - Locking symfony/http-foundation (v7.4.8)
+  - Locking symfony/http-kernel (v7.4.8)
+  - Locking symfony/mailer (v7.4.8)
+  - Locking symfony/mime (v7.4.8)
+  - Locking symfony/polyfill-ctype (v1.33.0)
+  - Locking symfony/polyfill-intl-grapheme (v1.33.0)
+  - Locking symfony/polyfill-intl-idn (v1.33.0)
+  - Locking symfony/polyfill-intl-normalizer (v1.33.0)
+  - Locking symfony/polyfill-mbstring (v1.33.0)
+  - Locking symfony/polyfill-php80 (v1.33.0)
+  - Locking symfony/polyfill-php83 (v1.33.0)
+  - Locking symfony/polyfill-php84 (v1.33.0)
+  - Locking symfony/polyfill-php85 (v1.33.0)
+  - Locking symfony/polyfill-uuid (v1.33.0)
+  - Locking symfony/process (v7.4.8)
+  - Locking symfony/routing (v7.4.8)
+  - Locking symfony/service-contracts (v3.6.1)
+  - Locking symfony/string (v7.4.8)
+  - Locking symfony/translation (v7.4.8)
+  - Locking symfony/translation-contracts (v3.6.1)
+  - Locking symfony/uid (v7.4.8)
+  - Locking symfony/var-dumper (v7.4.8)
+  - Locking symfony/yaml (v7.4.8)
+  - Locking thecodingmachine/safe (v3.4.0)
+  - Locking theseer/tokenizer (1.3.1)
+  - Locking tijsverkoyen/css-to-inline-styles (v2.4.0)
+  - Locking ueberdosis/tiptap-php (2.1.0)
+  - Locking vlucas/phpdotenv (v5.6.3)
+  - Locking voku/portable-ascii (2.0.3)
+Writing lock file
+Installing dependencies from lock file (including require-dev)
+Package operations: 165 installs, 0 updates, 0 removals
+  - Installing voku/portable-ascii (2.0.3): Extracting archive
+  - Installing symfony/polyfill-php80 (v1.33.0): Extracting archive
+  - Installing symfony/polyfill-mbstring (v1.33.0): Extracting archive
+  - Installing symfony/polyfill-ctype (v1.33.0): Extracting archive
+  - Installing phpoption/phpoption (1.9.5): Extracting archive
+  - Installing graham-campbell/result-type (v1.1.4): Extracting archive
+  - Installing vlucas/phpdotenv (v5.6.3): Extracting archive
+  - Installing symfony/css-selector (v7.4.8): Extracting archive
+  - Installing tijsverkoyen/css-to-inline-styles (v2.4.0): Extracting archive
+  - Installing symfony/deprecation-contracts (v3.6.0): Extracting archive
+  - Installing symfony/var-dumper (v7.4.8): Extracting archive
+  - Installing symfony/polyfill-uuid (v1.33.0): Extracting archive
+  - Installing symfony/uid (v7.4.8): Extracting archive
+  - Installing symfony/routing (v7.4.8): Extracting archive
+  - Installing symfony/process (v7.4.8): Extracting archive
+  - Installing symfony/polyfill-php85 (v1.33.0): Extracting archive
+  - Installing symfony/polyfill-php84 (v1.33.0): Extracting archive
+  - Installing symfony/polyfill-php83 (v1.33.0): Extracting archive
+  - Installing symfony/polyfill-intl-normalizer (v1.33.0): Extracting archive
+  - Installing symfony/polyfill-intl-idn (v1.33.0): Extracting archive
+  - Installing symfony/mime (v7.4.8): Extracting archive
+  - Installing psr/container (2.0.2): Extracting archive
+  - Installing symfony/service-contracts (v3.6.1): Extracting archive
+  - Installing psr/event-dispatcher (1.0.0): Extracting archive
+  - Installing symfony/event-dispatcher-contracts (v3.6.0): Extracting archive
+  - Installing symfony/event-dispatcher (v7.4.8): Extracting archive
+  - Installing psr/log (3.0.2): Extracting archive
+  - Installing doctrine/lexer (3.0.1): Extracting archive
+  - Installing egulias/email-validator (4.0.4): Extracting archive
+  - Installing symfony/mailer (v7.4.8): Extracting archive
+  - Installing symfony/http-foundation (v7.4.8): Extracting archive
+  - Installing symfony/error-handler (v7.4.8): Extracting archive
+  - Installing symfony/http-kernel (v7.4.8): Extracting archive
+  - Installing symfony/finder (v7.4.8): Extracting archive
+  - Installing symfony/polyfill-intl-grapheme (v1.33.0): Extracting archive
+  - Installing symfony/string (v7.4.8): Extracting archive
+  - Installing symfony/console (v7.4.8): Extracting archive
+  - Installing ramsey/collection (2.1.1): Extracting archive
+  - Installing brick/math (0.14.8): Extracting archive
+  - Installing ramsey/uuid (4.9.2): Extracting archive
+  - Installing psr/simple-cache (3.0.0): Extracting archive
+  - Installing nunomaduro/termwind (v2.4.0): Extracting archive
+  - Installing symfony/translation-contracts (v3.6.1): Extracting archive
+  - Installing symfony/translation (v7.4.8): Extracting archive
+  - Installing psr/clock (1.0.0): Extracting archive
+  - Installing symfony/clock (v7.4.8): Extracting archive
+  - Installing carbonphp/carbon-doctrine-types (3.2.0): Extracting archive
+  - Installing nesbot/carbon (3.11.3): Extracting archive
+  - Installing monolog/monolog (3.10.0): Extracting archive
+  - Installing psr/http-message (2.0): Extracting archive
+  - Installing psr/http-factory (1.1.0): Extracting archive
+  - Installing league/uri-interfaces (7.8.1): Extracting archive
+  - Installing league/uri (7.8.1): Extracting archive
+  - Installing league/mime-type-detection (1.16.0): Extracting archive
+  - Installing league/flysystem-local (3.31.0): Extracting archive
+  - Installing league/flysystem (3.33.0): Extracting archive
+  - Installing nette/utils (v4.1.3): Extracting archive
+  - Installing nette/schema (v1.3.5): Extracting archive
+  - Installing dflydev/dot-access-data (v3.0.3): Extracting archive
+  - Installing league/config (v1.2.0): Extracting archive
+  - Installing league/commonmark (2.8.2): Extracting archive
+  - Installing laravel/serializable-closure (v2.0.10): Extracting archive
+  - Installing laravel/prompts (v0.3.16): Extracting archive
+  - Installing guzzlehttp/uri-template (v1.0.5): Extracting archive
+  - Installing psr/http-client (1.0.3): Extracting archive
+  - Installing ralouphie/getallheaders (3.0.3): Extracting archive
+  - Installing guzzlehttp/psr7 (2.9.0): Extracting archive
+  - Installing guzzlehttp/promises (2.3.0): Extracting archive
+  - Installing guzzlehttp/guzzle (7.10.0): Extracting archive
+  - Installing fruitcake/php-cors (v1.4.0): Extracting archive
+  - Installing dragonmantank/cron-expression (v3.6.0): Extracting archive
+  - Installing doctrine/inflector (2.1.0): Extracting archive
+  - Installing laravel/framework (v12.56.0): Extracting archive
+  - Installing masterminds/html5 (2.10.0): Extracting archive
+  - Installing thecodingmachine/safe (v3.4.0): Extracting archive
+  - Installing sabberworm/php-css-parser (v9.3.0): Extracting archive
+  - Installing dompdf/php-svg-lib (1.0.2): Extracting archive
+  - Installing dompdf/php-font-lib (1.0.2): Extracting archive
+  - Installing dompdf/dompdf (v3.1.5): Extracting archive
+  - Installing barryvdh/laravel-dompdf (v3.1.2): Extracting archive
+  - Installing knplabs/knp-snappy (v1.6.0): Extracting archive
+  - Installing barryvdh/laravel-snappy (v1.0.5): Extracting archive
+  - Installing blade-ui-kit/blade-icons (1.9.0): Extracting archive
+  - Installing blade-ui-kit/blade-heroicons (2.7.0): Extracting archive
+  - Installing chillerlan/php-settings-container (3.3.0): Extracting archive
+  - Installing danharrin/date-format-converter (v0.3.1): Extracting archive
+  - Installing danharrin/livewire-rate-limiting (v2.2.0): Extracting archive
+  - Installing fakerphp/faker (v1.24.1): Extracting archive
+  - Installing paragonie/constant_time_encoding (v3.1.3): Extracting archive
+  - Installing pragmarx/google2fa (v9.0.0): Extracting archive
+  - Installing pragmarx/google2fa-qrcode (v3.0.0): Extracting archive
+  - Installing symfony/html-sanitizer (v7.4.8): Extracting archive
+  - Installing spatie/laravel-package-tools (1.93.0): Extracting archive
+  - Installing spatie/invade (2.1.0): Extracting archive
+  - Installing nette/php-generator (v4.2.2): Extracting archive
+  - Installing livewire/livewire (v3.7.13): Extracting archive
+  - Installing league/uri-components (7.8.1): Extracting archive
+  - Installing kirschbaum-development/eloquent-power-joins (4.3.1): Extracting archive
+  - Installing filament/support (v4.9.3): Extracting archive
+  - Installing openspout/openspout (v4.28.5): Extracting archive
+  - Installing league/csv (9.28.0): Extracting archive
+  - Installing filament/actions (v4.9.3): Extracting archive
+  - Installing filament/notifications (v4.9.3): Extracting archive
+  - Installing filament/schemas (v4.9.3): Extracting archive
+  - Installing filament/infolists (v4.9.3): Extracting archive
+  - Installing spatie/shiki-php (2.3.3): Extracting archive
+  - Installing scrivo/highlight.php (v9.18.1.10): Extracting archive
+  - Installing ueberdosis/tiptap-php (2.1.0): Extracting archive
+  - Installing filament/forms (v4.9.3): Extracting archive
+  - Installing filament/widgets (v4.9.3): Extracting archive
+  - Installing filament/query-builder (v4.9.3): Extracting archive
+  - Installing filament/tables (v4.9.3): Extracting archive
+  - Installing chillerlan/php-qrcode (5.0.5): Extracting archive
+  - Installing filament/filament (v4.9.3): Extracting archive
+  - Installing laravel/sentinel (v1.1.0): Extracting archive
+  - Installing laravel/horizon (v5.45.5): Extracting archive
+  - Installing laravel/pint (v1.29.0): Extracting archive
+  - Installing symfony/yaml (v7.4.8): Extracting archive
+  - Installing laravel/sail (v1.56.0): Extracting archive
+  - Installing laravel/sanctum (v4.3.1): Extracting archive
+  - Installing nikic/php-parser (v5.7.0): Extracting archive
+  - Installing psy/psysh (v0.12.22): Extracting archive
+  - Installing laravel/tinker (v2.11.1): Extracting archive
+  - Installing hamcrest/hamcrest-php (v2.1.1): Extracting archive
+  - Installing mockery/mockery (1.6.12): Extracting archive
+  - Installing filp/whoops (2.18.4): Extracting archive
+  - Installing nunomaduro/collision (v8.9.2): Extracting archive
+  - Installing owen-it/laravel-auditing (v14.0.3): Extracting archive
+  - Installing staabm/side-effects-detector (1.0.5): Extracting archive
+  - Installing sebastian/version (5.0.2): Extracting archive
+  - Installing sebastian/type (5.1.3): Extracting archive
+  - Installing sebastian/recursion-context (6.0.3): Extracting archive
+  - Installing sebastian/object-reflector (4.0.1): Extracting archive
+  - Installing sebastian/object-enumerator (6.0.1): Extracting archive
+  - Installing sebastian/global-state (7.0.2): Extracting archive
+  - Installing sebastian/exporter (6.3.2): Extracting archive
+  - Installing sebastian/environment (7.2.1): Extracting archive
+  - Installing sebastian/diff (6.0.2): Extracting archive
+  - Installing sebastian/comparator (6.3.3): Extracting archive
+  - Installing sebastian/code-unit (3.0.3): Extracting archive
+  - Installing sebastian/cli-parser (3.0.2): Extracting archive
+  - Installing phpunit/php-timer (7.0.1): Extracting archive
+  - Installing phpunit/php-text-template (4.0.1): Extracting archive
+  - Installing phpunit/php-invoker (5.0.1): Extracting archive
+  - Installing phpunit/php-file-iterator (5.1.1): Extracting archive
+  - Installing theseer/tokenizer (1.3.1): Extracting archive
+  - Installing sebastian/lines-of-code (3.0.1): Extracting archive
+  - Installing sebastian/complexity (4.0.1): Extracting archive
+  - Installing sebastian/code-unit-reverse-lookup (4.0.1): Extracting archive
+  - Installing phpunit/php-code-coverage (11.0.12): Extracting archive
+  - Installing phar-io/version (3.2.1): Extracting archive
+  - Installing phar-io/manifest (2.0.4): Extracting archive
+  - Installing myclabs/deep-copy (1.13.4): Extracting archive
+  - Installing phpunit/phpunit (11.5.55): Extracting archive
+  - Installing predis/predis (v3.4.2): Extracting archive
+  - Installing spatie/error-solutions (1.1.3): Extracting archive
+  - Installing spatie/backtrace (1.8.2): Extracting archive
+  - Installing spatie/flare-client-php (1.11.0): Extracting archive
+  - Installing spatie/ignition (1.16.0): Extracting archive
+  - Installing spatie/laravel-ignition (2.12.0): Extracting archive
+  - Installing spatie/laravel-permission (6.25.0): Extracting archive
+  - Installing stancl/virtualcolumn (v1.5.0): Extracting archive
+  - Installing stancl/jobpipeline (v1.9.0): Extracting archive
+  - Installing facade/ignition-contracts (1.0.2): Extracting archive
+  - Installing stancl/tenancy (v3.10.0): Extracting archive
+  98/165 [================>-----------]  59%    Install of nesbot/carbon failed
+    Install of laravel/framework failed
+    Install of blade-ui-kit/blade-heroicons failed
+    Install of fakerphp/faker failed
+    Install of filament/support failed
+    Install of filament/actions failed
+    Install of filament/schemas failed
+    Install of filament/infolists failed
+    Install of scrivo/highlight.php failed
+    Install of ueberdosis/tiptap-php failed
+The following exception is caused by a process timeout
+Check https://getcomposer.org/doc/06-config.md#process-timeout for details
+
+In Process.php line 1205:
+
+  The process "'/usr/bin/unzip' '-qq' '/var/www/html/vendor/composer/tmp-39311d53d991d18e7aaaefc10ac2924f.zip' '-d' '
+  /var/www/html/vendor/composer/2cb14f18'" exceeded the timeout of 300 seconds.
+
+
+install [--prefer-source] [--prefer-dist] [--prefer-install PREFER-INSTALL] [--dry-run] [--download-only] [--dev] [--no-suggest] [--no-dev] [--no-security-blocking] [--no-autoloader] [--no-progress] [--no-install] [--audit] [--audit-format AUDIT-FORMAT] [-v|vv|vvv|--verbose] [-o|--optimize-autoloader] [-a|--classmap-authoritative] [--apcu-autoloader] [--apcu-autoloader-prefix APCU-AUTOLOADER-PREFIX] [--ignore-platform-req IGNORE-PLATFORM-REQ] [--ignore-platform-reqs] [--] [<packages>...]
+
+
+C:\Users\jessy\Desktop\saaas\saaas>composer install
+Installing dependencies from lock file (including require-dev)
+Verifying lock file contents can be installed on current platform.
+Your lock file does not contain a compatible set of packages. Please run composer update.
+
+  Problem 1
+    - laravel/horizon is locked to version v5.45.5 and an update of this package was not requested.
+    - laravel/horizon v5.45.5 requires ext-pcntl * -> it is missing from your system. Install or enable PHP's pcntl extension.
+
+To enable extensions, verify that they are enabled in your .ini files:
+    - C:\xampp\php\php.ini
+You can also run `php --ini` in a terminal to see which files are used by PHP in CLI mode.
+Alternatively, you can run Composer with `--ignore-platform-req=ext-pcntl` to temporarily ignore these required extensions.
+
+C:\Users\jessy\Desktop\saaas\saaas>php composer install
+
+C:\Users\jessy\Desktop\saaas\saaas>composer install --ignore-platform-req=ext-pcntl
+Installing dependencies from lock file (including require-dev)
+Verifying lock file contents can be installed on current platform.
+Your lock file does not contain a compatible set of packages. Please run composer update.
+
+  Problem 1
+    - laravel/horizon is locked to version v5.45.5 and an update of this package was not requested.
+    - laravel/horizon v5.45.5 requires ext-posix * -> it is missing from your system. Install or enable PHP's posix extension.
+
+To enable extensions, verify that they are enabled in your .ini files:
+    - C:\xampp\php\php.ini
+You can also run `php --ini` in a terminal to see which files are used by PHP in CLI mode.
+Alternatively, you can run Composer with `--ignore-platform-req=ext-posix` to temporarily ignore these required extensions.
+
+C:\Users\jessy\Desktop\saaas\saaas>composer install --ignore-platform-reqs
+Installing dependencies from lock file (including require-dev)
+Verifying lock file contents can be installed on current platform.
+Package operations: 67 installs, 0 updates, 0 removals
+  - Downloading filament/support (v4.9.3)
+  - Downloading filament/schemas (v4.9.3)
+  - Downloading filament/infolists (v4.9.3)
+  - Downloading filament/forms (v4.9.3)
+  - Downloading filament/widgets (v4.9.3)
+  - Downloading filament/query-builder (v4.9.3)
+  - Downloading filament/tables (v4.9.3)
+  - Downloading laravel/sentinel (v1.1.0)
+  - Downloading laravel/horizon (v5.45.5)
+  - Downloading symfony/yaml (v7.4.8)
+  - Downloading laravel/sail (v1.56.0)
+  - Downloading psy/psysh (v0.12.22)
+  - Downloading nunomaduro/collision (v8.9.2)
+  - Downloading owen-it/laravel-auditing (v14.0.3)
+  - Installing nesbot/carbon (3.11.3): Extracting archive
+  - Installing laravel/framework (v12.56.0): Extracting archive
+  - Installing blade-ui-kit/blade-heroicons (2.7.0): Extracting archive
+  - Installing fakerphp/faker (v1.24.1): Extracting archive
+  - Installing filament/support (v4.9.3): Extracting archive
+  - Installing filament/actions (v4.9.3): Extracting archive
+  - Installing filament/schemas (v4.9.3): Extracting archive
+  - Installing filament/infolists (v4.9.3): Extracting archive
+  - Installing scrivo/highlight.php (v9.18.1.10): Extracting archive
+  - Installing ueberdosis/tiptap-php (2.1.0): Extracting archive
+  - Installing filament/forms (v4.9.3): Extracting archive
+  - Installing filament/widgets (v4.9.3): Extracting archive
+  - Installing filament/query-builder (v4.9.3): Extracting archive
+  - Installing filament/tables (v4.9.3): Extracting archive
+  - Installing chillerlan/php-qrcode (5.0.5): Extracting archive
+  - Installing filament/filament (v4.9.3): Extracting archive
+  - Installing laravel/sentinel (v1.1.0): Extracting archive
+  - Installing laravel/horizon (v5.45.5): Extracting archive
+  - Installing laravel/pint (v1.29.0): Extracting archive
+  - Installing symfony/yaml (v7.4.8): Extracting archive
+  - Installing laravel/sail (v1.56.0): Extracting archive
+  - Installing laravel/sanctum (v4.3.1): Extracting archive
+  - Installing nikic/php-parser (v5.7.0): Extracting archive
+  - Installing psy/psysh (v0.12.22): Extracting archive
+  - Installing laravel/tinker (v2.11.1): Extracting archive
+  - Installing hamcrest/hamcrest-php (v2.1.1): Extracting archive
+  - Installing mockery/mockery (1.6.12): Extracting archive
+  - Installing filp/whoops (2.18.4): Extracting archive
+  - Installing nunomaduro/collision (v8.9.2): Extracting archive
+  - Installing owen-it/laravel-auditing (v14.0.3): Extracting archive
+  - Installing staabm/side-effects-detector (1.0.5): Extracting archive
+  - Installing sebastian/version (5.0.2): Extracting archive
+  - Installing sebastian/type (5.1.3): Extracting archive
+  - Installing sebastian/recursion-context (6.0.3): Extracting archive
+  - Installing sebastian/object-reflector (4.0.1): Extracting archive
+  - Installing sebastian/object-enumerator (6.0.1): Extracting archive
+  - Installing sebastian/global-state (7.0.2): Extracting archive
+  - Installing sebastian/exporter (6.3.2): Extracting archive
+  - Installing sebastian/environment (7.2.1): Extracting archive
+  - Installing sebastian/diff (6.0.2): Extracting archive
+  - Installing sebastian/comparator (6.3.3): Extracting archive
+  - Installing sebastian/code-unit (3.0.3): Extracting archive
+  - Installing sebastian/cli-parser (3.0.2): Extracting archive
+  - Installing phpunit/php-timer (7.0.1): Extracting archive
+  - Installing phpunit/php-text-template (4.0.1): Extracting archive
+  - Installing phpunit/php-invoker (5.0.1): Extracting archive
+  - Installing phpunit/php-file-iterator (5.1.1): Extracting archive
+  - Installing theseer/tokenizer (1.3.1): Extracting archive
+  - Installing sebastian/lines-of-code (3.0.1): Extracting archive
+  - Installing sebastian/complexity (4.0.1): Extracting archive
+  - Installing sebastian/code-unit-reverse-lookup (4.0.1): Extracting archive
+  - Installing phpunit/php-code-coverage (11.0.12): Extracting archive
+  - Installing phar-io/version (3.2.1): Extracting archive
+  - Installing phar-io/manifest (2.0.4): Extracting archive
+  - Installing myclabs/deep-copy (1.13.4): Extracting archive
+  - Installing phpunit/phpunit (11.5.55): Extracting archive
+  - Installing predis/predis (v3.4.2): Extracting archive
+  - Installing spatie/error-solutions (1.1.3): Extracting archive
+  - Installing spatie/backtrace (1.8.2): Extracting archive
+  - Installing spatie/flare-client-php (1.11.0): Extracting archive
+  - Installing spatie/ignition (1.16.0): Extracting archive
+  - Installing spatie/laravel-ignition (2.12.0): Extracting archive
+  - Installing spatie/laravel-permission (6.25.0): Extracting archive
+  - Installing stancl/virtualcolumn (v1.5.0): Extracting archive
+  - Installing stancl/jobpipeline (v1.9.0): Extracting archive
+  - Installing facade/ignition-contracts (1.0.2): Extracting archive
+  - Installing stancl/tenancy (v3.10.0): Extracting archive
+Generating optimized autoload files
+Class App\Utils\AppUtils located in ./app/Models/AppUtils.php does not comply with psr-4 autoloading standard (rule: App\ => ./app). Skipping.
+> Illuminate\Foundation\ComposerScripts::postAutoloadDump
+> @php artisan package:discover --ansi
+
+   INFO  Discovering packages.
+
+  barryvdh/laravel-dompdf ..................................................................................................................... DONE
+  barryvdh/laravel-snappy ..................................................................................................................... DONE
+  blade-ui-kit/blade-heroicons ................................................................................................................ DONE
+  blade-ui-kit/blade-icons .................................................................................................................... DONE
+  filament/actions ............................................................................................................................ DONE
+  filament/filament ........................................................................................................................... DONE
+  filament/forms .............................................................................................................................. DONE
+  filament/infolists .......................................................................................................................... DONE
+  filament/notifications ...................................................................................................................... DONE
+  filament/query-builder ...................................................................................................................... DONE
+  filament/schemas ............................................................................................................................ DONE
+  filament/support ............................................................................................................................ DONE
+  filament/tables ............................................................................................................................. DONE
+  filament/widgets ............................................................................................................................ DONE
+  kirschbaum-development/eloquent-power-joins ................................................................................................. DONE
+  laravel/horizon ............................................................................................................................. DONE
+  laravel/sail ................................................................................................................................ DONE
+  laravel/sanctum ............................................................................................................................. DONE
+  laravel/sentinel ............................................................................................................................ DONE
+  laravel/tinker .............................................................................................................................. DONE
+  livewire/livewire ........................................................................................................................... DONE
+  nesbot/carbon ............................................................................................................................... DONE
+  nunomaduro/collision ........................................................................................................................ DONE
+  nunomaduro/termwind ......................................................................................................................... DONE
+  owen-it/laravel-auditing .................................................................................................................... DONE
+  spatie/laravel-ignition ..................................................................................................................... DONE
+  spatie/laravel-permission ................................................................................................................... DONE
+  stancl/tenancy .............................................................................................................................. DONE
+
+> @php artisan filament:upgrade
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\js\filament\forms\components\checkbox-list.js
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\js\filament\forms\components\code-editor.js
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\js\filament\forms\components\color-picker.js
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\js\filament\forms\components\date-time-picker.js
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\js\filament\forms\components\file-upload.js
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\js\filament\forms\components\key-value.js
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\js\filament\forms\components\markdown-editor.js
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\js\filament\forms\components\rich-editor.js
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\js\filament\forms\components\select.js
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\js\filament\forms\components\slider.js
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\js\filament\forms\components\tags-input.js
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\js\filament\forms\components\textarea.js
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\js\filament\schemas\components\actions.js
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\js\filament\schemas\components\tabs.js
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\js\filament\schemas\components\wizard.js
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\js\filament\tables\components\columns\checkbox.js
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\js\filament\tables\components\columns\select.js
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\js\filament\tables\components\columns\text-input.js
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\js\filament\tables\components\columns\toggle.js
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\js\filament\widgets\components\chart.js
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\js\filament\widgets\components\stats-overview\stat\chart.js
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\fonts\filament\filament\inter\index.css
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\fonts\filament\filament\inter\inter-cyrillic-ext-wght-normal-IYF56FF6.woff2
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\fonts\filament\filament\inter\inter-cyrillic-wght-normal-JEOLYBOO.woff2
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\fonts\filament\filament\inter\inter-greek-ext-wght-normal-EOVOK2B5.woff2
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\fonts\filament\filament\inter\inter-greek-wght-normal-IRE366VL.woff2
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\fonts\filament\filament\inter\inter-latin-ext-wght-normal-HA22NDSG.woff2
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\fonts\filament\filament\inter\inter-latin-wght-normal-NRMW37G5.woff2
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\fonts\filament\filament\inter\inter-vietnamese-wght-normal-CE5GGD3W.woff2
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\js\filament\actions\actions.js
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\js\filament\filament\app.js
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\js\filament\filament\echo.js
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\js\filament\notifications\notifications.js
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\js\filament\schemas\schemas.js
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\js\filament\support\support.js
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\js\filament\tables\tables.js
+  ⇂ C:\Users\jessy\Desktop\saaas\saaas\public\css\filament\filament\app.css
+
+   INFO  Successfully published assets!
+
+   INFO  Configuration cache cleared successfully.
+
+   INFO  Route cache cleared successfully.
+
+   INFO  Compiled views cleared successfully.
+
+   INFO  Successfully upgraded!
+
+108 packages you are using are looking for funding.
+Use the `composer fund` command to find out more!
+
+C:\Users\jessy\Desktop\saaas\saaas>docker compose exec php php artisan key:generate
+
+   INFO  Application key set successfully.
+
+
+C:\Users\jessy\Desktop\saaas\saaas>docker compose exec php php artisan migrate
+
+   INFO  Running migrations.
+
+  2026_03_31_211437_make_phone_number_nullable_in_users_table ........................................................................ 393.98ms FAIL
+
+   Illuminate\Database\QueryException
+
+  SQLSTATE[0A000]: Feature not supported: 7 ERROR:  alter table command is currently unsupported
+DETAIL:  Only ADD|DROP COLUMN, SET|DROP NOT NULL, SET|DROP DEFAULT, ADD|DROP|VALIDATE CONSTRAINT, SET (), RESET (), ENABLE|DISABLE|NO FORCE|FORCE ROW LEVEL SECURITY, ATTACH|DETACH PARTITION and TYPE subcommands are supported. (Connection: pgsql, Host: citus-coordinator, Port: 5432, Database: propman, SQL: alter table "users" alter column "phone_number" type varchar(255), alter column "phone_number" drop not null, alter column "phone_number" drop default, alter column "phone_number" drop identity if exists)
+
+  at vendor/laravel/framework/src/Illuminate/Database/Connection.php:838
+    834▕             $exceptionType = $this->isUniqueConstraintError($e)
+    835▕                 ? UniqueConstraintViolationException::class
+    836▕                 : QueryException::class;
+    837▕
+  ➜ 838▕             throw new $exceptionType(
+    839▕                 $this->getNameWithReadWriteType(),
+    840▕                 $query,
+    841▕                 $this->prepareBindings($bindings),
+    842▕                 $e,
+
+      +9 vendor frames
+
+  10  database/migrations/2026_03_31_211437_make_phone_number_nullable_in_users_table.php:11
+      Illuminate\Support\Facades\Facade::__callStatic("table")
+      +26 vendor frames
+
+  37  artisan:35
+      Illuminate\Foundation\Console\Kernel::handle(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+
+
+C:\Users\jessy\Desktop\saaas\saaas>docker compose exec php php artisan migrate
+
+   INFO  Running migrations.
+
+  2026_03_31_211437_make_phone_number_nullable_in_users_table ........................................................................ 254.37ms FAIL
+
+   Illuminate\Database\QueryException
+
+  SQLSTATE[08006]: Connection failure: 7 ERROR:  connection to the remote node postgres@citus-worker-1:5432 failed with the following error: fe_sendauth: no password supplied (Connection: pgsql, Host: citus-coordinator, Port: 5432, Database: propman, SQL: ALTER TABLE users ALTER COLUMN phone_number DROP NOT NULL)
+
+  at vendor/laravel/framework/src/Illuminate/Database/Connection.php:838
+    834▕             $exceptionType = $this->isUniqueConstraintError($e)
+    835▕                 ? UniqueConstraintViolationException::class
+    836▕                 : QueryException::class;
+    837▕
+  ➜ 838▕             throw new $exceptionType(
+    839▕                 $this->getNameWithReadWriteType(),
+    840▕                 $query,
+    841▕                 $this->prepareBindings($bindings),
+    842▕                 $e,
+
+      +7 vendor frames
+
+  8   database/migrations/2026_03_31_211437_make_phone_number_nullable_in_users_table.php:12
+      Illuminate\Support\Facades\Facade::__callStatic("statement")
+      +26 vendor frames
+
+  35  artisan:35
+      Illuminate\Foundation\Console\Kernel::handle(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+
+
+C:\Users\jessy\Desktop\saaas\saaas>docker compose exec citus-coordinator psql -U postgres -d propman -c "INSERT INTO pg_dist_authinfo (nodeid, rolename, authinfo) SELECT nodeid, 'postgres', 'password=postgres' FROM pg_dist_node WHERE isactive = true ON CONFLICT (nodeid, rolename) DO UPDATE SET authinfo = EXCLUDED.authinfo;"
+INSERT 0 2
+
+C:\Users\jessy\Desktop\saaas\saaas>docker compose exec php php artisan migrate
+
+   INFO  Running migrations.
+
+  2026_03_31_211437_make_phone_number_nullable_in_users_table ........................................................................ 327.63ms DONE
+  2026_03_31_215411_add_type_and_flags_to_domains_table .............................................................................. 176.37ms DONE
+  2026_04_01_194718_create_sessions_table ............................................................................................. 83.76ms DONE
+
+
+C:\Users\jessy\Desktop\saaas\saaas>docker compose exec php php artisan migrate --status
+
+
+  The "--status" option does not exist.
+
+
+
+C:\Users\jessy\Desktop\saaas\saaas>docker compose exec php php artisan migrate:status
+
+  Migration name .................................................................................................................... Batch / Status
+  2014_10_12_000000_create_users_table ..................................................................................................... [1] Ran
+  2014_10_12_100000_create_password_reset_tokens_table ..................................................................................... [1] Ran
+  2019_08_19_000000_create_failed_jobs_table ............................................................................................... [1] Ran
+  2019_12_14_000001_create_personal_access_tokens_table .................................................................................... [1] Ran
+  2023_09_22_102005_create_ref_property_types_table ........................................................................................ [1] Ran
+  2023_09_23_094352_create_audits_table .................................................................................................... [1] Ran
+  2023_09_23_094456_create_permission_tables ............................................................................................... [1] Ran
+  2023_09_23_101727_create_properties_table ................................................................................................ [1] Ran
+  2023_09_23_102429_create_ref_unit_types_table ............................................................................................ [1] Ran
+  2023_09_23_102618_create_ref_payment_types_table ......................................................................................... [1] Ran
+  2023_09_23_102718_create_ref_billing_types_table ......................................................................................... [1] Ran
+  2023_09_23_103511_create_ref_tenancy_agreement_types_table ............................................................................... [1] Ran
+  2023_09_23_103917_create_tenants_table ................................................................................................... [1] Ran
+  2023_09_23_104103_create_units_table ..................................................................................................... [1] Ran
+  2023_09_23_104457_create_tenancy_agreements_table ........................................................................................ [1] Ran
+  2023_09_23_105259_create_invoices_table .................................................................................................. [1] Ran
+  2023_09_23_105503_create_ref_utilities_table ............................................................................................. [1] Ran
+  2023_09_23_105700_create_property_utilities_table ........................................................................................ [1] Ran
+  2023_09_23_105902_create_services_table .................................................................................................. [1] Ran
+  2023_09_23_110032_create_property_services_table ......................................................................................... [1] Ran
+  2023_09_23_110256_create_tenancy_bills_table ............................................................................................. [1] Ran
+  2023_09_23_111551_create_meter_readings_table ............................................................................................ [1] Ran
+  2023_10_20_075810_create_credit_notes_table .............................................................................................. [1] Ran
+  2023_10_25_133832_create_vacation_notices_table .......................................................................................... [1] Ran
+  2023_12_06_104512_create_unit_occupation_monthly_records_table ........................................................................... [1] Ran
+  2023_12_14_055144_create_sent_emails_table ............................................................................................... [1] Ran
+  2023_12_14_123914_create_email_attachments_table ......................................................................................... [1] Ran
+  2023_12_14_133459_create_jobs_table ...................................................................................................... [1] Ran
+  2023_12_31_043603_create_tenancy_agreement_files_table ................................................................................... [1] Ran
+  2024_01_01_165342_create_escalation_rates_and_amounts_logs_table ......................................................................... [1] Ran
+  2024_04_02_091222_create_property_payment_details_table .................................................................................. [1] Ran
+  2024_04_14_131043_create_property_owners_table ........................................................................................... [1] Ran
+  2024_04_17_124319_create_clients_table ................................................................................................... [1] Ran
+  2024_04_17_125311_create_invoice_payments_table .......................................................................................... [1] Ran
+  2024_04_17_125326_create_manual_invoices_table ........................................................................................... [1] Ran
+  2024_04_17_144230_create_manual_invoice_items_table ...................................................................................... [1] Ran
+  2024_10_14_154728_create_job_batches_table ............................................................................................... [1] Ran
+  2024_10_14_154801_create_imports_table ................................................................................................... [1] Ran
+  2024_10_14_154802_create_failed_import_rows_table ........................................................................................ [1] Ran
+  2024_10_14_193947_create_company_details_table ........................................................................................... [1] Ran
+  2024_10_15_170242_create_exports_table ................................................................................................... [1] Ran
+  2024_10_17_124305_create_notifications_table ............................................................................................. [1] Ran
+  2024_10_24_202916_create_property_management_users_table ................................................................................. [1] Ran
+  2025_01_01_000001_create_plans_table ..................................................................................................... [1] Ran
+  2025_01_01_000002_create_saas_clients_table .............................................................................................. [1] Ran
+  2025_01_01_000003_create_domains_table ................................................................................................... [1] Ran
+  2025_01_01_000004_create_saas_client_users_table ......................................................................................... [1] Ran
+  2025_01_01_000005_create_subscriptions_table ............................................................................................. [1] Ran
+  2025_01_01_000006_create_subscription_payments_table ..................................................................................... [1] Ran
+  2025_01_01_000010_distribute_tables_via_citus ............................................................................................ [1] Ran
+  2025_04_10_191246_create_filament_otp_login_table ........................................................................................ [1] Ran
+  2026_03_24_200204_create_system_admins_table ............................................................................................. [1] Ran
+  2026_03_25_135737_add_tenant_id_to_tables ................................................................................................ [1] Ran
+  2026_03_25_171136_create_support_tickets_table ........................................................................................... [1] Ran
+  2026_03_26_151817_add_limits_to_plans_table .............................................................................................. [1] Ran
+  2026_03_26_192632_remove_domain_from_saas_clients_table .................................................................................. [1] Ran
+  2026_03_27_000001_add_saas_client_id_to_queue_tables ..................................................................................... [1] Ran
+  2026_03_28_102549_add_suspension_fields_to_saas_clients_table ............................................................................ [1] Ran
+  2026_03_28_105514_add_saas_client_id_to_company_details_tabl ............................................................................. [1] Ran
+  2026_03_28_123539_add_grace_period_to_subscriptions_table ................................................................................ [1] Ran
+  2026_03_28_130245_create_usage_metrics_table ............................................................................................. [1] Ran
+  2026_03_28_193955_add_email_to_saas_clients_table ........................................................................................ [1] Ran
+  2026_03_30_080617_enable_rls_policies .................................................................................................... [1] Ran
+  2026_03_31_211437_make_phone_number_nullable_in_users_table .............................................................................. [3] Ran
+  2026_03_31_215411_add_type_and_flags_to_domains_table .................................................................................... [3] Ran
+  2026_04_01_194718_create_sessions_table .................................................................................................. [3] Ran
+
+
+C:\Users\jessy\Desktop\saaas\saaas>docker compose exec php php artisan db:seed
+
+   INFO  Seeding database.
+
+  Database\Seeders\SystemAdminAccountSeeder ................................................................................................ RUNNING
+  Database\Seeders\SystemAdminAccountSeeder ............................................................................................ 469 ms DONE
+
+  Database\Seeders\SystemAdminSeeder ....................................................................................................... RUNNING
+  Database\Seeders\SystemAdminSeeder ................................................................................................... 782 ms DONE
+
+  Database\Seeders\PermissionsSeeder ....................................................................................................... RUNNING
+  Database\Seeders\PermissionsSeeder ................................................................................................... 980 ms DONE
+
+  Database\Seeders\UserSeeder .............................................................................................................. RUNNING
+
+   Illuminate\Database\UniqueConstraintViolationException
+
+  SQLSTATE[23505]: Unique violation: 7 ERROR:  duplicate key value violates unique constraint "users_email_unique_102034"
+DETAIL:  Key (email, saas_client_id)=(lancerbrian001@gmail.com, 9dcd26ff-5074-4206-9594-22cdac8f55ad) already exists.
+CONTEXT:  while executing command on citus-worker-2:5432 (Connection: pgsql, Host: citus-coordinator, Port: 5432, Database: propman, SQL: insert into "users" ("name", "email", "phone_number", "password", "email_verified_at", "saas_client_id", "created_at", "updated_at") values (Test User, lancerbrian001@gmail.com, 08123456789, $2y$10$N1ANiJF7xIIqe4oaIoB9buFBjMQWREMvIE4S0xXPCSM3c4.VCMyi., 2026-04-01 21:53:41, 9dcd26ff-5074-4206-9594-22cdac8f55ad, 2026-04-01 21:53:41, 2026-04-01 21:53:41))
+
+  at vendor/laravel/framework/src/Illuminate/Database/Connection.php:838
+    834▕             $exceptionType = $this->isUniqueConstraintError($e)
+    835▕                 ? UniqueConstraintViolationException::class
+    836▕                 : QueryException::class;
+    837▕
+  ➜ 838▕             throw new $exceptionType(
+    839▕                 $this->getNameWithReadWriteType(),
+    840▕                 $query,
+    841▕                 $this->prepareBindings($bindings),
+    842▕                 $e,
+
+      +7 vendor frames
+
+  8   database/seeders/UserSeeder.php:16
+      Illuminate\Database\Query\Builder::insert()
+      +8 vendor frames
+
+  17  database/seeders/DatabaseSeeder.php:53
+      Illuminate\Database\Seeder::call("Database\Seeders\UserSeeder")
+
+
+C:\Users\jessy\Desktop\saaas\saaas>git pull
+remote: Enumerating objects: 9, done.
+remote: Counting objects: 100% (9/9), done.
+remote: Compressing objects: 100% (2/2), done.
+remote: Total 5 (delta 3), reused 5 (delta 3), pack-reused 0 (from 0)
+Unpacking objects: 100% (5/5), 1.10 KiB | 46.00 KiB/s, done.
+From https://github.com/jessymuia/saaas
+   fddb603..b3a9998  main       -> origin/main
+Updating 1deb0b7..b3a9998
+error: Your local changes to the following files would be overwritten by merge:
+        database/migrations/2026_03_31_211437_make_phone_number_nullable_in_users_table.php
+Please commit your changes or stash them before you merge.
+Aborting
+
+C:\Users\jessy\Desktop\saaas\saaas>docker compose exec php php artisan db:seed
+
+
+   INFO  Seeding database.
+
+  Database\Seeders\SystemAdminAccountSeeder ................................................................................................ RUNNING
+  Database\Seeders\SystemAdminAccountSeeder ............................................................................................ 505 ms DONE
+
+  Database\Seeders\SystemAdminSeeder ....................................................................................................... RUNNING
+  Database\Seeders\SystemAdminSeeder ................................................................................................... 783 ms DONE
+
+  Database\Seeders\PermissionsSeeder ....................................................................................................... RUNNING
+  Database\Seeders\PermissionsSeeder ................................................................................................. 1,001 ms DONE
+
+  Database\Seeders\UserSeeder .............................................................................................................. RUNNING
+
+   Illuminate\Database\UniqueConstraintViolationException
+
+  SQLSTATE[23505]: Unique violation: 7 ERROR:  duplicate key value violates unique constraint "users_email_unique_102034"
+DETAIL:  Key (email, saas_client_id)=(lancerbrian001@gmail.com, 9dcd26ff-5074-4206-9594-22cdac8f55ad) already exists.
+CONTEXT:  while executing command on citus-worker-2:5432 (Connection: pgsql, Host: citus-coordinator, Port: 5432, Database: propman, SQL: insert into "users" ("name", "email", "phone_number", "password", "email_verified_at", "saas_client_id", "created_at", "updated_at") values (Test User, lancerbrian001@gmail.com, 08123456789, $2y$10$WZfsg/WcfZzY02zyePX0Qu5vewEGf1IwT4JX1BnXx3mRTHCGm7voq, 2026-04-01 21:56:52, 9dcd26ff-5074-4206-9594-22cdac8f55ad, 2026-04-01 21:56:52, 2026-04-01 21:56:52))
+
+  at vendor/laravel/framework/src/Illuminate/Database/Connection.php:838
+    834▕             $exceptionType = $this->isUniqueConstraintError($e)
+    835▕                 ? UniqueConstraintViolationException::class
+    836▕                 : QueryException::class;
+    837▕
+  ➜ 838▕             throw new $exceptionType(
+    839▕                 $this->getNameWithReadWriteType(),
+    840▕                 $query,
+    841▕                 $this->prepareBindings($bindings),
+    842▕                 $e,
+
+      +7 vendor frames
+
+  8   database/seeders/UserSeeder.php:16
+      Illuminate\Database\Query\Builder::insert()
+      +8 vendor frames
+
+  17  database/seeders/DatabaseSeeder.php:53
+      Illuminate\Database\Seeder::call("Database\Seeders\UserSeeder")
+
+
+C:\Users\jessy\Desktop\saaas\saaas>git pull
+remote: Enumerating objects: 9, done.
+remote: Counting objects: 100% (9/9), done.
+remote: Compressing objects: 100% (1/1), done.
+remote: Total 5 (delta 4), reused 5 (delta 4), pack-reused 0 (from 0)
+Unpacking objects: 100% (5/5), 718 bytes | 24.00 KiB/s, done.
+From https://github.com/jessymuia/saaas
+   b3a9998..88ac27e  main       -> origin/main
+Updating 1deb0b7..88ac27e
+error: Your local changes to the following files would be overwritten by merge:
+        database/migrations/2026_03_31_211437_make_phone_number_nullable_in_users_table.php
+Please commit your changes or stash them before you merge.
+Aborting
+
+C:\Users\jessy\Desktop\saaas\saaas>docker ps
+CONTAINER ID   IMAGE                  COMMAND                  CREATED             STATUS                    PORTS                                         NAMES
+3641425cd86f   nginx:alpine           "/docker-entrypoint.…"   About an hour ago   Up 56 minutes             0.0.0.0:8000->80/tcp, [::]:8000->80/tcp       saaas-nginx-1
+ea9ee048de9d   saaas-horizon          "docker-php-entrypoi…"   About an hour ago   Up 21 minutes             9000/tcp                                      saaas-horizon-1
+3c2811a22e7d   saaas-scheduler        "docker-php-entrypoi…"   About an hour ago   Up 21 minutes             9000/tcp                                      saaas-scheduler-1
+3e066be82570   saaas-php              "docker-php-entrypoi…"   About an hour ago   Up 56 minutes (healthy)   9000/tcp                                      saaas-php-1
+47e180b06f40   citusdata/citus:12.1   "docker-entrypoint.s…"   About an hour ago   Up 57 minutes (healthy)   5432/tcp                                      propman-citus-worker-1
+823f7726c84e   citusdata/citus:12.1   "docker-entrypoint.s…"   About an hour ago   Up 57 minutes (healthy)   5432/tcp                                      propman-citus-worker-2
+b1b227a6fb81   redis:7-alpine         "docker-entrypoint.s…"   About an hour ago   Up 57 minutes             0.0.0.0:6379->6379/tcp, [::]:6379->6379/tcp   saaas-redis-1
+88802db7e7a8   citusdata/citus:12.1   "docker-entrypoint.s…"   About an hour ago   Up 57 minutes (healthy)   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp   propman-citus-coordinator
+
+C:\Users\jessy\Desktop\saaas\saaas>docker compose exec php php artisan filament:assets
+  ⇂ public/js/filament/forms/components/checkbox-list.js
+  ⇂ public/js/filament/forms/components/code-editor.js
+  ⇂ public/js/filament/forms/components/color-picker.js
+  ⇂ public/js/filament/forms/components/date-time-picker.js
+  ⇂ public/js/filament/forms/components/file-upload.js
+  ⇂ public/js/filament/forms/components/key-value.js
+  ⇂ public/js/filament/forms/components/markdown-editor.js
+  ⇂ public/js/filament/forms/components/rich-editor.js
+  ⇂ public/js/filament/forms/components/select.js
+  ⇂ public/js/filament/forms/components/slider.js
+  ⇂ public/js/filament/forms/components/tags-input.js
+  ⇂ public/js/filament/forms/components/textarea.js
+  ⇂ public/js/filament/schemas/components/actions.js
+  ⇂ public/js/filament/schemas/components/tabs.js
+  ⇂ public/js/filament/schemas/components/wizard.js
+  ⇂ public/js/filament/tables/components/columns/checkbox.js
+  ⇂ public/js/filament/tables/components/columns/select.js
+  ⇂ public/js/filament/tables/components/columns/text-input.js
+  ⇂ public/js/filament/tables/components/columns/toggle.js
+  ⇂ public/js/filament/widgets/components/chart.js
+  ⇂ public/js/filament/widgets/components/stats-overview/stat/chart.js
+  ⇂ public/fonts/filament/filament/inter/index.css
+  ⇂ public/fonts/filament/filament/inter/inter-cyrillic-ext-wght-normal-IYF56FF6.woff2
+  ⇂ public/fonts/filament/filament/inter/inter-cyrillic-wght-normal-JEOLYBOO.woff2
+  ⇂ public/fonts/filament/filament/inter/inter-greek-ext-wght-normal-EOVOK2B5.woff2
+  ⇂ public/fonts/filament/filament/inter/inter-greek-wght-normal-IRE366VL.woff2
+  ⇂ public/fonts/filament/filament/inter/inter-latin-ext-wght-normal-HA22NDSG.woff2
+  ⇂ public/fonts/filament/filament/inter/inter-latin-wght-normal-NRMW37G5.woff2
+  ⇂ public/fonts/filament/filament/inter/inter-vietnamese-wght-normal-CE5GGD3W.woff2
+  ⇂ public/js/filament/actions/actions.js
+  ⇂ public/js/filament/filament/app.js
+  ⇂ public/js/filament/filament/echo.js
+  ⇂ public/js/filament/notifications/notifications.js
+  ⇂ public/js/filament/schemas/schemas.js
+  ⇂ public/js/filament/support/support.js
+  ⇂ public/js/filament/tables/tables.js
+  ⇂ public/css/filament/filament/app.css
+
+   INFO  Successfully published assets!
+
+
+C:\Users\jessy\Desktop\saaas\saaas>git pull
+Updating 1deb0b7..453f5f7
+error: Your local changes to the following files would be overwritten by merge:
+        database/migrations/2026_03_31_211437_make_phone_number_nullable_in_users_table.php
+Please commit your changes or stash them before you merge.
+Aborting
+
+C:\Users\jessy\Desktop\saaas\saaas>git checkout -- database/migrations/2026_03_31_211437_make_phone_number_nullable_in_users_table.php
+
+C:\Users\jessy\Desktop\saaas\saaas>git pull
+remote: Enumerating objects: 55, done.
+remote: Counting objects: 100% (55/55), done.
+remote: Compressing objects: 100% (34/34), done.
+remote: Total 52 (delta 6), reused 52 (delta 6), pack-reused 0 (from 0)
+Unpacking objects: 100% (52/52), 1.09 MiB | 1.24 MiB/s, done.
+From https://github.com/jessymuia/saaas
+   453f5f7..66c4e73  main       -> origin/main
+Updating 1deb0b7..66c4e73
+Fast-forward
+ .gitignore                                         |   2 -
+ INSTALL_WINDOWS.md                                 | 216 ++++++++++++
+ ...PP-ENV-local-APP-KEY-base64-8_1775081114605.txt |  77 +++++
+ ...t-ERR-SSL-PROTOCOL-ERROR-8000_1775080961976.txt | 362 +++++++++++++++++++++
+ ...7_make_phone_number_nullable_in_users_table.php |  15 +-
+ database/seeders/UserSeeder.php                    |   2 +-
+ docker-compose.yml                                 |   2 +
+ docker/citus-bootstrap.sh                          |  14 +-
+ public/css/filament/filament/app.css               |   2 +
+ public/js/filament/actions/actions.js              |   1 +
+ public/js/filament/filament/app.js                 |   1 +
+ public/js/filament/filament/echo.js                |  13 +
+ .../js/filament/forms/components/checkbox-list.js  |   1 +
+ public/js/filament/forms/components/code-editor.js |  38 +++
+ .../js/filament/forms/components/color-picker.js   |   1 +
+ .../filament/forms/components/date-time-picker.js  |   1 +
+ public/js/filament/forms/components/file-upload.js | 116 +++++++
+ public/js/filament/forms/components/key-value.js   |   1 +
+ .../filament/forms/components/markdown-editor.js   |  51 +++
+ public/js/filament/forms/components/rich-editor.js | 144 ++++++++
+ public/js/filament/forms/components/select.js      |  11 +
+ public/js/filament/forms/components/slider.js      |   1 +
+ public/js/filament/forms/components/tags-input.js  |   1 +
+ public/js/filament/forms/components/textarea.js    |   1 +
+ public/js/filament/notifications/notifications.js  |   1 +
+ public/js/filament/schemas/components/actions.js   |   1 +
+ public/js/filament/schemas/components/tabs.js      |   1 +
+ public/js/filament/schemas/components/wizard.js    |   1 +
+ public/js/filament/schemas/schemas.js              |   1 +
+ public/js/filament/support/support.js              |  46 +++
+ .../filament/tables/components/columns/checkbox.js |   1 +
+ .../filament/tables/components/columns/select.js   |  11 +
+ .../tables/components/columns/text-input.js        |   1 +
+ .../filament/tables/components/columns/toggle.js   |   1 +
+ public/js/filament/tables/tables.js                |   1 +
+ public/js/filament/widgets/components/chart.js     |  30 ++
+ .../components/stats-overview/stat/chart.js        |  22 ++
+ 37 files changed, 1180 insertions(+), 12 deletions(-)
+ create mode 100644 INSTALL_WINDOWS.md
+ create mode 100644 attached_assets/Pasted-APP-NAME-PropManage-SaaS-APP-ENV-local-APP-KEY-base64-8_1775081114605.txt
+ create mode 100644 attached_assets/Pasted-Failed-to-load-resource-net-ERR-SSL-PROTOCOL-ERROR-8000_1775080961976.txt
+ create mode 100644 public/css/filament/filament/app.css
+ create mode 100644 public/js/filament/actions/actions.js
+ create mode 100644 public/js/filament/filament/app.js
+ create mode 100644 public/js/filament/filament/echo.js
+ create mode 100644 public/js/filament/forms/components/checkbox-list.js
+ create mode 100644 public/js/filament/forms/components/code-editor.js
+ create mode 100644 public/js/filament/forms/components/color-picker.js
+ create mode 100644 public/js/filament/forms/components/date-time-picker.js
+ create mode 100644 public/js/filament/forms/components/file-upload.js
+ create mode 100644 public/js/filament/forms/components/key-value.js
+ create mode 100644 public/js/filament/forms/components/markdown-editor.js
+ create mode 100644 public/js/filament/forms/components/rich-editor.js
+ create mode 100644 public/js/filament/forms/components/select.js
+ create mode 100644 public/js/filament/forms/components/slider.js
+ create mode 100644 public/js/filament/forms/components/tags-input.js
+ create mode 100644 public/js/filament/forms/components/textarea.js
+ create mode 100644 public/js/filament/notifications/notifications.js
+ create mode 100644 public/js/filament/schemas/components/actions.js
+ create mode 100644 public/js/filament/schemas/components/tabs.js
+ create mode 100644 public/js/filament/schemas/components/wizard.js
+ create mode 100644 public/js/filament/schemas/schemas.js
+ create mode 100644 public/js/filament/support/support.js
+ create mode 100644 public/js/filament/tables/components/columns/checkbox.js
+ create mode 100644 public/js/filament/tables/components/columns/select.js
+ create mode 100644 public/js/filament/tables/components/columns/text-input.js
+ create mode 100644 public/js/filament/tables/components/columns/toggle.js
+ create mode 100644 public/js/filament/tables/tables.js
+ create mode 100644 public/js/filament/widgets/components/chart.js
+ create mode 100644 public/js/filament/widgets/components/stats-overview/stat/chart.js
+
+C:\Users\jessy\Desktop\saaas\saaas>git checkout -- database/migrations/2026_03_31_211437_make_phone_number_nullable_in_users_table.php
+
+C:\Users\jessy\Desktop\saaas\saaas>git pull
+Already up to date.
+
+C:\Users\jessy\Desktop\saaas\saaas>docker compose exec php php artisan optimize:clear
+
+
+
+   INFO  Clearing cached bootstrap files.
+
+  config ................................................................................................................................... 1s DONE
+  cache .................................................................................................................................... 7s DONE
+  compiled ........................................................................................................................... 392.63ms DONE
+  events .............................................................................................................................. 58.56ms DONE
+  routes .............................................................................................................................. 35.51ms DONE
+  views .................................................................................................................................... 1s DONE
+  blade-icons ......................................................................................................................... 28.20ms DONE
+  filament ............................................................................................................................ 59.21ms DONE
+
+
+C:\Users\jessy\Desktop\saaas\saaas>git pull
+Already up to date.
+
+C:\Users\jessy\Desktop\saaas\saaas>dir public\css\filament\filament\
+ Volume in drive C has no label.
+ Volume Serial Number is B84C-0699
+
+ Directory of C:\Users\jessy\Desktop\saaas\saaas\public\css\filament\filament
+
+02/04/2026  01:16    <DIR>          .
+02/04/2026  01:16    <DIR>          ..
+02/04/2026  01:16           592,591 app.css
+               1 File(s)        592,591 bytes
+               2 Dir(s)  104,363,368,448 bytes free
+
+C:\Users\jessy\Desktop\saaas\saaas>docker compose exec php php artisan filament:assets
+docker compose restart nginx
+
+  ⇂ public/js/filament/forms/components/checkbox-list.js
+  ⇂ public/js/filament/forms/components/code-editor.js
+  ⇂ public/js/filament/forms/components/color-picker.js
+  ⇂ public/js/filament/forms/components/date-time-picker.js
+  ⇂ public/js/filament/forms/components/file-upload.js
+  ⇂ public/js/filament/forms/components/key-value.js
+  ⇂ public/js/filament/forms/components/markdown-editor.js
+  ⇂ public/js/filament/forms/components/rich-editor.js
+  ⇂ public/js/filament/forms/components/select.js
+  ⇂ public/js/filament/forms/components/slider.js
+  ⇂ public/js/filament/forms/components/tags-input.js
+  ⇂ public/js/filament/forms/components/textarea.js
+  ⇂ public/js/filament/schemas/components/actions.js
+  ⇂ public/js/filament/schemas/components/tabs.js
+  ⇂ public/js/filament/schemas/components/wizard.js
+  ⇂ public/js/filament/tables/components/columns/checkbox.js
+  ⇂ public/js/filament/tables/components/columns/select.js
+  ⇂ public/js/filament/tables/components/columns/text-input.js
+  ⇂ public/js/filament/tables/components/columns/toggle.js
+  ⇂ public/js/filament/widgets/components/chart.js
+  ⇂ public/js/filament/widgets/components/stats-overview/stat/chart.js
+  ⇂ public/fonts/filament/filament/inter/index.css
+  ⇂ public/fonts/filament/filament/inter/inter-cyrillic-ext-wght-normal-IYF56FF6.woff2
+  ⇂ public/fonts/filament/filament/inter/inter-cyrillic-wght-normal-JEOLYBOO.woff2
+  ⇂ public/fonts/filament/filament/inter/inter-greek-ext-wght-normal-EOVOK2B5.woff2
+  ⇂ public/fonts/filament/filament/inter/inter-greek-wght-normal-IRE366VL.woff2
+  ⇂ public/fonts/filament/filament/inter/inter-latin-ext-wght-normal-HA22NDSG.woff2
+  ⇂ public/fonts/filament/filament/inter/inter-latin-wght-normal-NRMW37G5.woff2
+  ⇂ public/fonts/filament/filament/inter/inter-vietnamese-wght-normal-CE5GGD3W.woff2
+  ⇂ public/js/filament/actions/actions.js
+  ⇂ public/js/filament/filament/app.js
+  ⇂ public/js/filament/filament/echo.js
+  ⇂ public/js/filament/notifications/notifications.js
+  ⇂ public/js/filament/schemas/schemas.js
+  ⇂ public/js/filament/support/support.js
+  ⇂ public/js/filament/tables/tables.js
+  ⇂ public/css/filament/filament/app.css
+
+   INFO  Successfully published assets!
+
+
+C:\Users\jessy\Desktop\saaas\saaas>docker compose restart nginx
+[+] restart 0/1
+ - Container saaas-nginx-1 Restarting                                                                                                                                                                          1.9s
+
+C:\Users\jessy\Desktop\saaas\saaas>git pull
+Already up to date.
+
+C:\Users\jessy\Desktop\saaas\saaas>docker compose down
+[+] down 11/11
+ ✔ Container saaas-scheduler-1         Removed                                                                                                                                                                 5.6s
+ ✔ Container propman-citus-bootstrap   Removed                                                                                                                                                                 3.1s
+ ✔ Container saaas-nginx-1             Removed                                                                                                                                                                 4.2s
+ ✔ Container saaas-marketing-1         Removed                                                                                                                                                                 4.1s
+ ✔ Container saaas-horizon-1           Removed                                                                                                                                                                 5.8s
+ ✔ Container propman-citus-worker-1    Removed                                                                                                                                                                 5.3s
+ ✔ Container propman-citus-worker-2    Removed                                                                                                                                                                 4.6s
+ ✔ Container saaas-php-1               Removed                                                                                                                                                                 3.4s
+ ✔ Container saaas-redis-1             Removed                                                                                                                                                                 1.2s
+ ✔ Container propman-citus-coordinator Removed                                                                                                                                                                 2.5s
+ ✔ Network saaas_propman               Removed                                                                                                                                                                 0.6s
+
+C:\Users\jessy\Desktop\saaas\saaas>docker compose up --build -d
+#1 [internal] load local bake definitions
+#1 reading from stdin 1.41kB done
+#1 DONE 0.0s
+
+#2 [scheduler internal] load build definition from Dockerfile
+#2 transferring dockerfile: 1.53kB 0.1s done
+#2 transferring dockerfile: 1.53kB 0.1s done
+#2 DONE 0.2s
+
+#3 [horizon internal] load metadata for docker.io/library/composer:latest
+#3 ...
+
+#4 [auth] library/composer:pull token for registry-1.docker.io
+#4 DONE 0.0s
+
+#5 [auth] library/php:pull token for registry-1.docker.io
+#5 DONE 0.0s
+
+#6 [horizon internal] load metadata for docker.io/library/php:8.2-fpm
+#6 DONE 2.3s
+
+#3 [php internal] load metadata for docker.io/library/composer:latest
+#3 DONE 2.3s
+
+#7 [scheduler internal] load .dockerignore
+#7 transferring context: 2B 0.0s done
+#7 DONE 0.1s
+
+#8 [php internal] load build context
+#8 DONE 0.0s
+
+#9 [php stage-0  1/11] FROM docker.io/library/php:8.2-fpm@sha256:9e92e373ad473cd403158266a54ee5cecdb64227d80cf18e312664d23bdd3cbd
+#9 resolve docker.io/library/php:8.2-fpm@sha256:9e92e373ad473cd403158266a54ee5cecdb64227d80cf18e312664d23bdd3cbd
+#9 resolve docker.io/library/php:8.2-fpm@sha256:9e92e373ad473cd403158266a54ee5cecdb64227d80cf18e312664d23bdd3cbd 0.5s done
+#9 resolve docker.io/library/php:8.2-fpm@sha256:9e92e373ad473cd403158266a54ee5cecdb64227d80cf18e312664d23bdd3cbd 0.5s done
+#9 DONE 0.5s
+
+#10 [scheduler] FROM docker.io/library/composer:latest@sha256:743aebe48ca67097c36819040633ea77e44a561eca135e4fc84c002e63a1ba07
+#10 resolve docker.io/library/composer:latest@sha256:743aebe48ca67097c36819040633ea77e44a561eca135e4fc84c002e63a1ba07 0.5s done
+#10 DONE 0.5s
+
+#8 [scheduler internal] load build context
+#8 transferring context: 7.03MB 4.4s
+#8 transferring context: 14.32MB 9.4s
+#8 transferring context: 28.71MB 14.5s
+#8 transferring context: 41.22MB 19.6s
+#8 transferring context: 49.22MB 24.7s
+#8 transferring context: 53.06MB 29.7s
+#8 transferring context: 59.35MB 34.8s
+#8 transferring context: 64.34MB 39.8s
+#8 transferring context: 70.35MB 45.0s
+#8 transferring context: 81.61MB 50.2s
+#8 transferring context: 87.72MB 55.3s
+#8 transferring context: 98.96MB 60.4s
+#8 transferring context: 106.91MB 65.4s
+#8 transferring context: 120.33MB 70.5s
+#8 transferring context: 130.26MB 75.6s
+#8 transferring context: 139.27MB 80.6s
+#8 transferring context: 152.72MB 85.7s
+#8 transferring context: 166.71MB 90.8s
+#8 transferring context: 177.81MB 96.0s
+#8 transferring context: 198.01MB 101.1s
+#8 transferring context: 218.13MB 106.2s
+#8 transferring context: 237.85MB 111.2s
+#8 transferring context: 254.10MB 116.3s
+#8 transferring context: 267.62MB 121.3s
+#8 transferring context: 281.76MB 126.5s
+#8 transferring context: 286.75MB 131.6s
+#8 transferring context: 290.08MB 136.7s
+#8 transferring context: 295.03MB 141.8s
+#8 transferring context: 305.83MB 147.0s
+#8 transferring context: 329.63MB 152.0s
+#8 transferring context: 354.51MB 157.1s
+#8 transferring context: 372.41MB 162.1s
+#8 transferring context: 383.19MB 167.2s
+#8 transferring context: 393.26MB 172.2s
+#8 transferring context: 400.19MB 177.3s
+#8 transferring context: 403.83MB 182.4s
+#8 transferring context: 407.67MB 187.5s
+#8 transferring context: 410.76MB 192.7s
+#8 transferring context: 415.93MB 197.8s
+#8 transferring context: 419.12MB 202.8s
+#8 transferring context: 421.58MB 207.9s
+#8 transferring context: 428.07MB 213.0s
+#8 transferring context: 433.35MB 218.0s
+#8 transferring context: 436.44MB 223.0s
+#8 transferring context: 450.18MB 228.1s
+#8 transferring context: 470.40MB 233.1s
+#8 transferring context: 481.16MB 238.2s
+#8 transferring context: 481.49MB 243.3s
+#8 transferring context: 482.77MB 248.5s
+#8 transferring context: 496.02MB 253.5s
+#8 transferring context: 506.01MB 258.5s
+#8 transferring context: 506.27MB 263.6s
+#8 transferring context: 506.52MB 268.8s
+#8 transferring context: 508.20MB 273.9s
+#8 transferring context: 508.50MB 279.1s
+#8 transferring context: 508.82MB 284.1s
+#8 transferring context: 509.13MB 289.2s
+#8 transferring context: 509.25MB 294.3s
+#8 transferring context: 512.08MB 299.4s
+#8 transferring context: 515.52MB 304.5s
+#8 transferring context: 517.51MB 309.5s
+#8 transferring context: 518.02MB 314.6s
+#8 transferring context: 519.74MB 319.7s
+#8 transferring context: 520.83MB 324.7s
+#8 transferring context: 521.94MB 329.9s

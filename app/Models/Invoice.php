@@ -1,0 +1,318 @@
+<?php
+
+namespace App\Models;
+
+use App\Jobs\SendInvoiceMail;
+use App\Mail\InvoiceEmail;
+use Carbon\Carbon;
+use Filament\Notifications\Notification;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Storage;
+use App\Models\CompanyDetails;
+use App\Traits\BelongsToTenant;
+
+class Invoice extends DefaultAppModel
+{
+    use BelongsToTenant;
+
+    protected $fillable = [
+        'saas_client_id',
+        'tenancy_agreement_id',
+        'comments',
+        'invoice_status',
+        'issue_date',
+        'invoice_for_month',
+        'invoice_due_date',
+        'is_confirmed',
+        'is_generated',
+        'document_url',
+        'status',
+        'archive',
+        'created_by',
+        'created_at',
+        'updated_by',
+        'updated_at',
+        'deleted_by',
+        'deleted_at'
+    ];
+
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        $this->casts = array_merge($this->casts, [
+            'invoice_due_date'  => 'date',
+            'invoice_for_month' => 'date',
+            'id'                => 'integer',
+            'is_confirmed'      => 'boolean',
+            'is_generated'      => 'boolean',
+        ]);
+    }
+
+    protected $appends = ['amount', 'unpaid_amount'];
+
+    public function tenancyAgreement()
+    {
+        return $this->belongsTo(TenancyAgreement::class);
+    }
+
+    public function tenancyBills()
+    {
+        return $this->hasMany(TenancyBill::class, 'invoice_id', 'id');
+    }
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::created(function ($model) {
+            $model->created_by = auth()->id();
+            $model->saveQuietly();
+        });
+
+        static::updated(function ($model) {
+            $model->updated_by = auth()->id();
+            $model->saveQuietly();
+        });
+
+        static::deleting(function ($model) {
+            $model->deleted_by = auth()->id();
+            $model->deleted_at = now();
+            $model->save();
+        });
+    }
+
+    public function scopeAccessibleByUser(Builder $query, User $user)
+    {
+        if ($user->hasRole('admin')) {
+            return $query;
+        }
+
+        return $query->whereHas('tenancyAgreement.unit.property', function (Builder $query) use ($user) {
+            $query->whereHas('users', function (Builder $query) use ($user) {
+                $query->where('user_id', $user->id)
+                    ->where('property_management_users.status', true);
+            });
+        });
+    }
+
+    public function getAmountAttribute()
+    {
+        return $this->tenancyBills()->sum('total_amount');
+    }
+
+    public function getUnpaidAmountAttribute()
+    {
+        return $this->tenancyBills()->sum('total_amount')
+            - $this->invoicePayments()->sum('amount')
+            - $this->creditNote()->sum('amount_credited');
+    }
+
+    public function creditNote()
+    {
+        return $this->hasMany(CreditNote::class, 'invoice_id', 'id');
+    }
+
+    public function invoicePayments()
+    {
+        return $this->hasMany(InvoicePayment::class, 'invoice_id', 'id');
+    }
+
+    public function totalDue()
+    {
+        $creditNoteSum = $this->creditNote()->sum('amount_credited');
+        return $this->amount - $creditNoteSum - $this->invoicePayments()->sum('amount');
+    }
+
+    public function invoiceIsSent()
+    {
+        $isSuccessfullySent = SentEmails::query()
+            ->where('reference_id', $this->id)
+            ->where('delivery_status', '=', 'SENT')
+            ->where('subject', 'Invoice Email')
+            ->exists();
+
+        return $this->issue_date && $this->document_url && $isSuccessfullySent;
+    }
+
+    public function generateDocument(Invoice $sI, $isRegenerate = false)
+    {
+        $tenancyBills = $this->tenancyBills()->get(['name', 'amount', 'vat', 'total_amount']);
+
+        Log::error("Count of tenancy bills: " . count($tenancyBills));
+
+        try {
+            $invoiceItems = '';
+            $billsSum     = 0;
+            $vatTotal     = 0;
+
+            $invoice = Invoice::find($this->id);
+
+            // Validate required relationships exist
+            TenancyAgreement::find($invoice->tenancy_agreement_id)->tenant->first()->name
+                ?? throw new \Exception('Tenancy Agreement is missing');
+            TenancyAgreement::find($invoice->tenancy_agreement_id)->property->first()->name
+                ?? throw new \Exception('Property is missing');
+            TenancyAgreement::find($invoice->tenancy_agreement_id)->unit->first()->name
+                ?? throw new \Exception('Property Unit is missing');
+
+            // Phase 12 fix: was a raw ->join() across distributed tables without saas_client_id.
+            // Replaced with Eloquent relationship chain — safe, no cross-shard join risk.
+            $tenantName = $invoice->tenancyAgreement->tenant->name;
+
+            // Check property payment details
+            PropertyPaymentDetails::query()
+                ->where('property_id', $sI->tenancyAgreement->property->id)
+                ->first()
+                ?? throw new \Exception('Property Payment Details is missing for property id: '
+                    . $sI->tenancyAgreement->property->id . ' - ' . $sI->tenancyAgreement->property->name);
+
+            $propertyName = $sI->tenancyAgreement->property->name;
+            $propertyId   = $sI->tenancyAgreement->property->id;
+            $homeOwner    = PropertyOwners::query()->where('property_id', $propertyId)->first();
+            $homeOwnerName = 'KRA PIN';
+            $homeOwnerPIN  = strtoupper($homeOwner->tax_pin ?? '........');
+            $unitName      = $sI->tenancyAgreement->unit->name;
+
+            foreach ($tenancyBills as $tenancyBill) {
+                $billsSum   += $tenancyBill->amount;
+                $vatTotal   += $tenancyBill->vat;
+                $invoiceItems .= '
+                    <tr style="height: 30px;">
+                        <td class="s_cell_with_right_left_border" colspan="3">' . $tenancyBill->name . '</td>
+                        <td class="s_cell_with_right_left_border" colspan="1">1</td>
+                        <td class="s_cell_with_right_left_border" colspan="1">' . $tenancyBill->amount . '</td>
+                        <td class="s_cell_with_right_left_border" colspan="1">' . $tenancyBill->vat . '</td>
+                        <td class="s_cell_with_right_left_border" colspan="1">' . $tenancyBill->total_amount . '</td>
+                    </tr>';
+            }
+
+            $remainingRows = 14 - $tenancyBills->count();
+            for ($i = 0; $i < $remainingRows; $i++) {
+                $invoiceItems .= '
+                    <tr style="height: 30px;">
+                        <td class="s_cell_with_right_left_border" colspan="3"></td>
+                        <td class="s_cell_with_right_left_border" colspan="1"></td>
+                        <td class="s_cell_with_right_left_border" colspan="1"></td>
+                        <td class="s_cell_with_right_left_border" colspan="1"></td>
+                        <td class="s_cell_with_right_left_border" colspan="1"></td>
+                    </tr>';
+            }
+
+            $invoiceItems .= '
+                <tr style="height: 30px;">
+                    <td class="s_bottom_cell" colspan="3"></td>
+                    <td class="s_bottom_cell" colspan="1"></td>
+                    <td class="s_bottom_cell" colspan="1"></td>
+                    <td class="s_bottom_cell" colspan="1"></td>
+                    <td class="s_bottom_cell" colspan="1"></td>
+                </tr>';
+
+            $company = CompanyDetails::latest()->first();
+
+            $propertyPaymentDetails = PropertyPaymentDetails::query()
+                ->where('property_id', $propertyId)
+                ->first();
+
+            $detailsArray = [
+                'companyName'        => $company->name,
+                'companyAddress'     => $company->address,
+                'companyEmail'       => $company->email,
+                'companyPhoneNumber' => $company->phone_number,
+                'companyLocation'    => $company->location,
+                'customerName'       => 'HSE#' . $unitName . ' ' . $tenantName,
+                'propertyName'       => $propertyName,
+                'invoiceDate'        => Carbon::parse($invoice->invoice_for_month)->format('M j, Y'),
+                'logoUrl'            => 'file://' . storage_path('/app/public/' . $company->logo),
+                'invoiceItemsHTML'   => $invoiceItems,
+                'invoiceNumber'      => $this->id,
+                'payBillAccountNumber' => $tenantName . '/' . $unitName,
+                'billsTotal'         => number_format($billsSum, 2),
+                'vatTotal'           => number_format($vatTotal, 2),
+                'invoiceTotal'       => number_format($invoice->amount, 2),
+                'homeOwnerName'      => $homeOwnerName,
+                'homeOwnerPIN'       => $homeOwnerPIN,
+                'bankAccountName'    => strtoupper($propertyPaymentDetails->account_name),
+                'bankAccountNumber'  => strtoupper($propertyPaymentDetails->account_number),
+                'bankName'           => strtoupper($propertyPaymentDetails->bank_name),
+                'mpesaPaybillNumber' => strtoupper($propertyPaymentDetails->mpesa_paybill_number),
+            ];
+
+            $content = File::get(resource_path('documents/templates/invoice-output-document.html'));
+
+            foreach ($detailsArray as $key => $value) {
+                $content = str_replace("@#$key", $value, $content);
+            }
+
+            Log::info('Tenant name: ' . $tenantName);
+            Log::info('Tenancy agreement id: ' . TenancyAgreement::find($invoice->tenancy_agreement_id)->id);
+            Log::info('Tenant name: ' . TenancyAgreement::find($invoice->tenancy_agreement_id)->first()->tenant_id);
+
+            $pdfName = Carbon::createFromFormat('Y-m-d H:i:s', $this->created_at)->format('F, Y')
+                . '_for_' . $tenantName
+                . '_' . $propertyName
+                . '_for_unit_' . $unitName
+                . '_invoice'
+                . '_' . $this->id;
+
+            $pdfName = preg_replace('/[\s\/!@#]+/', '_', $pdfName);
+            $pdfPath = Storage::path('invoices') . '/' . $pdfName . '.pdf';
+
+            if ($isRegenerate) {
+                Log::info('Deleting file: ' . $pdfPath);
+                if (file_exists($pdfPath)) {
+                    unlink($pdfPath);
+                }
+            }
+
+            $snappy = App::make('snappy.pdf');
+            $snappy->setOption('enable-local-file-access', true);
+            $snappy->setOption('disable-smart-shrinking', false);
+            $snappy->setOption('margin-bottom', '1in');
+            $snappy->setOption('margin-left', '1in');
+            $snappy->setOption('margin-right', '1in');
+            $snappy->setOption('margin-top', '1in');
+            $snappy->generateFromHtml($content, $pdfPath);
+
+            Log::error("Ndio hii: " . $pdfPath);
+            Log::info('--------------------------------------------------------------------------');
+
+            if (file_exists($pdfPath)) {
+                $savedPath = explode('/', $pdfPath);
+                foreach ($savedPath as $key => $value) {
+                    if ($value == 'app') {
+                        $savedPath = implode("/", array_slice($savedPath, $key + 1));
+                        break;
+                    }
+                }
+                $this->is_generated = 1;
+                $this->document_url = $savedPath;
+                $this->updated_by   = auth()->user()->id;
+                $this->save();
+
+                return true;
+            } else {
+                return false;
+            }
+        } catch (\Exception $exception) {
+            Log::error("Failed to generate document for invoice: {$this->id}");
+            Log::error($exception->getLine());
+            Log::error($exception->getTraceAsString());
+            Log::error($exception->getMessage());
+            return false;
+        }
+    }
+
+    public function sendInvoiceMail()
+    {
+        SendInvoiceMail::dispatch($this);
+    }
+}

@@ -1,0 +1,455 @@
+ 
+PropManage SaaS
+Stack
+Context
+Debug
+Flare
+Share
+Share with Flare
+Docs
+
+Stack
+
+Context
+
+Debug
+Create Share
+Docs
+
+Ignition Settings
+Docs
+Editor
+
+PhpStorm
+Theme
+auto
+Save settings
+Settings will be saved locally in ~/.ignition.json.
+
+Declaration of App\Models\Invoice::boot() must be compatible with App\Models\DefaultAppModel::boot(): void
+Symfony
+ \ 
+Component
+ \ 
+ErrorHandler
+ \ 
+Error
+ \ 
+FatalError
+PHP 8.2.23
+12.56.0
+Declaration of App\Models\Invoice::boot() must be compatible with App\Models\DefaultAppModel::boot(): void
+
+Collapse vendor frames
+app
+ / 
+Models
+ / 
+Invoice
+.php
+ 
+: 72
+[top]
+app
+ / 
+Models
+ / 
+Invoice
+.php
+ 
+: 72
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        ]);
+
+    }
+
+
+
+    protected $appends = ['amount', 'unpaid_amount'];
+
+
+
+    public function tenancyAgreement()
+
+    {
+
+        return $this->belongsTo(TenancyAgreement::class);
+
+    }
+
+
+
+    public function tenancyBills()
+
+    {
+
+        return $this->hasMany(TenancyBill::class, 'invoice_id', 'id');
+
+    }
+
+
+
+    protected static function boot()
+
+    {
+
+        parent::boot();
+
+
+
+        static::created(function ($model) {
+
+            $model->created_by = auth()->id();
+
+            $model->saveQuietly();
+
+        });
+
+
+
+        static::updated(function ($model) {
+
+            $model->updated_by = auth()->id();
+
+            $model->saveQuietly();
+
+        });
+
+
+
+        static::deleting(function ($model) {
+App
+Routing
+Request
+Browser
+Headers
+Body
+Context
+User
+Git
+Versions
+App
+Routing
+Controller
+App\Filament\Resources\App\CompanyDetailsResource\Pages\ListCompanies
+
+Route name
+filament.app.resources.app.company-details.index
+
+Middleware
+panel:app
+
+Illuminate\Cookie\Middleware\EncryptCookies
+
+Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse
+
+Illuminate\Session\Middleware\StartSession
+
+Illuminate\Session\Middleware\AuthenticateSession
+
+Illuminate\View\Middleware\ShareErrorsFromSession
+
+Illuminate\Foundation\Http\Middleware\VerifyCsrfToken
+
+Illuminate\Routing\Middleware\SubstituteBindings
+
+Filament\Http\Middleware\DisableBladeIconComponents
+
+Filament\Http\Middleware\DispatchServingFilamentEvent
+
+App\Http\Middleware\InitializeTenancyBySlug
+
+App\Http\Middleware\CheckTenantSuspended
+
+App\Http\Middleware\SetRlsSessionVariables
+
+Filament\Http\Middleware\Authenticate
+
+Filament\Http\Middleware\IdentifyTenant
+
+Request
+https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev/app/app/jesphertech/app/company-details
+GET
+curl "https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev/app/app/jesphertech/app/company-details" \
+   -X GET \
+   -H 'host: 966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev' \
+   -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36' \
+   -H 'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7' \
+   -H 'accept-encoding: gzip, deflate, br, zstd' \
+   -H 'accept-language: en-GB,en-US;q=0.9,en;q=0.8' \
+   -H 'cache-control: max-age=0' \
+   -H 'cookie: <CENSORED>' \
+   -H 'referer: https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev:8000/app/app/jesphertech/app/audits' \
+   -H 'sec-ch-ua: "Chromium";v="146", "Not-A.Brand";v="24", "Google Chrome";v="146"' \
+   -H 'sec-ch-ua-mobile: ?0' \
+   -H 'sec-ch-ua-platform: "Windows"' \
+   -H 'sec-fetch-dest: document' \
+   -H 'sec-fetch-mode: navigate' \
+   -H 'sec-fetch-site: same-origin' \
+   -H 'sec-fetch-user: ?1' \
+   -H 'traceparent: 00-69cd4bf40000000039e9dfa108473a6e-6df4c943a30d75cf-00' \
+   -H 'tracestate: dd=s:0;p:6df4c943a30d75cf;t.tid:69cd4bf400000000' \
+   -H 'upgrade-insecure-requests: 1' \
+   -H 'x-datadog-parent-id: 7923178936787105231' \
+   -H 'x-datadog-tags: _dd.p.tid=69cd4bf400000000' \
+   -H 'x-datadog-trace-id: 4173112412457089646' \
+   -H 'x-forwarded-for: 154.159.252.194, 10.81.12.188' \
+   -H 'x-forwarded-proto: https';
+
+
+Browser
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+
+Headers
+host
+966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev
+
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+
+accept
+text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+
+accept-encoding
+gzip, deflate, br, zstd
+
+accept-language
+en-GB,en-US;q=0.9,en;q=0.8
+
+cache-control
+max-age=0
+
+cookie
+<CENSORED>
+
+referer
+https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev:8000/app/app/jesphertech/app/audits
+
+sec-ch-ua
+"Chromium";v="146", "Not-A.Brand";v="24", "Google Chrome";v="146"
+
+sec-ch-ua-mobile
+?0
+
+sec-ch-ua-platform
+"Windows"
+
+sec-fetch-dest
+document
+
+sec-fetch-mode
+navigate
+
+sec-fetch-site
+same-origin
+
+sec-fetch-user
+?1
+
+traceparent
+00-69cd4bf40000000039e9dfa108473a6e-6df4c943a30d75cf-00
+
+tracestate
+dd=s:0;p:6df4c943a30d75cf;t.tid:69cd4bf400000000
+
+upgrade-insecure-requests
+1
+
+x-datadog-parent-id
+7923178936787105231
+
+x-datadog-tags
+_dd.p.tid=69cd4bf400000000
+
+x-datadog-trace-id
+4173112412457089646
+
+x-forwarded-for
+154.159.252.194, 10.81.12.188
+
+x-forwarded-proto
+https
+
+Body
+[]
+
+Context
+User
+jessymuiaa@gmail.com
+Jessy Muia Christopher
+
+jessymuiaa@gmail.com
+
+{
+    "id": 6,
+    "saas_client_id": "c9abd4c0-2db0-457c-a041-a0519f78818b",
+    "name": "Jessy Muia Christopher",
+    "email": "jessymuiaa@gmail.com",
+    "phone_number": "0710318560",
+    "email_verified_at": null,
+    "created_at": "2026-03-31T21:57:04.000000Z",
+    "updated_at": "2026-04-01T15:38:14.000000Z",
+    "deleted_at": null,
+    "created_by": null,
+    "updated_by": 6,
+    "deleted_by": null,
+    "permissions": [],
+    "roles": [
+        {
+            "id": 1,
+            "name": "admin",
+            "guard_name": "web",
+            "created_at": "2026-03-31T21:31:47.000000Z",
+            "updated_at": "2026-03-31T21:31:47.000000Z",
+            "pivot": {
+                "model_type": "App\\Models\\User",
+                "model_id": 6,
+                "role_id": 1
+            }
+        }
+    ]
+}
+
+
+Git
+Ensure company details can be created and saved successfully
+3954be4a08c77c5c94bc5d17277ecbdd9c502b52
+
+View commit 3954be4
+Versions
+Php Version
+8.2.23
+
+Laravel Version
+12.56.0
+
+Laravel Locale
+en
+
+Laravel Config Cached
+false
+App Debug
+true
+App Env
+local
+
+
+12
+Queries
+19:46:44
+11.17ms
+pgsql
+select * from "users" where "users"."id" = 6 and "users"."deleted_at" is null limit 1
+
+
+1 query parameter
+19:46:44
+1.3ms
+pgsql
+select * from "saas_clients" where "slug" = jesphertech limit 1
+
+
+1 query parameter
+19:46:44
+0.42ms
+pgsql
+SET app.saas_client_id = 'c9abd4c0-2db0-457c-a041-a0519f78818b'
+
+
+19:46:44
+0.46ms
+pgsql
+SET app.saas_client_id = 'c9abd4c0-2db0-457c-a041-a0519f78818b'
+
+
+19:46:44
+0.34ms
+pgsql
+RESET app.bypass_rls
+
+
+19:46:44
+0.56ms
+pgsql
+select * from "saas_clients" where "slug" = jesphertech limit 1
+
+
+1 query parameter
+19:46:44
+0.82ms
+pgsql
+select * from "permissions"
+
+
+19:46:44
+1.92ms
+pgsql
+select "roles".*, "role_has_permissions"."permission_id" as "pivot_permission_id", "role_has_permissions"."role_id" as "pivot_role_id" from "roles" inner join "role_has_permissions" on "roles"."id" = "role_has_permissions"."role_id" where "role_has_permissions"."permission_id" in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148)
+
+
+19:46:44
+0.84ms
+pgsql
+select "permissions".*, "model_has_permissions"."model_id" as "pivot_model_id", "model_has_permissions"."permission_id" as "pivot_permission_id", "model_has_permissions"."model_type" as "pivot_model_type" from "permissions" inner join "model_has_permissions" on "permissions"."id" = "model_has_permissions"."permission_id" where "model_has_permissions"."model_id" in (6) and "model_has_permissions"."model_type" = App\Models\User
+
+
+1 query parameter
+19:46:44
+0.63ms
+pgsql
+select "roles".*, "model_has_roles"."model_id" as "pivot_model_id", "model_has_roles"."role_id" as "pivot_role_id", "model_has_roles"."model_type" as "pivot_model_type" from "roles" inner join "model_has_roles" on "roles"."id" = "model_has_roles"."role_id" where "model_has_roles"."model_id" in (6) and "model_has_roles"."model_type" = App\Models\User
+
+
+1 query parameter
+19:46:44
+0.98ms
+pgsql
+select count(*) as aggregate from "company_details" where "saas_client_id" = c9abd4c0-2db0-457c-a041-a0519f78818b and "company_details"."deleted_at" is null
+
+
+1 query parameter
+19:46:44
+0.8ms
+pgsql
+select * from "saas_clients" where "id" = c9abd4c0-2db0-457c-a041-a0519f78818b
+
+
+1 query parameter
+·
+Source
+·
+Docs
+·
+Laravel
+Ignition is built byFlare, the Laravel error reporting service.
+

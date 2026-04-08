@@ -1,0 +1,161 @@
+C:\Users\jessy\Desktop\kakaye\saaas>docker compose logs php --tail 50
+php-1  |   - Installing spatie/error-solutions (1.1.3): Extracting archive
+php-1  |   - Installing spatie/backtrace (1.8.2): Extracting archive
+php-1  |   - Installing spatie/flare-client-php (1.11.0): Extracting archive
+php-1  |   - Installing spatie/ignition (1.16.0): Extracting archive
+php-1  |   - Installing spatie/laravel-ignition (2.12.0): Extracting archive
+php-1  |   - Installing spatie/laravel-permission (6.25.0): Extracting archive
+php-1  |   - Installing stancl/virtualcolumn (v1.5.0): Extracting archive
+php-1  |   - Installing stancl/jobpipeline (v1.9.0): Extracting archive
+php-1  |   - Installing facade/ignition-contracts (1.0.2): Extracting archive
+php-1  |   - Installing stancl/tenancy (v3.10.0): Extracting archive
+php-1  |    0/165 [>---------------------------]   0%
+php-1  |    9/165 [=>--------------------------]   5%
+php-1  |   10/165 [=>--------------------------]   6%
+php-1  |   17/165 [==>-------------------------]  10%
+php-1  |   20/165 [===>------------------------]  12%
+php-1  |   27/165 [====>-----------------------]  16%
+php-1  |   30/165 [=====>----------------------]  18%
+php-1  |   34/165 [=====>----------------------]  20%
+php-1  |   39/165 [======>---------------------]  23%
+php-1  |   44/165 [=======>--------------------]  26%
+php-1  |   47/165 [=======>--------------------]  28%
+php-1  |   53/165 [========>-------------------]  32%
+php-1  |   56/165 [=========>------------------]  33%
+php-1  |   60/165 [==========>-----------------]  36%
+php-1  |   64/165 [==========>-----------------]  38%
+php-1  |   68/165 [===========>----------------]  41%
+php-1  |   71/165 [============>---------------]  43%
+php-1  |   72/165 [============>---------------]  43%
+php-1  |   74/165 [============>---------------]  44%
+php-1  |   77/165 [=============>--------------]  46%
+php-1  |   78/165 [=============>--------------]  47%
+php-1  |   81/165 [=============>--------------]  49%    Install of nesbot/carbon failed
+php-1  |     Install of league/commonmark failed
+php-1  |     Install of laravel/framework failed
+php-1  |     Install of thecodingmachine/safe failed
+php-1  |     Install of dompdf/dompdf failed
+php-1  |     Install of blade-ui-kit/blade-heroicons failed
+php-1  |     Install of fakerphp/faker failed
+php-1  | The following exception is caused by a process timeout
+php-1  | Check https://getcomposer.org/doc/06-config.md#process-timeout for details
+php-1  |
+php-1  | In Process.php line 1205:
+php-1  |
+php-1  |   The process "'/usr/bin/unzip' '-qq' '/var/www/html/vendor/composer/tmp-c206
+php-1  |   e4db0b47c5dfab1dc3cdcd2d1e84.zip' '-d' '/var/www/html/vendor/composer/f845c
+php-1  |   8ae'" exceeded the timeout of 300 seconds.
+php-1  |
+php-1  |
+php-1  | install [--prefer-source] [--prefer-dist] [--prefer-install PREFER-INSTALL] [--dry-run] [--download-only] [--dev] [--no-suggest] [--no-dev] [--no-security-blocking] [--no-autoloader] [--no-progress] [--no-install] [--audit] [--audit-format AUDIT-FORMAT] [-v|vv|vvv|--verbose] [-o|--optimize-autoloader] [-a|--classmap-authoritative] [--apcu-autoloader] [--apcu-autoloader-prefix APCU-AUTOLOADER-PREFIX] [--ignore-platform-req IGNORE-PLATFORM-REQ] [--ignore-platform-reqs] [--] [<packages>...]
+php-1  |
+
+C:\Users\jessy\Desktop\kakaye\saaas>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

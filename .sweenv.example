@@ -1,0 +1,77 @@
+APP_NAME="PropManage SaaS"
+APP_ENV=local
+APP_KEY=
+APP_DEBUG=true
+APP_URL=http://localhost:8000
+
+LOG_CHANNEL=stack
+LOG_DEPRECATIONS_CHANNEL=null
+LOG_LEVEL=debug
+
+# ─── Database — PostgreSQL + Citus ───────────────────────────────────────────
+# Docker: DB_HOST=citus-coordinator
+# Local bare-metal: DB_HOST=127.0.0.1
+DB_CONNECTION=pgsql
+DB_HOST=citus-coordinator
+DB_PORT=5432
+DB_DATABASE=propman
+DB_USERNAME=postgres
+DB_PASSWORD=
+
+# ─── Broadcasting / Cache / Queue / Session ───────────────────────────────────
+BROADCAST_DRIVER=log
+CACHE_DRIVER=redis
+FILESYSTEM_DISK=local
+QUEUE_CONNECTION=redis
+SESSION_DRIVER=redis
+SESSION_LIFETIME=120
+
+# ─── Redis ────────────────────────────────────────────────────────────────────
+# Docker: REDIS_HOST=redis
+# Local bare-metal: REDIS_HOST=127.0.0.1
+REDIS_CLIENT=predis
+REDIS_HOST=redis
+REDIS_PASSWORD=null
+REDIS_PORT=6379
+
+# ─── Mail (SMTP) ──────────────────────────────────────────────────────────────
+# Replace with your SMTP provider credentials.
+MAIL_MAILER=smtp
+MAIL_HOST=your-smtp-host.com
+MAIL_PORT=587
+MAIL_USERNAME=your-smtp-username@yourdomain.com
+MAIL_PASSWORD=
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=your-from-address@yourdomain.com
+MAIL_FROM_NAME="${APP_NAME}"
+
+# ─── Multi-tenancy ────────────────────────────────────────────────────────────
+# Comma-separated list of central (non-tenant) domains.
+# Add your production domain here in production.
+CENTRAL_DOMAINS=localhost,127.0.0.1
+
+# Tenant domain suffix — for subdomain-based tenancy in production.
+# Example: if set to .yourdomain.com, tenants get slug.yourdomain.com
+TENANT_DOMAIN_SUFFIX=.yourdomain.com
+
+# Tenant identification mode:
+#   slug      — path-based:      /app/app/{slug}         ← default (Replit / dev)
+#   subdomain — subdomain-based: {slug}.yoursaas.com     ← production (needs wildcard DNS)
+APP_TENANT_MODE=slug
+
+# ─── M-Pesa Integration (Safaricom Daraja API) ───────────────────────────────
+# Register at https://developer.safaricom.co.ke/
+# Use sandbox values for local testing, production values for live.
+MPESA_ENV=sandbox
+MPESA_CONSUMER_KEY=
+MPESA_CONSUMER_SECRET=
+MPESA_SHORTCODE=
+MPESA_PASSKEY=
+MPESA_CALLBACK_URL=http://localhost:8000/api/mpesa/callback
+MPESA_STK_PUSH_URL=https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest
+
+# ─── Filament / Admin Panel ───────────────────────────────────────────────────
+FILAMENT_FILESYSTEM_DISK=public
+
+# ─── Vite (frontend asset bundling) ──────────────────────────────────────────
+VITE_APP_NAME="${APP_NAME}"

@@ -1,0 +1,112 @@
+jesphertech@JESPHER:~/Desktop/kakaye/saaas$ git pull 
+remote: Enumerating objects: 202, done.
+remote: Counting objects: 100% (202/202), done.
+remote: Compressing objects: 100% (24/24), done.
+remote: Total 202 (delta 176), reused 202 (delta 176), pack-reused 0 (from 0)
+Receiving objects: 100% (202/202), 46.25 KiB | 861.00 KiB/s, done.
+Resolving deltas: 100% (176/176), completed with 59 local objects.
+From https://github.com/jessymuia/saaas
+   8eb9e9e..74d0fa2  main       -> origin/main
+Updating 8eb9e9e..74d0fa2
+Fast-forward
+ .replit                                                                                          |  27 ++++
+ app/Auth/SystemAdminUserProvider.php                                                             |  42 ++++++
+ app/Auth/TenantUserProvider.php                                                                  |  21 ++-
+ app/Filament/Resources/Central/SaasClientResource.php                                            |  11 +-
+ app/Filament/Resources/Central/SaasClientResource/Pages/CreateSaasClient.php                     |  90 +++++++++---
+ app/Http/Middleware/InitializeTenancyBySlug.php                                                  |  12 +-
+ app/Models/AppRole.php                                                                           |   5 +-
+ app/Models/DefaultAppModel.php                                                                   |  16 +--
+ app/Models/Domain.php                                                                            |  71 +++++-----
+ app/Models/Plan.php                                                                              |  45 +++++-
+ app/Models/SaasClient.php                                                                        |   4 +-
+ app/Models/SaasClientUser.php                                                                    |  71 ++++------
+ app/Models/Subscription.php                                                                      |  75 +++++-----
+ app/Models/SubscriptionPayment.php                                                               |  62 ++++-----
+ app/Models/SupportTicket.php                                                                     |  37 ++++-
+ app/Models/SystemAdmin.php                                                                       |  17 ++-
+ app/Models/UsageMetric.php                                                                       |  45 ++++--
+ app/Models/User.php                                                                              |  40 +++---
+ app/Providers/AppServiceProvider.php                                                             |   8 ++
+ app/Providers/Filament/AppPanelProvider.php                                                      |   1 -
+ app/Utils/AppUtils.php                                                                           |  86 ++++--------
+ attached_assets/Pasted-App-Models-SaasClient-setPrimaryColorAttribute-Argument_1775625114596.txt | 449 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ attached_assets/Pasted-Illuminate-Database-QueryException-PHP-8-2-23-12-56-0-S_1775627372056.txt | 577 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ attached_assets/Pasted-TypeError-PHP-8-2-30-12-56-0-App-Models-SaasClient-setP_1775624719328.txt | 452 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ attached_assets/Pasted-docker-logs-saas-property-management-marketing-1-added-_1775624490198.txt |  53 +++++++
+ attached_assets/Pasted-ocker-logs-saas-property-management-marketing-1-added-2_1775627182027.txt |  53 +++++++
+ config/auth.php                                                                                  |   2 +-
+ database/migrations/2014_10_12_000000_create_users_table.php                                     |  64 ++++-----
+ database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php                    |   8 +-
+ database/migrations/2023_09_22_102005_create_ref_property_types_table.php                        |  29 ++--
+ database/migrations/2023_09_23_094352_create_audits_table.php                                    |  14 +-
+ database/migrations/2023_09_23_094456_create_permission_tables.php                               |  16 +--
+ database/migrations/2023_09_23_101727_create_properties_table.php                                |  24 +---
+ database/migrations/2023_09_23_102429_create_ref_unit_types_table.php                            |   2 +-
+ database/migrations/2023_09_23_102618_create_ref_payment_types_table.php                         |  28 ++--
+ database/migrations/2023_09_23_102718_create_ref_billing_types_table.php                         |   2 +-
+ database/migrations/2023_09_23_103511_create_ref_tenancy_agreement_types_table.php               |   2 +-
+ database/migrations/2023_09_23_103917_create_tenants_table.php                                   |  17 +--
+ database/migrations/2023_09_23_104103_create_units_table.php                                     |  31 +----
+ database/migrations/2023_09_23_104457_create_tenancy_agreements_table.php                        |  59 +-------
+ database/migrations/2023_09_23_105259_create_invoices_table.php                                  |  37 +----
+ database/migrations/2023_09_23_105503_create_ref_utilities_table.php                             |   2 +-
+ database/migrations/2023_09_23_105700_create_property_utilities_table.php                        |  67 ++-------
+ database/migrations/2023_09_23_105902_create_services_table.php                                  |   2 +-
+ database/migrations/2023_09_23_110032_create_property_services_table.php                         |  67 ++-------
+ database/migrations/2023_09_23_110256_create_tenancy_bills_table.php                             |  66 ++-------
+ database/migrations/2023_09_23_111551_create_meter_readings_table.php                            |  45 +-----
+ database/migrations/2023_10_20_075810_create_credit_notes_table.php                              |  37 +----
+ database/migrations/2023_10_25_133832_create_vacation_notices_table.php                          |  44 +-----
+ database/migrations/2023_12_06_104512_create_unit_occupation_monthly_records_table.php           |  52 +------
+ database/migrations/2023_12_14_055144_create_sent_emails_table.php                               |  31 +----
+ database/migrations/2023_12_14_123914_create_email_attachments_table.php                         |  37 +----
+ database/migrations/2023_12_31_043603_create_tenancy_agreement_files_table.php                   |  37 +----
+ database/migrations/2024_01_01_165342_create_escalation_rates_and_amounts_logs_table.php         |  44 +-----
+ database/migrations/2024_04_02_091222_create_property_payment_details_table.php                  |  39 +-----
+ database/migrations/2024_04_14_131043_create_property_owners_table.php                           |  52 +------
+ database/migrations/2024_04_17_124319_create_clients_table.php                                   |  29 +---
+ database/migrations/2024_04_17_125311_create_invoice_payments_table.php                          |  84 ++----------
+ database/migrations/2024_04_17_125326_create_manual_invoices_table.php                           |  55 +-------
+ database/migrations/2024_04_17_144230_create_manual_invoice_items_table.php                      |  45 +-----
+ database/migrations/2024_10_14_154801_create_imports_table.php                                   |  53 +++----
+ database/migrations/2024_10_14_154802_create_failed_import_rows_table.php                        |  43 ++----
+ database/migrations/2024_10_14_193947_create_company_details_table.php                           |   2 +-
+ database/migrations/2024_10_15_170242_create_exports_table.php                                   |  56 +++-----
+ database/migrations/2024_10_17_124305_create_notifications_table.php                             |  14 +-
+ database/migrations/2024_10_24_202916_create_property_management_users_table.php                 |  35 ++---
+ database/migrations/2025_01_01_000001_create_plans_table.php                                     |   8 +-
+ database/migrations/2025_01_01_000002_create_saas_clients_table.php                              |  12 +-
+ database/migrations/2025_01_01_000003_create_domains_table.php                                   |  25 +---
+ database/migrations/2025_01_01_000004_create_saas_client_users_table.php                         |  28 +---
+ database/migrations/2025_01_01_000005_create_subscriptions_table.php                             |  12 +-
+ database/migrations/2025_01_01_000006_create_subscription_payments_table.php                     |  13 +-
+ database/migrations/2026_03_24_200204_create_system_admins_table.php                             |  19 ++-
+ database/migrations/2026_03_25_171136_create_support_tickets_table.php                           |  17 +--
+ database/migrations/2026_03_28_130245_create_usage_metrics_table.php                             |  14 +-
+ database/migrations/2026_04_01_194718_create_sessions_table.php                                  |   8 +-
+ database/seeders/DatabaseSeeder.php                                                              |  62 +++------
+ database/seeders/PlansSeeder.php                                                                 |  96 +++++++++++++
+ database/seeders/RefDataSeeder.php                                                               | 186 +++++++++++++++++++++++++
+ database/seeders/RolesSeeder.php                                                                 |  24 +---
+ database/seeders/SaasClientSeeder.php                                                            | 165 ++++++++++++++++++++++
+ database/seeders/SaasClientUsersSeeder.php                                                       | 184 +++++++++++++++++++++++++
+ docker-compose.yml                                                                               |   6 +-
+ replit.md                                                                                        |  15 ++
+ routes/web.php                                                                                   |   5 +-
+ saas-marketing/package.json                                                                      |   6 +-
+ start.sh                                                                                         |  82 ++++++++++-
+ 87 files changed, 3137 insertions(+), 1593 deletions(-)
+ create mode 100644 app/Auth/SystemAdminUserProvider.php
+ create mode 100644 attached_assets/Pasted-App-Models-SaasClient-setPrimaryColorAttribute-Argument_1775625114596.txt
+ create mode 100644 attached_assets/Pasted-Illuminate-Database-QueryException-PHP-8-2-23-12-56-0-S_1775627372056.txt
+ create mode 100644 attached_assets/Pasted-TypeError-PHP-8-2-30-12-56-0-App-Models-SaasClient-setP_1775624719328.txt
+ create mode 100644 attached_assets/Pasted-docker-logs-saas-property-management-marketing-1-added-_1775624490198.txt
+ create mode 100644 attached_assets/Pasted-ocker-logs-saas-property-management-marketing-1-added-2_1775627182027.txt
+ create mode 100644 database/seeders/PlansSeeder.php
+ create mode 100644 database/seeders/RefDataSeeder.php
+ create mode 100644 database/seeders/SaasClientSeeder.php
+ create mode 100644 database/seeders/SaasClientUsersSeeder.php
+jesphertech@JESPHER:~/Desktop/kakaye/saaas$ ^C
+jesphertech@JESPHER:~/Desktop/kakaye/saaas$ 
+

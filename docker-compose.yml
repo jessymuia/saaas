@@ -1,0 +1,226 @@
+services:
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - filament_css:/var/www/html/public/css
+      - filament_js:/var/www/html/public/js
+      - filament_fonts:/var/www/html/public/fonts
+    depends_on:
+      - php
+    networks:
+      - propman
+
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    entrypoint: ["/bin/sh", "/var/www/html/docker/php/entrypoint.sh"]
+    volumes:
+      - .:/var/www/html
+      - ./storage:/var/www/html/storage
+      - filament_css:/var/www/html/public/css
+      - filament_js:/var/www/html/public/js
+      - filament_fonts:/var/www/html/public/fonts
+    dns:
+    - 8.8.8.8
+    - 8.8.4.4
+    environment:
+      - APP_ENV=local
+      - DB_CONNECTION=pgsql
+      - DB_HOST=citus-coordinator
+      - DB_PORT=5432
+      - DB_DATABASE=propman
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - REDIS_HOST=redis
+      - PHP_MEMORY_LIMIT=512M
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      citus-coordinator:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - propman
+    healthcheck:
+      test: ["CMD", "php", "-v"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # ─── Citus Bootstrap ──────────────────────────────────────────────────────
+  # Runs once after coordinator is healthy to register workers and configure
+  # Citus settings. Safe to re-run (idempotent).
+  citus-bootstrap:
+    image: citusdata/citus:12.1
+    container_name: propman-citus-bootstrap
+    environment:
+      POSTGRES_DB: propman
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      COORDINATOR_HOST: citus-coordinator
+      WORKER1_HOST: citus-worker-1
+      WORKER2_HOST: citus-worker-2
+    volumes:
+      - ./docker/citus-bootstrap.sh:/citus-bootstrap.sh:ro
+    entrypoint: ["bash", "/citus-bootstrap.sh"]
+    depends_on:
+      citus-coordinator:
+        condition: service_healthy
+      citus-worker-1:
+        condition: service_healthy
+      citus-worker-2:
+        condition: service_healthy
+    networks:
+      - propman
+    restart: "no"
+
+  horizon:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: php artisan horizon
+    volumes:
+      - .:/var/www/html
+    environment:
+      - DB_CONNECTION=pgsql
+      - DB_HOST=citus-coordinator
+      - DB_PORT=5432
+      - DB_DATABASE=propman
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - REDIS_HOST=redis
+    depends_on:
+      - redis
+      - php
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - propman
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: php artisan schedule:work
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - php
+      - redis
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - propman
+
+  marketing:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - ./saas-marketing:/app
+      - marketing_node_modules:/app/node_modules
+    command: sh -c "npm ci && npm run build && npm start"
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+    networks:
+      - propman
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - propman
+
+  # ─── Citus Coordinator (Main DB) ──────────────────────────────────────────
+  citus-coordinator:
+    image: citusdata/citus:12.1
+    container_name: propman-citus-coordinator
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: propman
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - citus_coordinator_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d propman"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - propman
+
+  # ─── Citus Worker 1 ───────────────────────────────────────────────────────
+  citus-worker-1:
+    image: citusdata/citus:12.1
+    container_name: propman-citus-worker-1
+    environment:
+      POSTGRES_DB: propman
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - citus_worker1_data:/var/lib/postgresql/data
+    depends_on:
+      - citus-coordinator
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d propman"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - propman
+
+  # ─── Citus Worker 2 ───────────────────────────────────────────────────────
+  citus-worker-2:
+    image: citusdata/citus:12.1
+    container_name: propman-citus-worker-2
+    environment:
+      POSTGRES_DB: propman
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - citus_worker2_data:/var/lib/postgresql/data
+    depends_on:
+      - citus-coordinator
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d propman"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - propman
+
+
+networks:
+  propman:
+    driver: bridge
+
+
+volumes:
+  redis_data:
+  citus_coordinator_data:
+  citus_worker1_data:
+  citus_worker2_data:
+  filament_css:
+  filament_js:
+  filament_fonts:
+  marketing_node_modules:

@@ -1,0 +1,480 @@
+Stack
+Context
+Debug
+Flare
+Share
+Share with Flare
+Docs
+
+Stack
+
+Context
+
+Debug
+Create Share
+Docs
+
+Ignition Settings
+Docs
+Editor
+
+PhpStorm
+Theme
+auto
+Save settings
+Settings will be saved locally in ~/.ignition.json.
+
+SQLSTATE[23502]: Not null violation: 7 ERROR: null value in column "saas_client_id" of relation "invoice_payments" violates not-null constraint DETAIL: Failing row contains (2, 2026-03-31 22:08:52, 2026-03-31 22:08:52, null, 1, 0, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, f, null). (Connection: pgsql, Host: helium, Port: 5432, Database: heliumdb, SQL: insert into "invoice_payments" ("updated_at", "created_at") values (2026-03-31 22:08:52, 2026-03-31 22:08:52) returning "id")
+Illuminate
+ \ 
+Database
+ \ 
+QueryException
+PHP 8.2.23
+12.56.0
+SQLSTATE[23502]: Not null violation: 7 ERROR: null value in column "saas_client_id" of relation "invoice_payments" violates not-null constraint DETAIL: Failing row contains (2, 2026-03-31 22:08:52, 2026-03-31 22:08:52, null, 1, 0, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, f, null).
+insert into "invoice_payments" ("updated_at", "created_at") values (2026-03-31 22:08:52, 2026-03-31 22:08:52) returning "id"
+
+
+
+Expand vendor frames
+67 vendor frames
+public
+ / 
+index
+.php
+ 
+: 51
+require_once
+1 vendor frame
+public
+ / 
+index
+.php
+ 
+: 51
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|
+
+| Composer provides a convenient, automatically generated class loader for
+
+| this application. We just need to utilize it! We'll simply require it
+
+| into the script here so we don't need to manually load our classes.
+
+|
+
+*/
+
+
+
+require __DIR__.'/../vendor/autoload.php';
+
+
+
+/*
+
+|--------------------------------------------------------------------------
+
+| Run The Application
+
+|--------------------------------------------------------------------------
+
+|
+
+| Once we have the application, we can handle the incoming request using
+
+| the application's HTTP kernel. Then, we will send the response back
+
+| to this client's browser, allowing them to enjoy our application.
+
+|
+
+*/
+
+
+
+$app = require_once __DIR__.'/../bootstrap/app.php';
+
+
+
+$kernel = $app->make(Kernel::class);
+
+
+
+$response = $kernel->handle(
+
+    $request = Request::capture()
+
+)->send();
+
+
+
+$kernel->terminate($request, $response);
+
+arguments
+$request:Illuminate\Http\Request
+POST https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev/livewire/update
+
+App
+Routing
+Request
+Browser
+Headers
+Body
+Livewire
+app.filament.resources.central.payment-resource.pages.create-payment
+Context
+User
+Git
+Versions
+Exception
+App
+Routing
+Controller
+Livewire\Mechanisms\HandleRequests\HandleRequests@handleUpdate
+
+Route name
+default.livewire.update
+
+Middleware
+web
+
+Request
+https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev:8000/admin/central/payments/create
+GET
+curl "https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev:8000/admin/central/payments/create" \
+   -X GET \
+   -H 'host: 966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev' \
+   -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36' \
+   -H 'content-length: 1216' \
+   -H 'accept: */*' \
+   -H 'accept-encoding: gzip, deflate, br, zstd' \
+   -H 'accept-language: en-GB,en-US;q=0.9,en;q=0.8' \
+   -H 'content-type: application/json' \
+   -H 'cookie: <CENSORED>' \
+   -H 'origin: https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev:8000' \
+   -H 'referer: https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev:8000/admin/central/payments/create' \
+   -H 'sec-ch-ua: "Chromium";v="146", "Not-A.Brand";v="24", "Google Chrome";v="146"' \
+   -H 'sec-ch-ua-mobile: ?0' \
+   -H 'sec-ch-ua-platform: "Windows"' \
+   -H 'sec-fetch-dest: empty' \
+   -H 'sec-fetch-mode: cors' \
+   -H 'sec-fetch-site: same-origin' \
+   -H 'sec-fetch-storage-access: active' \
+   -H 'traceparent: 00-69cc45f40000000065f4044338a4035a-614c561c67af6da4-00' \
+   -H 'tracestate: dd=s:0;p:614c561c67af6da4;t.tid:69cc45f400000000' \
+   -H 'x-datadog-parent-id: 7011073399907642788' \
+   -H 'x-datadog-tags: _dd.p.tid=69cc45f400000000' \
+   -H 'x-datadog-trace-id: 7346501578907714394' \
+   -H 'x-forwarded-for: 154.159.252.194, 10.81.7.204' \
+   -H 'x-forwarded-proto: https' \
+   -F '_token=zvEJMGNcNn4JOPHU6NqYFuMssZUxdTaVjrZAvMIx' -F 'components=[object Object]'
+
+
+Browser
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+
+Headers
+host
+966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev
+
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+
+content-length
+1216
+
+accept
+*/*
+
+accept-encoding
+gzip, deflate, br, zstd
+
+accept-language
+en-GB,en-US;q=0.9,en;q=0.8
+
+content-type
+application/json
+
+cookie
+<CENSORED>
+
+origin
+https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev:8000
+
+referer
+https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev:8000/admin/central/payments/create
+
+sec-ch-ua
+"Chromium";v="146", "Not-A.Brand";v="24", "Google Chrome";v="146"
+
+sec-ch-ua-mobile
+?0
+
+sec-ch-ua-platform
+"Windows"
+
+sec-fetch-dest
+empty
+
+sec-fetch-mode
+cors
+
+sec-fetch-site
+same-origin
+
+sec-fetch-storage-access
+active
+
+traceparent
+00-69cc45f40000000065f4044338a4035a-614c561c67af6da4-00
+
+tracestate
+dd=s:0;p:614c561c67af6da4;t.tid:69cc45f400000000
+
+x-datadog-parent-id
+7011073399907642788
+
+x-datadog-tags
+_dd.p.tid=69cc45f400000000
+
+x-datadog-trace-id
+7346501578907714394
+
+x-forwarded-for
+154.159.252.194, 10.81.7.204
+
+x-forwarded-proto
+https
+
+Body
+{
+    "_token": "zvEJMGNcNn4JOPHU6NqYFuMssZUxdTaVjrZAvMIx",
+    "components": [
+        {
+            "snapshot": "{\"data\":{\"record\":null,\"data\":[[],{\"s\":\"arr\"}],\"previousUrl\":\"https:\\/\\/966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev:8000\\/admin\\/central\\/payments\",\"isCreating\":false,\"mountedActions\":[[],{\"s\":\"arr\"}],\"defaultAction\":null,\"defaultActionArguments\":null,\"defaultActionContext\":null,\"defaultTableAction\":null,\"defaultTableActionRecord\":null,\"defaultTableActionArguments\":null,\"componentFileAttachments\":[[],{\"s\":\"arr\"}],\"areSchemaStateUpdateHooksDisabledForTesting\":false,\"discoveredSchemaNames\":[[\"form\",\"content\",\"headerWidgets\",\"footerWidgets\"],{\"s\":\"arr\"}],\"parentRecord\":null,\"savedDataHash\":null},\"memo\":{\"id\":\"2w9lkx5nr2EkXhyVAJ1C\",\"name\":\"app.filament.resources.central.payment-resource.pages.create-payment\",\"path\":\"admin\\/central\\/payments\\/create\",\"method\":\"GET\",\"release\":\"a-a-a\",\"children\":[],\"scripts\":[],\"assets\":[],\"errors\":[],\"locale\":\"en\"},\"checksum\":\"ba60e7243c27a60dd1a35e0142e81f79e099d5acbafdc735ec8937de59c381c5\"}",
+            "updates": [],
+            "calls": [
+                {
+                    "path": "",
+                    "method": "create",
+                    "params": []
+                }
+            ]
+        }
+    ]
+}
+
+
+Livewire
+app.filament.resources.central.payment-resource.pages.create-payment
+Component
+Component
+App\Filament\Resources\Central\PaymentResource\Pages\CreatePayment
+
+Calls
+Method
+create
+
+Params
+[]
+
+Path
+
+Data
+record
+null
+
+data
+[
+    [],
+    {
+        "s": "arr"
+    }
+]
+
+
+previousUrl
+https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev:8000/admin/central/payments
+
+isCreating
+false
+mountedActions
+[
+    [],
+    {
+        "s": "arr"
+    }
+]
+
+
+defaultAction
+null
+
+defaultActionArguments
+null
+
+defaultActionContext
+null
+
+defaultTableAction
+null
+
+defaultTableActionRecord
+null
+
+defaultTableActionArguments
+null
+
+componentFileAttachments
+[
+    [],
+    {
+        "s": "arr"
+    }
+]
+
+
+areSchemaStateUpdateHooksDisabledForTesting
+false
+discoveredSchemaNames
+[
+    [
+        "form",
+        "content",
+        "headerWidgets",
+        "footerWidgets"
+    ],
+    {
+        "s": "arr"
+    }
+]
+
+
+parentRecord
+null
+
+savedDataHash
+null
+
+Memo
+id
+2w9lkx5nr2EkXhyVAJ1C
+
+name
+app.filament.resources.central.payment-resource.pages.create-payment
+
+path
+admin/central/payments/create
+
+method
+GET
+
+release
+a-a-a
+
+children
+[]
+
+scripts
+[]
+
+assets
+[]
+
+errors
+[]
+
+locale
+en
+
+Context
+User
+superadmin@gmail.com
+Super Admin
+
+superadmin@gmail.com
+
+{
+    "id": 1,
+    "name": "Super Admin",
+    "email": "superadmin@gmail.com",
+    "created_at": "2026-03-31T20:42:37.000000Z",
+    "updated_at": "2026-03-31T20:42:37.000000Z"
+}
+
+
+Git
+Add missing payment receiver and client to new invoice payments
+ed084c84252d6c840dddb4eb743302d4b0015035
+
+View commit ed084c8
+Versions
+Php Version
+8.2.23
+
+Laravel Version
+12.56.0
+
+Laravel Locale
+en
+
+Laravel Config Cached
+false
+App Debug
+true
+App Env
+local
+
+Exception
+Raw Sql
+insert into "invoice_payments" ("updated_at", "created_at") values (?, ?) returning "id"
+
+
+1
+Queries
+01:08:52
+10.49ms
+pgsql
+select * from "system_admins" where "id" = 1 limit 1
+
+
+1 query parameter
+·
+Source
+·
+Docs
+·
+Laravel
+Ignition is built byFlare, the Laravel error reporting service.

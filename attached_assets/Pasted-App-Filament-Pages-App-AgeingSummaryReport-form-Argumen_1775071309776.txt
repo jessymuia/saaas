@@ -1,0 +1,474 @@
+App\Filament\Pages\App\AgeingSummaryReport::form(): Argument #1 ($form) must be of type Filament\Forms\Form, Filament\Schemas\Schema given, called in /home/runner/workspace/vendor/filament/forms/src/Concerns/InteractsWithForms.php on line 70
+
+Expand vendor frames
+App
+ \ 
+Filament
+ \ 
+Pages
+ \ 
+App
+ \ 
+AgeingSummaryReport
+ 
+: 65
+form
+9 vendor frames
+App
+ \ 
+Filament
+ \ 
+Pages
+ \ 
+App
+ \ 
+AgeingSummaryReport
+ 
+: 61
+render
+19 vendor frames
+App
+ \ 
+Http
+ \ 
+Middleware
+ \ 
+CheckSubscriptionExpiry
+ 
+: 35
+handle
+1 vendor frame
+App
+ \ 
+Http
+ \ 
+Middleware
+ \ 
+TenantBrandingMiddleware
+ 
+: 30
+handle
+1 vendor frame
+App
+ \ 
+Http
+ \ 
+Middleware
+ \ 
+SetRlsSessionVariables
+ 
+: 50
+handle
+1 vendor frame
+App
+ \ 
+Http
+ \ 
+Middleware
+ \ 
+CheckTenantSuspended
+ 
+: 16
+handle
+1 vendor frame
+App
+ \ 
+Http
+ \ 
+Middleware
+ \ 
+InitializeTenancyBySlug
+ 
+: 53
+handle
+52 vendor frames
+public
+ / 
+index
+.php
+ 
+: 51
+require_once
+1 vendor frame
+app
+ / 
+Filament
+ / 
+Pages
+ / 
+App
+ / 
+AgeingSummaryReport
+.php
+ 
+: 65
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    {
+
+        return auth()->user()->can(AppPermissions::READ_INVOICE_PAYMENTS_PERMISSION);
+
+    }
+
+
+
+    public function mount()
+
+    {
+
+        abort_unless(auth()->user()->can(AppPermissions::READ_INVOICE_PAYMENTS_PERMISSION), 403);
+
+    }
+
+
+
+    public function render(): View
+
+    {
+
+        $this->form->fill();
+
+        return parent::render();
+
+    }
+
+
+
+    public function form(Form $form): Form
+
+    {
+
+        $form->schema([
+
+            Select::make('property')
+
+                ->label('Property')
+
+                ->options(Property::query()->select(['id', 'name'])->get()->pluck('name', 'id')),
+
+            Section::make('ranges-section')
+
+                ->heading('Ranges *')
+
+                ->description('Tick the periods to include in the report')
+
+                ->schema([
+
+                    Checkbox::make('zero_to_thirty_days')->label('0-30 days'),
+
+                    Checkbox::make('thirty_one_to_sixty_days')->label('31-60 days'),
+
+                    Checkbox::make('sixty_one_to_ninety_days')->label('61-90 days'),
+
+                    Checkbox::make('over_ninety_days')->label('Over 90 days'),
+
+                ]),
+App
+Routing
+Request
+Browser
+Headers
+Body
+Context
+User
+Git
+Versions
+App
+Routing
+Controller
+App\Filament\Pages\App\AgeingSummaryReport
+
+Route name
+filament.app.pages.ageing-summary-report
+
+Middleware
+panel:app
+
+Illuminate\Cookie\Middleware\EncryptCookies
+
+Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse
+
+Illuminate\Session\Middleware\StartSession
+
+Illuminate\View\Middleware\ShareErrorsFromSession
+
+Illuminate\Foundation\Http\Middleware\VerifyCsrfToken
+
+Illuminate\Routing\Middleware\SubstituteBindings
+
+Filament\Http\Middleware\DisableBladeIconComponents
+
+Filament\Http\Middleware\DispatchServingFilamentEvent
+
+App\Http\Middleware\InitializeTenancyBySlug
+
+App\Http\Middleware\CheckTenantSuspended
+
+App\Http\Middleware\SetRlsSessionVariables
+
+App\Http\Middleware\TenantBrandingMiddleware
+
+App\Http\Middleware\CheckSubscriptionExpiry
+
+Filament\Http\Middleware\Authenticate
+
+Filament\Http\Middleware\IdentifyTenant
+
+Request
+https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev/app/app/test-client/ageing-summary-report
+GET
+curl "https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev/app/app/test-client/ageing-summary-report" \
+   -X GET \
+   -H 'host: 966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev' \
+   -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36' \
+   -H 'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7' \
+   -H 'accept-encoding: identity, gzip, deflate, br, zstd' \
+   -H 'accept-language: en-GB,en-US;q=0.9,en;q=0.8' \
+   -H 'cookie: <CENSORED>' \
+   -H 'referer: https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev:8000/app/app/test-client/billing-page' \
+   -H 'sec-ch-ua: "Chromium";v="146", "Not-A.Brand";v="24", "Google Chrome";v="146"' \
+   -H 'sec-ch-ua-mobile: ?0' \
+   -H 'sec-ch-ua-platform: "Windows"' \
+   -H 'sec-fetch-dest: iframe' \
+   -H 'sec-fetch-mode: navigate' \
+   -H 'sec-fetch-site: same-origin' \
+   -H 'sec-fetch-storage-access: active' \
+   -H 'sec-fetch-user: ?1' \
+   -H 'traceparent: 00-69cd7040000000001a0bd115deb3ac27-75cabe366451d31b-00' \
+   -H 'tracestate: dd=s:0;p:75cabe366451d31b;t.tid:69cd704000000000' \
+   -H 'upgrade-insecure-requests: 1' \
+   -H 'x-datadog-parent-id: 8487805588553716507' \
+   -H 'x-datadog-tags: _dd.p.tid=69cd704000000000' \
+   -H 'x-datadog-trace-id: 1876823561590778919' \
+   -H 'x-forwarded-for: 154.159.252.194, 10.81.8.102' \
+   -H 'x-forwarded-proto: https';
+
+
+Browser
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+
+Headers
+host
+966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev
+
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+
+accept
+text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+
+accept-encoding
+identity, gzip, deflate, br, zstd
+
+accept-language
+en-GB,en-US;q=0.9,en;q=0.8
+
+cookie
+<CENSORED>
+
+referer
+https://966b4e57-fd54-4375-9f98-6abdbfac5bdf-00-34x3dhcst4lwv.picard.replit.dev:8000/app/app/test-client/billing-page
+
+sec-ch-ua
+"Chromium";v="146", "Not-A.Brand";v="24", "Google Chrome";v="146"
+
+sec-ch-ua-mobile
+?0
+
+sec-ch-ua-platform
+"Windows"
+
+sec-fetch-dest
+iframe
+
+sec-fetch-mode
+navigate
+
+sec-fetch-site
+same-origin
+
+sec-fetch-storage-access
+active
+
+sec-fetch-user
+?1
+
+traceparent
+00-69cd7040000000001a0bd115deb3ac27-75cabe366451d31b-00
+
+tracestate
+dd=s:0;p:75cabe366451d31b;t.tid:69cd704000000000
+
+upgrade-insecure-requests
+1
+
+x-datadog-parent-id
+8487805588553716507
+
+x-datadog-tags
+_dd.p.tid=69cd704000000000
+
+x-datadog-trace-id
+1876823561590778919
+
+x-forwarded-for
+154.159.252.194, 10.81.8.102
+
+x-forwarded-proto
+https
+
+Body
+[]
+
+Context
+User
+lancerbrian001@gmail.com
+Test User
+
+lancerbrian001@gmail.com
+
+{
+    "id": 2,
+    "saas_client_id": "508c4add-39ec-4c28-adff-3d9cd29741fa",
+    "name": "Test User",
+    "email": "lancerbrian001@gmail.com",
+    "phone_number": "08123456789",
+    "email_verified_at": "2026-04-01T19:13:54.000000Z",
+    "created_at": "2026-04-01T19:13:54.000000Z",
+    "updated_at": "2026-04-01T19:13:54.000000Z",
+    "deleted_at": null,
+    "created_by": null,
+    "updated_by": 2,
+    "deleted_by": null,
+    "permissions": [],
+    "roles": [
+        {
+            "id": 1,
+            "name": "admin",
+            "guard_name": "web",
+            "created_at": "2026-04-01T19:13:54.000000Z",
+            "updated_at": "2026-04-01T19:13:54.000000Z",
+            "pivot": {
+                "model_type": "App\\Models\\User",
+                "model_id": 2,
+                "role_id": 1
+            }
+        }
+    ]
+}
+
+
+Git
+Remove redundant session authentication middleware from admin and app panels
+db3b74c5d9cf9b9b1cdeb43258672af304540645
+
+View commit db3b74c
+Versions
+Php Version
+8.2.23
+
+Laravel Version
+12.56.0
+
+Laravel Locale
+en
+
+Laravel Config Cached
+false
+App Debug
+true
+App Env
+local
+
+
+8
+Queries
+22:21:37
+9.98ms
+pgsql
+select * from "users" where "users"."id" = 2 and "users"."deleted_at" is null limit 1
+
+
+1 query parameter
+22:21:37
+0.96ms
+pgsql
+select * from "saas_clients" where "slug" = test-client limit 1
+
+
+1 query parameter
+22:21:37
+0.31ms
+pgsql
+SET app.saas_client_id = '508c4add-39ec-4c28-adff-3d9cd29741fa'
+
+
+22:21:37
+0.26ms
+pgsql
+SET app.saas_client_id = '508c4add-39ec-4c28-adff-3d9cd29741fa'
+
+
+22:21:37
+0.3ms
+pgsql
+RESET app.bypass_rls
+
+
+22:21:37
+0.43ms
+pgsql
+select * from "saas_clients" where "slug" = test-client limit 1
+
+
+1 query parameter
+22:21:37
+1ms
+pgsql
+select "permissions".*, "model_has_permissions"."model_id" as "pivot_model_id", "model_has_permissions"."permission_id" as "pivot_permission_id", "model_has_permissions"."model_type" as "pivot_model_type" from "permissions" inner join "model_has_permissions" on "permissions"."id" = "model_has_permissions"."permission_id" where "model_has_permissions"."model_id" in (2) and "model_has_permissions"."model_type" = App\Models\User
+
+
+1 query parameter
+22:21:37
+0.78ms
+pgsql
+select "roles".*, "model_has_roles"."model_id" as "pivot_model_id", "model_has_roles"."role_id" as "pivot_role_id", "model_has_roles"."model_type" as "pivot_model_type" from "roles" inner join "model_has_roles" on "roles"."id" = "model_has_roles"."role_id" where "model_has_roles"."model_id" in (2) and "model_has_roles"."model_type" = App\Models\User
+
+
+1 query parameter
+·
+Source
+·
+Docs
+·
+Laravel
+Ignition is built byFlare, the Laravel error reporting service.

@@ -1,0 +1,48 @@
+C:\Users\jessy\Desktop\kakaye\saaas>docker compose ps
+NAME                        IMAGE                  COMMAND                  SERVICE             CREATED          STATUS                    PORTS
+propman-citus-coordinator   citusdata/citus:12.1   "docker-entrypoint.s…"   citus-coordinator   20 minutes ago   Up 20 minutes (healthy)   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
+propman-citus-worker-1      citusdata/citus:12.1   "docker-entrypoint.s…"   citus-worker-1      20 minutes ago   Up 20 minutes (healthy)   5432/tcp
+propman-citus-worker-2      citusdata/citus:12.1   "docker-entrypoint.s…"   citus-worker-2      20 minutes ago   Up 20 minutes (healthy)   5432/tcp
+saaas-horizon-1             saaas-horizon          "docker-php-entrypoi…"   horizon             20 minutes ago   Up 20 minutes             9000/tcp
+saaas-nginx-1               nginx:alpine           "/docker-entrypoint.…"   nginx               8 minutes ago    Up 8 minutes              0.0.0.0:8000->80/tcp, [::]:8000->80/tcp
+saaas-php-1                 saaas-php              "/bin/sh /var/www/ht…"   php                 20 minutes ago   Up 58 seconds (healthy)   9000/tcp
+saaas-redis-1               redis:7-alpine         "docker-entrypoint.s…"   redis               20 minutes ago   Up 20 minutes             0.0.0.0:6379->6379/tcp, [::]:6379->6379/tcp
+saaas-scheduler-1           saaas-scheduler        "docker-php-entrypoi…"   scheduler           20 minutes ago   Up 20 minutes             9000/tcp
+
+C:\Users\jessy\Desktop\kakaye\saaas>docker compose logs php --tail 30
+php-1  | [entrypoint] Publishing Filament assets...
+php-1  | [entrypoint] Starting php-fpm...
+php-1  | [02-Apr-2026 07:00:21] NOTICE: fpm is running, pid 1
+php-1  | [02-Apr-2026 07:00:21] NOTICE: ready to handle connections
+php-1  | 172.18.0.11 -  02/Apr/2026:07:07:17 +0000 "GET /index.php" 200
+php-1  | 172.18.0.11 -  02/Apr/2026:07:10:02 +0000 "GET /index.php" 200
+php-1  | 172.18.0.2 -  02/Apr/2026:07:11:40 +0000 "GET /index.php" 200
+php-1  | 172.18.0.2 -  02/Apr/2026:07:12:25 +0000 "GET /index.php" 200
+php-1  | 172.18.0.2 -  02/Apr/2026:07:12:29 +0000 "GET /index.php" 200
+php-1  | [02-Apr-2026 07:18:40] NOTICE: Finishing ...
+php-1  | [02-Apr-2026 07:18:40] NOTICE: exiting, bye-bye!
+php-1  | [entrypoint] Publishing Filament assets...
+php-1  | [entrypoint] Starting php-fpm...
+php-1  | [02-Apr-2026 07:19:19] NOTICE: fpm is running, pid 1
+php-1  | [02-Apr-2026 07:19:19] NOTICE: ready to handle connections
+
+C:\Users\jessy\Desktop\kakaye\saaas>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
