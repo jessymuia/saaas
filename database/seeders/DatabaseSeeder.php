@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Jobs\CalculateUsageMetrics;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -37,5 +38,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             SaasClientUsersSeeder::class,
         ]);
+
+        // ── 6. Recalculate usage metrics now that users exist ──────────────────
+        $this->command->info('Calculating usage metrics for all clients...');
+        CalculateUsageMetrics::dispatchSync();
+        $this->command->info('Usage metrics calculated.');
     }
 }
