@@ -22,7 +22,7 @@ return [
         ],
 
         'system_admins' => [
-            'driver' => 'eloquent',          // for central super admins
+            'driver' => 'system_admin_eloquent', // UUID-safe provider for central super admins
             'model'  => App\Models\SystemAdmin::class,
         ],
     ],

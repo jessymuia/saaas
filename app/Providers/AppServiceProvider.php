@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Auth\SystemAdminUserProvider;
 use App\Auth\TenantUserProvider;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
@@ -17,6 +18,13 @@ class AppServiceProvider extends ServiceProvider
     // Register our custom provider that bypasses TenantScope during auth
     Auth::provider('tenant_eloquent', function ($app, array $config) {
         return new TenantUserProvider($app['hash'], $config['model']);
+    });
+
+    // UUID-safe provider for system admins — returns null (graceful logout)
+    // instead of throwing a PostgreSQL type error when the session holds a
+    // stale integer ID from before a UUID migration.
+    Auth::provider('system_admin_eloquent', function ($app, array $config) {
+        return new SystemAdminUserProvider($app['hash'], $config['model']);
     });
 
     // Only super admins can access the Horizon dashboard

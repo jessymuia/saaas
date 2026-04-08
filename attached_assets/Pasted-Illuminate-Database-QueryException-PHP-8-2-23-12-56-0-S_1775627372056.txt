@@ -1,0 +1,577 @@
+Illuminate
+ \ 
+Database
+ \ 
+QueryException
+PHP 8.2.23
+12.56.0
+SQLSTATE[22P02]: Invalid text representation: 7 ERROR: invalid input syntax for type uuid: "1" CONTEXT: unnamed portal parameter $1 = '...'
+select * from "system_admins" where "id" = 1 limit 1
+
+
+
+Expand vendor frames
+74 vendor frames
+public
+ / 
+index
+.php
+ 
+: 51
+require_once
+1 vendor frame
+public
+ / 
+index
+.php
+ 
+: 51
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|
+
+| Composer provides a convenient, automatically generated class loader for
+
+| this application. We just need to utilize it! We'll simply require it
+
+| into the script here so we don't need to manually load our classes.
+
+|
+
+*/
+
+
+
+require __DIR__.'/../vendor/autoload.php';
+
+
+
+/*
+
+|--------------------------------------------------------------------------
+
+| Run The Application
+
+|--------------------------------------------------------------------------
+
+|
+
+| Once we have the application, we can handle the incoming request using
+
+| the application's HTTP kernel. Then, we will send the response back
+
+| to this client's browser, allowing them to enjoy our application.
+
+|
+
+*/
+
+
+
+$app = require_once __DIR__.'/../bootstrap/app.php';
+
+
+
+$kernel = $app->make(Kernel::class);
+
+
+
+$response = $kernel->handle(
+
+    $request = Request::capture()
+
+)->send();
+
+
+
+$kernel->terminate($request, $response);
+
+arguments
+$request:Illuminate\Http\Request
+POST https://3384d0cc-cf87-456c-92c6-edcb10f966c7-00-sjesida86t7i.janeway.replit.dev/livewire/update
+
+App
+Routing
+Request
+Browser
+Headers
+Body
+Livewire
+app.filament.resources.central.saas-client-resource.pages.list-saas-clients
+Context
+Git
+Versions
+Exception
+App
+Routing
+Controller
+Livewire\Mechanisms\HandleRequests\HandleRequests@handleUpdate
+
+Route name
+default.livewire.update
+
+Middleware
+web
+
+Request
+https://3384d0cc-cf87-456c-92c6-edcb10f966c7-00-sjesida86t7i.janeway.replit.dev:8000/admin/central/saas-clients
+GET
+curl "https://3384d0cc-cf87-456c-92c6-edcb10f966c7-00-sjesida86t7i.janeway.replit.dev:8000/admin/central/saas-clients" \
+   -X GET \
+   -H 'host: 3384d0cc-cf87-456c-92c6-edcb10f966c7-00-sjesida86t7i.janeway.replit.dev' \
+   -H 'user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36' \
+   -H 'content-length: 2615' \
+   -H 'accept: */*' \
+   -H 'accept-encoding: gzip, deflate, br, zstd' \
+   -H 'accept-language: en-GB,en-US;q=0.9,en;q=0.8' \
+   -H 'content-type: application/json' \
+   -H 'cookie: <CENSORED>' \
+   -H 'origin: https://3384d0cc-cf87-456c-92c6-edcb10f966c7-00-sjesida86t7i.janeway.replit.dev:8000' \
+   -H 'referer: https://3384d0cc-cf87-456c-92c6-edcb10f966c7-00-sjesida86t7i.janeway.replit.dev:8000/admin/central/saas-clients' \
+   -H 'sec-ch-ua: "Chromium";v="146", "Not-A.Brand";v="24", "Google Chrome";v="146"' \
+   -H 'sec-ch-ua-mobile: ?0' \
+   -H 'sec-ch-ua-platform: "Linux"' \
+   -H 'sec-fetch-dest: empty' \
+   -H 'sec-fetch-mode: cors' \
+   -H 'sec-fetch-site: same-origin' \
+   -H 'traceparent: 00-69d5ebda00000000779a2a64bae4b144-2c0a7a02215ecb96-00' \
+   -H 'tracestate: dd=s:0;p:2c0a7a02215ecb96;t.tid:69d5ebda00000000' \
+   -H 'x-datadog-parent-id: 3173483037004319638' \
+   -H 'x-datadog-tags: _dd.p.tid=69d5ebda00000000' \
+   -H 'x-datadog-trace-id: 8618247449047511364' \
+   -H 'x-forwarded-for: 154.159.252.138, 10.83.9.52' \
+   -H 'x-forwarded-proto: https' \
+   -F '_token=KwuaG5QJX6TUl84UwwrcRtCFsKFWA6OdCtAdizxO' -F 'components=[object Object]'
+
+
+Browser
+Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+
+Headers
+host
+3384d0cc-cf87-456c-92c6-edcb10f966c7-00-sjesida86t7i.janeway.replit.dev
+
+user-agent
+Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+
+content-length
+2615
+
+accept
+*/*
+
+accept-encoding
+gzip, deflate, br, zstd
+
+accept-language
+en-GB,en-US;q=0.9,en;q=0.8
+
+content-type
+application/json
+
+cookie
+<CENSORED>
+
+origin
+https://3384d0cc-cf87-456c-92c6-edcb10f966c7-00-sjesida86t7i.janeway.replit.dev:8000
+
+referer
+https://3384d0cc-cf87-456c-92c6-edcb10f966c7-00-sjesida86t7i.janeway.replit.dev:8000/admin/central/saas-clients
+
+sec-ch-ua
+"Chromium";v="146", "Not-A.Brand";v="24", "Google Chrome";v="146"
+
+sec-ch-ua-mobile
+?0
+
+sec-ch-ua-platform
+"Linux"
+
+sec-fetch-dest
+empty
+
+sec-fetch-mode
+cors
+
+sec-fetch-site
+same-origin
+
+traceparent
+00-69d5ebda00000000779a2a64bae4b144-2c0a7a02215ecb96-00
+
+tracestate
+dd=s:0;p:2c0a7a02215ecb96;t.tid:69d5ebda00000000
+
+x-datadog-parent-id
+3173483037004319638
+
+x-datadog-tags
+_dd.p.tid=69d5ebda00000000
+
+x-datadog-trace-id
+8618247449047511364
+
+x-forwarded-for
+154.159.252.138, 10.83.9.52
+
+x-forwarded-proto
+https
+
+Body
+{
+    "_token": "KwuaG5QJX6TUl84UwwrcRtCFsKFWA6OdCtAdizxO",
+    "components": [
+        {
+            "snapshot": "{\"data\":{\"isTableReordering\":false,\"tableFilters\":null,\"tableGrouping\":null,\"tableSearch\":\"\",\"tableSort\":null,\"activeTab\":null,\"mountedActions\":[[],{\"s\":\"arr\"}],\"defaultAction\":null,\"defaultActionArguments\":null,\"defaultActionContext\":null,\"defaultTableAction\":null,\"defaultTableActionRecord\":null,\"defaultTableActionArguments\":null,\"componentFileAttachments\":[[],{\"s\":\"arr\"}],\"areSchemaStateUpdateHooksDisabledForTesting\":false,\"discoveredSchemaNames\":[[\"content\",\"headerWidgets\",\"footerWidgets\"],{\"s\":\"arr\"}],\"parentRecord\":null,\"isTableLoaded\":false,\"tableRecordsPerPage\":10,\"tableColumnSearches\":[[],{\"s\":\"arr\"}],\"selectedTableRecords\":[[],{\"s\":\"arr\"}],\"deselectedTableRecords\":[[],{\"s\":\"arr\"}],\"isTrackingDeselectedTableRecords\":false,\"tableColumns\":[[[{\"type\":\"column\",\"name\":\"name\",\"label\":\"Name\",\"isHidden\":false,\"isToggled\":true,\"isToggleable\":false,\"isToggledHiddenByDefault\":null},{\"s\":\"arr\"}],[{\"type\":\"column\",\"name\":\"email\",\"label\":\"Email\",\"isHidden\":false,\"isToggled\":true,\"isToggleable\":false,\"isToggledHiddenByDefault\":null},{\"s\":\"arr\"}],[{\"type\":\"column\",\"name\":\"domains.domain\",\"label\":\"Domain\",\"isHidden\":false,\"isToggled\":true,\"isToggleable\":false,\"isToggledHiddenByDefault\":null},{\"s\":\"arr\"}],[{\"type\":\"column\",\"name\":\"status\",\"label\":\"Status\",\"isHidden\":false,\"isToggled\":true,\"isToggleable\":false,\"isToggledHiddenByDefault\":null},{\"s\":\"arr\"}],[{\"type\":\"column\",\"name\":\"plan.name\",\"label\":\"Plan\",\"isHidden\":false,\"isToggled\":true,\"isToggleable\":false,\"isToggledHiddenByDefault\":null},{\"s\":\"arr\"}],[{\"type\":\"column\",\"name\":\"created_at\",\"label\":\"Created at\",\"isHidden\":false,\"isToggled\":true,\"isToggleable\":false,\"isToggledHiddenByDefault\":null},{\"s\":\"arr\"}]],{\"s\":\"arr\"}],\"tableDeferredFilters\":null,\"paginators\":[{\"page\":1},{\"s\":\"arr\"}]},\"memo\":{\"id\":\"4k56MRtHbgmZk1yMaKz5\",\"name\":\"app.filament.resources.central.saas-client-resource.pages.list-saas-clients\",\"path\":\"admin\\/central\\/saas-clients\",\"method\":\"GET\",\"release\":\"a-a-a\",\"children\":[],\"scripts\":[],\"assets\":[],\"errors\":[],\"locale\":\"en\"},\"checksum\":\"b16e0f8b49e41f8dec9c6b53d72459451d79eac324118ff779d661a992a5d71e\"}",
+            "updates": [],
+            "calls": [
+                {
+                    "path": "",
+                    "method": "mountAction",
+                    "params": [
+                        "loginAsTenant",
+                        [],
+                        {
+                            "recordKey": "37cb24ed-e796-4139-a634-3d850f65f036",
+                            "table": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
+
+
+Livewire
+app.filament.resources.central.saas-client-resource.pages.list-saas-clients
+Component
+Component
+App\Filament\Resources\Central\SaasClientResource\Pages\ListSaasClients
+
+Calls
+Method
+mountAction
+
+Params
+[
+    "loginAsTenant",
+    [],
+    {
+        "recordKey": "37cb24ed-e796-4139-a634-3d850f65f036",
+        "table": true
+    }
+]
+
+
+Path
+
+Data
+isTableReordering
+false
+tableFilters
+null
+
+tableGrouping
+null
+
+tableSearch
+
+tableSort
+null
+
+activeTab
+null
+
+mountedActions
+[
+    [],
+    {
+        "s": "arr"
+    }
+]
+
+
+defaultAction
+null
+
+defaultActionArguments
+null
+
+defaultActionContext
+null
+
+defaultTableAction
+null
+
+defaultTableActionRecord
+null
+
+defaultTableActionArguments
+null
+
+componentFileAttachments
+[
+    [],
+    {
+        "s": "arr"
+    }
+]
+
+
+areSchemaStateUpdateHooksDisabledForTesting
+false
+discoveredSchemaNames
+[
+    [
+        "content",
+        "headerWidgets",
+        "footerWidgets"
+    ],
+    {
+        "s": "arr"
+    }
+]
+
+
+parentRecord
+null
+
+isTableLoaded
+false
+tableRecordsPerPage
+10
+
+tableColumnSearches
+[
+    [],
+    {
+        "s": "arr"
+    }
+]
+
+
+selectedTableRecords
+[
+    [],
+    {
+        "s": "arr"
+    }
+]
+
+
+deselectedTableRecords
+[
+    [],
+    {
+        "s": "arr"
+    }
+]
+
+
+isTrackingDeselectedTableRecords
+false
+tableColumns
+[
+    [
+        [
+            {
+                "type": "column",
+                "name": "name",
+                "label": "Name",
+                "isHidden": false,
+                "isToggled": true,
+                "isToggleable": false,
+                "isToggledHiddenByDefault": null
+            },
+            {
+                "s": "arr"
+            }
+        ],
+        [
+            {
+                "type": "column",
+                "name": "email",
+                "label": "Email",
+                "isHidden": false,
+                "isToggled": true,
+                "isToggleable": false,
+                "isToggledHiddenByDefault": null
+            },
+            {
+                "s": "arr"
+            }
+        ],
+        [
+            {
+                "type": "column",
+                "name": "domains.domain",
+                "label": "Domain",
+                "isHidden": false,
+                "isToggled": true,
+                "isToggleable": false,
+                "isToggledHiddenByDefault": null
+            },
+            {
+                "s": "arr"
+            }
+        ],
+        [
+            {
+                "type": "column",
+                "name": "status",
+                "label": "Status",
+                "isHidden": false,
+                "isToggled": true,
+                "isToggleable": false,
+                "isToggledHiddenByDefault": null
+            },
+            {
+                "s": "arr"
+            }
+        ],
+        [
+            {
+                "type": "column",
+                "name": "plan.name",
+                "label": "Plan",
+                "isHidden": false,
+                "isToggled": true,
+                "isToggleable": false,
+                "isToggledHiddenByDefault": null
+            },
+            {
+                "s": "arr"
+            }
+        ],
+        [
+            {
+                "type": "column",
+                "name": "created_at",
+                "label": "Created at",
+                "isHidden": false,
+                "isToggled": true,
+                "isToggleable": false,
+                "isToggledHiddenByDefault": null
+            },
+            {
+                "s": "arr"
+            }
+        ]
+    ],
+    {
+        "s": "arr"
+    }
+]
+
+
+tableDeferredFilters
+null
+
+paginators
+[
+    {
+        "page": 1
+    },
+    {
+        "s": "arr"
+    }
+]
+
+
+Memo
+id
+4k56MRtHbgmZk1yMaKz5
+
+name
+app.filament.resources.central.saas-client-resource.pages.list-saas-clients
+
+path
+admin/central/saas-clients
+
+method
+GET
+
+release
+a-a-a
+
+children
+[]
+
+scripts
+[]
+
+assets
+[]
+
+errors
+[]
+
+locale
+en
+
+Context
+Git
+Streamline direct login for administrators into tenant sites
+935c818ca91929ed8654da9f2b618578e1ebf68d
+
+View commit 935c818
+Last commit is dirty. (Un)staged changes have been made since this commit.
+
+Versions
+Php Version
+8.2.23
+
+Laravel Version
+12.56.0
+
+Laravel Locale
+en
+
+Laravel Config Cached
+false
+App Debug
+true
+App Env
+local
+
+Exception
+Raw Sql
+select * from "system_admins" where "id" = ? limit 1
+
+·
+Source
+·
+Docs
+·
+Laravel
+Ignition is built byFlare, the Laravel error reporting service.
