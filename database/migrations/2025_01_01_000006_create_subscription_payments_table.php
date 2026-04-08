@@ -10,7 +10,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('subscription_payments', function (Blueprint $table) {
-            $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
+            $table = \App\Utils\AppUtils::defaultTableColumns($table, addId: true, addAuditFk: true, addStatus: false);
+
             $table->foreignUuid('subscription_id')->constrained('subscriptions')->cascadeOnDelete();
             $table->foreignUuid('saas_client_id')->constrained('saas_clients')->cascadeOnDelete();
             $table->decimal('amount', 10, 2);
@@ -23,7 +24,6 @@ return new class extends Migration
             $table->timestamp('paid_at')->nullable();
             $table->timestamp('failed_at')->nullable();
             $table->string('failure_reason', 500)->nullable();
-            $table->timestamps();
         });
     }
 

@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('manual_invoices', function (Blueprint $table) {
-            $table = \App\Utils\AppUtils::defaultTableColumns($table, addId: true, addAuditFk: false);
+            $table = \App\Utils\AppUtils::defaultTableColumns($table, addId: true, addAuditFk: true);
 
             $table->uuid('saas_client_id')->nullable()->index();
             $table->foreignUuid('property_owner_id')->nullable()->constrained('property_owners')->cascadeOnDelete();

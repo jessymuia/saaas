@@ -10,11 +10,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('saas_client_users', function (Blueprint $table) {
-            $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
+            $table = \App\Utils\AppUtils::defaultTableColumns($table, addId: true, addAuditFk: true);
+
             $table->foreignUuid('saas_client_id')->constrained('saas_clients')->cascadeOnDelete();
             $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
-            $table->string('role')->nullable();
-            $table->timestamps();
+            $table->string('role', 30)->nullable();
 
             $table->index(['saas_client_id', 'user_id']);
         });

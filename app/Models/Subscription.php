@@ -2,17 +2,18 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Subscription — tracks all SaaS client subscriptions
  */
 class Subscription extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     public $incrementing  = false;
     protected $keyType    = 'string';
@@ -30,6 +31,11 @@ class Subscription extends Model
         'grace_ends_at',
         'last_reminded_at',
         'reminder_count',
+        'version',
+        'archive',
+        'created_by',
+        'updated_by',
+        'deleted_by',
     ];
 
     protected $casts = [
@@ -40,6 +46,9 @@ class Subscription extends Model
         'grace_ends_at'    => 'datetime',
         'last_reminded_at' => 'datetime',
         'reminder_count'   => 'integer',
+        'status'           => 'string',
+        'archive'          => 'boolean',
+        'deleted_at'       => 'datetime',
     ];
 
     public function saasClient(): BelongsTo
@@ -50,6 +59,21 @@ class Subscription extends Model
     public function plan(): BelongsTo
     {
         return $this->belongsTo(Plan::class, 'plan_id');
+    }
+
+    public function createdBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updatedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function deletedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
     }
 
     public static function startTrial(string $saasClientId, string $planId): self

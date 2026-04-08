@@ -37,7 +37,8 @@ class AppUtils
     public static function defaultTableColumns(
         Blueprint $table,
         bool $addId = true,
-        bool $addAuditFk = true
+        bool $addAuditFk = true,
+        bool $addStatus = true,
     ): Blueprint {
         if ($addId) {
             if (!Schema::hasColumn($table->getTable(), 'id')) {
@@ -49,7 +50,9 @@ class AppUtils
         $table->timestampsTz();
         $table->softDeletes();
 
-        $table->boolean('status')->default(true);
+        if ($addStatus) {
+            $table->boolean('status')->default(true);
+        }
         $table->boolean('archive')->default(false);
 
         if ($addAuditFk) {

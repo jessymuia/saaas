@@ -10,12 +10,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('support_tickets', function (Blueprint $table) {
-            $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
+            $table = \App\Utils\AppUtils::defaultTableColumns($table, addId: true, addAuditFk: true, addStatus: false);
+
             $table->foreignUuid('saas_client_id')->index()->constrained('saas_clients')->cascadeOnDelete();
             $table->string('subject');
             $table->text('message');
-            $table->string('status')->default('open');
-            $table->timestamps();
+            $table->string('status', 20)->default('open')
+                ->comment('open | in_progress | resolved | closed');
         });
     }
 

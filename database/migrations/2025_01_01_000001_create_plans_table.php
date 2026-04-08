@@ -10,7 +10,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('plans', function (Blueprint $table) {
-            $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
+            // addAuditFk: false — plans are managed by SystemAdmins, not tenant users
+            $table = \App\Utils\AppUtils::defaultTableColumns($table, addId: true, addAuditFk: false);
+
             $table->string('name', 100);
             $table->string('slug', 50)->unique();
             $table->string('description', 500)->nullable();
@@ -20,7 +22,6 @@ return new class extends Migration
             $table->integer('max_units')->default(-1);
             $table->integer('max_users')->default(-1);
             $table->boolean('is_active')->default(true);
-            $table->timestampsTz();
         });
     }
 

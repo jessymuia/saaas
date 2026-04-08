@@ -10,7 +10,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('subscriptions', function (Blueprint $table) {
-            $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
+            $table = \App\Utils\AppUtils::defaultTableColumns($table, addId: true, addAuditFk: true, addStatus: false);
+
             $table->foreignUuid('saas_client_id')->constrained('saas_clients')->cascadeOnDelete();
             $table->foreignUuid('plan_id')->constrained('plans')->restrictOnDelete();
             $table->string('status', 20)->default('trialing')
@@ -21,7 +22,6 @@ return new class extends Migration
             $table->timestamp('ends_at');
             $table->timestamp('trial_ends_at')->nullable();
             $table->timestamp('cancelled_at')->nullable();
-            $table->timestamps();
         });
     }
 

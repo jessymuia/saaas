@@ -97,4 +97,19 @@ class User extends Authenticatable implements \OwenIt\Auditing\Contracts\Auditab
     {
         return $this->belongsTo(\App\Models\SaasClient::class, 'saas_client_id');
     }
+
+    public function createdBy(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updatedBy(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function deletedBy(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
+    }
 }

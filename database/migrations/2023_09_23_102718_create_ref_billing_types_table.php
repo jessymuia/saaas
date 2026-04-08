@@ -13,7 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('ref_billing_types', function (Blueprint $table) {
-            $table = \App\Utils\AppUtils::defaultTableColumns($table, addId: true, addAuditFk: false);
+            $table = \App\Utils\AppUtils::defaultTableColumns($table, addId: true, addAuditFk: true);
 
             $table->string('type');
             $table->string('description')->nullable();

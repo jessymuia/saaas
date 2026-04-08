@@ -10,10 +10,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('domains', function (Blueprint $table) {
-            $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
+            // addAuditFk: false — domains are managed by SystemAdmins, not tenant users
+            $table = \App\Utils\AppUtils::defaultTableColumns($table, addId: true, addAuditFk: false);
+
             $table->foreignUuid('saas_client_id')->constrained('saas_clients')->cascadeOnDelete();
             $table->string('domain')->unique();
-            $table->timestampsTz();
         });
     }
 

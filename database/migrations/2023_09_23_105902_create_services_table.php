@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('services', function (Blueprint $table) {
-          $table = \App\Utils\AppUtils::defaultTableColumns($table, addId: true, addAuditFk: false);
+          $table = \App\Utils\AppUtils::defaultTableColumns($table, addId: true, addAuditFk: true);
 
             $table->string('name')->unique();
             $table->string('description')->nullable();

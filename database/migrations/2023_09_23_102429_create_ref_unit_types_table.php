@@ -10,7 +10,7 @@ return new class extends Migration
 {
     
     Schema::create('ref_unit_types', function (Blueprint $table) {
-        $table = \App\Utils\AppUtils::defaultTableColumns($table, addId: true, addAuditFk: false);
+        $table = \App\Utils\AppUtils::defaultTableColumns($table, addId: true, addAuditFk: true);
 
         $table->string('name'); 
         $table->string('code')->nullable(); 

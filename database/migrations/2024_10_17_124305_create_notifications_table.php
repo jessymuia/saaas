@@ -10,12 +10,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('notifications', function (Blueprint $table) {
-            $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
+            $table = \App\Utils\AppUtils::defaultTableColumns($table, addId: true, addAuditFk: true);
+
+            $table->uuid('saas_client_id')->nullable()->index();
             $table->string('type');
             $table->uuidMorphs('notifiable');
             $table->json('data');
             $table->timestamp('read_at')->nullable();
-            $table->timestamps();
         });
     }
 

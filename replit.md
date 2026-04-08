@@ -44,7 +44,11 @@ The original project used **Citus PostgreSQL** (distributed database) with Docke
 All 60+ tables have been migrated from `bigInteger` auto-increment IDs to UUIDs:
 - `AppUtils::defaultTableColumns()` now sets `uuid('id')->primary()->default(DB::raw('gen_random_uuid()'))`, `timestampsTz()`, decimal version, boolean status/archive, and `uuid` audit FK columns (created_by, updated_by, deleted_by)
 - All models extending `DefaultAppModel` automatically have `$incrementing = false` and `$keyType = 'string'`
-- Standalone models (Plan, Domain, SaasClient, SupportTicket, SubscriptionPayment, UsageMetric, SaasClientUser, SystemAdmin) updated individually with UUID settings
+- Standalone models (Plan, Domain, SaasClient, SupportTicket, SubscriptionPayment, UsageMetric, SaasClientUser, SystemAdmin, User) updated with UUID settings, SoftDeletes, full `$fillable`, casts, and `createdBy()`/`updatedBy()`/`deletedBy()` relations
+- `SaasClientUser` changed from extending `Authenticatable` to plain `Model` (it is a pivot/join table, not an auth user)
+- `plans` and `domains` migrations updated to use `defaultTableColumns(addAuditFk: false)` — these are central/platform tables managed by SystemAdmins, not tenant users
+- `AppUtils::defaultTableColumns()` gained an `addStatus: bool = true` parameter to allow tables with their own business `status` string column (subscriptions, subscription_payments, support_tickets) to skip the boolean status column
+- `subscriptions`, `subscription_payments`, `support_tickets` migrations updated to `addStatus: false` to prevent duplicate column conflict
 - Composite PKs (`['id', 'saas_client_id']`) replaced by simple UUID PKs; composite FKs replaced with `foreignUuid()->constrained()`
 - `saas_client_id` on pre-2025 migrations is a plain indexed UUID (no FK constraint, since those tables are created before `saas_clients`); FK integrity maintained by application logic
 - Spatie role/permission IDs kept as `bigIncrements`; morph columns use `uuidMorphs`

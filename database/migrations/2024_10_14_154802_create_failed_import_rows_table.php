@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('failed_import_rows', function (Blueprint $table) {
-            $table = \App\Utils\AppUtils::defaultTableColumns($table, addId: true, addAuditFk: false);
+            $table = \App\Utils\AppUtils::defaultTableColumns($table, addId: true, addAuditFk: true);
 
             $table->uuid('saas_client_id')->nullable()->index();
             $table->json('data');
