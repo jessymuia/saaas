@@ -45,7 +45,6 @@ Route::get('/admin/impersonate/{userId}/{slug}', function (Request $request, str
     // Log in on the web guard as the tenant user
     Auth::guard('web')->loginUsingId($userId);
 
-    // Redirect to the tenant's Filament app panel
-    // URL structure: /app (panel path) + /app (tenantRoutePrefix) + /{slug}
-    return redirect("/app/app/{$slug}");
+    // Redirect to the tenant's Filament app panel — URL: /app/{slug}
+    return redirect("/app/{$slug}");
 })->name('admin.impersonate');

@@ -107,7 +107,7 @@ class CreateSaasClient extends CreateRecord
 
             $defaultAdminEmail    = $email;
             $defaultAdminPassword = $password;
-            $defaultLoginUrl      = rtrim(config('app.url'), '/') . "/app/app/{$record->slug}";
+            $defaultLoginUrl      = rtrim(config('app.url'), '/') . "/app/{$record->slug}";
 
             // Send welcome email with credentials
             try {

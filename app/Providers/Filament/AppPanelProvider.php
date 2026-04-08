@@ -35,7 +35,6 @@ class AppPanelProvider extends PanelProvider
             ->authPasswordBroker('users')
             ->authGuard('web')
             ->tenant(SaasClient::class, slugAttribute: 'slug')
-            ->tenantRoutePrefix('app')
             ->colors(['primary' => Color::Emerald])
             ->discoverResources(
                 in: app_path('Filament/Resources/App'),

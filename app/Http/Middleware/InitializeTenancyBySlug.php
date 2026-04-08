@@ -32,9 +32,9 @@ class InitializeTenancyBySlug
             $referer = $request->headers->get('referer', '');
             $slug = $this->extractSlugFromUrl($referer);
         } else {
-            // URL pattern: /app/app/{slug}/...
-            // segment(1) = 'app', segment(2) = 'app', segment(3) = slug
-            $slug = $request->segment(3) ?? $request->segment(2);
+            // URL pattern: /app/{slug}/...
+            // segment(1) = 'app', segment(2) = slug
+            $slug = $request->segment(2);
         }
 
         if ($slug) {
@@ -55,7 +55,7 @@ class InitializeTenancyBySlug
 
     /**
      * Extract the tenant slug from a full URL string.
-     * Expects pattern: /app/app/{slug}/...
+     * Expects pattern: /app/{slug}/...
      */
     private function extractSlugFromUrl(string $url): ?string
     {
@@ -66,7 +66,7 @@ class InitializeTenancyBySlug
         $path = parse_url($url, PHP_URL_PATH) ?? '';
         $segments = array_values(array_filter(explode('/', $path)));
 
-        // segments: [0]=app, [1]=app, [2]=slug, ...
-        return $segments[2] ?? $segments[1] ?? null;
+        // segments: [0]=app, [1]=slug, ...
+        return $segments[1] ?? null;
     }
 }
