@@ -10,52 +10,32 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Plan — use updateOrCreate via DB to avoid duplicate slug error
-        $planId = DB::table('plans')->where('slug', 'trial-plan')->value('id');
+        // ── 1. Core reference data ─────────────────────────────────────────────
+        $this->call([
+            PlansSeeder::class,
+            RefDataSeeder::class,
+        ]);
 
-        if (! $planId) {
-            $planId = DB::table('plans')->insertGetId([
-                'name'           => 'Trial Plan',
-                'slug'           => 'trial-plan',
-                'description'    => 'Default trial plan',
-                'price_monthly'  => 0.00,
-                'price_yearly'   => 0.00,
-                'max_properties' => 10,
-                'max_units'      => 100,
-                'max_users'      => 5,
-                'is_active'      => true,
-                'created_at'     => now(),
-                'updated_at'     => now(),
-            ]);
-        }
-
-        // 2. SaaS Client — skip if already exists
-        $clientExists = DB::table('saas_clients')->where('slug', 'test-client')->exists();
-
-        if (! $clientExists) {
-            DB::table('saas_clients')->insert([
-                'id'           => (string) Str::uuid(),
-                'name'         => 'Test Client',
-                'slug'         => 'test-client',
-                'data'         => '{}',
-                'email'        => 'test@example.com',
-                'contact_name' => 'Test Contact',
-                'phone'        => '+254712345678',
-                'status'       => 'trial',
-                'plan_id'      => $planId,
-                'is_suspended' => false,
-                'created_at'   => now(),
-                'updated_at'   => now(),
-            ]);
-        }
-
-        // 3. Sequential Seeders
+        // ── 2. Central platform admin ──────────────────────────────────────────
         $this->call([
             SystemAdminAccountSeeder::class,
             SystemAdminSeeder::class,
+        ]);
+
+        // ── 3. Spatie permissions & roles (shared across all tenants) ──────────
+        $this->call([
             PermissionsSeeder::class,
-            UserSeeder::class,
             RolesSeeder::class,
+        ]);
+
+        // ── 4. Tenant SaaS clients (8 kakaye companies) ───────────────────────
+        $this->call([
+            SaasClientSeeder::class,
+        ]);
+
+        // ── 5. Users per tenant ────────────────────────────────────────────────
+        $this->call([
+            SaasClientUsersSeeder::class,
         ]);
     }
 }
