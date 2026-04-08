@@ -102,6 +102,10 @@ fi
 echo "Running database migrations..."
 php artisan migrate --force 2>/dev/null || echo "Migrations may have partially run, continuing..."
 
+# ── Seed the system admin account (idempotent — uses updateOrCreate) ──────────
+echo "Seeding system admin account..."
+php artisan db:seed --class=SystemAdminAccountSeeder --force 2>/dev/null || echo "Seeder skipped."
+
 # ── Start the queue worker in background ──────────────────────────────────────
 php artisan queue:work --daemon --tries=3 &>/tmp/queue.log &
 

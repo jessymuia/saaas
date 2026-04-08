@@ -65,7 +65,7 @@ class SaasClient extends Tenant
         return $this->attributes['primary_color'] ?? null;
     }
 
-    public function setPrimaryColorAttribute(string $value): void
+    public function setPrimaryColorAttribute(?string $value): void
     {
         $this->attributes['primary_color'] = $value;
     }
