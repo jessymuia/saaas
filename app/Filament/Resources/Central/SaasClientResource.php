@@ -140,9 +140,6 @@ class SaasClientResource extends Resource
                     ->label('Login as Tenant')
                     ->icon('heroicon-o-arrow-right-on-rectangle')
                     ->color('success')
-                    ->requiresConfirmation()
-                    ->modalHeading('Login as Tenant Admin')
-                    ->modalDescription('This will open the tenant panel logged in as the admin user for this account. You can return to the central admin panel at any time.')
                     ->action(function (SaasClient $record) {
                         try {
                             $user = User::withoutGlobalScopes()
@@ -158,19 +155,13 @@ class SaasClientResource extends Resource
                                 return;
                             }
 
-                            // Generate a short-lived signed URL for impersonation
                             $url = URL::temporarySignedRoute(
                                 'admin.impersonate',
                                 now()->addMinutes(5),
                                 ['userId' => $user->id, 'slug' => $record->slug]
                             );
 
-                            Notification::make()
-                                ->title('Impersonation link ready')
-                                ->body("Open this link to access the tenant panel (valid 5 min):\n{$url}")
-                                ->success()
-                                ->persistent()
-                                ->send();
+                            return redirect()->away($url);
 
                         } catch (\Throwable $e) {
                             Log::error('Impersonation failed: ' . $e->getMessage());
