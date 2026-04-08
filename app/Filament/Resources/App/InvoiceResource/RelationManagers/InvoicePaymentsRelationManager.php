@@ -10,7 +10,7 @@ use Filament\Tables\Columns\TextColumn;
 
 class InvoicePaymentsRelationManager extends RelationManager
 {
-    protected static string $relationship = 'payments';
+    protected static string $relationship = 'invoicePayments';
 
     public function form(Schema $schema): Schema
     {

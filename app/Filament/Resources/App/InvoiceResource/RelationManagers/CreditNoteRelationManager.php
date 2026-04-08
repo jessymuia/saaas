@@ -11,7 +11,7 @@ use Filament\Tables\Columns\TextColumn;
 
 class CreditNoteRelationManager extends RelationManager
 {
-    protected static string $relationship = 'creditNotes';
+    protected static string $relationship = 'creditNote';
 
     public function form(Schema $schema): Schema
     {

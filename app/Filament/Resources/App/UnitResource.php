@@ -49,13 +49,11 @@ class UnitResource extends Resource
                 ->required()
                 ->searchable()
                 ->preload(),
-            Forms\Components\TextInput::make('rent_amount')
+            Forms\Components\TextInput::make('area_in_square_feet')
+                ->label('Area (sq ft)')
                 ->numeric()
-                ->prefix('KES')
-                ->required(),
-            Forms\Components\Textarea::make('description')
-                ->maxLength(65535)
-                ->columnSpanFull(),
+                ->minValue(0)
+                ->default(0),
         ]);
     }
 
@@ -66,7 +64,7 @@ class UnitResource extends Resource
                 Tables\Columns\TextColumn::make('property.name')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('unitType.name')->label('Unit Type')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('rent_amount')->numeric()->sortable(),
+                Tables\Columns\TextColumn::make('area_in_square_feet')->label('Area (sq ft)')->numeric()->sortable(),
                 Tables\Columns\IconColumn::make('status')->boolean(),
                 Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true),

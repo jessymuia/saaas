@@ -48,6 +48,17 @@ class ManualInvoicesResource extends Resource
                     'tenant'         => 'Tenant',
                 ])
                 ->live()
+                ->afterStateHydrated(function ($get, $set, $record) {
+                    if ($record) {
+                        if ($record->property_owner_id) {
+                            $set('recipient_type', 'property_owner');
+                        } elseif ($record->client_id) {
+                            $set('recipient_type', 'client');
+                        } elseif ($record->tenant_id) {
+                            $set('recipient_type', 'tenant');
+                        }
+                    }
+                })
                 ->afterStateUpdated(function ($get, $set) {
                     $type = $get('recipient_type');
                     if ($type === 'property_owner') {
