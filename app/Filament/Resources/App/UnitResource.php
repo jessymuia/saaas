@@ -45,7 +45,7 @@ class UnitResource extends Resource
                 ->required()
                 ->maxLength(255),
             Forms\Components\Select::make('unit_type_id')
-                ->relationship('unitType', 'type')
+                ->relationship('unitType', 'name')
                 ->required()
                 ->searchable()
                 ->preload(),
@@ -65,7 +65,7 @@ class UnitResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('property.name')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('unitType.type')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('unitType.name')->label('Unit Type')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('rent_amount')->numeric()->sortable(),
                 Tables\Columns\IconColumn::make('status')->boolean(),
                 Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true),

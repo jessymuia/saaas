@@ -1,0 +1,489 @@
+Stack
+Context
+Debug
+Flare
+Share
+Share with Flare
+Docs
+
+Stack
+
+Context
+
+Debug
+Create Share
+Docs
+
+Ignition Settings
+Docs
+Editor
+
+PhpStorm
+Theme
+auto
+Save settings
+Settings will be saved locally in ~/.ignition.json.
+
+SQLSTATE[42703]: Undefined column: 7 ERROR: column ref_unit_types.type does not exist LINE 1: select "ref_unit_types"."type", "ref_unit_types"."id" from "... ^ (Connection: pgsql, Host: citus-coordinator, Port: 5432, Database: propman, SQL: select "ref_unit_types"."type", "ref_unit_types"."id" from "ref_unit_types" where "ref_unit_types"."deleted_at" is null order by "ref_unit_types"."type" asc limit 50)
+Illuminate
+ \ 
+Database
+ \ 
+QueryException
+PHP 8.2.30
+12.56.0
+SQLSTATE[42703]: Undefined column: 7 ERROR: column ref_unit_types.type does not exist LINE 1: select "ref_unit_types"."type", "ref_unit_types"."id" from "... ^
+select "ref_unit_types"."type", "ref_unit_types"."id" from "ref_unit_types" where "ref_unit_types"."deleted_at" is null order by "ref_unit_types"."type" asc limit 50
+
+
+
+Expand vendor frames
+66 vendor frames
+App
+ \ 
+Http
+ \ 
+Middleware
+ \ 
+CheckSubscriptionExpiry
+ 
+: 35
+handle
+1 vendor frame
+App
+ \ 
+Http
+ \ 
+Middleware
+ \ 
+TenantBrandingMiddleware
+ 
+: 30
+handle
+1 vendor frame
+App
+ \ 
+Http
+ \ 
+Middleware
+ \ 
+SetRlsSessionVariables
+ 
+: 50
+handle
+1 vendor frame
+App
+ \ 
+Http
+ \ 
+Middleware
+ \ 
+CheckTenantSuspended
+ 
+: 16
+handle
+1 vendor frame
+App
+ \ 
+Http
+ \ 
+Middleware
+ \ 
+InitializeTenancyBySlug
+ 
+: 53
+handle
+52 vendor frames
+public
+ / 
+index
+.php
+ 
+: 51
+[top]
+app
+ / 
+Http
+ / 
+Middleware
+ / 
+CheckSubscriptionExpiry
+.php
+ 
+: 35
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ */
+
+class CheckSubscriptionExpiry
+
+{
+
+    private const EXEMPT_ROUTE_PREFIXES = [
+
+        'billing',
+
+        'logout',
+
+        'livewire',
+
+        'filament',
+
+    ];
+
+
+
+    public function handle(Request $request, Closure $next): Response
+
+    {
+
+        $tenant = filament()->getTenant();
+
+
+
+        if (!$tenant) {
+
+            return $next($request);
+
+        }
+
+
+
+        // Skip for exempt paths (billing page itself, logout, etc.)
+
+        $path = $request->path();
+
+        foreach (self::EXEMPT_ROUTE_PREFIXES as $prefix) {
+
+            if (str_contains($path, $prefix)) {
+
+                return $next($request);
+
+            }
+
+        }
+
+
+
+        $subscription = $tenant->subscription;
+
+
+
+        // No subscription — already handled by CheckTenantSuspended / allow through
+
+        if (!$subscription) {
+arguments
+$arg0:Illuminate\Http\Request
+GET http://localhost:8000/app/karibu-homes/app/units/create
+
+App
+Routing
+Views
+Request
+Browser
+Headers
+Body
+Context
+User
+Versions
+App
+Routing
+Controller
+App\Filament\Resources\App\UnitResource\Pages\CreateUnit
+
+Route name
+filament.app.resources.app.units.create
+
+Middleware
+panel:app
+
+Illuminate\Cookie\Middleware\EncryptCookies
+
+Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse
+
+Illuminate\Session\Middleware\StartSession
+
+Illuminate\View\Middleware\ShareErrorsFromSession
+
+Illuminate\Foundation\Http\Middleware\VerifyCsrfToken
+
+Illuminate\Routing\Middleware\SubstituteBindings
+
+Filament\Http\Middleware\DisableBladeIconComponents
+
+Filament\Http\Middleware\DispatchServingFilamentEvent
+
+App\Http\Middleware\InitializeTenancyBySlug
+
+App\Http\Middleware\CheckTenantSuspended
+
+App\Http\Middleware\SetRlsSessionVariables
+
+App\Http\Middleware\TenantBrandingMiddleware
+
+App\Http\Middleware\CheckSubscriptionExpiry
+
+Filament\Http\Middleware\Authenticate
+
+Filament\Http\Middleware\IdentifyTenant
+
+Views
+View
+vendor
+ / 
+filament
+ / 
+forms
+ / 
+resources
+ / 
+views
+ / 
+components
+ / 
+select.blade
+.php
+Data
+Request
+http://localhost:8000/app/karibu-homes/app/units/create
+GET
+curl "http://localhost:8000/app/karibu-homes/app/units/create" \
+   -X GET \
+   -H 'cookie: <CENSORED>' \
+   -H 'accept-encoding: gzip, deflate, br, zstd' \
+   -H 'referer: http://localhost:8000/app/karibu-homes/app/units' \
+   -H 'sec-fetch-dest: document' \
+   -H 'sec-fetch-user: ?1' \
+   -H 'sec-fetch-mode: navigate' \
+   -H 'sec-fetch-site: same-origin' \
+   -H 'accept-language: en-US,en;q=0.5' \
+   -H 'sec-gpc: 1' \
+   -H 'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8' \
+   -H 'user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36' \
+   -H 'upgrade-insecure-requests: 1' \
+   -H 'sec-ch-ua-platform: "Linux"' \
+   -H 'sec-ch-ua-mobile: ?0' \
+   -H 'sec-ch-ua: "Chromium";v="146", "Not-A.Brand";v="24", "Brave";v="146"' \
+   -H 'connection: keep-alive' \
+   -H 'host: localhost:8000' \
+   -H 'x-forwarded-proto: http';
+
+
+Browser
+Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+
+Headers
+cookie
+<CENSORED>
+
+accept-encoding
+gzip, deflate, br, zstd
+
+referer
+http://localhost:8000/app/karibu-homes/app/units
+
+sec-fetch-dest
+document
+
+sec-fetch-user
+?1
+
+sec-fetch-mode
+navigate
+
+sec-fetch-site
+same-origin
+
+accept-language
+en-US,en;q=0.5
+
+sec-gpc
+1
+
+accept
+text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8
+
+user-agent
+Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+
+upgrade-insecure-requests
+1
+
+sec-ch-ua-platform
+"Linux"
+
+sec-ch-ua-mobile
+?0
+
+sec-ch-ua
+"Chromium";v="146", "Not-A.Brand";v="24", "Brave";v="146"
+
+connection
+keep-alive
+
+host
+localhost:8000
+
+x-forwarded-proto
+http
+
+Body
+[]
+
+Context
+User
+james.kariuki@kakaye.co.ke
+James Kariuki
+
+james.kariuki@kakaye.co.ke
+
+{
+    "id": "73004260-16b2-4ef6-86db-3bb1800c1b33",
+    "saas_client_id": "28eb8535-3685-4ecd-a693-2ba0bd1bf389",
+    "name": "James Kariuki",
+    "email": "james.kariuki@kakaye.co.ke",
+    "phone_number": "+254711001001",
+    "email_verified_at": "2026-04-08T06:41:56.000000Z",
+    "version": "1.00",
+    "created_at": "2026-04-08T06:41:56.000000Z",
+    "updated_at": "2026-04-08T06:41:56.000000Z",
+    "deleted_at": null,
+    "status": true,
+    "archive": false,
+    "created_by": null,
+    "updated_by": null,
+    "deleted_by": null,
+    "permissions": [],
+    "roles": [
+        {
+            "id": 1,
+            "name": "admin",
+            "guard_name": "web",
+            "created_at": "2026-04-08T06:41:55.000000Z",
+            "updated_at": "2026-04-08T06:41:55.000000Z",
+            "pivot": {
+                "model_type": "App\\Models\\User",
+                "model_id": "73004260-16b2-4ef6-86db-3bb1800c1b33",
+                "role_id": 1
+            }
+        }
+    ]
+}
+
+
+Versions
+Php Version
+8.2.30
+
+Laravel Version
+12.56.0
+
+Laravel Locale
+en
+
+Laravel Config Cached
+false
+App Debug
+true
+App Env
+local
+
+
+9
+Queries
+9:51:50 AM
+86.47ms
+pgsql
+select * from "users" where "users"."id" = 73004260-16b2-4ef6-86db-3bb1800c1b33 and "users"."deleted_at" is null limit 1
+
+
+1 query parameter
+9:51:50 AM
+8.34ms
+pgsql
+select * from "saas_clients" where "slug" = karibu-homes limit 1
+
+
+1 query parameter
+9:51:50 AM
+4.24ms
+pgsql
+SET app.saas_client_id = '28eb8535-3685-4ecd-a693-2ba0bd1bf389'
+
+
+9:51:50 AM
+0.81ms
+pgsql
+SET app.saas_client_id = '28eb8535-3685-4ecd-a693-2ba0bd1bf389'
+
+
+9:51:50 AM
+0.71ms
+pgsql
+RESET app.bypass_rls
+
+
+9:51:50 AM
+2.07ms
+pgsql
+select * from "saas_clients" where "slug" = karibu-homes limit 1
+
+
+1 query parameter
+9:51:50 AM
+8.18ms
+pgsql
+select "permissions".*, "model_has_permissions"."model_id" as "pivot_model_id", "model_has_permissions"."permission_id" as "pivot_permission_id", "model_has_permissions"."model_type" as "pivot_model_type" from "permissions" inner join "model_has_permissions" on "permissions"."id" = "model_has_permissions"."permission_id" where "model_has_permissions"."model_id" in (73004260-16b2-4ef6-86db-3bb1800c1b33) and "model_has_permissions"."model_type" = App\Models\User
+
+
+2 query parameters
+9:51:50 AM
+4.87ms
+pgsql
+select "roles".*, "model_has_roles"."model_id" as "pivot_model_id", "model_has_roles"."role_id" as "pivot_role_id", "model_has_roles"."model_type" as "pivot_model_type" from "roles" inner join "model_has_roles" on "roles"."id" = "model_has_roles"."role_id" where "model_has_roles"."model_id" in (73004260-16b2-4ef6-86db-3bb1800c1b33) and "model_has_roles"."model_type" = App\Models\User
+
+
+2 query parameters
+9:51:50 AM
+4.67ms
+pgsql
+select "properties"."name", "properties"."id" from "properties" where "properties"."deleted_at" is null and "properties"."saas_client_id" = 28eb8535-3685-4ecd-a693-2ba0bd1bf389 order by "properties"."name" asc limit 50
+
+
+1 query parameter
+·
+Source
+·
+Docs
+·
+Laravel
+Ignition is built byFlare, the Laravel error reporting service.
