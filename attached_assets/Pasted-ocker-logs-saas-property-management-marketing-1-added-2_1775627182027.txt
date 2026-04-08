@@ -1,0 +1,53 @@
+ocker logs saas-property-management-marketing-1
+
+added 23 packages, and audited 24 packages in 3m
+
+6 packages are looking for funding
+run npm fund for details
+
+found 0 vulnerabilities
+npm notice
+npm notice New major version of npm available! 10.8.2 -> 11.12.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.12.1
+npm notice To update run: npm install -g npm@11.12.1
+npm notice
+
+saas-marketing@0.1.0 build
+next build
+
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+▲ Next.js 16.2.1 (Turbopack)
+
+Creating an optimized production build ...
+
+Build error occurred
+Error: Turbopack build failed with 1 errors:
+./app/globals.css
+Error evaluating Node.js code
+Error: Cannot find module '@tailwindcss/postcss'
+Require stack:
+
+/app/.next/build/chunks/[root-of-the-server]__0d-m0h0._.js
+/app/.next/build/chunks/[turbopack]_runtime.js
+/app/.next/build/postcss.js
+[at Module.resolveFilename (node:internal/modules/cjs/loader:1207:15)]
+[at Module.load (node:internal/modules/cjs/loader:1038:27)]
+[at Module.require (node:internal/modules/cjs/loader:1289:19)]
+[at require (node:internal/modules/helpers:182:18)]
+at require (turbopack:///[turbopack-node]/transforms/postcss.ts:49:25) [/app/.next/build/chunks/[root-of-the-server]__0d-m0h0..js:134:33]
+[at ]
+at map (turbopack:///[turbopack-node]/transforms/postcss.ts:43:33) [/app/.next/build/chunks/[root-of-the-server]__0d-m0h0..js:129:35]
+at init (turbopack:///[turbopack-node]/child_process/evaluate.ts:74:20) [/app/.next/build/chunks/[root-of-the-server]__0ubbtyl._.js:429:26]
+[at process.processTicksAndRejections (node:internal/process/task_queues:95:5)]
+Import trace:
+Client Component Browser:
+./app/globals.css [Client Component Browser]
+./app/layout.tsx [Server Component]
+
+at require (turbopack:///[turbopack-node]/transforms/postcss.ts:49:25) [/app/.next/build/chunks/[root-of-the-server]__0d-m0h0._.js:134:33])
+at map (turbopack:///[turbopack-node]/transforms/postcss.ts:43:33) [/app/.next/build/chunks/[root-of-the-server]__0d-m0h0._.js:129:35])
+at init (turbopack:///[turbopack-node]/child_process/evaluate.ts:74:20) [/app/.next/build/chunks/[root-of-the-server]__0ubbtyl._.js:429:26])
